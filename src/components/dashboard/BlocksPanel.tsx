@@ -252,49 +252,49 @@ export const BlocksPanel = () => {
   }, []);
 
   return (
-    <div className="space-y-4 2xl:space-y-6">
+    <div className="space-y-4 2xl:space-y-6 3xl:space-y-8">
       {/* Filters + Stats */}
       <Card className="glass-card">
-        <CardHeader className="p-3 pb-1">
-           <CardTitle className="text-sm 2xl:text-lg flex items-center gap-2">
-             <Filter className="w-4 h-4 2xl:w-5 2xl:h-5 text-primary" />
+        <CardHeader className="p-3 3xl:p-5 pb-1">
+           <CardTitle className="text-sm 2xl:text-lg 3xl:text-xl flex items-center gap-2">
+             <Filter className="w-4 h-4 2xl:w-5 2xl:h-5 3xl:w-6 3xl:h-6 text-primary" />
             Mapa de Concessões
           </CardTitle>
         </CardHeader>
-        <CardContent className="p-3 pt-1 space-y-3">
-          <div className="flex flex-wrap gap-2">
-            <div className="relative w-full md:w-48">
-              <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-3 h-3 text-muted-foreground" />
+        <CardContent className="p-3 3xl:p-5 pt-1 space-y-3 3xl:space-y-4">
+          <div className="flex flex-wrap gap-2 3xl:gap-3">
+            <div className="relative w-full md:w-48 3xl:w-56">
+              <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-3 h-3 3xl:w-4 3xl:h-4 text-muted-foreground" />
               <Input
                 placeholder="Pesquisar bloco..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="h-7 text-xs pl-7 glass-card border-border/50"
+                className="h-7 3xl:h-9 text-xs 3xl:text-sm pl-7 3xl:pl-9 glass-card border-border/50"
               />
             </div>
             <Select value={filterOperator} onValueChange={setFilterOperator}>
-              <SelectTrigger className="w-36 md:w-40 h-7 text-xs glass-card border-border/50"><SelectValue placeholder="Operador" /></SelectTrigger>
+              <SelectTrigger className="w-36 md:w-40 3xl:w-48 h-7 3xl:h-9 text-xs 3xl:text-sm glass-card border-border/50"><SelectValue placeholder="Operador" /></SelectTrigger>
               <SelectContent className="bg-card border-border">
                 <SelectItem value="all">Todos Operadores</SelectItem>
                 {operators.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}
               </SelectContent>
             </Select>
             <Select value={filterBasin} onValueChange={setFilterBasin}>
-              <SelectTrigger className="w-36 md:w-40 h-7 text-xs glass-card border-border/50"><SelectValue placeholder="Bacia" /></SelectTrigger>
+              <SelectTrigger className="w-36 md:w-40 3xl:w-48 h-7 3xl:h-9 text-xs 3xl:text-sm glass-card border-border/50"><SelectValue placeholder="Bacia" /></SelectTrigger>
               <SelectContent className="bg-card border-border">
                 <SelectItem value="all">Todas Bacias</SelectItem>
                 {basins.map(b => <SelectItem key={b} value={b}>{b}</SelectItem>)}
               </SelectContent>
             </Select>
             <Select value={filterPhase} onValueChange={setFilterPhase}>
-              <SelectTrigger className="w-36 md:w-40 h-7 text-xs glass-card border-border/50"><SelectValue placeholder="Fase" /></SelectTrigger>
+              <SelectTrigger className="w-36 md:w-40 3xl:w-48 h-7 3xl:h-9 text-xs 3xl:text-sm glass-card border-border/50"><SelectValue placeholder="Fase" /></SelectTrigger>
               <SelectContent className="bg-card border-border">
                 <SelectItem value="all">Todas Fases</SelectItem>
                 {phases.map(p => <SelectItem key={p} value={p}>{p}</SelectItem>)}
               </SelectContent>
             </Select>
             <Select value={filterDepth} onValueChange={setFilterDepth}>
-              <SelectTrigger className="w-36 md:w-40 h-7 text-xs glass-card border-border/50"><SelectValue placeholder="Profundidade" /></SelectTrigger>
+              <SelectTrigger className="w-36 md:w-40 3xl:w-48 h-7 3xl:h-9 text-xs 3xl:text-sm glass-card border-border/50"><SelectValue placeholder="Profundidade" /></SelectTrigger>
               <SelectContent className="bg-card border-border">
                 <SelectItem value="all">Todas Profundidades</SelectItem>
                 {waterDepths.map(d => <SelectItem key={d} value={d}>{depthLabel[d]}</SelectItem>)}
@@ -302,41 +302,41 @@ export const BlocksPanel = () => {
             </Select>
             {hasFilters && (
               <button onClick={() => { setFilterOperator("all"); setFilterBasin("all"); setFilterPhase("all"); setFilterDepth("all"); setSearchQuery(""); }}
-                className="h-7 px-3 text-xs text-muted-foreground hover:text-foreground transition-colors">Limpar</button>
+                className="h-7 3xl:h-9 px-3 text-xs 3xl:text-sm text-muted-foreground hover:text-foreground transition-colors">Limpar</button>
             )}
           </div>
-          <div className="grid grid-cols-4 gap-2 2xl:gap-3">
-             <div className="glass-card p-1.5 2xl:p-3 rounded-lg text-center">
-               <div className="text-[9px] 2xl:text-xs text-muted-foreground">Blocos</div>
-               <div className="text-base 2xl:text-xl font-bold font-mono">{stats.total}</div>
+          <div className="grid grid-cols-4 gap-2 2xl:gap-3 3xl:gap-4">
+             <div className="glass-card p-1.5 2xl:p-3 3xl:p-4 rounded-lg text-center">
+               <div className="text-[9px] 2xl:text-xs 3xl:text-sm text-muted-foreground">Blocos</div>
+               <div className="text-base 2xl:text-xl 3xl:text-2xl font-bold font-mono">{stats.total}</div>
             </div>
-             <div className="glass-card p-1.5 2xl:p-3 rounded-lg text-center">
-               <div className="text-[9px] 2xl:text-xs text-muted-foreground">Produção</div>
-               <div className="text-base 2xl:text-xl font-bold font-mono text-success">{stats.production}</div>
+             <div className="glass-card p-1.5 2xl:p-3 3xl:p-4 rounded-lg text-center">
+               <div className="text-[9px] 2xl:text-xs 3xl:text-sm text-muted-foreground">Produção</div>
+               <div className="text-base 2xl:text-xl 3xl:text-2xl font-bold font-mono text-success">{stats.production}</div>
             </div>
-             <div className="glass-card p-1.5 2xl:p-3 rounded-lg text-center">
-               <div className="text-[9px] 2xl:text-xs text-muted-foreground">Prod. Total</div>
-               <div className="text-base 2xl:text-xl font-bold font-mono">{(stats.totalProd / 1000).toFixed(0)}k</div>
+             <div className="glass-card p-1.5 2xl:p-3 3xl:p-4 rounded-lg text-center">
+               <div className="text-[9px] 2xl:text-xs 3xl:text-sm text-muted-foreground">Prod. Total</div>
+               <div className="text-base 2xl:text-xl 3xl:text-2xl font-bold font-mono">{(stats.totalProd / 1000).toFixed(0)}k</div>
             </div>
-             <div className="glass-card p-1.5 2xl:p-3 rounded-lg text-center">
-               <div className="text-[9px] 2xl:text-xs text-muted-foreground">Reservas</div>
-               <div className="text-base 2xl:text-xl font-bold font-mono">{(stats.totalReserves / 1000).toFixed(1)}B</div>
+             <div className="glass-card p-1.5 2xl:p-3 3xl:p-4 rounded-lg text-center">
+               <div className="text-[9px] 2xl:text-xs 3xl:text-sm text-muted-foreground">Reservas</div>
+               <div className="text-base 2xl:text-xl 3xl:text-2xl font-bold font-mono">{(stats.totalReserves / 1000).toFixed(1)}B</div>
             </div>
           </div>
         </CardContent>
       </Card>
 
       {/* Map + Block List side by side */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 2xl:gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 2xl:gap-6 3xl:gap-8">
         {/* Interactive Map */}
         <Card className="glass-card">
-          <CardHeader className="p-3 pb-1">
-            <CardTitle className="text-xs 2xl:text-sm flex items-center gap-2">
-              <Map className="w-3.5 h-3.5 text-primary" />
+          <CardHeader className="p-3 3xl:p-5 pb-1">
+            <CardTitle className="text-xs 2xl:text-sm 3xl:text-base flex items-center gap-2">
+              <Map className="w-3.5 h-3.5 3xl:w-5 3xl:h-5 text-primary" />
               Vista Geográfica
             </CardTitle>
           </CardHeader>
-          <CardContent className="p-2">
+          <CardContent className="p-2 3xl:p-4">
             <ConcessionMap
               blocks={filteredBlocks}
               selectedBlockId={selectedBlockId}
