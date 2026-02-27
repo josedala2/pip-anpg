@@ -239,13 +239,12 @@ export const ConcessionMap = ({
     return positions;
   }, [blocks]);
 
-  const handleMouseEnter = (block: OilBlock, svgX: number, svgY: number) => {
-    onBlockHover(block.id);
-    setTooltip({ block, x: svgX, y: svgY });
+  const handleClick = (block: OilBlock, svgX: number, svgY: number) => {
+    onBlockClick(block);
+    setTooltip(prev => prev?.block.id === block.id ? null : { block, x: svgX, y: svgY });
   };
 
-  const handleMouseLeave = () => {
-    onBlockHover(null);
+  const handleCloseTooltip = () => {
     setTooltip(null);
   };
 
@@ -344,9 +343,9 @@ export const ConcessionMap = ({
             <g
               key={block.id}
               className="cursor-pointer"
-              onClick={() => onBlockClick(block)}
-              onMouseEnter={() => handleMouseEnter(block, pos.x, pos.y)}
-              onMouseLeave={handleMouseLeave}
+              onClick={() => handleClick(block, pos.x, pos.y)}
+              onMouseEnter={() => onBlockHover(block.id)}
+              onMouseLeave={() => onBlockHover(null)}
             >
               <circle cx={pos.x} cy={pos.y} r={r + 3} fill="transparent" />
 
@@ -398,7 +397,7 @@ export const ConcessionMap = ({
             top: `${Math.max(5, (tooltip.y / 255) * 100 - 10)}%`,
             transform: "translateX(-50%)",
           }}
-          onMouseLeave={handleMouseLeave}
+          onMouseLeave={handleCloseTooltip}
         >
           <div className="font-bold text-xs">{tooltip.block.name}</div>
           <div className="text-[10px] text-muted-foreground">{tooltip.block.operator}</div>
