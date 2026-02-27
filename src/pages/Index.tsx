@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect, useMemo } from "react";
+import { Separator } from "@/components/ui/separator";
 
 import { ConcessionMap } from "@/components/dashboard/ConcessionMap";
 import { applyFilters, type FilterState } from "@/components/dashboard/FilterBar";
@@ -101,8 +102,10 @@ const Index = () => {
           </div>
         </div>
 
+        <Separator className="mx-4 md:mx-6" />
+
         {/* Panel Tabs */}
-        <div className="flex items-center px-4 md:px-6 pb-2 gap-1">
+        <div className="flex items-center px-4 md:px-6 py-2 gap-1">
           {panels.map((panel, i) => (
             <button
               key={panel}
