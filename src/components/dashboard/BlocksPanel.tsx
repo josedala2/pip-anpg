@@ -4,13 +4,18 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { oilBlocks, type OilBlock, type WaterDepth } from "@/data/angolaBlocks";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Filter, MapPin, Users, Droplets, TrendingUp, ChevronDown, ChevronUp, Map, ExternalLink } from "lucide-react";
+import { Filter, Map, ChevronDown, ChevronRight, ExternalLink, Search } from "lucide-react";
 import { ConcessionMap } from "./ConcessionMap";
+import { Input } from "@/components/ui/input";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 
 const operators = [...new Set(oilBlocks.map(b => b.operator))].sort();
 const basins = [...new Set(oilBlocks.map(b => b.basin))].sort();
-const phases = ["Production", "Development", "Exploration", "Suspended"];
+const phases = ["Production", "Development", "Exploration", "Bidding", "Suspended"];
 const waterDepths: WaterDepth[] = ["Onshore", "Shallow Water", "Deep Water", "Ultra-Deep Water"];
 
 const phaseColor = (phase: string) => {
@@ -19,6 +24,7 @@ const phaseColor = (phase: string) => {
     case "Development": return "bg-warning/15 text-warning border-warning/30";
     case "Exploration": return "bg-primary/15 text-primary border-primary/30";
     case "Suspended": return "bg-danger/15 text-danger border-danger/30";
+    case "Bidding": return "bg-[hsl(280,65%,60%)]/15 text-[hsl(280,65%,60%)] border-[hsl(280,65%,60%)]/30";
     default: return "bg-muted text-muted-foreground";
   }
 };
@@ -30,23 +36,35 @@ const depthLabel: Record<WaterDepth, string> = {
   "Ultra-Deep Water": "Ultra-Profundas",
 };
 
-interface BlockCardProps {
+const basinLabel: Record<string, string> = {
+  "Lower Congo": "Bacia do Congo",
+  "Congo": "Bacia do Congo",
+  "Kwanza": "Bacia do Kwanza",
+  "Namibe": "Bacia do Namibe",
+  "Benguela": "Bacia de Benguela",
+};
+
+// Compact grid card for a single block
+const CompactBlockCard = ({
+  block,
+  isSelected,
+  isHovered,
+  onSelect,
+  onHover,
+  onNavigate,
+}: {
   block: OilBlock;
   isSelected: boolean;
   isHovered: boolean;
   onSelect: (block: OilBlock) => void;
   onHover: (id: string | null) => void;
-  onNavigate: (blockId: string) => void;
-}
-
-const BlockCard = ({ block, isSelected, isHovered, onSelect, onHover, onNavigate }: BlockCardProps) => {
-  const [expanded, setExpanded] = useState(false);
+  onNavigate: (id: string) => void;
+}) => {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (isSelected && ref.current) {
       ref.current.scrollIntoView({ behavior: "smooth", block: "nearest" });
-      setExpanded(true);
     }
   }, [isSelected]);
 
@@ -55,87 +73,124 @@ const BlockCard = ({ block, isSelected, isHovered, onSelect, onHover, onNavigate
       ref={ref}
       onMouseEnter={() => onHover(block.id)}
       onMouseLeave={() => onHover(null)}
+      onClick={() => onSelect(block)}
+      className={`glass-card rounded-lg p-2 cursor-pointer transition-all border ${
+        isSelected
+          ? "border-primary/50 ring-1 ring-primary/20 shadow-md"
+          : isHovered
+          ? "border-primary/30 shadow-sm"
+          : "border-transparent hover:border-primary/20"
+      }`}
     >
-      <Card className={`glass-card transition-all ${isSelected ? "border-primary/50 ring-1 ring-primary/20" : isHovered ? "border-primary/30" : "hover:border-primary/20"}`}>
-        <CardContent className="p-0">
-          <button
-            onClick={() => { setExpanded(!expanded); onSelect(block); }}
-            className="w-full text-left p-3"
-          >
-            <div className="flex items-start justify-between gap-2">
-              <div className="min-w-0">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span className="font-bold text-xs">{block.name}</span>
-                  <Badge variant="outline" className={`text-[9px] px-1.5 py-0 ${phaseColor(block.phase)}`}>
-                    {block.phase}
-                  </Badge>
-                </div>
-                <div className="text-[10px] text-muted-foreground mt-0.5">
-                  <span className="font-medium text-foreground">{block.operator}</span>
-                  <span className="mx-1">·</span>
-                  {block.basin} · {depthLabel[block.waterDepth]}
-                </div>
+      <div className="flex items-start justify-between gap-1 mb-1">
+        <span className="font-bold text-[10px] leading-tight truncate">{block.name}</span>
+        <Badge variant="outline" className={`text-[8px] px-1 py-0 shrink-0 ${phaseColor(block.phase)}`}>
+          {block.phase === "Bidding" ? "Licitação" : block.phase}
+        </Badge>
+      </div>
+      <div className="text-[9px] text-muted-foreground truncate">{block.operator}</div>
+      <div className="flex items-center justify-between mt-1.5">
+        {block.dailyProduction > 0 ? (
+          <span className="text-[10px] font-bold font-mono text-success">
+            {(block.dailyProduction / 1000).toFixed(0)}k <span className="text-[8px] font-normal text-muted-foreground">BOPD</span>
+          </span>
+        ) : (
+          <span className="text-[9px] text-muted-foreground italic">—</span>
+        )}
+        <button
+          onClick={(e) => { e.stopPropagation(); onNavigate(block.id); }}
+          className="text-[8px] text-primary hover:text-primary/80 flex items-center gap-0.5"
+        >
+          <ExternalLink className="w-2.5 h-2.5" />
+        </button>
+      </div>
+      {isSelected && (
+        <div className="mt-2 pt-2 border-t border-border/50 animate-fade-in space-y-1.5">
+          <div className="grid grid-cols-2 gap-1">
+            {[
+              { label: "Reservas", value: `${block.estimatedReserves}M bbl` },
+              { label: "Risco", value: `${block.riskScore}/10` },
+            ].map(m => (
+              <div key={m.label} className="text-[8px]">
+                <span className="text-muted-foreground">{m.label}: </span>
+                <span className="font-mono font-semibold">{m.value}</span>
               </div>
-              <div className="flex items-center gap-2 shrink-0">
-                {block.dailyProduction > 0 && (
-                  <span className="text-xs font-bold font-mono">{(block.dailyProduction / 1000).toFixed(0)}k</span>
-                )}
-                {expanded ? <ChevronUp className="w-3 h-3 text-muted-foreground" /> : <ChevronDown className="w-3 h-3 text-muted-foreground" />}
-              </div>
-            </div>
-          </button>
-
-          {expanded && (
-            <div className="px-3 pb-3 space-y-2 border-t border-border/50 pt-2 animate-fade-in">
-              <div className="grid grid-cols-4 gap-1.5">
-                {[
-                  { label: "Reservas", value: `${block.estimatedReserves}M` },
-                  { label: "Investido", value: `$${(block.accumulatedInvestment / 1000).toFixed(1)}B` },
-                  { label: "Execução", value: `${block.executionRate}%` },
-                  { label: "Risco", value: `${block.riskScore}/10` },
-                ].map(m => (
-                  <div key={m.label} className="glass-card p-1.5 rounded text-center">
-                    <div className="text-[8px] text-muted-foreground">{m.label}</div>
-                    <div className="text-[11px] font-bold font-mono">{m.value}</div>
-                  </div>
-                ))}
-              </div>
-
-              {block.concession.length > 0 && (
-                <div>
-                  <div className="text-[9px] uppercase tracking-wider text-muted-foreground mb-1">Consórcio</div>
-                  <div className="space-y-0.5">
-                    {block.concession.map((p, i) => (
-                      <div key={i} className="flex items-center justify-between text-[10px]">
-                        <span className={p.isOperator ? "font-semibold text-foreground" : "text-muted-foreground"}>
-                          {p.name} {p.isOperator && <span className="text-primary text-[9px]">(OP)</span>}
-                        </span>
-                        <div className="flex items-center gap-1.5">
-                          <div className="w-16 h-1 bg-secondary rounded-full overflow-hidden">
-                            <div className="h-full bg-primary/60 rounded-full" style={{ width: `${p.share}%` }} />
-                          </div>
-                          <span className="font-mono w-10 text-right text-[9px]">{p.share.toFixed(1)}%</span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+            ))}
+          </div>
+          {block.concession.length > 0 && (
+            <div className="space-y-0.5">
+              {block.concession.slice(0, 3).map((p, i) => (
+                <div key={i} className="flex items-center justify-between text-[8px]">
+                  <span className={p.isOperator ? "font-semibold" : "text-muted-foreground"}>
+                    {p.name}{p.isOperator ? " (OP)" : ""}
+                  </span>
+                  <span className="font-mono">{p.share.toFixed(0)}%</span>
                 </div>
+              ))}
+              {block.concession.length > 3 && (
+                <div className="text-[8px] text-muted-foreground">+{block.concession.length - 3} mais</div>
               )}
-
-              <Button
-                variant="outline"
-                size="sm"
-                className="w-full h-7 text-[10px] gap-1.5 border-primary/30 text-primary hover:bg-primary/10"
-                onClick={(e) => { e.stopPropagation(); onNavigate(block.id); }}
-              >
-                <ExternalLink className="w-3 h-3" />
-                Mais Detalhes
-              </Button>
             </div>
           )}
-        </CardContent>
-      </Card>
+        </div>
+      )}
     </div>
+  );
+};
+
+// Collapsible basin/region group
+const BasinGroup = ({
+  label,
+  blocks,
+  selectedBlockId,
+  hoveredBlockId,
+  onSelect,
+  onHover,
+  onNavigate,
+  defaultOpen = true,
+}: {
+  label: string;
+  blocks: OilBlock[];
+  selectedBlockId: string | null;
+  hoveredBlockId: string | null;
+  onSelect: (block: OilBlock) => void;
+  onHover: (id: string | null) => void;
+  onNavigate: (id: string) => void;
+  defaultOpen?: boolean;
+}) => {
+  const [open, setOpen] = useState(defaultOpen);
+  const totalProd = blocks.reduce((s, b) => s + b.dailyProduction, 0);
+  const producing = blocks.filter(b => b.phase === "Production").length;
+
+  return (
+    <Collapsible open={open} onOpenChange={setOpen}>
+      <CollapsibleTrigger className="w-full flex items-center justify-between py-1.5 px-2 rounded-md hover:bg-secondary/50 transition-colors group">
+        <div className="flex items-center gap-2">
+          {open ? <ChevronDown className="w-3 h-3 text-muted-foreground" /> : <ChevronRight className="w-3 h-3 text-muted-foreground" />}
+          <span className="text-[11px] font-semibold">{label}</span>
+          <span className="text-[9px] text-muted-foreground">({blocks.length})</span>
+        </div>
+        <div className="flex items-center gap-2 text-[9px] text-muted-foreground">
+          {producing > 0 && <span className="text-success font-mono">{producing} prod.</span>}
+          {totalProd > 0 && <span className="font-mono">{(totalProd / 1000).toFixed(0)}k BOPD</span>}
+        </div>
+      </CollapsibleTrigger>
+      <CollapsibleContent>
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-1.5 pt-1.5 pb-2">
+          {blocks.map(block => (
+            <CompactBlockCard
+              key={block.id}
+              block={block}
+              isSelected={selectedBlockId === block.id}
+              isHovered={hoveredBlockId === block.id}
+              onSelect={onSelect}
+              onHover={onHover}
+              onNavigate={onNavigate}
+            />
+          ))}
+        </div>
+      </CollapsibleContent>
+    </Collapsible>
   );
 };
 
@@ -145,6 +200,7 @@ export const BlocksPanel = () => {
   const [filterBasin, setFilterBasin] = useState("all");
   const [filterPhase, setFilterPhase] = useState("all");
   const [filterDepth, setFilterDepth] = useState("all");
+  const [searchQuery, setSearchQuery] = useState("");
   const [selectedBlockId, setSelectedBlockId] = useState<string | null>(null);
   const [hoveredBlockId, setHoveredBlockId] = useState<string | null>(null);
 
@@ -154,9 +210,13 @@ export const BlocksPanel = () => {
       if (filterBasin !== "all" && b.basin !== filterBasin) return false;
       if (filterPhase !== "all" && b.phase !== filterPhase) return false;
       if (filterDepth !== "all" && b.waterDepth !== filterDepth) return false;
+      if (searchQuery) {
+        const q = searchQuery.toLowerCase();
+        return b.name.toLowerCase().includes(q) || b.operator.toLowerCase().includes(q) || b.basin.toLowerCase().includes(q);
+      }
       return true;
     });
-  }, [filterOperator, filterBasin, filterPhase, filterDepth]);
+  }, [filterOperator, filterBasin, filterPhase, filterDepth, searchQuery]);
 
   const stats = useMemo(() => ({
     total: filteredBlocks.length,
@@ -165,15 +225,22 @@ export const BlocksPanel = () => {
     totalReserves: filteredBlocks.reduce((s, b) => s + b.estimatedReserves, 0),
   }), [filteredBlocks]);
 
-  const hasFilters = filterOperator !== "all" || filterBasin !== "all" || filterPhase !== "all" || filterDepth !== "all";
+  const hasFilters = filterOperator !== "all" || filterBasin !== "all" || filterPhase !== "all" || filterDepth !== "all" || searchQuery !== "";
 
+  // Group by basin, then by water depth within each basin
   const grouped = useMemo(() => {
-    const groups: Record<string, OilBlock[]> = {};
+    const basinGroups: Record<string, OilBlock[]> = {};
     filteredBlocks.forEach(b => {
-      if (!groups[b.waterDepth]) groups[b.waterDepth] = [];
-      groups[b.waterDepth].push(b);
+      const key = b.basin;
+      if (!basinGroups[key]) basinGroups[key] = [];
+      basinGroups[key].push(b);
     });
-    return groups;
+    // Sort basins by total production desc
+    return Object.entries(basinGroups).sort((a, b) => {
+      const prodA = a[1].reduce((s, bl) => s + bl.dailyProduction, 0);
+      const prodB = b[1].reduce((s, bl) => s + bl.dailyProduction, 0);
+      return prodB - prodA;
+    });
   }, [filteredBlocks]);
 
   const handleBlockClick = useCallback((block: OilBlock) => {
@@ -196,6 +263,15 @@ export const BlocksPanel = () => {
         </CardHeader>
         <CardContent className="p-3 pt-1 space-y-3">
           <div className="flex flex-wrap gap-2">
+            <div className="relative w-full md:w-48">
+              <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-3 h-3 text-muted-foreground" />
+              <Input
+                placeholder="Pesquisar bloco..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="h-7 text-xs pl-7 glass-card border-border/50"
+              />
+            </div>
             <Select value={filterOperator} onValueChange={setFilterOperator}>
               <SelectTrigger className="w-36 md:w-40 h-7 text-xs glass-card border-border/50"><SelectValue placeholder="Operador" /></SelectTrigger>
               <SelectContent className="bg-card border-border">
@@ -225,7 +301,7 @@ export const BlocksPanel = () => {
               </SelectContent>
             </Select>
             {hasFilters && (
-              <button onClick={() => { setFilterOperator("all"); setFilterBasin("all"); setFilterPhase("all"); setFilterDepth("all"); }}
+              <button onClick={() => { setFilterOperator("all"); setFilterBasin("all"); setFilterPhase("all"); setFilterDepth("all"); setSearchQuery(""); }}
                 className="h-7 px-3 text-xs text-muted-foreground hover:text-foreground transition-colors">Limpar</button>
             )}
           </div>
@@ -271,33 +347,26 @@ export const BlocksPanel = () => {
           </CardContent>
         </Card>
 
-        {/* Block List */}
-        <div className="space-y-3 max-h-[600px] overflow-y-auto pr-1">
-          {(["Deep Water", "Ultra-Deep Water", "Shallow Water", "Onshore"] as WaterDepth[]).map(depth => {
-            const blocks = grouped[depth];
-            if (!blocks || blocks.length === 0) return null;
-            return (
-              <div key={depth} className="space-y-1.5">
-                <h3 className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5 sticky top-0 bg-background/80 backdrop-blur-sm py-1 z-10">
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary" />
-                  {depthLabel[depth]} ({blocks.length})
-                </h3>
-                <div className="space-y-1.5">
-                  {blocks.map(block => (
-                    <BlockCard
-                      key={block.id}
-                      block={block}
-                      isSelected={selectedBlockId === block.id}
-                      isHovered={hoveredBlockId === block.id}
-                      onSelect={handleBlockClick}
-                      onHover={handleBlockHover}
-                      onNavigate={(id) => navigate(`/block/${id}`)}
-                    />
-                  ))}
-                </div>
-              </div>
-            );
-          })}
+        {/* Block List - Grouped by Basin */}
+        <div className="space-y-1 max-h-[600px] overflow-y-auto pr-1">
+          {grouped.map(([basin, blocks]) => (
+            <BasinGroup
+              key={basin}
+              label={basinLabel[basin] || basin}
+              blocks={blocks}
+              selectedBlockId={selectedBlockId}
+              hoveredBlockId={hoveredBlockId}
+              onSelect={handleBlockClick}
+              onHover={handleBlockHover}
+              onNavigate={(id) => navigate(`/block/${id}`)}
+              defaultOpen={blocks.some(b => b.dailyProduction > 0)}
+            />
+          ))}
+          {grouped.length === 0 && (
+            <div className="text-center text-sm text-muted-foreground py-8">
+              Nenhum bloco encontrado com os filtros actuais.
+            </div>
+          )}
         </div>
       </div>
     </div>
