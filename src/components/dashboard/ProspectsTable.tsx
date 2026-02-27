@@ -102,10 +102,10 @@ export const ProspectsTable = ({ blocks, scopeLabel }: ProspectsTableProps) => {
     <>
       {/* Bubble Chart */}
       <Card className="glass-card">
-        <CardHeader className="p-4 pb-2">
-          <CardTitle className="text-sm flex items-center gap-2">
-            <Target className="w-4 h-4 text-primary" />
-            Recursos vs Probabilidade de Sucesso — {scopeLabel}
+         <CardHeader className="p-4 2xl:p-5 pb-2">
+           <CardTitle className="text-sm 2xl:text-base flex items-center gap-2">
+             <Target className="w-4 h-4 2xl:w-5 2xl:h-5 text-primary" />
+             Recursos vs Probabilidade de Sucesso — {scopeLabel}
             {selectedKey && (
               <button
                 onClick={() => setSelectedKey(null)}
@@ -117,7 +117,7 @@ export const ProspectsTable = ({ blocks, scopeLabel }: ProspectsTableProps) => {
           </CardTitle>
         </CardHeader>
         <CardContent className="p-4 pt-0">
-          <ResponsiveContainer width="100%" height={340}>
+          <ResponsiveContainer width="100%" height={400}>
             <ScatterChart margin={{ top: 10, right: 20, bottom: 20, left: 10 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
               <XAxis
@@ -171,11 +171,11 @@ export const ProspectsTable = ({ blocks, scopeLabel }: ProspectsTableProps) => {
 
       {/* Table */}
       <Card className="glass-card">
-        <CardHeader className="p-4 pb-2">
-          <CardTitle className="text-sm flex items-center gap-2">
-            <Target className="w-4 h-4 text-primary" />
-            Prospectos & Recursos — {scopeLabel}
-            <Badge variant="outline" className="ml-auto text-[10px] bg-primary/10 text-primary border-primary/30">
+         <CardHeader className="p-4 2xl:p-5 pb-2">
+           <CardTitle className="text-sm 2xl:text-base flex items-center gap-2">
+             <Target className="w-4 h-4 2xl:w-5 2xl:h-5 text-primary" />
+             Prospectos & Recursos — {scopeLabel}
+             <Badge variant="outline" className="ml-auto text-[10px] 2xl:text-xs bg-primary/10 text-primary border-primary/30">
               {totals.count} prospectos · {totals.mmbo.toLocaleString(undefined, { maximumFractionDigits: 1 })} MMBO
               {totals.bcf > 0 && ` · ${totals.bcf.toLocaleString()} BCF`}
             </Badge>
@@ -186,13 +186,13 @@ export const ProspectsTable = ({ blocks, scopeLabel }: ProspectsTableProps) => {
             <Table>
               <TableHeader>
                 <TableRow className="border-border/50">
-                  <TableHead className="text-[10px] uppercase tracking-wider">Bloco</TableHead>
-                  <TableHead className="text-[10px] uppercase tracking-wider">Discovery Area</TableHead>
-                  <TableHead className="text-[10px] uppercase tracking-wider">Prospecto</TableHead>
-                  <TableHead className="text-[10px] uppercase tracking-wider">Reservatório</TableHead>
-                  <TableHead className="text-[10px] uppercase tracking-wider text-right">MMBO</TableHead>
-                  <TableHead className="text-[10px] uppercase tracking-wider text-right">BCF</TableHead>
-                  <TableHead className="text-[10px] uppercase tracking-wider text-right">POS (%)</TableHead>
+                   <TableHead className="text-[10px] 2xl:text-xs uppercase tracking-wider">Bloco</TableHead>
+                   <TableHead className="text-[10px] 2xl:text-xs uppercase tracking-wider">Discovery Area</TableHead>
+                   <TableHead className="text-[10px] 2xl:text-xs uppercase tracking-wider">Prospecto</TableHead>
+                   <TableHead className="text-[10px] 2xl:text-xs uppercase tracking-wider">Reservatório</TableHead>
+                   <TableHead className="text-[10px] 2xl:text-xs uppercase tracking-wider text-right">MMBO</TableHead>
+                   <TableHead className="text-[10px] 2xl:text-xs uppercase tracking-wider text-right">BCF</TableHead>
+                   <TableHead className="text-[10px] 2xl:text-xs uppercase tracking-wider text-right">POS (%)</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -214,12 +214,12 @@ export const ProspectsTable = ({ blocks, scopeLabel }: ProspectsTableProps) => {
                         onClick={() => setSelectedKey(isSelected ? null : key)}
                       >
                         {i === 0 && (
-                          <TableCell rowSpan={block.prospects!.length} className="text-xs font-semibold align-top border-r border-border/20">
+                          <TableCell rowSpan={block.prospects!.length} className="text-xs 2xl:text-sm font-semibold align-top border-r border-border/20">
                             {block.name}
                           </TableCell>
                         )}
-                        <TableCell className="text-xs text-muted-foreground">{p.discoveryArea}</TableCell>
-                        <TableCell className="text-xs font-mono">{p.name}</TableCell>
+                         <TableCell className="text-xs 2xl:text-sm text-muted-foreground">{p.discoveryArea}</TableCell>
+                         <TableCell className="text-xs 2xl:text-sm font-mono">{p.name}</TableCell>
                         <TableCell>
                           <Badge variant="outline" className="text-[10px]">{p.reservoir}</Badge>
                         </TableCell>

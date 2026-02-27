@@ -101,16 +101,16 @@ export const ProspectsSummary = ({ blocks, scopeLabel }: ProspectsSummaryProps) 
 
   return (
     <Card className="glass-card">
-      <CardHeader className="p-4 pb-2">
-        <CardTitle className="text-sm flex items-center gap-2">
-          <Database className="w-4 h-4 text-primary" />
-          Recursos Consolidados — {scopeLabel}
-          <Badge variant="outline" className="ml-auto text-[10px] bg-primary/10 text-primary border-primary/30">
-            {grandTotal.count} prospectos · {grandTotal.mmbo.toLocaleString(undefined, { maximumFractionDigits: 0 })} MMBO
-            {grandTotal.bcf > 0 && ` · ${grandTotal.bcf.toLocaleString()} BCF`}
-          </Badge>
-        </CardTitle>
-      </CardHeader>
+       <CardHeader className="p-4 2xl:p-5 pb-2">
+         <CardTitle className="text-sm 2xl:text-base flex items-center gap-2">
+           <Database className="w-4 h-4 2xl:w-5 2xl:h-5 text-primary" />
+           Recursos Consolidados — {scopeLabel}
+           <Badge variant="outline" className="ml-auto text-[10px] 2xl:text-xs bg-primary/10 text-primary border-primary/30">
+             {grandTotal.count} prospectos · {grandTotal.mmbo.toLocaleString(undefined, { maximumFractionDigits: 0 })} MMBO
+             {grandTotal.bcf > 0 && ` · ${grandTotal.bcf.toLocaleString()} BCF`}
+           </Badge>
+         </CardTitle>
+       </CardHeader>
       <CardContent className="p-4 pt-2 space-y-4">
         {/* Group Toggle */}
         <Tabs value={groupBy} onValueChange={v => setGroupBy(v as any)} className="w-fit">
@@ -125,10 +125,10 @@ export const ProspectsSummary = ({ blocks, scopeLabel }: ProspectsSummaryProps) 
         </Tabs>
 
         {/* Charts Row */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 2xl:gap-6">
           {/* Bar Chart */}
           <div className="md:col-span-2">
-            <ResponsiveContainer width="100%" height={280}>
+             <ResponsiveContainer width="100%" height={340}>
               <BarChart data={chartData} margin={{ left: 10, bottom: 40 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                 <XAxis dataKey="name" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 9 }} angle={-35} textAnchor="end" height={60} />
@@ -148,7 +148,7 @@ export const ProspectsSummary = ({ blocks, scopeLabel }: ProspectsSummaryProps) 
 
           {/* Pie Chart */}
           <div>
-            <ResponsiveContainer width="100%" height={280}>
+            <ResponsiveContainer width="100%" height={340}>
               <PieChart>
                 <Pie
                   data={pieData}
@@ -175,18 +175,18 @@ export const ProspectsSummary = ({ blocks, scopeLabel }: ProspectsSummaryProps) 
           <Table>
             <TableHeader>
               <TableRow className="border-border/50">
-                <TableHead className="text-[10px] uppercase tracking-wider">{groupBy === "reservoir" ? "Reservatório" : "Bacia"}</TableHead>
-                <TableHead className="text-[10px] uppercase tracking-wider text-right">Prospectos</TableHead>
-                <TableHead className="text-[10px] uppercase tracking-wider text-right">MMBO Total</TableHead>
-                <TableHead className="text-[10px] uppercase tracking-wider text-right">BCF Total</TableHead>
-                <TableHead className="text-[10px] uppercase tracking-wider text-right">POS Médio</TableHead>
-                <TableHead className="text-[10px] uppercase tracking-wider">Blocos</TableHead>
+                 <TableHead className="text-[10px] 2xl:text-xs uppercase tracking-wider">{groupBy === "reservoir" ? "Reservatório" : "Bacia"}</TableHead>
+                 <TableHead className="text-[10px] 2xl:text-xs uppercase tracking-wider text-right">Prospectos</TableHead>
+                 <TableHead className="text-[10px] 2xl:text-xs uppercase tracking-wider text-right">MMBO Total</TableHead>
+                 <TableHead className="text-[10px] 2xl:text-xs uppercase tracking-wider text-right">BCF Total</TableHead>
+                 <TableHead className="text-[10px] 2xl:text-xs uppercase tracking-wider text-right">POS Médio</TableHead>
+                 <TableHead className="text-[10px] 2xl:text-xs uppercase tracking-wider">Blocos</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {groups.map((g, i) => (
                 <TableRow key={g.name} className="border-border/30 hover:bg-secondary/30">
-                  <TableCell className="text-xs font-semibold">
+                  <TableCell className="text-xs 2xl:text-sm font-semibold">
                     <div className="flex items-center gap-2">
                       <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
                       {g.name}

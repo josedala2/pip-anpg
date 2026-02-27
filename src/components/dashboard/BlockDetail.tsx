@@ -23,10 +23,10 @@ export const BlockDetail = ({ block, onClose }: BlockDetailProps) => {
   return (
     <div className="fixed inset-0 z-50 flex justify-end">
       <div className="absolute inset-0 bg-background/60 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative w-full max-w-lg bg-card border-l border-border overflow-y-auto animate-slide-in-right">
+      <div className="relative w-full max-w-lg 2xl:max-w-xl bg-card border-l border-border overflow-y-auto animate-slide-in-right">
         <div className="sticky top-0 z-10 flex items-center justify-between p-4 md:p-6 bg-card/90 backdrop-blur-xl border-b border-border">
           <div>
-            <h2 className="text-xl md:text-2xl font-bold">{block.name}</h2>
+            <h2 className="text-xl md:text-2xl 2xl:text-3xl font-bold">{block.name}</h2>
             <Badge className={PhaseColors[block.phase]}>{block.phase}</Badge>
           </div>
           <button onClick={onClose} className="p-2 rounded-lg hover:bg-secondary transition-colors">
@@ -36,7 +36,7 @@ export const BlockDetail = ({ block, onClose }: BlockDetailProps) => {
 
         <div className="p-4 md:p-6 space-y-6">
           {/* Info grid */}
-          <div className="grid grid-cols-2 gap-3 text-sm">
+          <div className="grid grid-cols-2 gap-3 2xl:gap-4 text-sm">
             {[
               ["Operator", block.operator],
               ["Partners", block.partners.join(", ")],
@@ -47,9 +47,9 @@ export const BlockDetail = ({ block, onClose }: BlockDetailProps) => {
               ["Investment", `$${block.accumulatedInvestment}M / $${block.plannedInvestment}M`],
               ["Execution Rate", `${block.executionRate}%`],
             ].map(([label, value]) => (
-              <div key={label} className="glass-card p-3">
-                <div className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">{label}</div>
-                <div className="font-semibold text-xs">{value}</div>
+               <div key={label} className="glass-card p-3 2xl:p-4">
+                 <div className="text-[10px] 2xl:text-xs uppercase tracking-wider text-muted-foreground mb-1">{label}</div>
+                 <div className="font-semibold text-xs 2xl:text-sm">{value}</div>
               </div>
             ))}
           </div>
@@ -59,7 +59,7 @@ export const BlockDetail = ({ block, onClose }: BlockDetailProps) => {
             <Card className="flex-1 glass-card">
               <CardContent className="p-4 text-center">
                 <div className="text-xs text-muted-foreground mb-1">Risk Score</div>
-                <div className={`text-3xl font-bold font-mono ${riskColor}`}>{block.riskScore}</div>
+                <div className={`text-3xl 2xl:text-4xl font-bold font-mono ${riskColor}`}>{block.riskScore}</div>
                 <div className="text-[10px] text-muted-foreground">/10</div>
               </CardContent>
             </Card>

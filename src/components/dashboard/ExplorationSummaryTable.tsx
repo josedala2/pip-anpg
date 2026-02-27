@@ -116,9 +116,9 @@ export const ExplorationSummaryTable = ({ blocks, scopeLabel }: Props) => {
     <Card className="glass-card">
       <CardHeader className="p-4 pb-2">
         <div className="flex items-center justify-between gap-3 flex-wrap">
-          <CardTitle className="text-sm flex items-center gap-2">
-            <TableProperties className="w-4 h-4 text-primary" />
-            Resumo de Exploração por Bloco — {scopeLabel}
+           <CardTitle className="text-sm 2xl:text-base flex items-center gap-2">
+             <TableProperties className="w-4 h-4 2xl:w-5 2xl:h-5 text-primary" />
+             Resumo de Exploração por Bloco — {scopeLabel}
           </CardTitle>
           <div className="relative w-48">
             <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
@@ -139,7 +139,7 @@ export const ExplorationSummaryTable = ({ blocks, scopeLabel }: Props) => {
                 {cols.map(col => (
                   <TableHead
                     key={col.key}
-                    className={`text-[10px] uppercase tracking-wider h-9 sticky top-0 bg-card z-10 cursor-pointer select-none hover:text-foreground transition-colors ${col.align || ""}`}
+                    className={`text-[10px] 2xl:text-xs uppercase tracking-wider h-9 sticky top-0 bg-card z-10 cursor-pointer select-none hover:text-foreground transition-colors ${col.align || ""}`}
                     onClick={() => handleSort(col.key)}
                   >
                     <span className="inline-flex items-center gap-1">
@@ -153,8 +153,8 @@ export const ExplorationSummaryTable = ({ blocks, scopeLabel }: Props) => {
             <TableBody>
               {sortedData.map(row => (
                 <TableRow key={row.name} className="border-border/30 hover:bg-secondary/30">
-                  <TableCell className="py-2 px-4 text-xs font-semibold">{row.name}</TableCell>
-                  <TableCell className="py-2 px-4 text-[11px] text-muted-foreground">{row.operator}</TableCell>
+                   <TableCell className="py-2 px-4 text-xs 2xl:text-sm font-semibold">{row.name}</TableCell>
+                   <TableCell className="py-2 px-4 text-[11px] 2xl:text-xs text-muted-foreground">{row.operator}</TableCell>
                   <TableCell className="py-2 px-4">
                     <Badge variant="outline" className={`text-[9px] ${phaseColor(row.phase)}`}>{row.phase}</Badge>
                   </TableCell>

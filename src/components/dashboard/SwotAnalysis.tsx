@@ -54,35 +54,35 @@ const SwotSection = ({
   color: string;
   bgColor: string;
 }) => (
-  <Card className={`glass-card border-l-4 ${color}`}>
-    <CardHeader className="p-4 pb-2">
-      <CardTitle className="text-sm flex items-center gap-2">
-        <div className={`p-1.5 rounded-md ${bgColor}`}>
-          <Icon className="w-4 h-4" />
-        </div>
-        {title}
-        <Badge variant="outline" className="ml-auto text-[10px]">{items.length}</Badge>
-      </CardTitle>
-    </CardHeader>
-    <CardContent className="p-4 pt-0 space-y-3">
-      {items.map((item, i) => (
-        <div key={i} className="space-y-1">
-          <div className="flex items-center gap-2">
-            <span className="text-sm font-medium">{item.title}</span>
-            <Badge variant="outline" className={`text-[9px] ${impactColor(item.impact)}`}>
-              {impactLabel(item.impact)}
-            </Badge>
-          </div>
-          <p className="text-xs text-muted-foreground leading-relaxed">{item.description}</p>
-        </div>
-      ))}
-    </CardContent>
-  </Card>
+   <Card className={`glass-card border-l-4 ${color}`}>
+     <CardHeader className="p-4 2xl:p-5 pb-2">
+       <CardTitle className="text-sm 2xl:text-base flex items-center gap-2">
+         <div className={`p-1.5 2xl:p-2 rounded-md ${bgColor}`}>
+           <Icon className="w-4 h-4 2xl:w-5 2xl:h-5" />
+         </div>
+         {title}
+         <Badge variant="outline" className="ml-auto text-[10px] 2xl:text-xs">{items.length}</Badge>
+       </CardTitle>
+     </CardHeader>
+     <CardContent className="p-4 2xl:p-5 pt-0 space-y-3 2xl:space-y-4">
+       {items.map((item, i) => (
+         <div key={i} className="space-y-1">
+           <div className="flex items-center gap-2">
+             <span className="text-sm 2xl:text-base font-medium">{item.title}</span>
+             <Badge variant="outline" className={`text-[9px] 2xl:text-[11px] ${impactColor(item.impact)}`}>
+               {impactLabel(item.impact)}
+             </Badge>
+           </div>
+           <p className="text-xs 2xl:text-sm text-muted-foreground leading-relaxed">{item.description}</p>
+         </div>
+       ))}
+     </CardContent>
+   </Card>
 );
 
 const SwotSkeleton = () => (
   <div className="space-y-4">
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 2xl:gap-6">
       {[1, 2, 3, 4].map(i => (
         <Card key={i} className="glass-card">
           <CardContent className="p-4 space-y-3">
@@ -131,8 +131,8 @@ export const SwotAnalysis = ({ block }: { block: OilBlock }) => {
             <Brain className="w-8 h-8 text-primary" />
           </div>
           <div>
-            <h3 className="text-lg font-bold mb-1">Análise SWOT Preditiva com IA</h3>
-            <p className="text-sm text-muted-foreground max-w-md mx-auto">
+             <h3 className="text-lg 2xl:text-xl font-bold mb-1">Análise SWOT Preditiva com IA</h3>
+             <p className="text-sm 2xl:text-base text-muted-foreground max-w-md mx-auto">
               Gere uma análise SWOT baseada em inteligência artificial considerando os dados operacionais, 
               exploratórios e financeiros do {block.name}.
             </p>
@@ -163,7 +163,7 @@ export const SwotAnalysis = ({ block }: { block: OilBlock }) => {
   if (!swot) return null;
 
   return (
-    <div className="space-y-4">
+     <div className="space-y-4 2xl:space-y-6">
       {/* Summary */}
       <Card className="glass-card bg-primary/5 border-primary/20">
         <CardContent className="p-4">
@@ -173,15 +173,15 @@ export const SwotAnalysis = ({ block }: { block: OilBlock }) => {
             </div>
             <div className="space-y-2 flex-1">
               <div className="flex items-center justify-between">
-                <h3 className="font-semibold text-sm">Resumo Executivo</h3>
+                <h3 className="font-semibold text-sm 2xl:text-base">Resumo Executivo</h3>
                 <Button onClick={generate} variant="ghost" size="sm" className="gap-1.5 text-xs h-7">
                   <RefreshCw className="w-3 h-3" />
                   Regenerar
                 </Button>
               </div>
-              <p className="text-sm text-muted-foreground leading-relaxed">{swot.summary}</p>
-              <div className="pt-1 border-t border-border/50">
-                <p className="text-xs font-medium text-primary">{swot.recommendation}</p>
+               <p className="text-sm 2xl:text-base text-muted-foreground leading-relaxed">{swot.summary}</p>
+               <div className="pt-1 border-t border-border/50">
+                 <p className="text-xs 2xl:text-sm font-medium text-primary">{swot.recommendation}</p>
               </div>
             </div>
           </div>
@@ -189,7 +189,7 @@ export const SwotAnalysis = ({ block }: { block: OilBlock }) => {
       </Card>
 
       {/* SWOT Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 2xl:gap-6">
         <SwotSection title="Forças" icon={Shield} items={swot.strengths}
           color="border-l-success" bgColor="bg-success/10 text-success" />
         <SwotSection title="Fraquezas" icon={TrendingDown} items={swot.weaknesses}
