@@ -20,6 +20,8 @@ const panels = ["Overview", "Blocos & Concessões", "Exploração & Sísmica", "
 const Index = () => {
   const { theme, toggleTheme } = useTheme();
   const [activePanel, setActivePanel] = useState(0);
+  const [slideDirection, setSlideDirection] = useState<"left" | "right">("right");
+  const [isTransitioning, setIsTransitioning] = useState(false);
   const [selectedBlock, setSelectedBlock] = useState<OilBlock | null>(null);
   const [filteredIds, setFilteredIds] = useState<string[]>(oilBlocks.map(b => b.id));
   const [hoveredBlockId, setHoveredBlockId] = useState<string | null>(null);
@@ -35,8 +37,18 @@ const Index = () => {
     setFilteredIds(filtered.map(b => b.id));
   }, []);
 
-  const nextPanel = () => setActivePanel(p => Math.min(p + 1, panels.length - 1));
-  const prevPanel = () => setActivePanel(p => Math.max(p - 1, 0));
+  const switchPanel = useCallback((newPanel: number) => {
+    if (newPanel === activePanel || isTransitioning) return;
+    setSlideDirection(newPanel > activePanel ? "right" : "left");
+    setIsTransitioning(true);
+    setTimeout(() => {
+      setActivePanel(newPanel);
+      setTimeout(() => setIsTransitioning(false), 50);
+    }, 200);
+  }, [activePanel, isTransitioning]);
+
+  const nextPanel = () => switchPanel(Math.min(activePanel + 1, panels.length - 1));
+  const prevPanel = () => switchPanel(Math.max(activePanel - 1, 0));
 
   // Keyboard nav for presentation
   useEffect(() => {
@@ -109,7 +121,7 @@ const Index = () => {
           {panels.map((panel, i) => (
             <button
               key={panel}
-              onClick={() => setActivePanel(i)}
+              onClick={() => switchPanel(i)}
               className={`relative px-3 py-1.5 rounded-lg text-xs font-medium transition-all group ${
                 activePanel === i
                   ? "text-primary"
@@ -128,10 +140,18 @@ const Index = () => {
       </header>
 
       {/* Content */}
-      <main>
-        <div className="panel-transition">
+      <main className="overflow-hidden">
+        <div
+          className={`transition-all duration-300 ease-out ${
+            isTransitioning
+              ? slideDirection === "right"
+                ? "opacity-0 translate-x-8"
+                : "opacity-0 -translate-x-8"
+              : "opacity-100 translate-x-0"
+          }`}
+        >
           {activePanel === 0 && (
-            <div className="animate-fade-in relative" style={{ height: "calc(100vh - 110px)" }}>
+            <div className="relative" style={{ height: "calc(100vh - 110px)" }}>
               <ConcessionMap
                 blocks={filteredBlocks}
                 selectedBlockId={selectedBlock?.id ?? null}
@@ -149,29 +169,10 @@ const Index = () => {
           )}
 
           <div className="p-4 md:p-6 max-w-7xl mx-auto">
-          {activePanel === 1 && (
-            <div className="animate-fade-in">
-              <BlocksPanel />
-            </div>
-          )}
-
-          {activePanel === 2 && (
-            <div className="animate-fade-in">
-              <ExplorationPanel />
-            </div>
-          )}
-
-          {activePanel === 3 && (
-            <div className="animate-fade-in">
-              <RiskPerformance />
-            </div>
-          )}
-
-          {activePanel === 4 && (
-            <div className="animate-fade-in">
-              <StrategicForecast />
-            </div>
-          )}
+          {activePanel === 1 && <BlocksPanel />}
+          {activePanel === 2 && <ExplorationPanel />}
+          {activePanel === 3 && <RiskPerformance />}
+          {activePanel === 4 && <StrategicForecast />}
           </div>
         </div>
       </main>
