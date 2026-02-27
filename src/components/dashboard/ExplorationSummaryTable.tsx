@@ -4,7 +4,8 @@ import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { TableProperties, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { TableProperties, ArrowUpDown, ArrowUp, ArrowDown, Search } from "lucide-react";
 
 interface BlockData {
   id: string;
@@ -44,6 +45,7 @@ const SortIcon = ({ active, dir }: { active: boolean; dir: SortDir }) => {
 export const ExplorationSummaryTable = ({ blocks, scopeLabel }: Props) => {
   const [sortKey, setSortKey] = useState<SortKey>("totalWells");
   const [sortDir, setSortDir] = useState<SortDir>("desc");
+  const [search, setSearch] = useState("");
 
   const handleSort = (key: SortKey) => {
     if (sortKey === key) {
@@ -75,9 +77,15 @@ export const ExplorationSummaryTable = ({ blocks, scopeLabel }: Props) => {
       .filter(b => b.hasData);
   }, [blocks]);
 
+  const filteredData = useMemo(() => {
+    if (!search.trim()) return tableData;
+    const q = search.toLowerCase();
+    return tableData.filter(r => r.name.toLowerCase().includes(q) || r.operator.toLowerCase().includes(q));
+  }, [tableData, search]);
+
   const sortedData = useMemo(() => {
     const mult = sortDir === "asc" ? 1 : -1;
-    return [...tableData].sort((a, b) => {
+    return [...filteredData].sort((a, b) => {
       const av = a[sortKey];
       const bv = b[sortKey];
       if (av === null && bv === null) return 0;
@@ -86,7 +94,7 @@ export const ExplorationSummaryTable = ({ blocks, scopeLabel }: Props) => {
       if (typeof av === "string" && typeof bv === "string") return av.localeCompare(bv) * mult;
       return ((av as number) - (bv as number)) * mult;
     });
-  }, [tableData, sortKey, sortDir]);
+  }, [filteredData, sortKey, sortDir]);
 
   if (tableData.length === 0) return null;
 
@@ -107,10 +115,21 @@ export const ExplorationSummaryTable = ({ blocks, scopeLabel }: Props) => {
   return (
     <Card className="glass-card">
       <CardHeader className="p-4 pb-2">
-        <CardTitle className="text-sm flex items-center gap-2">
-          <TableProperties className="w-4 h-4 text-primary" />
-          Resumo de Exploração por Bloco — {scopeLabel}
-        </CardTitle>
+        <div className="flex items-center justify-between gap-3 flex-wrap">
+          <CardTitle className="text-sm flex items-center gap-2">
+            <TableProperties className="w-4 h-4 text-primary" />
+            Resumo de Exploração por Bloco — {scopeLabel}
+          </CardTitle>
+          <div className="relative w-48">
+            <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
+            <Input
+              placeholder="Pesquisar bloco..."
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              className="h-7 pl-7 text-xs glass-card border-border/50"
+            />
+          </div>
+        </div>
       </CardHeader>
       <CardContent className="p-4 pt-2">
         <div className="relative w-full overflow-auto max-h-[420px]">
@@ -159,7 +178,7 @@ export const ExplorationSummaryTable = ({ blocks, scopeLabel }: Props) => {
           </Table>
         </div>
         <div className="mt-2 text-[10px] text-muted-foreground">
-          {tableData.length} bloco{tableData.length !== 1 ? "s" : ""} com dados de exploração
+          {sortedData.length}{sortedData.length !== tableData.length ? ` de ${tableData.length}` : ""} bloco{sortedData.length !== 1 ? "s" : ""} com dados de exploração
         </div>
       </CardContent>
     </Card>
