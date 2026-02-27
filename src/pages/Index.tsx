@@ -153,12 +153,6 @@ const Index = () => {
             </div>
           )}
 
-          {activePanel === 2 && (
-            <div className="animate-fade-in">
-              <RiskPerformance />
-            </div>
-          )}
-
           {activePanel === 3 && (
             <div className="animate-fade-in">
               <RiskPerformance />
