@@ -431,7 +431,7 @@ export const ConcessionMap = ({
       )}
 
       {/* Legend */}
-      <div className="absolute bottom-14 left-2 glass-card p-2 rounded-lg z-10">
+      <div className="absolute top-3 left-3 3xl:top-4 3xl:left-4 glass-card p-2 3xl:p-3 rounded-lg z-20 max-w-[calc(100%-1.5rem)]">
         <div className="flex flex-wrap gap-x-3 gap-y-1">
           {(["Production", "Development", "Exploration", "Bidding", "Suspended"] as BlockPhase[]).map(phase => (
             <div key={phase} className="flex items-center gap-1">
