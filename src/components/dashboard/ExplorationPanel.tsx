@@ -3,8 +3,26 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { seismicHistory, wellsHistory, nationalStats, oilBlocks } from "@/data/angolaBlocks";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend } from "recharts";
-import { AlertTriangle, Target, Layers, Droplets, Filter } from "lucide-react";
+import { AlertTriangle, Target, Layers, Droplets, Filter, ChevronDown, ChevronRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Search } from "lucide-react";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+
+const phaseColor = (phase: string) => {
+  switch (phase) {
+    case "Production": return "bg-success/15 text-success border-success/30";
+    case "Development": return "bg-warning/15 text-warning border-warning/30";
+    case "Exploration": return "bg-primary/15 text-primary border-primary/30";
+    case "Suspended": return "bg-danger/15 text-danger border-danger/30";
+    case "Bidding": return "bg-[hsl(280,65%,60%)]/15 text-[hsl(280,65%,60%)] border-[hsl(280,65%,60%)]/30";
+    default: return "bg-muted text-muted-foreground";
+  }
+};
 
 const seismicChartData = seismicHistory
   .filter(d => d.seismic2D > 0 || d.seismic3D > 0 || d.seismic4D > 0)
@@ -24,16 +42,14 @@ const tooltipStyle = {
 
 const operators = [...new Set(oilBlocks.map(b => b.operator))].sort();
 const basins = [...new Set(oilBlocks.map(b => b.basin))].sort();
-const phases = ["Production", "Development", "Exploration", "Suspended"];
+const phases = ["Production", "Development", "Exploration", "Bidding", "Suspended"];
 
-const phaseColor = (phase: string) => {
-  switch (phase) {
-    case "Production": return "bg-success/15 text-success border-success/30";
-    case "Development": return "bg-warning/15 text-warning border-warning/30";
-    case "Exploration": return "bg-primary/15 text-primary border-primary/30";
-    case "Suspended": return "bg-danger/15 text-danger border-danger/30";
-    default: return "bg-muted text-muted-foreground";
-  }
+const basinLabel: Record<string, string> = {
+  "Lower Congo": "Bacia do Congo",
+  "Congo": "Bacia do Congo",
+  "Kwanza": "Bacia do Kwanza",
+  "Namibe": "Bacia do Namibe",
+  "Benguela": "Bacia de Benguela",
 };
 
 export const ExplorationPanel = () => {
@@ -108,9 +124,9 @@ export const ExplorationPanel = () => {
             )}
           </div>
 
-          {/* Filtered Blocks List */}
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
+          {/* Filtered Blocks - Grouped by Basin */}
+          <div className="space-y-1">
+            <div className="flex items-center justify-between mb-1">
               <span className="text-xs text-muted-foreground">
                 {stats.count} bloco{stats.count !== 1 ? "s" : ""} contemplado{stats.count !== 1 ? "s" : ""}
               </span>
@@ -118,20 +134,42 @@ export const ExplorationPanel = () => {
                 {stats.totalProd > 0 ? `${(stats.totalProd / 1000).toFixed(0)}k BOPD` : ""} · {stats.totalReserves.toLocaleString()} MMbbl · ${(stats.totalInvest / 1000).toFixed(1)}B investido
               </span>
             </div>
-            <div className="flex flex-wrap gap-1.5">
-              {filteredBlocks.map(block => (
-                <Badge
-                  key={block.id}
-                  variant="outline"
-                  className={`text-[10px] font-medium ${phaseColor(block.phase)}`}
-                >
-                  {block.name}
-                  {block.dailyProduction > 0 && (
-                    <span className="ml-1 opacity-70">{(block.dailyProduction / 1000).toFixed(0)}k</span>
-                  )}
-                </Badge>
-              ))}
-            </div>
+            {(() => {
+              const groups: Record<string, typeof filteredBlocks> = {};
+              filteredBlocks.forEach(b => {
+                if (!groups[b.basin]) groups[b.basin] = [];
+                groups[b.basin].push(b);
+              });
+              return Object.entries(groups)
+                .sort((a, b) => b[1].reduce((s, bl) => s + bl.dailyProduction, 0) - a[1].reduce((s, bl) => s + bl.dailyProduction, 0))
+                .map(([basin, blocks]) => (
+                  <Collapsible key={basin} defaultOpen={blocks.length <= 15}>
+                    <CollapsibleTrigger className="w-full flex items-center justify-between py-1 px-1.5 rounded hover:bg-secondary/50 transition-colors">
+                      <div className="flex items-center gap-1.5">
+                        <ChevronDown className="w-3 h-3 text-muted-foreground" />
+                        <span className="text-[10px] font-semibold">{basinLabel[basin] || basin}</span>
+                        <span className="text-[9px] text-muted-foreground">({blocks.length})</span>
+                      </div>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent>
+                      <div className="flex flex-wrap gap-1 pt-1 pb-2 pl-4">
+                        {blocks.map(block => (
+                          <Badge
+                            key={block.id}
+                            variant="outline"
+                            className={`text-[10px] font-medium ${phaseColor(block.phase)}`}
+                          >
+                            {block.name}
+                            {block.dailyProduction > 0 && (
+                              <span className="ml-1 opacity-70">{(block.dailyProduction / 1000).toFixed(0)}k</span>
+                            )}
+                          </Badge>
+                        ))}
+                      </div>
+                    </CollapsibleContent>
+                  </Collapsible>
+                ));
+            })()}
           </div>
         </CardContent>
       </Card>
