@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import { oilBlocks, type OilBlock } from "@/data/angolaBlocks";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -126,7 +127,12 @@ interface OverviewBlockListProps {
 }
 
 export const OverviewBlockList = ({ filteredIds, selectedBlock, onBlockSelect }: OverviewBlockListProps) => {
+  const navigate = useNavigate();
   const [search, setSearch] = useState("");
+
+  const handleBlockClick = (block: OilBlock) => {
+    navigate(`/block/${block.id}`);
+  };
 
   const visibleBlocks = useMemo(() => {
     let blocks = oilBlocks.filter(b => filteredIds.includes(b.id));
@@ -177,7 +183,7 @@ export const OverviewBlockList = ({ filteredIds, selectedBlock, onBlockSelect }:
             label={basinLabel[basin] || basin}
             blocks={blocks}
             selectedBlockId={selectedBlock?.id ?? null}
-            onSelect={onBlockSelect}
+            onSelect={handleBlockClick}
             defaultOpen={blocks.some(b => b.dailyProduction > 0)}
           />
         ))}
