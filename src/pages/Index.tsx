@@ -5,6 +5,7 @@ import { FilterBar, applyFilters, type FilterState } from "@/components/dashboar
 import { BlockDetail } from "@/components/dashboard/BlockDetail";
 import { RiskPerformance } from "@/components/dashboard/RiskPerformance";
 import { StrategicForecast } from "@/components/dashboard/StrategicForecast";
+import { BlocksPanel } from "@/components/dashboard/BlocksPanel";
 import { ExplorationPanel } from "@/components/dashboard/ExplorationPanel";
 import { type OilBlock, oilBlocks } from "@/data/angolaBlocks";
 import { Maximize2, Minimize2, ChevronLeft, ChevronRight, Sun, Moon } from "lucide-react";
@@ -12,7 +13,7 @@ import { useTheme } from "@/components/ThemeProvider";
 import anpgLogoColor from "@/assets/anpg-logo-color.svg";
 import anpgLogoWhite from "@/assets/anpg-logo-white.svg";
 
-const panels = ["Overview", "Exploração & Sísmica", "Risk & Performance", "Strategic Forecast"];
+const panels = ["Overview", "Blocos & Concessões", "Exploração & Sísmica", "Risk & Performance", "Strategic Forecast"];
 
 const Index = () => {
   const { theme, toggleTheme } = useTheme();
@@ -166,6 +167,12 @@ const Index = () => {
 
           {activePanel === 1 && (
             <div className="animate-fade-in">
+              <BlocksPanel />
+            </div>
+          )}
+
+          {activePanel === 2 && (
+            <div className="animate-fade-in">
               <ExplorationPanel />
             </div>
           )}
@@ -177,6 +184,12 @@ const Index = () => {
           )}
 
           {activePanel === 3 && (
+            <div className="animate-fade-in">
+              <RiskPerformance />
+            </div>
+          )}
+
+          {activePanel === 4 && (
             <div className="animate-fade-in">
               <StrategicForecast />
             </div>
