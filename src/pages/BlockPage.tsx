@@ -58,16 +58,16 @@ const BlockPage = () => {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="sticky top-0 z-50 glass-card border-b border-border/50 px-4 py-3">
-        <div className="max-w-7xl mx-auto flex items-center gap-4">
+        <div className="max-w-[1920px] mx-auto flex items-center gap-4">
           <Button onClick={() => navigate("/")} variant="ghost" size="sm" className="gap-2">
             <ArrowLeft className="w-4 h-4" />
             <span className="hidden sm:inline">Dashboard</span>
           </Button>
           <div className="flex items-center gap-3 flex-1 min-w-0">
-            <h1 className="text-lg font-bold truncate">{block.name}</h1>
-            <Badge variant="outline" className={`text-xs shrink-0 ${phaseColor(block.phase)}`}>{block.phase}</Badge>
+             <h1 className="text-lg 2xl:text-2xl font-bold truncate">{block.name}</h1>
+             <Badge variant="outline" className={`text-xs 2xl:text-sm shrink-0 ${phaseColor(block.phase)}`}>{block.phase}</Badge>
           </div>
-          <div className="hidden md:flex items-center gap-4 text-sm text-muted-foreground">
+          <div className="hidden md:flex items-center gap-4 text-sm 2xl:text-base text-muted-foreground">
             <span>{block.operator}</span>
             <span>·</span>
             <span>{block.basin}</span>
@@ -78,20 +78,20 @@ const BlockPage = () => {
       </header>
 
       {/* Content */}
-      <main className="max-w-7xl mx-auto p-4 space-y-4">
-        <Tabs defaultValue="overview" className="space-y-4">
-          <TabsList className="glass-card p-1 h-auto flex-wrap">
-            <TabsTrigger value="overview" className="gap-1.5 text-xs"><Activity className="w-3.5 h-3.5" />Visão Geral</TabsTrigger>
-            <TabsTrigger value="consortium" className="gap-1.5 text-xs"><Users className="w-3.5 h-3.5" />Consórcio</TabsTrigger>
-            <TabsTrigger value="exploration" className="gap-1.5 text-xs"><Target className="w-3.5 h-3.5" />Exploração</TabsTrigger>
-            <TabsTrigger value="production" className="gap-1.5 text-xs"><BarChart3 className="w-3.5 h-3.5" />Produção</TabsTrigger>
-            <TabsTrigger value="projections" className="gap-1.5 text-xs"><TrendingUp className="w-3.5 h-3.5" />Projecções</TabsTrigger>
-            <TabsTrigger value="swot" className="gap-1.5 text-xs"><Brain className="w-3.5 h-3.5" />Análise SWOT</TabsTrigger>
+      <main className="max-w-[1920px] mx-auto p-4 2xl:p-8 space-y-4 2xl:space-y-6">
+         <Tabs defaultValue="overview" className="space-y-4 2xl:space-y-6">
+           <TabsList className="glass-card p-1 2xl:p-1.5 h-auto flex-wrap">
+             <TabsTrigger value="overview" className="gap-1.5 text-xs 2xl:text-sm"><Activity className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Visão Geral</TabsTrigger>
+             <TabsTrigger value="consortium" className="gap-1.5 text-xs 2xl:text-sm"><Users className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Consórcio</TabsTrigger>
+             <TabsTrigger value="exploration" className="gap-1.5 text-xs 2xl:text-sm"><Target className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Exploração</TabsTrigger>
+             <TabsTrigger value="production" className="gap-1.5 text-xs 2xl:text-sm"><BarChart3 className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Produção</TabsTrigger>
+             <TabsTrigger value="projections" className="gap-1.5 text-xs 2xl:text-sm"><TrendingUp className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Projecções</TabsTrigger>
+             <TabsTrigger value="swot" className="gap-1.5 text-xs 2xl:text-sm"><Brain className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Análise SWOT</TabsTrigger>
           </TabsList>
 
           {/* Tab 1: Visão Geral */}
-          <TabsContent value="overview" className="space-y-4">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <TabsContent value="overview" className="space-y-4 2xl:space-y-6">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 2xl:gap-5">
               {[
                 { label: "Produção Diária", value: block.dailyProduction > 0 ? `${(block.dailyProduction / 1000).toFixed(0)}k BOPD` : "—", icon: Droplets, color: "text-primary" },
                 { label: "Reservas Estimadas", value: `${block.estimatedReserves}M bbl`, icon: Layers, color: "text-success" },
@@ -99,22 +99,22 @@ const BlockPage = () => {
                 { label: "Taxa Execução", value: `${block.executionRate}%`, icon: TrendingUp, color: "text-primary" },
               ].map(kpi => (
                 <Card key={kpi.label} className="glass-card">
-                  <CardContent className="p-4">
-                    <div className="flex items-center gap-2 mb-2">
-                      <kpi.icon className={`w-4 h-4 ${kpi.color}`} />
-                      <span className="text-xs text-muted-foreground">{kpi.label}</span>
-                    </div>
-                    <div className="text-2xl font-bold font-mono">{kpi.value}</div>
+                   <CardContent className="p-4 2xl:p-6">
+                     <div className="flex items-center gap-2 mb-2">
+                       <kpi.icon className={`w-4 h-4 2xl:w-5 2xl:h-5 ${kpi.color}`} />
+                       <span className="text-xs 2xl:text-sm text-muted-foreground">{kpi.label}</span>
+                     </div>
+                     <div className="text-2xl 2xl:text-3xl font-bold font-mono">{kpi.value}</div>
                   </CardContent>
                 </Card>
               ))}
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 2xl:gap-6">
               {/* Info Grid */}
               <Card className="glass-card">
                 <CardHeader className="p-4 pb-2">
-                  <CardTitle className="text-sm flex items-center gap-2"><MapPin className="w-4 h-4 text-primary" />Informações Gerais</CardTitle>
+                  <CardTitle className="text-sm 2xl:text-base flex items-center gap-2"><MapPin className="w-4 h-4 text-primary" />Informações Gerais</CardTitle>
                 </CardHeader>
                 <CardContent className="p-4 pt-0">
                   <div className="space-y-2">
@@ -128,8 +128,8 @@ const BlockPage = () => {
                       ...(block.waterDepthRange ? [{ label: "Lâmina d'Água", value: block.waterDepthRange }] : []),
                     ].map(item => (
                       <div key={item.label} className="flex justify-between items-center py-1.5 border-b border-border/30 last:border-0">
-                        <span className="text-xs text-muted-foreground">{item.label}</span>
-                        <span className="text-sm font-medium">{item.value}</span>
+                         <span className="text-xs 2xl:text-sm text-muted-foreground">{item.label}</span>
+                         <span className="text-sm 2xl:text-base font-medium">{item.value}</span>
                       </div>
                     ))}
                   </div>
@@ -139,13 +139,13 @@ const BlockPage = () => {
               {/* Risk & Compliance */}
               <Card className="glass-card">
                 <CardHeader className="p-4 pb-2">
-                  <CardTitle className="text-sm flex items-center gap-2"><ShieldCheck className="w-4 h-4 text-primary" />Risco & Compliance</CardTitle>
+                  <CardTitle className="text-sm 2xl:text-base flex items-center gap-2"><ShieldCheck className="w-4 h-4 text-primary" />Risco & Compliance</CardTitle>
                 </CardHeader>
                 <CardContent className="p-4 pt-0">
                   <div className="flex items-center gap-8 mb-4">
                     <div className="text-center">
-                      <div className="text-4xl font-bold font-mono">{block.riskScore}<span className="text-lg text-muted-foreground">/10</span></div>
-                      <div className="text-xs text-muted-foreground mt-1">Score de Risco</div>
+                       <div className="text-4xl 2xl:text-5xl font-bold font-mono">{block.riskScore}<span className="text-lg 2xl:text-xl text-muted-foreground">/10</span></div>
+                       <div className="text-xs 2xl:text-sm text-muted-foreground mt-1">Score de Risco</div>
                     </div>
                     <div className="text-center flex-1">
                       <ResponsiveContainer width="100%" height={120}>
@@ -160,7 +160,7 @@ const BlockPage = () => {
                       <div className="text-xs text-muted-foreground -mt-2">Compliance: <span className="font-bold text-foreground">{block.complianceScore}%</span></div>
                     </div>
                   </div>
-                  <div className="text-xs text-muted-foreground">
+                  <div className="text-xs 2xl:text-sm text-muted-foreground">
                     {block.riskScore <= 3 ? "Risco baixo — operações estáveis e previsíveis." :
                      block.riskScore <= 6 ? "Risco moderado — requer monitorização contínua." :
                      "Risco elevado — necessário plano de mitigação activo."}
@@ -173,13 +173,13 @@ const BlockPage = () => {
             {block.fields && block.fields.length > 0 && (
               <Card className="glass-card">
                 <CardHeader className="p-4 pb-2">
-                  <CardTitle className="text-sm">Campos & Descobertas</CardTitle>
+                  <CardTitle className="text-sm 2xl:text-base">Campos & Descobertas</CardTitle>
                 </CardHeader>
                 <CardContent className="p-4 pt-0">
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-2 2xl:gap-3">
                     {block.fields.map(f => (
-                      <div key={f.name} className="glass-card p-3 rounded-lg">
-                        <div className="font-medium text-sm">{f.name}</div>
+                      <div key={f.name} className="glass-card p-3 2xl:p-4 rounded-lg">
+                        <div className="font-medium text-sm 2xl:text-base">{f.name}</div>
                         <Badge variant="outline" className="text-[10px] mt-1">{f.status}</Badge>
                         {f.discoveryYear && <div className="text-[10px] text-muted-foreground mt-1">Descoberto: {f.discoveryYear}</div>}
                         {f.peakProduction && <div className="text-[10px] text-muted-foreground">{(f.peakProduction / 1000).toFixed(0)}k BOPD pico</div>}
@@ -192,11 +192,11 @@ const BlockPage = () => {
           </TabsContent>
 
           {/* Tab 2: Consórcio */}
-          <TabsContent value="consortium" className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <TabsContent value="consortium" className="space-y-4 2xl:space-y-6">
+             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 2xl:gap-6">
               <Card className="glass-card">
                 <CardHeader className="p-4 pb-2">
-                  <CardTitle className="text-sm">Parceiros do Consórcio</CardTitle>
+                  <CardTitle className="text-sm 2xl:text-base">Parceiros do Consórcio</CardTitle>
                 </CardHeader>
                 <CardContent className="p-4 pt-0">
                   <div className="space-y-3">
@@ -205,14 +205,14 @@ const BlockPage = () => {
                         <div className="w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: CONSORTIUM_COLORS[i % CONSORTIUM_COLORS.length] }} />
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2">
-                            <span className="text-sm font-medium truncate">{p.name}</span>
+                            <span className="text-sm 2xl:text-base font-medium truncate">{p.name}</span>
                             {p.isOperator && <Badge variant="outline" className="text-[9px] bg-primary/10 text-primary border-primary/30">Operador</Badge>}
                           </div>
                           <div className="w-full h-2 bg-secondary rounded-full mt-1 overflow-hidden">
                             <div className="h-full rounded-full transition-all" style={{ width: `${p.share}%`, backgroundColor: CONSORTIUM_COLORS[i % CONSORTIUM_COLORS.length] }} />
                           </div>
                         </div>
-                        <span className="font-mono text-sm font-bold w-14 text-right">{p.share.toFixed(1)}%</span>
+                        <span className="font-mono text-sm 2xl:text-base font-bold w-14 text-right">{p.share.toFixed(1)}%</span>
                       </div>
                     ))}
                   </div>
@@ -221,10 +221,10 @@ const BlockPage = () => {
 
               <Card className="glass-card">
                 <CardHeader className="p-4 pb-2">
-                  <CardTitle className="text-sm">Distribuição de Participações</CardTitle>
+                  <CardTitle className="text-sm 2xl:text-base">Distribuição de Participações</CardTitle>
                 </CardHeader>
                 <CardContent className="p-4 pt-0">
-                  <ResponsiveContainer width="100%" height={300}>
+                  <ResponsiveContainer width="100%" height={380}>
                     <PieChart>
                       <Pie data={block.concession.map(p => ({ name: p.name, value: p.share }))}
                         cx="50%" cy="50%" innerRadius={60} outerRadius={100} paddingAngle={2} dataKey="value"
@@ -242,15 +242,15 @@ const BlockPage = () => {
           </TabsContent>
 
           {/* Tab 3: Exploração */}
-          <TabsContent value="exploration" className="space-y-4">
+          <TabsContent value="exploration" className="space-y-4 2xl:space-y-6">
             {block.seismicData && block.seismicData.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 2xl:gap-6">
                 <Card className="glass-card">
                   <CardHeader className="p-4 pb-2">
-                    <CardTitle className="text-sm">Dados Sísmicos (km)</CardTitle>
+                    <CardTitle className="text-sm 2xl:text-base">Dados Sísmicos (km)</CardTitle>
                   </CardHeader>
                   <CardContent className="p-4 pt-0">
-                    <ResponsiveContainer width="100%" height={280}>
+                     <ResponsiveContainer width="100%" height={360}>
                       <BarChart data={block.seismicData}>
                         <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                         <XAxis dataKey="year" tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} />
@@ -268,10 +268,10 @@ const BlockPage = () => {
                 {block.wellsData && block.wellsData.length > 0 && (
                   <Card className="glass-card">
                     <CardHeader className="p-4 pb-2">
-                      <CardTitle className="text-sm">Poços Perfurados</CardTitle>
+                      <CardTitle className="text-sm 2xl:text-base">Poços Perfurados</CardTitle>
                     </CardHeader>
                     <CardContent className="p-4 pt-0">
-                      <ResponsiveContainer width="100%" height={280}>
+                       <ResponsiveContainer width="100%" height={360}>
                         <BarChart data={block.wellsData}>
                           <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                           <XAxis dataKey="year" tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} />
@@ -299,7 +299,7 @@ const BlockPage = () => {
             {block.geologicalObjectives && block.geologicalObjectives.length > 0 && (
               <Card className="glass-card">
                 <CardHeader className="p-4 pb-2">
-                  <CardTitle className="text-sm">Objectivos Geológicos</CardTitle>
+                  <CardTitle className="text-sm 2xl:text-base">Objectivos Geológicos</CardTitle>
                 </CardHeader>
                 <CardContent className="p-4 pt-0">
                   <div className="flex flex-wrap gap-2">
@@ -319,14 +319,14 @@ const BlockPage = () => {
           </TabsContent>
 
           {/* Tab 4: Produção */}
-          <TabsContent value="production" className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+           <TabsContent value="production" className="space-y-4 2xl:space-y-6">
+             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 2xl:gap-6">
               <Card className="glass-card">
                 <CardHeader className="p-4 pb-2">
-                  <CardTitle className="text-sm">Tendência de Produção (12 meses)</CardTitle>
+                  <CardTitle className="text-sm 2xl:text-base">Tendência de Produção (12 meses)</CardTitle>
                 </CardHeader>
                 <CardContent className="p-4 pt-0">
-                  <ResponsiveContainer width="100%" height={280}>
+                   <ResponsiveContainer width="100%" height={360}>
                     <AreaChart data={block.productionHistory}>
                       <defs>
                         <linearGradient id="prodGrad" x1="0" y1="0" x2="0" y2="1">
@@ -347,10 +347,10 @@ const BlockPage = () => {
 
               <Card className="glass-card">
                 <CardHeader className="p-4 pb-2">
-                  <CardTitle className="text-sm">CAPEX: Planeado vs Real ($M)</CardTitle>
+                  <CardTitle className="text-sm 2xl:text-base">CAPEX: Planeado vs Real ($M)</CardTitle>
                 </CardHeader>
                 <CardContent className="p-4 pt-0">
-                  <ResponsiveContainer width="100%" height={280}>
+                  <ResponsiveContainer width="100%" height={360}>
                     <BarChart data={block.capexHistory}>
                       <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                       <XAxis dataKey="year" tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} />
@@ -371,10 +371,10 @@ const BlockPage = () => {
           <TabsContent value="projections">
             <Card className="glass-card">
               <CardHeader className="p-4 pb-2">
-                <CardTitle className="text-sm">Projecções de Produção (2025–2034)</CardTitle>
+                <CardTitle className="text-sm 2xl:text-base">Projecções de Produção (2025–2034)</CardTitle>
               </CardHeader>
               <CardContent className="p-4 pt-0">
-                <ResponsiveContainer width="100%" height={350}>
+                <ResponsiveContainer width="100%" height={450}>
                   <LineChart data={projectionYears}>
                     <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                     <XAxis dataKey="year" tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} />
