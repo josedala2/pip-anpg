@@ -131,7 +131,7 @@ const Index = () => {
                   blocks={filteredBlocks}
                   selectedBlockId={selectedBlock?.id ?? null}
                   hoveredBlockId={hoveredBlockId}
-                  onBlockClick={setSelectedBlock}
+                  onBlockClick={() => {}}
                   onBlockHover={setHoveredBlockId}
                 />
                 <OverviewBlockList
