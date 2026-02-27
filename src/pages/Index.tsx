@@ -110,13 +110,18 @@ const Index = () => {
             <button
               key={panel}
               onClick={() => setActivePanel(i)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+              className={`relative px-3 py-1.5 rounded-lg text-xs font-medium transition-all group ${
                 activePanel === i
-                  ? "bg-primary/10 text-primary border border-primary/30"
+                  ? "text-primary"
                   : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
               }`}
             >
               {panel}
+              <span
+                className={`absolute bottom-0 left-1/2 -translate-x-1/2 h-0.5 rounded-full bg-primary transition-all duration-300 ${
+                  activePanel === i ? "w-3/4 opacity-100" : "w-0 opacity-0 group-hover:w-1/2 group-hover:opacity-50"
+                }`}
+              />
             </button>
           ))}
         </div>
