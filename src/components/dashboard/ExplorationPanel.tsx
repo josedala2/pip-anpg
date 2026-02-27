@@ -33,6 +33,7 @@ const tooltipStyle = {
 
 const operators = [...new Set(oilBlocks.map(b => b.operator))].sort();
 const basins = [...new Set(oilBlocks.map(b => b.basin))].sort();
+const blockNames = oilBlocks.map(b => ({ id: b.id, name: b.name })).sort((a, b) => a.name.localeCompare(b.name));
 const phases = ["Production", "Development", "Exploration", "Bidding", "Suspended"];
 
 const basinLabel: Record<string, string> = {
@@ -47,15 +48,17 @@ export const ExplorationPanel = () => {
   const [filterOperator, setFilterOperator] = useState("all");
   const [filterBasin, setFilterBasin] = useState("all");
   const [filterPhase, setFilterPhase] = useState("all");
+  const [filterBlock, setFilterBlock] = useState("all");
 
   const filteredBlocks = useMemo(() => {
     return oilBlocks.filter(b => {
+      if (filterBlock !== "all" && b.id !== filterBlock) return false;
       if (filterOperator !== "all" && b.operator !== filterOperator) return false;
       if (filterBasin !== "all" && b.basin !== filterBasin) return false;
       if (filterPhase !== "all" && b.phase !== filterPhase) return false;
       return true;
     });
-  }, [filterOperator, filterBasin, filterPhase]);
+  }, [filterOperator, filterBasin, filterPhase, filterBlock]);
 
   const stats = useMemo(() => {
     const totalProd = filteredBlocks.reduce((s, b) => s + b.dailyProduction, 0);
@@ -131,8 +134,8 @@ export const ExplorationPanel = () => {
     };
   }, [filteredBlocks]);
 
-  const hasFilters = filterOperator !== "all" || filterBasin !== "all" || filterPhase !== "all";
-  const scopeLabel = hasFilters ? "Blocos Filtrados" : "Todos os Blocos";
+  const hasFilters = filterOperator !== "all" || filterBasin !== "all" || filterPhase !== "all" || filterBlock !== "all";
+  const scopeLabel = filterBlock !== "all" ? filteredBlocks[0]?.name || "Bloco" : hasFilters ? "Blocos Filtrados" : "Todos os Blocos";
 
   return (
     <div className="space-y-6">
@@ -146,6 +149,15 @@ export const ExplorationPanel = () => {
         </CardHeader>
         <CardContent className="p-4 pt-2 space-y-4">
           <div className="flex flex-wrap gap-2 md:gap-3">
+            <Select value={filterBlock} onValueChange={setFilterBlock}>
+              <SelectTrigger className="w-36 md:w-44 h-8 text-xs glass-card border-border/50">
+                <SelectValue placeholder="Bloco" />
+              </SelectTrigger>
+              <SelectContent className="bg-card border-border max-h-60">
+                <SelectItem value="all">Todos Blocos</SelectItem>
+                {blockNames.map(b => <SelectItem key={b.id} value={b.id}>{b.name}</SelectItem>)}
+              </SelectContent>
+            </Select>
             <Select value={filterOperator} onValueChange={setFilterOperator}>
               <SelectTrigger className="w-36 md:w-44 h-8 text-xs glass-card border-border/50">
                 <SelectValue placeholder="Operador" />
@@ -175,7 +187,7 @@ export const ExplorationPanel = () => {
             </Select>
             {hasFilters && (
               <button
-                onClick={() => { setFilterOperator("all"); setFilterBasin("all"); setFilterPhase("all"); }}
+                onClick={() => { setFilterBlock("all"); setFilterOperator("all"); setFilterBasin("all"); setFilterPhase("all"); }}
                 className="h-8 px-3 text-xs text-muted-foreground hover:text-foreground transition-colors"
               >
                 Limpar filtros
