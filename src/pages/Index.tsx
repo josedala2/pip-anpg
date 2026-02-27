@@ -89,11 +89,11 @@ const Index = () => {
               className="h-8 md:h-10"
             />
             <div>
-              <h1 className="text-lg md:text-xl font-bold tracking-tight">
+            <h1 className="text-lg md:text-xl 2xl:text-2xl font-bold tracking-tight">
                 <span className="text-gradient">ANGOLA</span>
                 <span className="text-muted-foreground font-light ml-2">Oil Concessions</span>
               </h1>
-              <p className="text-[10px] md:text-xs text-muted-foreground">Executive Intelligence Dashboard • Q4 2024</p>
+              <p className="text-[10px] md:text-xs 2xl:text-sm text-muted-foreground">Executive Intelligence Dashboard • Q4 2024</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -122,7 +122,7 @@ const Index = () => {
             <button
               key={panel}
               onClick={() => switchPanel(i)}
-              className={`relative px-3 py-1.5 rounded-lg text-xs font-medium transition-all group ${
+              className={`relative px-3 py-1.5 2xl:px-4 2xl:py-2 rounded-lg text-xs 2xl:text-sm font-medium transition-all group ${
                 activePanel === i
                   ? "text-primary"
                   : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
@@ -168,7 +168,7 @@ const Index = () => {
             </div>
           )}
 
-          <div className="p-4 md:p-6 max-w-7xl mx-auto">
+          <div className="p-4 md:p-6 2xl:p-8 max-w-[1920px] mx-auto">
           {activePanel === 1 && <BlocksPanel />}
           {activePanel === 2 && <ExplorationPanel />}
           {activePanel === 3 && <RiskPerformance />}

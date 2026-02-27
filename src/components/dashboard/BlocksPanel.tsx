@@ -83,12 +83,12 @@ const CompactBlockCard = ({
       }`}
     >
       <div className="flex items-start justify-between gap-1 mb-1">
-        <span className="font-bold text-[10px] leading-tight truncate">{block.name}</span>
+        <span className="font-bold text-[10px] 2xl:text-xs leading-tight truncate">{block.name}</span>
         <Badge variant="outline" className={`text-[8px] px-1 py-0 shrink-0 ${phaseColor(block.phase)}`}>
           {block.phase === "Bidding" ? "Licitação" : block.phase}
         </Badge>
       </div>
-      <div className="text-[9px] text-muted-foreground truncate">{block.operator}</div>
+      <div className="text-[9px] 2xl:text-[11px] text-muted-foreground truncate">{block.operator}</div>
       <div className="flex items-center justify-between mt-1.5">
         {block.dailyProduction > 0 ? (
           <span className="text-[10px] font-bold font-mono text-success">
@@ -252,12 +252,12 @@ export const BlocksPanel = () => {
   }, []);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 2xl:space-y-6">
       {/* Filters + Stats */}
       <Card className="glass-card">
         <CardHeader className="p-3 pb-1">
-          <CardTitle className="text-sm flex items-center gap-2">
-            <Filter className="w-4 h-4 text-primary" />
+           <CardTitle className="text-sm 2xl:text-lg flex items-center gap-2">
+             <Filter className="w-4 h-4 2xl:w-5 2xl:h-5 text-primary" />
             Mapa de Concessões
           </CardTitle>
         </CardHeader>
@@ -305,33 +305,33 @@ export const BlocksPanel = () => {
                 className="h-7 px-3 text-xs text-muted-foreground hover:text-foreground transition-colors">Limpar</button>
             )}
           </div>
-          <div className="grid grid-cols-4 gap-2">
-            <div className="glass-card p-1.5 rounded-lg text-center">
-              <div className="text-[9px] text-muted-foreground">Blocos</div>
-              <div className="text-base font-bold font-mono">{stats.total}</div>
+          <div className="grid grid-cols-4 gap-2 2xl:gap-3">
+             <div className="glass-card p-1.5 2xl:p-3 rounded-lg text-center">
+               <div className="text-[9px] 2xl:text-xs text-muted-foreground">Blocos</div>
+               <div className="text-base 2xl:text-xl font-bold font-mono">{stats.total}</div>
             </div>
-            <div className="glass-card p-1.5 rounded-lg text-center">
-              <div className="text-[9px] text-muted-foreground">Produção</div>
-              <div className="text-base font-bold font-mono text-success">{stats.production}</div>
+             <div className="glass-card p-1.5 2xl:p-3 rounded-lg text-center">
+               <div className="text-[9px] 2xl:text-xs text-muted-foreground">Produção</div>
+               <div className="text-base 2xl:text-xl font-bold font-mono text-success">{stats.production}</div>
             </div>
-            <div className="glass-card p-1.5 rounded-lg text-center">
-              <div className="text-[9px] text-muted-foreground">Prod. Total</div>
-              <div className="text-base font-bold font-mono">{(stats.totalProd / 1000).toFixed(0)}k</div>
+             <div className="glass-card p-1.5 2xl:p-3 rounded-lg text-center">
+               <div className="text-[9px] 2xl:text-xs text-muted-foreground">Prod. Total</div>
+               <div className="text-base 2xl:text-xl font-bold font-mono">{(stats.totalProd / 1000).toFixed(0)}k</div>
             </div>
-            <div className="glass-card p-1.5 rounded-lg text-center">
-              <div className="text-[9px] text-muted-foreground">Reservas</div>
-              <div className="text-base font-bold font-mono">{(stats.totalReserves / 1000).toFixed(1)}B</div>
+             <div className="glass-card p-1.5 2xl:p-3 rounded-lg text-center">
+               <div className="text-[9px] 2xl:text-xs text-muted-foreground">Reservas</div>
+               <div className="text-base 2xl:text-xl font-bold font-mono">{(stats.totalReserves / 1000).toFixed(1)}B</div>
             </div>
           </div>
         </CardContent>
       </Card>
 
       {/* Map + Block List side by side */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 2xl:gap-6">
         {/* Interactive Map */}
         <Card className="glass-card">
           <CardHeader className="p-3 pb-1">
-            <CardTitle className="text-xs flex items-center gap-2">
+            <CardTitle className="text-xs 2xl:text-sm flex items-center gap-2">
               <Map className="w-3.5 h-3.5 text-primary" />
               Vista Geográfica
             </CardTitle>

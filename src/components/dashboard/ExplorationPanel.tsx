@@ -140,12 +140,12 @@ export const ExplorationPanel = () => {
   const scopeLabel = filterBlock !== "all" ? filteredBlocks[0]?.name || "Bloco" : hasFilters ? "Blocos Filtrados" : "Todos os Blocos";
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 2xl:space-y-8">
       {/* Block Filters */}
       <Card className="glass-card">
         <CardHeader className="p-4 pb-2">
-          <CardTitle className="text-sm flex items-center gap-2">
-            <Filter className="w-4 h-4 text-primary" />
+           <CardTitle className="text-sm 2xl:text-lg flex items-center gap-2">
+             <Filter className="w-4 h-4 2xl:w-5 2xl:h-5 text-primary" />
             Filtrar por Bloco
           </CardTitle>
         </CardHeader>
@@ -252,7 +252,7 @@ export const ExplorationPanel = () => {
         <CardContent className="p-4 flex flex-wrap items-center gap-4">
           <Layers className="w-5 h-5 text-primary shrink-0" />
           <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Sísmica Total Adquirida</div>
-          <div className="font-bold font-mono text-lg">
+          <div className="font-bold font-mono text-lg 2xl:text-xl">
             {explorationStats.total2D.toLocaleString()} <span className="text-xs text-muted-foreground">km (2D)</span>
             {" · "}
             {explorationStats.total3D.toLocaleString()} <span className="text-xs text-muted-foreground">km² (3D)</span>
@@ -267,7 +267,7 @@ export const ExplorationPanel = () => {
       </Card>
 
       {/* Key Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 2xl:gap-4">
         {[
           { icon: Layers, label: "Sísmica 2D", value: `${explorationStats.total2D.toLocaleString()} km`, color: "text-warning" },
           { icon: Layers, label: "Sísmica 3D", value: `${explorationStats.total3D.toLocaleString()} km²`, color: "text-success" },
@@ -275,11 +275,11 @@ export const ExplorationPanel = () => {
           { icon: Droplets, label: "Reservas Totais", value: `${explorationStats.totalReserves.toLocaleString()} MMbbl`, color: "text-primary" },
         ].map(s => (
           <Card key={s.label} className="glass-card">
-            <CardContent className="p-4 flex items-center gap-3">
-              <s.icon className={`w-5 h-5 ${s.color} shrink-0`} />
-              <div>
-                <div className="text-[10px] uppercase tracking-wider text-muted-foreground">{s.label}</div>
-                <div className="text-lg font-bold font-mono">{s.value}</div>
+           <CardContent className="p-4 2xl:p-5 flex items-center gap-3">
+               <s.icon className={`w-5 h-5 2xl:w-6 2xl:h-6 ${s.color} shrink-0`} />
+               <div>
+                 <div className="text-[10px] 2xl:text-xs uppercase tracking-wider text-muted-foreground">{s.label}</div>
+                 <div className="text-lg 2xl:text-xl font-bold font-mono">{s.value}</div>
               </div>
             </CardContent>
           </Card>
@@ -287,23 +287,23 @@ export const ExplorationPanel = () => {
       </div>
 
       {/* Wells Stats Row */}
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-3 gap-3 2xl:gap-4">
         <Card className="glass-card">
-          <CardContent className="p-4 text-center">
-            <div className="text-xs text-muted-foreground mb-1">Total Poços Exploração</div>
-            <div className="text-3xl font-bold font-mono">{explorationStats.totalWells}</div>
+           <CardContent className="p-4 2xl:p-6 text-center">
+             <div className="text-xs 2xl:text-sm text-muted-foreground mb-1">Total Poços Exploração</div>
+             <div className="text-3xl 2xl:text-4xl font-bold font-mono">{explorationStats.totalWells}</div>
           </CardContent>
         </Card>
         <Card className="glass-card">
-          <CardContent className="p-4 text-center">
-            <div className="text-xs text-muted-foreground mb-1">Pesquisa</div>
-            <div className="text-3xl font-bold font-mono text-primary">{explorationStats.pesquisaWells}</div>
+           <CardContent className="p-4 2xl:p-6 text-center">
+             <div className="text-xs 2xl:text-sm text-muted-foreground mb-1">Pesquisa</div>
+             <div className="text-3xl 2xl:text-4xl font-bold font-mono text-primary">{explorationStats.pesquisaWells}</div>
           </CardContent>
         </Card>
         <Card className="glass-card">
-          <CardContent className="p-4 text-center">
-            <div className="text-xs text-muted-foreground mb-1">Avaliação</div>
-            <div className="text-3xl font-bold font-mono text-warning">{explorationStats.avaliacaoWells}</div>
+           <CardContent className="p-4 2xl:p-6 text-center">
+             <div className="text-xs 2xl:text-sm text-muted-foreground mb-1">Avaliação</div>
+             <div className="text-3xl 2xl:text-4xl font-bold font-mono text-warning">{explorationStats.avaliacaoWells}</div>
           </CardContent>
         </Card>
       </div>
@@ -325,7 +325,7 @@ export const ExplorationPanel = () => {
             <CardTitle className="text-sm">Sísmica Adquirida — {scopeLabel}</CardTitle>
           </CardHeader>
           <CardContent className="p-4 pt-0">
-            <ResponsiveContainer width="100%" height={280}>
+             <ResponsiveContainer width="100%" height={360}>
               <BarChart data={seismicChartData} barGap={1}>
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                 <XAxis dataKey="year" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 9 }} stroke="hsl(var(--border))" interval={2} angle={-45} textAnchor="end" height={50} />
@@ -348,7 +348,7 @@ export const ExplorationPanel = () => {
             <CardTitle className="text-sm">Poços de Avaliação vs Pesquisa — {scopeLabel}</CardTitle>
           </CardHeader>
           <CardContent className="p-4 pt-0">
-            <ResponsiveContainer width="100%" height={280}>
+            <ResponsiveContainer width="100%" height={360}>
               <BarChart data={wellsChartData} barGap={1}>
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                 <XAxis dataKey="year" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 9 }} stroke="hsl(var(--border))" interval={2} angle={-45} textAnchor="end" height={50} />
