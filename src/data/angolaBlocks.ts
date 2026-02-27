@@ -984,6 +984,21 @@ export const oilBlocks: OilBlock[] = [
       base: [0, 0, 0, 0, 10000, 22000, 35000, 45000, 52000, 56000],
       expansion: [0, 0, 0, 8000, 20000, 38000, 55000, 68000, 76000, 80000],
     },
+    areaKm2: 5231,
+    waterDepthRange: "2000-3500m",
+    seismicData: [
+      { year: 2022, seismic2D: 1200, seismic3D: 0, seismic4D: 0 },
+      { year: 2023, seismic2D: 800, seismic3D: 2400, seismic4D: 0 },
+      { year: 2024, seismic2D: 0, seismic3D: 3200, seismic4D: 0 },
+    ],
+    wellsData: [
+      { year: 2024, pesquisa: 1, avaliacao: 0 },
+      { year: 2025, pesquisa: 2, avaliacao: 0 },
+    ],
+    geologicalObjectives: ["Pre-Salt Carbonate Platforms", "Syn-Rift Lacustrine", "Aptian Salt Plays", "Albian Carbonates"],
+    fields: [
+      { name: "Prospect Venus", status: "Discovery", discoveryYear: 2024 },
+    ],
   },
   {
     id: "block-45",
@@ -1015,6 +1030,19 @@ export const oilBlocks: OilBlock[] = [
       base: [0, 0, 0, 0, 8000, 18000, 30000, 40000, 46000, 50000],
       expansion: [0, 0, 0, 6000, 16000, 32000, 48000, 60000, 68000, 72000],
     },
+    areaKm2: 5118,
+    waterDepthRange: "2000-3500m",
+    seismicData: [
+      { year: 2022, seismic2D: 1100, seismic3D: 0, seismic4D: 0 },
+      { year: 2023, seismic2D: 600, seismic3D: 2100, seismic4D: 0 },
+      { year: 2024, seismic2D: 0, seismic3D: 2800, seismic4D: 0 },
+    ],
+    wellsData: [
+      { year: 2024, pesquisa: 1, avaliacao: 0 },
+      { year: 2025, pesquisa: 1, avaliacao: 0 },
+    ],
+    geologicalObjectives: ["Pre-Salt Lacustrine Carbonates", "Aptian Salt Plays", "Albian Shelf Carbonates"],
+    fields: [],
   },
   {
     id: "block-46",
@@ -1048,6 +1076,22 @@ export const oilBlocks: OilBlock[] = [
       base: [0, 0, 0, 0, 6000, 14000, 24000, 32000, 38000, 42000],
       expansion: [0, 0, 0, 5000, 12000, 25000, 38000, 48000, 55000, 60000],
     },
+    areaKm2: 5050,
+    waterDepthRange: "1800-3200m",
+    seismicData: [
+      { year: 2022, seismic2D: 1500, seismic3D: 0, seismic4D: 0 },
+      { year: 2023, seismic2D: 400, seismic3D: 2600, seismic4D: 0 },
+      { year: 2024, seismic2D: 0, seismic3D: 3000, seismic4D: 0 },
+      { year: 2025, seismic2D: 0, seismic3D: 1800, seismic4D: 0 },
+    ],
+    wellsData: [
+      { year: 2024, pesquisa: 1, avaliacao: 0 },
+      { year: 2025, pesquisa: 2, avaliacao: 1 },
+    ],
+    geologicalObjectives: ["Pre-Salt Carbonate Mounds", "Syn-Rift Clastic Fans", "Aptian Salt Diapirs"],
+    fields: [
+      { name: "Prospect Orion", status: "Discovery", discoveryYear: 2025 },
+    ],
   },
   {
     id: "block-47",
@@ -1081,6 +1125,18 @@ export const oilBlocks: OilBlock[] = [
       base: [0, 0, 0, 0, 5000, 12000, 22000, 30000, 36000, 40000],
       expansion: [0, 0, 0, 4000, 10000, 22000, 35000, 45000, 52000, 56000],
     },
+    areaKm2: 4980,
+    waterDepthRange: "1800-3200m",
+    seismicData: [
+      { year: 2022, seismic2D: 1400, seismic3D: 0, seismic4D: 0 },
+      { year: 2023, seismic2D: 300, seismic3D: 2200, seismic4D: 0 },
+      { year: 2024, seismic2D: 0, seismic3D: 2500, seismic4D: 0 },
+    ],
+    wellsData: [
+      { year: 2025, pesquisa: 1, avaliacao: 0 },
+    ],
+    geologicalObjectives: ["Pre-Salt Lacustrine", "Syn-Rift Clastic Sequences", "Aptian Evaporites"],
+    fields: [],
   },
   {
     id: "block-49",
@@ -1113,6 +1169,21 @@ export const oilBlocks: OilBlock[] = [
       base: [0, 0, 0, 0, 10000, 25000, 40000, 52000, 60000, 65000],
       expansion: [0, 0, 0, 8000, 22000, 42000, 60000, 74000, 82000, 88000],
     },
+    areaKm2: 5400,
+    waterDepthRange: "2200-3800m",
+    seismicData: [
+      { year: 2022, seismic2D: 1800, seismic3D: 0, seismic4D: 0 },
+      { year: 2023, seismic2D: 500, seismic3D: 3200, seismic4D: 0 },
+      { year: 2024, seismic2D: 0, seismic3D: 4000, seismic4D: 0 },
+    ],
+    wellsData: [
+      { year: 2024, pesquisa: 1, avaliacao: 0 },
+      { year: 2025, pesquisa: 2, avaliacao: 0 },
+    ],
+    geologicalObjectives: ["Pre-Salt Carbonate Build-ups", "Syn-Rift Lacustrine Shales", "Aptian Mega-Salt", "Cretaceous Turbidites"],
+    fields: [
+      { name: "Prospect Atlas", status: "Discovery", discoveryYear: 2024 },
+    ],
   },
   {
     id: "block-50",
@@ -1145,6 +1216,18 @@ export const oilBlocks: OilBlock[] = [
       base: [0, 0, 0, 0, 8000, 22000, 36000, 48000, 55000, 60000],
       expansion: [0, 0, 0, 6000, 18000, 38000, 55000, 68000, 76000, 82000],
     },
+    areaKm2: 5350,
+    waterDepthRange: "2200-3800m",
+    seismicData: [
+      { year: 2022, seismic2D: 1600, seismic3D: 0, seismic4D: 0 },
+      { year: 2023, seismic2D: 400, seismic3D: 2800, seismic4D: 0 },
+      { year: 2024, seismic2D: 0, seismic3D: 3500, seismic4D: 0 },
+    ],
+    wellsData: [
+      { year: 2025, pesquisa: 2, avaliacao: 0 },
+    ],
+    geologicalObjectives: ["Pre-Salt Carbonate Reservoirs", "Syn-Rift Clastics", "Aptian Salt Canopy Plays"],
+    fields: [],
   },
   {
     id: "block-15-14",
@@ -1317,6 +1400,22 @@ export const oilBlocks: OilBlock[] = [
     productionHistory: Array(12).fill(null).map((_, i) => ({ month: ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][i], value: 0 })),
     capexHistory: [{ year: "2022", planned: 5, actual: 3 }, { year: "2023", planned: 8, actual: 5 }, { year: "2024", planned: 10, actual: 4 }],
     projections: { conservative: [0,0,0,0,0,500,1000,1500,2000,2200], base: [0,0,0,500,1500,3000,4500,5500,6000,6200], expansion: [0,0,1000,2500,4500,7000,9000,10500,11500,12000] },
+    areaKm2: 820,
+    seismicData: [
+      { year: 2020, seismic2D: 180, seismic3D: 0, seismic4D: 0 },
+      { year: 2021, seismic2D: 120, seismic3D: 85, seismic4D: 0 },
+      { year: 2022, seismic2D: 60, seismic3D: 140, seismic4D: 0 },
+      { year: 2023, seismic2D: 0, seismic3D: 95, seismic4D: 0 },
+    ],
+    wellsData: [
+      { year: 2021, pesquisa: 1, avaliacao: 0 },
+      { year: 2022, pesquisa: 1, avaliacao: 0 },
+      { year: 2023, pesquisa: 2, avaliacao: 0 },
+    ],
+    geologicalObjectives: ["Pinda Carbonates", "Vermelha Formation Clastics", "Loeme Salt Plays", "Landana Sandstones"],
+    fields: [
+      { name: "Prospect Mayombe-1", status: "Discovery", discoveryYear: 2022 },
+    ],
   },
   {
     id: "block-con2",
@@ -1342,6 +1441,18 @@ export const oilBlocks: OilBlock[] = [
     productionHistory: Array(12).fill(null).map((_, i) => ({ month: ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][i], value: 0 })),
     capexHistory: [{ year: "2022", planned: 4, actual: 2 }, { year: "2023", planned: 6, actual: 3 }, { year: "2024", planned: 8, actual: 3 }],
     projections: { conservative: [0,0,0,0,0,400,800,1200,1500,1800], base: [0,0,0,400,1200,2500,3800,4800,5200,5500], expansion: [0,0,800,2000,4000,6000,8000,9500,10500,11000] },
+    areaKm2: 750,
+    seismicData: [
+      { year: 2020, seismic2D: 150, seismic3D: 0, seismic4D: 0 },
+      { year: 2021, seismic2D: 90, seismic3D: 60, seismic4D: 0 },
+      { year: 2022, seismic2D: 40, seismic3D: 100, seismic4D: 0 },
+    ],
+    wellsData: [
+      { year: 2021, pesquisa: 1, avaliacao: 0 },
+      { year: 2023, pesquisa: 1, avaliacao: 0 },
+    ],
+    geologicalObjectives: ["Pinda Carbonates", "Vermelha Clastics", "Sub-Salt Plays"],
+    fields: [],
   },
   {
     id: "block-con3",
@@ -1370,6 +1481,22 @@ export const oilBlocks: OilBlock[] = [
     productionHistory: Array(12).fill(null).map((_, i) => ({ month: ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][i], value: 0 })),
     capexHistory: [{ year: "2022", planned: 5, actual: 3 }, { year: "2023", planned: 7, actual: 4 }, { year: "2024", planned: 10, actual: 3 }],
     projections: { conservative: [0,0,0,0,0,600,1200,1800,2200,2500], base: [0,0,0,600,1800,3500,5000,6200,6800,7200], expansion: [0,0,1000,3000,5500,8000,10000,11500,12500,13000] },
+    areaKm2: 900,
+    seismicData: [
+      { year: 2020, seismic2D: 200, seismic3D: 0, seismic4D: 0 },
+      { year: 2021, seismic2D: 130, seismic3D: 95, seismic4D: 0 },
+      { year: 2022, seismic2D: 50, seismic3D: 160, seismic4D: 0 },
+      { year: 2023, seismic2D: 0, seismic3D: 120, seismic4D: 0 },
+    ],
+    wellsData: [
+      { year: 2021, pesquisa: 1, avaliacao: 0 },
+      { year: 2022, pesquisa: 2, avaliacao: 0 },
+      { year: 2023, pesquisa: 1, avaliacao: 1 },
+    ],
+    geologicalObjectives: ["Pinda Formation Reef Carbonates", "Loeme Evaporites", "Landana Turbidite Sands"],
+    fields: [
+      { name: "Prospect Tchela-1", status: "Discovery", discoveryYear: 2023 },
+    ],
   },
   {
     id: "block-con4",
@@ -1394,6 +1521,16 @@ export const oilBlocks: OilBlock[] = [
     productionHistory: Array(12).fill(null).map((_, i) => ({ month: ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][i], value: 0 })),
     capexHistory: [{ year: "2022", planned: 3, actual: 1 }, { year: "2023", planned: 4, actual: 2 }, { year: "2024", planned: 5, actual: 2 }],
     projections: { conservative: [0,0,0,0,0,300,600,900,1100,1300], base: [0,0,0,300,800,1800,2800,3500,4000,4200], expansion: [0,0,500,1500,3000,5000,6500,7500,8200,8500] },
+    areaKm2: 680,
+    seismicData: [
+      { year: 2021, seismic2D: 120, seismic3D: 0, seismic4D: 0 },
+      { year: 2022, seismic2D: 80, seismic3D: 50, seismic4D: 0 },
+    ],
+    wellsData: [
+      { year: 2023, pesquisa: 1, avaliacao: 0 },
+    ],
+    geologicalObjectives: ["Pinda Dolomites", "Vermelha Sandstones"],
+    fields: [],
   },
   {
     id: "block-con5",
@@ -1420,6 +1557,18 @@ export const oilBlocks: OilBlock[] = [
     productionHistory: Array(12).fill(null).map((_, i) => ({ month: ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][i], value: 0 })),
     capexHistory: [{ year: "2022", planned: 3, actual: 2 }, { year: "2023", planned: 5, actual: 3 }, { year: "2024", planned: 7, actual: 2 }],
     projections: { conservative: [0,0,0,0,0,400,800,1100,1400,1600], base: [0,0,0,400,1000,2200,3200,4000,4500,4800], expansion: [0,0,600,1800,3500,5500,7000,8200,9000,9500] },
+    areaKm2: 710,
+    seismicData: [
+      { year: 2020, seismic2D: 160, seismic3D: 0, seismic4D: 0 },
+      { year: 2021, seismic2D: 100, seismic3D: 70, seismic4D: 0 },
+      { year: 2022, seismic2D: 30, seismic3D: 110, seismic4D: 0 },
+    ],
+    wellsData: [
+      { year: 2022, pesquisa: 1, avaliacao: 0 },
+      { year: 2023, pesquisa: 1, avaliacao: 0 },
+    ],
+    geologicalObjectives: ["Pinda Carbonates", "Landana Sands", "Vermelha Clastics"],
+    fields: [],
   },
   {
     id: "block-con6",
@@ -1445,6 +1594,17 @@ export const oilBlocks: OilBlock[] = [
     productionHistory: Array(12).fill(null).map((_, i) => ({ month: ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][i], value: 0 })),
     capexHistory: [{ year: "2022", planned: 3, actual: 2 }, { year: "2023", planned: 5, actual: 2 }, { year: "2024", planned: 6, actual: 2 }],
     projections: { conservative: [0,0,0,0,0,350,700,1000,1300,1500], base: [0,0,0,350,1000,2000,3000,3800,4200,4500], expansion: [0,0,500,1500,3000,5000,6500,7500,8200,8500] },
+    areaKm2: 730,
+    seismicData: [
+      { year: 2020, seismic2D: 140, seismic3D: 0, seismic4D: 0 },
+      { year: 2021, seismic2D: 80, seismic3D: 55, seismic4D: 0 },
+      { year: 2022, seismic2D: 20, seismic3D: 90, seismic4D: 0 },
+    ],
+    wellsData: [
+      { year: 2023, pesquisa: 1, avaliacao: 0 },
+    ],
+    geologicalObjectives: ["Pinda Reef Carbonates", "Loeme Salt", "Landana Formation"],
+    fields: [],
   },
   {
     id: "block-con8",
@@ -1473,6 +1633,22 @@ export const oilBlocks: OilBlock[] = [
     productionHistory: Array(12).fill(null).map((_, i) => ({ month: ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][i], value: 0 })),
     capexHistory: [{ year: "2022", planned: 4, actual: 3 }, { year: "2023", planned: 6, actual: 3 }, { year: "2024", planned: 8, actual: 3 }],
     projections: { conservative: [0,0,0,0,0,500,1000,1500,1900,2200], base: [0,0,0,500,1500,3000,4500,5500,6200,6500], expansion: [0,0,800,2200,4500,7000,9000,10500,11500,12000] },
+    areaKm2: 860,
+    seismicData: [
+      { year: 2020, seismic2D: 190, seismic3D: 0, seismic4D: 0 },
+      { year: 2021, seismic2D: 110, seismic3D: 80, seismic4D: 0 },
+      { year: 2022, seismic2D: 40, seismic3D: 130, seismic4D: 0 },
+      { year: 2023, seismic2D: 0, seismic3D: 100, seismic4D: 0 },
+    ],
+    wellsData: [
+      { year: 2021, pesquisa: 1, avaliacao: 0 },
+      { year: 2022, pesquisa: 1, avaliacao: 0 },
+      { year: 2023, pesquisa: 2, avaliacao: 1 },
+    ],
+    geologicalObjectives: ["Pinda Dolomite Reservoirs", "Vermelha Fluvial Sands", "Landana Deep Sands", "Loeme Evaporite Seals"],
+    fields: [
+      { name: "Prospect Nzeto-1", status: "Discovery", discoveryYear: 2023 },
+    ],
   },
   // ── KON Blocks (Kwanza Onshore) ──
   {
@@ -1500,6 +1676,18 @@ export const oilBlocks: OilBlock[] = [
     productionHistory: Array(12).fill(null).map((_, i) => ({ month: ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][i], value: 0 })),
     capexHistory: [{ year: "2022", planned: 4, actual: 2 }, { year: "2023", planned: 5, actual: 3 }, { year: "2024", planned: 6, actual: 3 }],
     projections: { conservative: [0,0,0,0,0,500,1000,1500,2000,2200], base: [0,0,0,500,1500,3000,4500,5500,6200,6500], expansion: [0,0,800,2200,4500,7000,9000,10500,11500,12000] },
+    areaKm2: 1200,
+    seismicData: [
+      { year: 2021, seismic2D: 250, seismic3D: 0, seismic4D: 0 },
+      { year: 2022, seismic2D: 180, seismic3D: 120, seismic4D: 0 },
+      { year: 2023, seismic2D: 60, seismic3D: 200, seismic4D: 0 },
+    ],
+    wellsData: [
+      { year: 2022, pesquisa: 1, avaliacao: 0 },
+      { year: 2023, pesquisa: 1, avaliacao: 0 },
+    ],
+    geologicalObjectives: ["Cuvo Formation Sandstones", "Binga Carbonates", "Kwanza Rift Clastics", "Teba Dolomites"],
+    fields: [],
   },
   {
     id: "block-kon5",
@@ -1524,6 +1712,14 @@ export const oilBlocks: OilBlock[] = [
     productionHistory: Array(12).fill(null).map((_, i) => ({ month: ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][i], value: 0 })),
     capexHistory: [{ year: "2023", planned: 2, actual: 1 }, { year: "2024", planned: 3, actual: 2 }],
     projections: { conservative: [0,0,0,0,0,200,500,800,1000,1200], base: [0,0,0,200,800,1500,2500,3200,3600,3800], expansion: [0,0,400,1200,2500,4000,5500,6500,7200,7500] },
+    areaKm2: 1050,
+    seismicData: [
+      { year: 2022, seismic2D: 200, seismic3D: 0, seismic4D: 0 },
+      { year: 2023, seismic2D: 100, seismic3D: 80, seismic4D: 0 },
+    ],
+    wellsData: [],
+    geologicalObjectives: ["Cuvo Sandstones", "Binga Formation", "Pre-Rift Basement Plays"],
+    fields: [],
   },
   {
     id: "block-kon6",
@@ -1550,6 +1746,18 @@ export const oilBlocks: OilBlock[] = [
     productionHistory: Array(12).fill(null).map((_, i) => ({ month: ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][i], value: 0 })),
     capexHistory: [{ year: "2022", planned: 3, actual: 1 }, { year: "2023", planned: 4, actual: 2 }, { year: "2024", planned: 5, actual: 2 }],
     projections: { conservative: [0,0,0,0,0,300,700,1000,1300,1500], base: [0,0,0,300,1000,2000,3200,4000,4500,4800], expansion: [0,0,500,1500,3000,5000,6500,7800,8500,9000] },
+    areaKm2: 1100,
+    seismicData: [
+      { year: 2021, seismic2D: 220, seismic3D: 0, seismic4D: 0 },
+      { year: 2022, seismic2D: 140, seismic3D: 90, seismic4D: 0 },
+      { year: 2023, seismic2D: 40, seismic3D: 150, seismic4D: 0 },
+    ],
+    wellsData: [
+      { year: 2022, pesquisa: 1, avaliacao: 0 },
+      { year: 2023, pesquisa: 1, avaliacao: 0 },
+    ],
+    geologicalObjectives: ["Cuvo Fluvial Sandstones", "Binga Carbonates", "Kwanza Rift Lacustrine"],
+    fields: [],
   },
   {
     id: "block-kon8",
@@ -1579,6 +1787,20 @@ export const oilBlocks: OilBlock[] = [
     productionHistory: Array(12).fill(null).map((_, i) => ({ month: ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][i], value: 0 })),
     capexHistory: [{ year: "2022", planned: 3, actual: 2 }, { year: "2023", planned: 4, actual: 2 }, { year: "2024", planned: 6, actual: 2 }],
     projections: { conservative: [0,0,0,0,0,400,800,1200,1500,1800], base: [0,0,0,400,1200,2500,3800,4800,5200,5500], expansion: [0,0,600,1800,3500,5800,7500,8800,9500,10000] },
+    areaKm2: 1150,
+    seismicData: [
+      { year: 2021, seismic2D: 200, seismic3D: 0, seismic4D: 0 },
+      { year: 2022, seismic2D: 130, seismic3D: 80, seismic4D: 0 },
+      { year: 2023, seismic2D: 30, seismic3D: 130, seismic4D: 0 },
+    ],
+    wellsData: [
+      { year: 2022, pesquisa: 1, avaliacao: 0 },
+      { year: 2023, pesquisa: 2, avaliacao: 0 },
+    ],
+    geologicalObjectives: ["Cuvo Deltaic Sands", "Binga Dolomites", "Teba Formation", "Kwanza Syn-Rift"],
+    fields: [
+      { name: "Prospect Dondo-1", status: "Discovery", discoveryYear: 2023 },
+    ],
   },
   {
     id: "block-kon12",
@@ -1606,6 +1828,20 @@ export const oilBlocks: OilBlock[] = [
     productionHistory: Array(12).fill(null).map((_, i) => ({ month: ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][i], value: 0 })),
     capexHistory: [{ year: "2022", planned: 3, actual: 2 }, { year: "2023", planned: 5, actual: 3 }, { year: "2024", planned: 6, actual: 2 }],
     projections: { conservative: [0,0,0,0,0,450,900,1400,1700,2000], base: [0,0,0,450,1300,2800,4200,5200,5800,6200], expansion: [0,0,700,2000,4000,6500,8500,10000,11000,11500] },
+    areaKm2: 1250,
+    seismicData: [
+      { year: 2021, seismic2D: 230, seismic3D: 0, seismic4D: 0 },
+      { year: 2022, seismic2D: 150, seismic3D: 100, seismic4D: 0 },
+      { year: 2023, seismic2D: 50, seismic3D: 170, seismic4D: 0 },
+    ],
+    wellsData: [
+      { year: 2022, pesquisa: 1, avaliacao: 0 },
+      { year: 2023, pesquisa: 2, avaliacao: 1 },
+    ],
+    geologicalObjectives: ["Cuvo Sandstones", "Binga Reefal Carbonates", "Teba Clastics", "Pre-Rift Basement"],
+    fields: [
+      { name: "Prospect Quissama-1", status: "Discovery", discoveryYear: 2023 },
+    ],
   },
   {
     id: "block-kon15",
@@ -1631,6 +1867,23 @@ export const oilBlocks: OilBlock[] = [
     productionHistory: Array(12).fill(null).map((_, i) => ({ month: ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][i], value: 0 })),
     capexHistory: [{ year: "2022", planned: 5, actual: 3 }, { year: "2023", planned: 6, actual: 4 }, { year: "2024", planned: 8, actual: 3 }],
     projections: { conservative: [0,0,0,0,0,600,1200,1800,2200,2600], base: [0,0,0,600,1800,3500,5200,6500,7200,7600], expansion: [0,0,1000,2800,5500,8500,11000,13000,14200,15000] },
+    areaKm2: 1300,
+    seismicData: [
+      { year: 2021, seismic2D: 280, seismic3D: 0, seismic4D: 0 },
+      { year: 2022, seismic2D: 160, seismic3D: 140, seismic4D: 0 },
+      { year: 2023, seismic2D: 60, seismic3D: 220, seismic4D: 0 },
+      { year: 2024, seismic2D: 0, seismic3D: 180, seismic4D: 0 },
+    ],
+    wellsData: [
+      { year: 2022, pesquisa: 1, avaliacao: 0 },
+      { year: 2023, pesquisa: 2, avaliacao: 0 },
+      { year: 2024, pesquisa: 1, avaliacao: 1 },
+    ],
+    geologicalObjectives: ["Cuvo Fluvio-Deltaic Sands", "Binga Carbonates", "Kwanza Graben Plays", "Teba Dolomites"],
+    fields: [
+      { name: "Prospect Benguela-1", status: "Discovery", discoveryYear: 2023 },
+      { name: "Prospect Sumbe-1", status: "Discovery", discoveryYear: 2024 },
+    ],
   },
   {
     id: "block-kon16",
@@ -1657,6 +1910,18 @@ export const oilBlocks: OilBlock[] = [
     productionHistory: Array(12).fill(null).map((_, i) => ({ month: ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][i], value: 0 })),
     capexHistory: [{ year: "2022", planned: 4, actual: 2 }, { year: "2023", planned: 5, actual: 3 }, { year: "2024", planned: 7, actual: 3 }],
     projections: { conservative: [0,0,0,0,0,500,1000,1500,1900,2200], base: [0,0,0,500,1500,3000,4500,5600,6200,6500], expansion: [0,0,800,2200,4500,7200,9200,10800,11800,12500] },
+    areaKm2: 1180,
+    seismicData: [
+      { year: 2021, seismic2D: 210, seismic3D: 0, seismic4D: 0 },
+      { year: 2022, seismic2D: 120, seismic3D: 100, seismic4D: 0 },
+      { year: 2023, seismic2D: 30, seismic3D: 160, seismic4D: 0 },
+    ],
+    wellsData: [
+      { year: 2022, pesquisa: 1, avaliacao: 0 },
+      { year: 2023, pesquisa: 1, avaliacao: 0 },
+    ],
+    geologicalObjectives: ["Cuvo Sandstones", "Binga Carbonates", "Teba Clastics"],
+    fields: [],
   },
   {
     id: "block-kon17",
@@ -1683,6 +1948,17 @@ export const oilBlocks: OilBlock[] = [
     productionHistory: Array(12).fill(null).map((_, i) => ({ month: ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][i], value: 0 })),
     capexHistory: [{ year: "2022", planned: 3, actual: 2 }, { year: "2023", planned: 4, actual: 2 }, { year: "2024", planned: 5, actual: 2 }],
     projections: { conservative: [0,0,0,0,0,400,800,1200,1500,1800], base: [0,0,0,400,1200,2500,3800,4800,5200,5500], expansion: [0,0,600,1800,3500,5800,7500,8800,9500,10000] },
+    areaKm2: 1080,
+    seismicData: [
+      { year: 2021, seismic2D: 190, seismic3D: 0, seismic4D: 0 },
+      { year: 2022, seismic2D: 110, seismic3D: 70, seismic4D: 0 },
+      { year: 2023, seismic2D: 20, seismic3D: 120, seismic4D: 0 },
+    ],
+    wellsData: [
+      { year: 2023, pesquisa: 1, avaliacao: 0 },
+    ],
+    geologicalObjectives: ["Cuvo Formation Clastics", "Binga Dolomites", "Kwanza Syn-Rift"],
+    fields: [],
   },
   {
     id: "block-kon19",
@@ -1709,6 +1985,16 @@ export const oilBlocks: OilBlock[] = [
     productionHistory: Array(12).fill(null).map((_, i) => ({ month: ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][i], value: 0 })),
     capexHistory: [{ year: "2022", planned: 3, actual: 1 }, { year: "2023", planned: 4, actual: 2 }, { year: "2024", planned: 5, actual: 2 }],
     projections: { conservative: [0,0,0,0,0,400,800,1200,1500,1800], base: [0,0,0,400,1200,2500,3800,4800,5200,5500], expansion: [0,0,600,1800,3500,5800,7500,8800,9500,10000] },
+    areaKm2: 1020,
+    seismicData: [
+      { year: 2021, seismic2D: 180, seismic3D: 0, seismic4D: 0 },
+      { year: 2022, seismic2D: 100, seismic3D: 60, seismic4D: 0 },
+    ],
+    wellsData: [
+      { year: 2023, pesquisa: 1, avaliacao: 0 },
+    ],
+    geologicalObjectives: ["Cuvo Sandstones", "Binga Carbonates", "Pre-Rift Plays"],
+    fields: [],
   },
   {
     id: "block-kon20",
@@ -1736,6 +2022,14 @@ export const oilBlocks: OilBlock[] = [
     productionHistory: Array(12).fill(null).map((_, i) => ({ month: ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][i], value: 0 })),
     capexHistory: [{ year: "2022", planned: 2, actual: 1 }, { year: "2023", planned: 3, actual: 2 }, { year: "2024", planned: 4, actual: 1 }],
     projections: { conservative: [0,0,0,0,0,350,700,1000,1300,1500], base: [0,0,0,350,1000,2200,3200,4000,4500,4800], expansion: [0,0,500,1500,3000,5000,6500,7500,8200,8500] },
+    areaKm2: 980,
+    seismicData: [
+      { year: 2021, seismic2D: 160, seismic3D: 0, seismic4D: 0 },
+      { year: 2022, seismic2D: 90, seismic3D: 50, seismic4D: 0 },
+    ],
+    wellsData: [],
+    geologicalObjectives: ["Cuvo Clastics", "Binga Carbonates", "Teba Dolomites"],
+    fields: [],
   },
   // ── FS/FST Associações ──
   {
@@ -1763,6 +2057,22 @@ export const oilBlocks: OilBlock[] = [
     productionHistory: Array(12).fill(null).map((_, i) => ({ month: ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][i], value: 4000 + Math.round(Math.random() * 1000) })),
     capexHistory: [{ year: "2021", planned: 12, actual: 10 }, { year: "2022", planned: 15, actual: 12 }, { year: "2023", planned: 18, actual: 14 }, { year: "2024", planned: 20, actual: 16 }],
     projections: { conservative: [4200,4000,3800,3600,3400,3200,3000,2800,2600,2400], base: [4500,4400,4300,4200,4100,4000,3900,3800,3700,3600], expansion: [4500,4800,5100,5400,5600,5800,6000,6000,5800,5600] },
+    areaKm2: 420,
+    seismicData: [
+      { year: 2010, seismic2D: 300, seismic3D: 0, seismic4D: 0 },
+      { year: 2015, seismic2D: 150, seismic3D: 180, seismic4D: 0 },
+      { year: 2020, seismic2D: 50, seismic3D: 120, seismic4D: 0 },
+    ],
+    wellsData: [
+      { year: 2010, pesquisa: 3, avaliacao: 1 },
+      { year: 2015, pesquisa: 2, avaliacao: 2 },
+      { year: 2020, pesquisa: 1, avaliacao: 1 },
+    ],
+    geologicalObjectives: ["Pinda Carbonates", "Vermelha Sandstones", "Loeme Salt Plays"],
+    fields: [
+      { name: "FS-1", status: "Producing", discoveryYear: 2006, peakProduction: 5500 },
+      { name: "FS-2", status: "Producing", discoveryYear: 2008, peakProduction: 4200 },
+    ],
   },
   {
     id: "fst-associacoes",
@@ -1789,6 +2099,22 @@ export const oilBlocks: OilBlock[] = [
     productionHistory: Array(12).fill(null).map((_, i) => ({ month: ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][i], value: 3300 + Math.round(Math.random() * 1000) })),
     capexHistory: [{ year: "2021", planned: 10, actual: 8 }, { year: "2022", planned: 12, actual: 10 }, { year: "2023", planned: 14, actual: 11 }, { year: "2024", planned: 16, actual: 13 }],
     projections: { conservative: [3500,3300,3100,2900,2700,2500,2300,2100,1900,1800], base: [3800,3700,3600,3500,3400,3300,3200,3100,3000,2900], expansion: [3800,4000,4300,4500,4700,4900,5000,5000,4900,4800] },
+    areaKm2: 380,
+    seismicData: [
+      { year: 2010, seismic2D: 260, seismic3D: 0, seismic4D: 0 },
+      { year: 2015, seismic2D: 120, seismic3D: 150, seismic4D: 0 },
+      { year: 2020, seismic2D: 40, seismic3D: 100, seismic4D: 0 },
+    ],
+    wellsData: [
+      { year: 2010, pesquisa: 2, avaliacao: 1 },
+      { year: 2015, pesquisa: 2, avaliacao: 1 },
+      { year: 2020, pesquisa: 1, avaliacao: 0 },
+    ],
+    geologicalObjectives: ["Pinda Dolomites", "Vermelha Clastics", "Landana Sands"],
+    fields: [
+      { name: "FST-1", status: "Producing", discoveryYear: 2007, peakProduction: 4800 },
+      { name: "FST-2", status: "Producing", discoveryYear: 2010, peakProduction: 3500 },
+    ],
   },
   // ── Shallow Water Blocks (Águas Rasas) ──
   {
