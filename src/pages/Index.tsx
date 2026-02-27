@@ -1,9 +1,9 @@
 import { useState, useCallback, useEffect, useMemo } from "react";
-import { KPICards } from "@/components/dashboard/KPICards";
+
 import { ConcessionMap } from "@/components/dashboard/ConcessionMap";
-import { FilterBar, applyFilters, type FilterState } from "@/components/dashboard/FilterBar";
+import { applyFilters, type FilterState } from "@/components/dashboard/FilterBar";
 import { BlockDetail } from "@/components/dashboard/BlockDetail";
-import { OverviewBlockList } from "@/components/dashboard/OverviewBlockList";
+import { OverviewSidebar } from "@/components/dashboard/OverviewSidebar";
 import { RiskPerformance } from "@/components/dashboard/RiskPerformance";
 import { StrategicForecast } from "@/components/dashboard/StrategicForecast";
 import { BlocksPanel } from "@/components/dashboard/BlocksPanel";
@@ -123,23 +123,20 @@ const Index = () => {
       <main className="p-4 md:p-6 max-w-7xl mx-auto">
         <div className="panel-transition">
           {activePanel === 0 && (
-            <div className="space-y-6 animate-fade-in">
-              <KPICards />
-              <FilterBar onFilterChange={handleFilterChange} />
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <ConcessionMap
-                  blocks={filteredBlocks}
-                  selectedBlockId={selectedBlock?.id ?? null}
-                  hoveredBlockId={hoveredBlockId}
-                  onBlockClick={() => {}}
-                  onBlockHover={setHoveredBlockId}
-                />
-                <OverviewBlockList
-                  filteredIds={filteredIds}
-                  selectedBlock={selectedBlock}
-                  onBlockSelect={setSelectedBlock}
-                />
-              </div>
+            <div className="animate-fade-in relative" style={{ height: "calc(100vh - 140px)" }}>
+              <ConcessionMap
+                blocks={filteredBlocks}
+                selectedBlockId={selectedBlock?.id ?? null}
+                hoveredBlockId={hoveredBlockId}
+                onBlockClick={() => {}}
+                onBlockHover={setHoveredBlockId}
+              />
+              <OverviewSidebar
+                filteredIds={filteredIds}
+                selectedBlock={selectedBlock}
+                onBlockSelect={setSelectedBlock}
+                onFilterChange={handleFilterChange}
+              />
             </div>
           )}
 
