@@ -6,7 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft, Droplets, DollarSign, ShieldCheck, TrendingUp, Users, Activity, Target, Layers, BarChart3, MapPin } from "lucide-react";
+import { ArrowLeft, Droplets, DollarSign, ShieldCheck, TrendingUp, Users, Activity, Target, Layers, BarChart3, MapPin, Brain } from "lucide-react";
+import { SwotAnalysis } from "@/components/dashboard/SwotAnalysis";
 import {
   PieChart, Pie, Cell, AreaChart, Area, BarChart, Bar, LineChart, Line,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend,
@@ -85,6 +86,7 @@ const BlockPage = () => {
             <TabsTrigger value="exploration" className="gap-1.5 text-xs"><Target className="w-3.5 h-3.5" />Exploração</TabsTrigger>
             <TabsTrigger value="production" className="gap-1.5 text-xs"><BarChart3 className="w-3.5 h-3.5" />Produção</TabsTrigger>
             <TabsTrigger value="projections" className="gap-1.5 text-xs"><TrendingUp className="w-3.5 h-3.5" />Projecções</TabsTrigger>
+            <TabsTrigger value="swot" className="gap-1.5 text-xs"><Brain className="w-3.5 h-3.5" />Análise SWOT</TabsTrigger>
           </TabsList>
 
           {/* Tab 1: Visão Geral */}
@@ -387,6 +389,11 @@ const BlockPage = () => {
                 </ResponsiveContainer>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          {/* Tab 6: Análise SWOT */}
+          <TabsContent value="swot" className="space-y-4">
+            <SwotAnalysis block={block} />
           </TabsContent>
         </Tabs>
       </main>
