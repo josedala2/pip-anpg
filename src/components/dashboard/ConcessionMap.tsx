@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import { type OilBlock, type BlockPhase } from "@/data/angolaBlocks";
 
 interface ConcessionMapProps {
@@ -196,6 +197,7 @@ export const ConcessionMap = ({
   onBlockClick,
   onBlockHover,
 }: ConcessionMapProps) => {
+  const navigate = useNavigate();
   const [tooltip, setTooltip] = useState<{ block: OilBlock; x: number; y: number } | null>(null);
 
   const blockPositions = useMemo(() => {
@@ -357,12 +359,13 @@ export const ConcessionMap = ({
       {/* Tooltip */}
       {tooltip && (
         <div
-          className="absolute z-50 glass-card p-2.5 rounded-lg shadow-lg border border-border/50 pointer-events-none min-w-[160px]"
+          className="absolute z-50 glass-card p-2.5 rounded-lg shadow-lg border border-border/50 min-w-[160px]"
           style={{
             left: `${Math.min(85, Math.max(15, (tooltip.x / 210) * 100))}%`,
             top: `${Math.max(5, (tooltip.y / 255) * 100 - 10)}%`,
             transform: "translateX(-50%)",
           }}
+          onMouseLeave={handleMouseLeave}
         >
           <div className="font-bold text-xs">{tooltip.block.name}</div>
           <div className="text-[10px] text-muted-foreground">{tooltip.block.operator}</div>
@@ -386,6 +389,12 @@ export const ConcessionMap = ({
               )}
             </div>
           )}
+          <button
+            className="mt-2 w-full text-[10px] text-primary hover:text-primary/80 font-medium flex items-center justify-center gap-1 py-1 border border-primary/30 rounded hover:bg-primary/10 transition-colors"
+            onClick={() => navigate(`/block/${tooltip.block.id}`)}
+          >
+            Mais Detalhes →
+          </button>
         </div>
       )}
 

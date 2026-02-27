@@ -7,6 +7,26 @@ export interface ConcessionPartner {
   isOperator?: boolean;
 }
 
+export interface SeismicData {
+  year: number;
+  seismic2D: number;
+  seismic3D: number;
+  seismic4D: number;
+}
+
+export interface WellData {
+  year: number;
+  pesquisa: number;
+  avaliacao: number;
+}
+
+export interface FieldDiscovery {
+  name: string;
+  status: "Producing" | "Development" | "Discovery" | "Abandoned";
+  discoveryYear?: number;
+  peakProduction?: number; // BOPD
+}
+
 export interface OilBlock {
   id: string;
   name: string;
@@ -32,6 +52,13 @@ export interface OilBlock {
     base: number[];
     expansion: number[];
   };
+  // Extended exploration data
+  seismicData?: SeismicData[];
+  wellsData?: WellData[];
+  geologicalObjectives?: string[];
+  fields?: FieldDiscovery[];
+  areaKm2?: number;
+  waterDepthRange?: string; // e.g., "200-1500m"
 }
 
 export const oilBlocks: OilBlock[] = [
@@ -74,6 +101,32 @@ export const oilBlocks: OilBlock[] = [
       base: [142000, 140000, 138000, 135000, 132000, 128000, 124000, 120000, 116000, 112000],
       expansion: [142000, 145000, 148000, 150000, 152000, 150000, 148000, 145000, 142000, 138000],
     },
+    areaKm2: 5800,
+    waterDepthRange: "15-200m",
+    seismicData: [
+      { year: 1990, seismic2D: 1200, seismic3D: 0, seismic4D: 0 },
+      { year: 1995, seismic2D: 800, seismic3D: 2400, seismic4D: 0 },
+      { year: 2000, seismic2D: 200, seismic3D: 3100, seismic4D: 0 },
+      { year: 2005, seismic2D: 0, seismic3D: 1800, seismic4D: 500 },
+      { year: 2010, seismic2D: 0, seismic3D: 900, seismic4D: 1200 },
+      { year: 2015, seismic2D: 0, seismic3D: 600, seismic4D: 1800 },
+      { year: 2020, seismic2D: 0, seismic3D: 400, seismic4D: 2100 },
+    ],
+    wellsData: [
+      { year: 1995, pesquisa: 8, avaliacao: 3 },
+      { year: 2000, pesquisa: 12, avaliacao: 6 },
+      { year: 2005, pesquisa: 6, avaliacao: 8 },
+      { year: 2010, pesquisa: 4, avaliacao: 5 },
+      { year: 2015, pesquisa: 3, avaliacao: 4 },
+      { year: 2020, pesquisa: 2, avaliacao: 3 },
+    ],
+    geologicalObjectives: ["Pinda Carbonates", "Vermelha Formation", "Pre-Salt Reservoirs", "Albian Carbonates"],
+    fields: [
+      { name: "Takula", status: "Producing", discoveryYear: 1971, peakProduction: 80000 },
+      { name: "Malongo", status: "Producing", discoveryYear: 1968, peakProduction: 60000 },
+      { name: "Limba", status: "Producing", discoveryYear: 1985, peakProduction: 25000 },
+      { name: "Wamba", status: "Producing", discoveryYear: 1990, peakProduction: 15000 },
+    ],
   },
   {
     id: "block-14",
@@ -115,6 +168,29 @@ export const oilBlocks: OilBlock[] = [
       base: [98000, 96000, 94000, 92000, 90000, 87000, 84000, 81000, 78000, 75000],
       expansion: [98000, 100000, 103000, 106000, 108000, 106000, 104000, 101000, 98000, 95000],
     },
+    areaKm2: 4000,
+    waterDepthRange: "800-1800m",
+    seismicData: [
+      { year: 1999, seismic2D: 600, seismic3D: 1800, seismic4D: 0 },
+      { year: 2003, seismic2D: 0, seismic3D: 3200, seismic4D: 0 },
+      { year: 2008, seismic2D: 0, seismic3D: 2100, seismic4D: 800 },
+      { year: 2013, seismic2D: 0, seismic3D: 1500, seismic4D: 1200 },
+      { year: 2018, seismic2D: 0, seismic3D: 800, seismic4D: 1600 },
+    ],
+    wellsData: [
+      { year: 2000, pesquisa: 5, avaliacao: 2 },
+      { year: 2005, pesquisa: 8, avaliacao: 5 },
+      { year: 2010, pesquisa: 4, avaliacao: 6 },
+      { year: 2015, pesquisa: 3, avaliacao: 4 },
+      { year: 2020, pesquisa: 2, avaliacao: 3 },
+    ],
+    geologicalObjectives: ["Oligocene Turbidites", "Miocene Channels", "Pre-Salt Plays"],
+    fields: [
+      { name: "Kuito", status: "Producing", discoveryYear: 1997, peakProduction: 50000 },
+      { name: "Benguela", status: "Producing", discoveryYear: 1998, peakProduction: 35000 },
+      { name: "Belize", status: "Producing", discoveryYear: 2001, peakProduction: 20000 },
+      { name: "Lobito", status: "Development", discoveryYear: 2003, peakProduction: 15000 },
+    ],
   },
   {
     id: "block-15",
@@ -155,6 +231,29 @@ export const oilBlocks: OilBlock[] = [
       base: [185000, 183000, 180000, 177000, 174000, 170000, 166000, 162000, 158000, 154000],
       expansion: [185000, 190000, 195000, 198000, 200000, 198000, 195000, 192000, 188000, 184000],
     },
+    areaKm2: 5500,
+    waterDepthRange: "600-1500m",
+    seismicData: [
+      { year: 1998, seismic2D: 800, seismic3D: 2200, seismic4D: 0 },
+      { year: 2002, seismic2D: 0, seismic3D: 4100, seismic4D: 0 },
+      { year: 2007, seismic2D: 0, seismic3D: 2800, seismic4D: 1000 },
+      { year: 2012, seismic2D: 0, seismic3D: 1600, seismic4D: 2200 },
+      { year: 2017, seismic2D: 0, seismic3D: 900, seismic4D: 2800 },
+    ],
+    wellsData: [
+      { year: 2000, pesquisa: 6, avaliacao: 3 },
+      { year: 2005, pesquisa: 10, avaliacao: 7 },
+      { year: 2010, pesquisa: 5, avaliacao: 8 },
+      { year: 2015, pesquisa: 4, avaliacao: 6 },
+      { year: 2020, pesquisa: 3, avaliacao: 5 },
+    ],
+    geologicalObjectives: ["Oligocene Turbidites", "Miocene Fans", "Eocene Channels", "Pre-Salt Carbonates"],
+    fields: [
+      { name: "Kizomba A", status: "Producing", discoveryYear: 1998, peakProduction: 100000 },
+      { name: "Kizomba B", status: "Producing", discoveryYear: 1999, peakProduction: 80000 },
+      { name: "Mondo", status: "Producing", discoveryYear: 2001, peakProduction: 40000 },
+      { name: "Saxi-Batuque", status: "Producing", discoveryYear: 2003, peakProduction: 30000 },
+    ],
   },
   {
     id: "block-17",
@@ -235,6 +334,33 @@ export const oilBlocks: OilBlock[] = [
       base: [115000, 113000, 111000, 108000, 106000, 103000, 100000, 97000, 94000, 91000],
       expansion: [115000, 118000, 121000, 124000, 126000, 124000, 122000, 119000, 116000, 113000],
     },
+    areaKm2: 8000,
+    waterDepthRange: "1200-2500m",
+    seismicData: [
+      { year: 1996, seismic2D: 1000, seismic3D: 3500, seismic4D: 0 },
+      { year: 2001, seismic2D: 0, seismic3D: 5200, seismic4D: 0 },
+      { year: 2006, seismic2D: 0, seismic3D: 3800, seismic4D: 1500 },
+      { year: 2011, seismic2D: 0, seismic3D: 2200, seismic4D: 3000 },
+      { year: 2016, seismic2D: 0, seismic3D: 1200, seismic4D: 4200 },
+      { year: 2021, seismic2D: 0, seismic3D: 800, seismic4D: 5000 },
+    ],
+    wellsData: [
+      { year: 1998, pesquisa: 4, avaliacao: 1 },
+      { year: 2002, pesquisa: 12, avaliacao: 6 },
+      { year: 2006, pesquisa: 8, avaliacao: 10 },
+      { year: 2010, pesquisa: 6, avaliacao: 8 },
+      { year: 2015, pesquisa: 5, avaliacao: 7 },
+      { year: 2020, pesquisa: 4, avaliacao: 6 },
+    ],
+    geologicalObjectives: ["Miocene Turbidites", "Oligocene Deep-Water Fans", "Pre-Salt Lacustrine", "Albian Carbonates"],
+    fields: [
+      { name: "Dalia", status: "Producing", discoveryYear: 1997, peakProduction: 240000 },
+      { name: "Girassol", status: "Producing", discoveryYear: 1996, peakProduction: 200000 },
+      { name: "Pazflor", status: "Producing", discoveryYear: 2000, peakProduction: 220000 },
+      { name: "CLOV", status: "Producing", discoveryYear: 2001, peakProduction: 160000 },
+      { name: "Zinia", status: "Development", discoveryYear: 2012, peakProduction: 40000 },
+      { name: "Cameia", status: "Discovery", discoveryYear: 2014 },
+    ],
   },
   {
     id: "block-31",

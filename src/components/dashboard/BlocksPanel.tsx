@@ -1,9 +1,11 @@
 import { useState, useMemo, useRef, useEffect, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { oilBlocks, type OilBlock, type WaterDepth } from "@/data/angolaBlocks";
 import { Badge } from "@/components/ui/badge";
-import { Filter, MapPin, Users, Droplets, TrendingUp, ChevronDown, ChevronUp, Map } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Filter, MapPin, Users, Droplets, TrendingUp, ChevronDown, ChevronUp, Map, ExternalLink } from "lucide-react";
 import { ConcessionMap } from "./ConcessionMap";
 
 const operators = [...new Set(oilBlocks.map(b => b.operator))].sort();
@@ -34,9 +36,10 @@ interface BlockCardProps {
   isHovered: boolean;
   onSelect: (block: OilBlock) => void;
   onHover: (id: string | null) => void;
+  onNavigate: (blockId: string) => void;
 }
 
-const BlockCard = ({ block, isSelected, isHovered, onSelect, onHover }: BlockCardProps) => {
+const BlockCard = ({ block, isSelected, isHovered, onSelect, onHover, onNavigate }: BlockCardProps) => {
   const [expanded, setExpanded] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -118,6 +121,16 @@ const BlockCard = ({ block, isSelected, isHovered, onSelect, onHover }: BlockCar
                   </div>
                 </div>
               )}
+
+              <Button
+                variant="outline"
+                size="sm"
+                className="w-full h-7 text-[10px] gap-1.5 border-primary/30 text-primary hover:bg-primary/10"
+                onClick={(e) => { e.stopPropagation(); onNavigate(block.id); }}
+              >
+                <ExternalLink className="w-3 h-3" />
+                Mais Detalhes
+              </Button>
             </div>
           )}
         </CardContent>
@@ -127,6 +140,7 @@ const BlockCard = ({ block, isSelected, isHovered, onSelect, onHover }: BlockCar
 };
 
 export const BlocksPanel = () => {
+  const navigate = useNavigate();
   const [filterOperator, setFilterOperator] = useState("all");
   const [filterBasin, setFilterBasin] = useState("all");
   const [filterPhase, setFilterPhase] = useState("all");
@@ -277,6 +291,7 @@ export const BlocksPanel = () => {
                       isHovered={hoveredBlockId === block.id}
                       onSelect={handleBlockClick}
                       onHover={handleBlockHover}
+                      onNavigate={(id) => navigate(`/block/${id}`)}
                     />
                   ))}
                 </div>
