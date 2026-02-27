@@ -27,6 +27,15 @@ export interface FieldDiscovery {
   peakProduction?: number; // BOPD
 }
 
+export interface Prospect {
+  discoveryArea: string;
+  name: string;
+  reservoir: string;
+  resourcesMMBO: number;
+  resourcesBCF?: number;
+  pos: number; // probability of success %
+}
+
 export interface OilBlock {
   id: string;
   name: string;
@@ -59,6 +68,7 @@ export interface OilBlock {
   fields?: FieldDiscovery[];
   areaKm2?: number;
   waterDepthRange?: string; // e.g., "200-1500m"
+  prospects?: Prospect[];
 }
 
 export const oilBlocks: OilBlock[] = [
@@ -211,6 +221,29 @@ export const oilBlocks: OilBlock[] = [
       { name: "Menongue-1", status: "Discovery", discoveryYear: 2007 },
       { name: "Lucapa-1", status: "Discovery", discoveryYear: 2009 },
       { name: "Malange-1", status: "Discovery", discoveryYear: 2010 },
+    ],
+    prospects: [
+      { discoveryArea: "Malange", name: "8X-CN9", reservoir: "Miocénico", resourcesMMBO: 53, pos: 45 },
+      { discoveryArea: "Malange", name: "E-CN9", reservoir: "Miocénico", resourcesMMBO: 85, pos: 36 },
+      { discoveryArea: "Malange", name: "Malanje-CN9", reservoir: "Miocénico", resourcesMMBO: 23, pos: 52 },
+      { discoveryArea: "Malange", name: "Lobito Este-CN3", reservoir: "Miocénico", resourcesMMBO: 34, pos: 14 },
+      { discoveryArea: "Gabela", name: "CN6H", reservoir: "Miocénico", resourcesMMBO: 70, resourcesBCF: 3, pos: 32 },
+      { discoveryArea: "Gabela", name: "CN3 SVF", reservoir: "Miocénico", resourcesMMBO: 55, resourcesBCF: 44, pos: 19 },
+      { discoveryArea: "Gabela", name: "CN2 CHB", reservoir: "Miocénico", resourcesMMBO: 45, resourcesBCF: 43, pos: 21 },
+      { discoveryArea: "Gabela", name: "CN1TT", reservoir: "Miocénico", resourcesMMBO: 113, resourcesBCF: 5, pos: 25 },
+      { discoveryArea: "Gabela", name: "O2", reservoir: "Miocénico", resourcesMMBO: 211, resourcesBCF: 146, pos: 14 },
+      { discoveryArea: "Gabela", name: "O1", reservoir: "Miocénico", resourcesMMBO: 122, resourcesBCF: 98, pos: 31 },
+      { discoveryArea: "Gabela", name: "C4C5", reservoir: "Pinda", resourcesMMBO: 465, resourcesBCF: 1326, pos: 15.8 },
+      { discoveryArea: "BBLT", name: "D1 (CN6L & CN7)", reservoir: "Miocénico", resourcesMMBO: 227, pos: 74 },
+      { discoveryArea: "Lobito/Landana", name: "N3N4", reservoir: "Pinda", resourcesMMBO: 92, resourcesBCF: 104, pos: 27 },
+      { discoveryArea: "Lucapa", name: "South Rim-Mio", reservoir: "Miocénico", resourcesMMBO: 801, pos: 35 },
+      { discoveryArea: "Lucapa", name: "South Rim-Olig", reservoir: "Miocénico", resourcesMMBO: 114, resourcesBCF: 82, pos: 22 },
+      { discoveryArea: "Lucapa", name: "CN5-F", reservoir: "Miocénico", resourcesMMBO: 105, resourcesBCF: 22, pos: 22 },
+      { discoveryArea: "Lucapa", name: "CN5-C", reservoir: "Miocénico", resourcesMMBO: 153, resourcesBCF: 31, pos: 22 },
+      { discoveryArea: "Tômbua-Lândana", name: "Tombua Oligocene SE", reservoir: "Oligoceno", resourcesMMBO: 272.1, pos: 40 },
+      { discoveryArea: "Gabela", name: "Gabela Main Upper Pinda", reservoir: "Pinda", resourcesMMBO: 1243.3, pos: 30 },
+      { discoveryArea: "Lucapa", name: "Lucapa West Lower Pinda", reservoir: "Pinda", resourcesMMBO: 204.1, pos: 40 },
+      { discoveryArea: "Lucapa", name: "Lucapa SE Lower Pinda", reservoir: "Pinda", resourcesMMBO: 191.8, pos: 40 },
     ],
   },
   {
