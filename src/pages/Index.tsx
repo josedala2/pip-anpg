@@ -6,11 +6,15 @@ import { BlockDetail } from "@/components/dashboard/BlockDetail";
 import { RiskPerformance } from "@/components/dashboard/RiskPerformance";
 import { StrategicForecast } from "@/components/dashboard/StrategicForecast";
 import { type OilBlock, oilBlocks } from "@/data/angolaBlocks";
-import { Maximize2, Minimize2, ChevronLeft, ChevronRight } from "lucide-react";
+import { Maximize2, Minimize2, ChevronLeft, ChevronRight, Sun, Moon } from "lucide-react";
+import { useTheme } from "@/components/ThemeProvider";
+import anpgLogoColor from "@/assets/anpg-logo-color.svg";
+import anpgLogoWhite from "@/assets/anpg-logo-white.svg";
 
 const panels = ["Overview", "Risk & Performance", "Strategic Forecast"];
 
 const Index = () => {
+  const { theme, toggleTheme } = useTheme();
   const [activePanel, setActivePanel] = useState(0);
   const [selectedBlock, setSelectedBlock] = useState<OilBlock | null>(null);
   const [filteredIds, setFilteredIds] = useState<string[]>(oilBlocks.map(b => b.id));
@@ -56,14 +60,28 @@ const Index = () => {
       {/* Header */}
       <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-border/50">
         <div className="flex items-center justify-between px-4 md:px-6 py-3">
-          <div>
-            <h1 className="text-lg md:text-xl font-bold tracking-tight">
-              <span className="text-gradient">ANGOLA</span>
-              <span className="text-muted-foreground font-light ml-2">Oil Concessions</span>
-            </h1>
-            <p className="text-[10px] md:text-xs text-muted-foreground">Executive Intelligence Dashboard • Q4 2024</p>
+          <div className="flex items-center gap-3">
+            <img
+              src={theme === "dark" ? anpgLogoWhite : anpgLogoColor}
+              alt="ANPG Logo"
+              className="h-8 md:h-10"
+            />
+            <div>
+              <h1 className="text-lg md:text-xl font-bold tracking-tight">
+                <span className="text-gradient">ANGOLA</span>
+                <span className="text-muted-foreground font-light ml-2">Oil Concessions</span>
+              </h1>
+              <p className="text-[10px] md:text-xs text-muted-foreground">Executive Intelligence Dashboard • Q4 2024</p>
+            </div>
           </div>
           <div className="flex items-center gap-2">
+            <button
+              onClick={toggleTheme}
+              className="p-2 rounded-lg hover:bg-secondary transition-colors"
+              title={theme === "dark" ? "Modo Claro" : "Modo Escuro"}
+            >
+              {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+            </button>
             <button
               onClick={() => setIsPresentation(!isPresentation)}
               className="p-2 rounded-lg hover:bg-secondary transition-colors"
