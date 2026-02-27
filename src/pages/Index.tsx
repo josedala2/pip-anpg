@@ -120,10 +120,10 @@ const Index = () => {
       </header>
 
       {/* Content */}
-      <main className="p-4 md:p-6 max-w-7xl mx-auto">
+      <main>
         <div className="panel-transition">
           {activePanel === 0 && (
-            <div className="animate-fade-in relative" style={{ height: "calc(100vh - 140px)" }}>
+            <div className="animate-fade-in relative" style={{ height: "calc(100vh - 110px)" }}>
               <ConcessionMap
                 blocks={filteredBlocks}
                 selectedBlockId={selectedBlock?.id ?? null}
@@ -140,6 +140,7 @@ const Index = () => {
             </div>
           )}
 
+          <div className="p-4 md:p-6 max-w-7xl mx-auto">
           {activePanel === 1 && (
             <div className="animate-fade-in">
               <BlocksPanel />
@@ -169,6 +170,7 @@ const Index = () => {
               <StrategicForecast />
             </div>
           )}
+          </div>
         </div>
       </main>
 
