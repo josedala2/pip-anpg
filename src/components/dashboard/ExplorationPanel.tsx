@@ -177,10 +177,10 @@ export const ExplorationPanel = () => {
       {/* Key Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[
-          { icon: Layers, label: "Sísmica 2D", value: `${nationalStats.seismicAcquired2D.toLocaleString()} km`, color: "text-warning" },
-          { icon: Layers, label: "Sísmica 3D", value: `${nationalStats.seismicAcquired3D.toLocaleString()} km²`, color: "text-success" },
-          { icon: Target, label: "Taxa de Sucesso", value: `${nationalStats.successRate}%`, color: "text-primary" },
-          { icon: Droplets, label: "Descoberta (STOOIP)", value: `${(nationalStats.discoverySTOOIP / 1000).toFixed(0)}B bbl`, color: "text-primary" },
+          { icon: Layers, label: "Sísmica 2D (Bloco 0)", value: `${nationalStats.seismicAcquired2D.toLocaleString()} km`, color: "text-warning" },
+          { icon: Layers, label: "Sísmica 3D (Bloco 0)", value: `${nationalStats.seismicAcquired3D.toLocaleString()} km²`, color: "text-success" },
+          { icon: Target, label: "Taxa de Sucesso (Bloco 0)", value: `${nationalStats.successRate}%`, color: "text-primary" },
+          { icon: Droplets, label: "Descoberta STOOIP (Bloco 0)", value: `${(nationalStats.discoverySTOOIP / 1000).toFixed(0)}B bbl`, color: "text-primary" },
         ].map(s => (
           <Card key={s.label} className="glass-card">
             <CardContent className="p-4 flex items-center gap-3">
@@ -198,7 +198,7 @@ export const ExplorationPanel = () => {
       <div className="grid grid-cols-3 gap-3">
         <Card className="glass-card">
           <CardContent className="p-4 text-center">
-            <div className="text-xs text-muted-foreground mb-1">Total Poços Exploração</div>
+            <div className="text-xs text-muted-foreground mb-1">Total Poços Exploração (Bloco 0)</div>
             <div className="text-3xl font-bold font-mono">{nationalStats.totalExplorationWells}</div>
           </CardContent>
         </Card>
@@ -219,7 +219,7 @@ export const ExplorationPanel = () => {
       {/* Seismic Chart */}
       <Card className="glass-card">
         <CardHeader className="p-4 pb-2">
-          <CardTitle className="text-sm">Sísmica Adquirida (1960–2012)</CardTitle>
+          <CardTitle className="text-sm">Sísmica Adquirida — Bloco 0 (1960–2012)</CardTitle>
         </CardHeader>
         <CardContent className="p-4 pt-0">
           <ResponsiveContainer width="100%" height={280}>
@@ -240,7 +240,7 @@ export const ExplorationPanel = () => {
       {/* Wells Chart */}
       <Card className="glass-card">
         <CardHeader className="p-4 pb-2">
-          <CardTitle className="text-sm">Poços de Avaliação vs Pesquisa (1966–2025)</CardTitle>
+          <CardTitle className="text-sm">Poços de Avaliação vs Pesquisa — Bloco 0 (1966–2025)</CardTitle>
         </CardHeader>
         <CardContent className="p-4 pt-0">
           <ResponsiveContainer width="100%" height={280}>
@@ -261,7 +261,7 @@ export const ExplorationPanel = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Card className="glass-card">
           <CardHeader className="p-4 pb-2">
-            <CardTitle className="text-sm">Recursos</CardTitle>
+            <CardTitle className="text-sm">Recursos — Bloco 0</CardTitle>
           </CardHeader>
           <CardContent className="p-4 pt-2 space-y-3">
             <div className="glass-card p-3 rounded-lg">
@@ -287,7 +287,7 @@ export const ExplorationPanel = () => {
           <CardHeader className="p-4 pb-2">
             <CardTitle className="text-sm flex items-center gap-2">
               <AlertTriangle className="w-4 h-4 text-warning" />
-              Desafios
+              Desafios — Bloco 0
             </CardTitle>
           </CardHeader>
           <CardContent className="p-4 pt-2">
