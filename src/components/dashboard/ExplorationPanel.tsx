@@ -349,6 +349,9 @@ export const ExplorationPanel = () => {
         </Card>
       )}
 
+      {/* Summary Table */}
+      <ExplorationSummaryTable blocks={filteredBlocks} scopeLabel={scopeLabel} />
+
       {/* Challenges */}
       <Card className="glass-card">
         <CardHeader className="p-4 pb-2">
@@ -374,9 +377,6 @@ export const ExplorationPanel = () => {
           </ul>
         </CardContent>
       </Card>
-
-      {/* Summary Table */}
-      <ExplorationSummaryTable blocks={filteredBlocks} scopeLabel={scopeLabel} />
     </div>
   );
 };
