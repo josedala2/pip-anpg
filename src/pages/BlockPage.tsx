@@ -1,5 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { oilBlocks } from "@/data/angolaBlocks";
+import { ProspectsTable } from "@/components/dashboard/ProspectsTable";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -306,6 +307,9 @@ const BlockPage = () => {
                 </CardContent>
               </Card>
             )}
+
+            {/* Prospects Table */}
+            <ProspectsTable blocks={[block]} scopeLabel={block.name} />
           </TabsContent>
 
           {/* Tab 4: Produção */}
