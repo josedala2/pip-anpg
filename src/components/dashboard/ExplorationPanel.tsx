@@ -6,6 +6,7 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGri
 import { AlertTriangle, Target, Layers, Droplets, Filter, ChevronDown } from "lucide-react";
 import { ExplorationSummaryTable } from "./ExplorationSummaryTable";
 import { ProspectsTable } from "./ProspectsTable";
+import { ProspectsSummary } from "./ProspectsSummary";
 import { Badge } from "@/components/ui/badge";
 import {
   Collapsible,
@@ -364,6 +365,9 @@ export const ExplorationPanel = () => {
 
       {/* Summary Table */}
       <ExplorationSummaryTable blocks={filteredBlocks} scopeLabel={scopeLabel} />
+
+      {/* Prospects Summary - Consolidated by Reservoir/Basin */}
+      <ProspectsSummary blocks={filteredBlocks} scopeLabel={scopeLabel} />
 
       {/* Prospects Table */}
       <ProspectsTable blocks={filteredBlocks} scopeLabel={scopeLabel} />
