@@ -16,28 +16,178 @@ const phaseColorMap: Record<BlockPhase, string> = {
   Suspended: "hsl(var(--suspended))",
 };
 
-// Compute better map positions based on water depth zones
-const getZonePosition = (block: OilBlock, index: number, total: number) => {
-  // Use the block's mapPosition but remap into proper zones
-  const pos = block.mapPosition;
+// ── Real geographic coordinates for Angola oil blocks ──
+// Based on ANPG concession map: lat ~4.5°S–17.5°S, lon ~8°E–24°E
+// SVG viewBox: 0 0 200 250
+// Projection: lon → x, lat → y (inverted, south = larger y)
 
-  switch (block.waterDepth) {
-    case "Onshore":
-      // Right side of map, inland
-      return { x: 52 + (pos.x % 20), y: 20 + ((index * 7) % 70) };
-    case "Shallow Water":
-      // Near coastline
-      return { x: 28 + (pos.x % 12), y: 25 + ((index * 8) % 65) };
-    case "Deep Water":
-      // Middle offshore
-      return { x: 14 + (pos.x % 10), y: 30 + ((index * 9) % 55) };
-    case "Ultra-Deep Water":
-      // Far offshore
-      return { x: 4 + (pos.x % 8), y: 35 + ((index * 8) % 50) };
-    default:
-      return pos;
-  }
+const LON_MIN = 7.5;
+const LON_MAX = 24.5;
+const LAT_MIN = -4.0;  // northernmost (Cabinda)
+const LAT_MAX = -17.5; // southernmost (Namibe)
+
+const geoToSvg = (lon: number, lat: number) => ({
+  x: ((lon - LON_MIN) / (LON_MAX - LON_MIN)) * 200,
+  y: ((lat - LAT_MIN) / (LAT_MAX - LAT_MIN)) * 250,
+});
+
+// Real approximate positions for each block (lon, lat)
+const blockGeoPositions: Record<string, [number, number]> = {
+  // Cabinda onshore
+  "cabinda-norte":  [12.25, -5.1],
+  "cabinda-centro": [12.30, -5.35],
+  "cabinda-sul":    [12.28, -5.55],
+  "fs-associacoes": [12.15, -5.2],
+  "fst-associacoes":[12.18, -5.4],
+  // Congo onshore (CON blocks)
+  "block-con1":     [13.2, -6.0],
+  "block-con2":     [13.5, -6.1],
+  "block-con3":     [13.8, -6.2],
+  "block-con4":     [13.3, -6.35],
+  "block-con5":     [13.6, -6.4],
+  "block-con6":     [13.9, -6.3],
+  "block-con8":     [14.1, -6.15],
+  // Kwanza onshore (KON blocks)
+  "block-kon2":     [14.8, -8.5],
+  "block-kon5":     [15.2, -8.8],
+  "block-kon6":     [15.5, -9.0],
+  "block-kon8":     [15.8, -9.2],
+  "block-kon12":    [15.0, -9.5],
+  "block-kon15":    [15.3, -9.8],
+  "block-kon16":    [15.6, -10.0],
+  "block-kon17":    [15.9, -10.2],
+  "block-kon19":    [15.4, -10.5],
+  "block-kon20":    [15.7, -10.7],
+  // Shallow water
+  "block-0":        [11.8, -5.8],
+  "block-1":        [12.0, -6.5],  // Block 1/14
+  "block-2-05":     [12.3, -7.0],
+  "block-3":        [12.5, -6.3],  // Block 3/05
+  "block-3-05a":    [12.7, -6.5],
+  "block-3-24":     [12.6, -6.8],
+  "block-3-15":     [12.4, -7.3],
+  "block-2-15":     [12.1, -7.5],
+  "block-4-05":     [13.0, -7.2],
+  "block-5-06":     [12.8, -8.2],
+  "block-6-24":     [12.6, -8.6],
+  // Deep water
+  "block-14":       [11.2, -6.0],
+  "block-15":       [10.8, -6.5],
+  "block-15-06":    [11.0, -6.8],
+  "block-15-14":    [11.3, -6.3],
+  "block-16":       [10.5, -7.5],
+  "block-18":       [10.2, -7.0],
+  "block-20":       [10.8, -8.5],
+  "block-21":       [10.5, -9.0],
+  // Ultra-deep water
+  "block-17":       [9.5, -6.8],
+  "block-31":       [9.0, -7.5],
+  "block-31-21":    [9.2, -8.0],
+  "block-32":       [9.5, -8.5],
+  "block-48":       [9.0, -13.5],
+  "block-44":       [8.8, -14.5],
+  "block-45":       [9.0, -15.0],
+  "block-46":       [8.5, -15.5],
+  "block-47":       [8.8, -16.0],
+  "block-49":       [8.2, -16.5],
+  "block-50":       [8.5, -17.0],
 };
+
+const getBlockSvgPos = (block: OilBlock) => {
+  const geo = blockGeoPositions[block.id];
+  if (geo) return geoToSvg(geo[0], geo[1]);
+  // Fallback: use mapPosition scaled
+  return { x: block.mapPosition.x * 2, y: block.mapPosition.y * 2.5 };
+};
+
+// Angola coastline as real coordinates → SVG path
+const coastlinePoints: [number, number][] = [
+  [12.3, -4.4],   // Cabinda north
+  [12.5, -4.5],
+  [12.4, -5.0],
+  [12.2, -5.5],
+  [12.0, -5.8],   // Cabinda south / Congo river
+  [12.3, -5.9],   // North of mainland
+  [13.0, -5.8],
+  [12.8, -6.2],
+  [12.5, -6.5],
+  [12.8, -7.0],
+  [13.0, -7.5],
+  [13.2, -8.0],
+  [13.3, -8.5],
+  [13.5, -8.8],   // Luanda area
+  [13.3, -9.2],
+  [13.0, -9.8],
+  [12.8, -10.5],
+  [13.2, -11.2],
+  [13.5, -12.0],
+  [13.3, -12.5],  // Lobito / Benguela
+  [12.8, -13.0],
+  [12.5, -13.5],
+  [12.2, -14.0],
+  [12.0, -14.5],
+  [11.8, -15.0],  // Namibe
+  [11.7, -15.5],
+  [11.8, -16.0],
+  [12.0, -16.5],
+  [12.2, -17.0],
+  [12.5, -17.3],
+];
+
+const coastlineSvg = coastlinePoints.map(([lon, lat]) => {
+  const p = geoToSvg(lon, lat);
+  return `${p.x},${p.y}`;
+}).join(" L");
+
+// Simplified Angola border (inland)
+const borderPoints: [number, number][] = [
+  [12.3, -4.4],
+  [13.5, -4.3],
+  [16.0, -4.4],
+  [18.5, -4.5],
+  [21.0, -5.5],
+  [22.5, -6.0],
+  [24.0, -6.5],
+  [24.0, -8.0],
+  [23.5, -9.0],
+  [22.0, -10.0],
+  [22.0, -11.0],
+  [24.0, -11.5],
+  [24.0, -13.0],
+  [23.0, -13.5],
+  [22.0, -14.0],
+  [21.0, -15.0],
+  [20.0, -16.0],
+  [18.0, -17.0],
+  [15.0, -17.3],
+  [12.5, -17.3],
+];
+
+const borderSvg = borderPoints.map(([lon, lat]) => {
+  const p = geoToSvg(lon, lat);
+  return `${p.x},${p.y}`;
+}).join(" L");
+
+// Cabinda enclave
+const cabindaPoints: [number, number][] = [
+  [12.1, -4.4], [12.8, -4.3], [13.1, -4.5], [13.0, -5.0],
+  [12.5, -5.3], [12.2, -5.6], [12.0, -5.8], [11.8, -5.3], [12.0, -4.8], [12.1, -4.4],
+];
+const cabindaSvg = cabindaPoints.map(([lon, lat]) => {
+  const p = geoToSvg(lon, lat);
+  return `${p.x},${p.y}`;
+}).join(" L");
+
+// Depth contour lines (approximate bathymetry)
+const makeContour = (offsetLon: number, points: [number, number][]) =>
+  points.map(([lon, lat]) => {
+    const p = geoToSvg(lon - offsetLon, lat);
+    return `${p.x},${p.y}`;
+  }).join(" L");
+
+const shallowContour = makeContour(0.8, coastlinePoints);
+const deepContour = makeContour(2.0, coastlinePoints);
+const ultraDeepContour = makeContour(3.5, coastlinePoints);
 
 export const ConcessionMap = ({
   blocks,
@@ -48,20 +198,9 @@ export const ConcessionMap = ({
 }: ConcessionMapProps) => {
   const [tooltip, setTooltip] = useState<{ block: OilBlock; x: number; y: number } | null>(null);
 
-  // Precompute positions
   const blockPositions = useMemo(() => {
-    const depthGroups: Record<string, OilBlock[]> = {};
-    blocks.forEach(b => {
-      if (!depthGroups[b.waterDepth]) depthGroups[b.waterDepth] = [];
-      depthGroups[b.waterDepth].push(b);
-    });
-
     const positions: Record<string, { x: number; y: number }> = {};
-    Object.entries(depthGroups).forEach(([depth, group]) => {
-      group.forEach((b, i) => {
-        positions[b.id] = getZonePosition(b, i, group.length);
-      });
-    });
+    blocks.forEach(b => { positions[b.id] = getBlockSvgPos(b); });
     return positions;
   }, [blocks]);
 
@@ -77,62 +216,83 @@ export const ConcessionMap = ({
 
   return (
     <div className="relative w-full h-full min-h-[500px]">
-      <svg viewBox="-5 0 110 105" className="w-full h-full" fill="none">
-        {/* Ocean background */}
-        <rect x="-5" y="0" width="50" height="105" fill="hsl(var(--primary) / 0.04)" />
+      <svg viewBox="-10 -5 220 260" className="w-full h-full" fill="none" preserveAspectRatio="xMidYMid meet">
+        {/* Ocean background gradient */}
+        <defs>
+          <linearGradient id="ocean-grad" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0.1" />
+            <stop offset="60%" stopColor="hsl(var(--primary))" stopOpacity="0.02" />
+            <stop offset="100%" stopColor="transparent" stopOpacity="0" />
+          </linearGradient>
+        </defs>
+        <rect x="-10" y="-5" width="220" height="260" fill="url(#ocean-grad)" />
 
-        {/* Depth zone bands */}
-        <rect x="-5" y="0" width="14" height="105" fill="hsl(var(--primary) / 0.08)" rx="1" />
-        <rect x="9" y="0" width="14" height="105" fill="hsl(var(--primary) / 0.06)" rx="1" />
-        <rect x="23" y="0" width="14" height="105" fill="hsl(var(--primary) / 0.03)" rx="1" />
+        {/* Bathymetry contours */}
+        <path d={`M${ultraDeepContour}`} fill="none" stroke="hsl(var(--primary) / 0.12)" strokeWidth="0.3" />
+        <path d={`M${deepContour}`} fill="none" stroke="hsl(var(--primary) / 0.15)" strokeWidth="0.3" />
+        <path d={`M${shallowContour}`} fill="none" stroke="hsl(var(--primary) / 0.2)" strokeWidth="0.4" />
 
-        {/* Zone labels */}
-        <text x="2" y="8" fill="hsl(var(--muted-foreground))" fontSize="2.5" fontWeight="600" opacity="0.5">ULTRA-PROFUNDAS</text>
-        <text x="14" y="8" fill="hsl(var(--muted-foreground))" fontSize="2.5" fontWeight="600" opacity="0.5">PROFUNDAS</text>
-        <text x="28" y="8" fill="hsl(var(--muted-foreground))" fontSize="2.5" fontWeight="600" opacity="0.5">ÁGUAS RASAS</text>
-        <text x="55" y="8" fill="hsl(var(--muted-foreground))" fontSize="2.5" fontWeight="600" opacity="0.5">ONSHORE</text>
-
-        {/* Angola coastline (simplified) */}
+        {/* Landmass */}
         <path
-          d="M42 12 L44 15 L45 20 L46 28 L47 35 L48 42 L47 50 L46 58 L44 65 L42 72 L40 78 L38 84 L36 90 L34 95 L32 100"
-          fill="none"
+          d={`M${coastlineSvg} L${borderSvg} Z`}
+          fill="hsl(var(--secondary) / 0.35)"
           stroke="hsl(var(--border))"
-          strokeWidth="0.8"
-          strokeDasharray="2 1"
-          opacity="0.6"
+          strokeWidth="0.6"
         />
 
-        {/* Angola landmass (simplified) */}
+        {/* Cabinda enclave */}
         <path
-          d="M42 12 L55 10 L70 12 L80 15 L85 20 L88 30 L86 42 L82 55 L78 65 L72 75 L65 82 L58 88 L50 93 L42 96 L36 98 L34 95 L36 90 L38 84 L40 78 L42 72 L44 65 L46 58 L47 50 L48 42 L47 35 L46 28 L45 20 L44 15 Z"
+          d={`M${cabindaSvg}`}
           fill="hsl(var(--secondary) / 0.4)"
           stroke="hsl(var(--border))"
           strokeWidth="0.5"
         />
 
-        {/* Cabinda enclave */}
-        <path
-          d="M44 12 L50 11 L52 14 L50 18 L46 19 L44 16 Z"
-          fill="hsl(var(--secondary) / 0.5)"
-          stroke="hsl(var(--border))"
-          strokeWidth="0.5"
-        />
+        {/* Coastline overlay */}
+        <path d={`M${coastlineSvg}`} fill="none" stroke="hsl(var(--primary) / 0.3)" strokeWidth="0.8" />
 
-        {/* Cabinda label */}
-        <text x="47" y="16" textAnchor="middle" fill="hsl(var(--muted-foreground))" fontSize="2" opacity="0.6">Cabinda</text>
-
-        {/* Province labels */}
-        <text x="60" y="30" fill="hsl(var(--muted-foreground))" fontSize="2" opacity="0.4">Zaire</text>
-        <text x="68" y="42" fill="hsl(var(--muted-foreground))" fontSize="2" opacity="0.4">Uíge</text>
-        <text x="58" y="55" fill="hsl(var(--muted-foreground))" fontSize="2" opacity="0.4">Luanda</text>
-        <text x="62" y="68" fill="hsl(var(--muted-foreground))" fontSize="2" opacity="0.4">Kwanza</text>
-        <text x="55" y="82" fill="hsl(var(--muted-foreground))" fontSize="2" opacity="0.4">Benguela</text>
-        <text x="48" y="95" fill="hsl(var(--muted-foreground))" fontSize="2" opacity="0.4">Namibe</text>
+        {/* Province/City labels */}
+        {[
+          { name: "Cabinda", lon: 12.5, lat: -4.7 },
+          { name: "Soyo", lon: 13.2, lat: -5.9 },
+          { name: "Luanda", lon: 13.8, lat: -8.8 },
+          { name: "Lobito", lon: 13.8, lat: -12.3 },
+          { name: "Benguela", lon: 14.0, lat: -12.6 },
+          { name: "Namibe", lon: 12.5, lat: -15.2 },
+        ].map(city => {
+          const p = geoToSvg(city.lon, city.lat);
+          return (
+            <g key={city.name}>
+              <circle cx={p.x} cy={p.y} r="1" fill="hsl(var(--foreground))" opacity="0.3" />
+              <text x={p.x + 3} y={p.y + 1} fill="hsl(var(--muted-foreground))" fontSize="4" opacity="0.5" fontWeight="500">{city.name}</text>
+            </g>
+          );
+        })}
 
         {/* Basin labels */}
-        <text x="20" y="22" fill="hsl(var(--primary))" fontSize="2.2" fontWeight="500" opacity="0.4">B. do Congo</text>
-        <text x="16" y="55" fill="hsl(var(--primary))" fontSize="2.2" fontWeight="500" opacity="0.4">B. do Kwanza</text>
-        <text x="12" y="88" fill="hsl(var(--primary))" fontSize="2.2" fontWeight="500" opacity="0.4">B. do Namibe</text>
+        {[
+          { name: "Bacia do Congo", lon: 10.0, lat: -5.5 },
+          { name: "Bacia do Kwanza", lon: 10.5, lat: -9.5 },
+          { name: "Bacia do Namibe", lon: 9.5, lat: -14.5 },
+        ].map(basin => {
+          const p = geoToSvg(basin.lon, basin.lat);
+          return (
+            <text key={basin.name} x={p.x} y={p.y} fill="hsl(var(--primary))" fontSize="4.5" fontWeight="600" opacity="0.25" textAnchor="middle">{basin.name}</text>
+          );
+        })}
+
+        {/* Depth zone labels along left edge */}
+        {[
+          { name: "Ultra-Profundas", lon: 8.2, lat: -5.0 },
+          { name: "Profundas", lon: 9.8, lat: -5.0 },
+          { name: "Águas Rasas", lon: 11.5, lat: -5.0 },
+        ].map(z => {
+          const p = geoToSvg(z.lon, z.lat);
+          return (
+            <text key={z.name} x={p.x} y={p.y} fill="hsl(var(--muted-foreground))" fontSize="3" fontWeight="600" opacity="0.3" textAnchor="middle"
+              transform={`rotate(-90, ${p.x}, ${p.y})`}>{z.name}</text>
+          );
+        })}
 
         {/* Block dots */}
         {blocks.map((block) => {
@@ -142,7 +302,8 @@ export const ConcessionMap = ({
           const isSelected = selectedBlockId === block.id;
           const isHovered = hoveredBlockId === block.id;
           const isHighlighted = isSelected || isHovered;
-          const r = isHighlighted ? 2.8 : block.dailyProduction > 0 ? 2.0 : 1.5;
+          const baseR = block.dailyProduction > 100000 ? 3.5 : block.dailyProduction > 0 ? 2.5 : 1.8;
+          const r = isHighlighted ? baseR + 1.2 : baseR;
 
           return (
             <g
@@ -152,47 +313,37 @@ export const ConcessionMap = ({
               onMouseEnter={() => handleMouseEnter(block, pos.x, pos.y)}
               onMouseLeave={handleMouseLeave}
             >
-              {/* Hit area */}
-              <circle cx={pos.x} cy={pos.y} r={r + 2} fill="transparent" />
+              <circle cx={pos.x} cy={pos.y} r={r + 3} fill="transparent" />
 
-              {/* Selection ring */}
               {isHighlighted && (
                 <circle
-                  cx={pos.x}
-                  cy={pos.y}
-                  r={r + 2}
+                  cx={pos.x} cy={pos.y} r={r + 2.5}
                   fill="none"
                   stroke={phaseColorMap[block.phase]}
-                  strokeWidth="0.4"
-                  opacity="0.6"
+                  strokeWidth="0.5"
+                  opacity="0.5"
                   className={isSelected ? "animate-pulse" : ""}
                 />
               )}
 
-              {/* Block dot */}
               <circle
-                cx={pos.x}
-                cy={pos.y}
-                r={r}
+                cx={pos.x} cy={pos.y} r={r}
                 fill={phaseColorMap[block.phase]}
-                opacity={isHighlighted ? 1 : 0.75}
+                opacity={isHighlighted ? 1 : 0.7}
                 style={{
-                  filter: isHighlighted
-                    ? `drop-shadow(0 0 4px ${phaseColorMap[block.phase]})`
-                    : "none",
+                  filter: isHighlighted ? `drop-shadow(0 0 5px ${phaseColorMap[block.phase]})` : "none",
                 }}
                 className="transition-all duration-200"
               />
 
-              {/* Label (only for selected/hovered or large producers) */}
-              {(isHighlighted || block.dailyProduction > 50000) && (
+              {(isHighlighted || block.dailyProduction > 100000) && (
                 <text
                   x={pos.x}
-                  y={pos.y - r - 1.5}
+                  y={pos.y - r - 2}
                   textAnchor="middle"
                   fill="hsl(var(--foreground))"
-                  fontSize="2"
-                  fontWeight="600"
+                  fontSize="3.5"
+                  fontWeight="700"
                   className="pointer-events-none"
                 >
                   {block.name}
@@ -208,31 +359,26 @@ export const ConcessionMap = ({
         <div
           className="absolute z-50 glass-card p-2.5 rounded-lg shadow-lg border border-border/50 pointer-events-none min-w-[160px]"
           style={{
-            left: `${(tooltip.x / 105) * 100}%`,
-            top: `${(tooltip.y / 105) * 100 - 12}%`,
+            left: `${Math.min(85, Math.max(15, (tooltip.x / 210) * 100))}%`,
+            top: `${Math.max(5, (tooltip.y / 255) * 100 - 10)}%`,
             transform: "translateX(-50%)",
           }}
         >
           <div className="font-bold text-xs">{tooltip.block.name}</div>
           <div className="text-[10px] text-muted-foreground">{tooltip.block.operator}</div>
           <div className="flex items-center gap-2 mt-1">
-            <span
-              className="w-2 h-2 rounded-full"
-              style={{ backgroundColor: phaseColorMap[tooltip.block.phase] }}
-            />
-            <span className="text-[10px]">{tooltip.block.phase}</span>
+            <span className="w-2 h-2 rounded-full" style={{ backgroundColor: phaseColorMap[tooltip.block.phase] }} />
+            <span className="text-[10px]">{tooltip.block.phase} · {tooltip.block.waterDepth}</span>
             {tooltip.block.dailyProduction > 0 && (
-              <span className="text-[10px] font-mono ml-auto">
-                {(tooltip.block.dailyProduction / 1000).toFixed(0)}k BOPD
-              </span>
+              <span className="text-[10px] font-mono ml-auto">{(tooltip.block.dailyProduction / 1000).toFixed(0)}k BOPD</span>
             )}
           </div>
           {tooltip.block.concession.length > 0 && (
             <div className="mt-1 pt-1 border-t border-border/30">
               {tooltip.block.concession.slice(0, 3).map((p, i) => (
-                <div key={i} className="text-[9px] text-muted-foreground flex justify-between">
-                  <span>{p.name}{p.isOperator ? " (OP)" : ""}</span>
-                  <span className="font-mono">{p.share.toFixed(0)}%</span>
+                <div key={i} className="text-[9px] text-muted-foreground flex justify-between gap-3">
+                  <span className="truncate">{p.name}{p.isOperator ? " (OP)" : ""}</span>
+                  <span className="font-mono shrink-0">{p.share.toFixed(0)}%</span>
                 </div>
               ))}
               {tooltip.block.concession.length > 3 && (
