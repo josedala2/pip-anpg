@@ -1,12 +1,10 @@
 import { useState, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { seismicHistory, wellsHistory, nationalStats, oilBlocks } from "@/data/angolaBlocks";
+import { oilBlocks } from "@/data/angolaBlocks";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend } from "recharts";
-import { AlertTriangle, Target, Layers, Droplets, Filter, ChevronDown, ChevronRight } from "lucide-react";
+import { AlertTriangle, Target, Layers, Droplets, Filter, ChevronDown } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
 import {
   Collapsible,
   CollapsibleContent,
@@ -23,14 +21,6 @@ const phaseColor = (phase: string) => {
     default: return "bg-muted text-muted-foreground";
   }
 };
-
-const seismicChartData = seismicHistory
-  .filter(d => d.seismic2D > 0 || d.seismic3D > 0 || d.seismic4D > 0)
-  .map(d => ({ year: d.year.toString(), "2D": d.seismic2D, "3D": d.seismic3D, "4D": d.seismic4D }));
-
-const wellsChartData = wellsHistory
-  .filter(d => d.pesquisa > 0 || d.avaliacao > 0)
-  .map(d => ({ year: d.year.toString(), Pesquisa: d.pesquisa, Avaliação: d.avaliacao }));
 
 const tooltipStyle = {
   background: "hsl(var(--card))",
@@ -73,7 +63,75 @@ export const ExplorationPanel = () => {
     return { totalProd, totalReserves, totalInvest, count: filteredBlocks.length };
   }, [filteredBlocks]);
 
+  // Aggregate seismic data from all filtered blocks
+  const seismicChartData = useMemo(() => {
+    const yearMap: Record<number, { s2D: number; s3D: number; s4D: number }> = {};
+    filteredBlocks.forEach(b => {
+      (b.seismicData || []).forEach(d => {
+        if (!yearMap[d.year]) yearMap[d.year] = { s2D: 0, s3D: 0, s4D: 0 };
+        yearMap[d.year].s2D += d.seismic2D;
+        yearMap[d.year].s3D += d.seismic3D;
+        yearMap[d.year].s4D += d.seismic4D;
+      });
+    });
+    return Object.entries(yearMap)
+      .map(([year, v]) => ({ year, "2D": v.s2D, "3D": v.s3D, "4D": v.s4D }))
+      .filter(d => d["2D"] > 0 || d["3D"] > 0 || d["4D"] > 0)
+      .sort((a, b) => Number(a.year) - Number(b.year));
+  }, [filteredBlocks]);
+
+  // Aggregate wells data from all filtered blocks
+  const wellsChartData = useMemo(() => {
+    const yearMap: Record<number, { pesquisa: number; avaliacao: number }> = {};
+    filteredBlocks.forEach(b => {
+      (b.wellsData || []).forEach(d => {
+        if (!yearMap[d.year]) yearMap[d.year] = { pesquisa: 0, avaliacao: 0 };
+        yearMap[d.year].pesquisa += d.pesquisa;
+        yearMap[d.year].avaliacao += d.avaliacao;
+      });
+    });
+    return Object.entries(yearMap)
+      .map(([year, v]) => ({ year, Pesquisa: v.pesquisa, Avaliação: v.avaliacao }))
+      .filter(d => d.Pesquisa > 0 || d.Avaliação > 0)
+      .sort((a, b) => Number(a.year) - Number(b.year));
+  }, [filteredBlocks]);
+
+  // Aggregate exploration stats from filtered blocks
+  const explorationStats = useMemo(() => {
+    let total2D = 0, total3D = 0, total4D = 0;
+    let totalWells = 0, pesquisaWells = 0, avaliacaoWells = 0;
+    const allObjectives = new Set<string>();
+
+    filteredBlocks.forEach(b => {
+      (b.seismicData || []).forEach(d => {
+        total2D += d.seismic2D;
+        total3D += d.seismic3D;
+        total4D += d.seismic4D;
+      });
+      (b.wellsData || []).forEach(d => {
+        pesquisaWells += d.pesquisa;
+        avaliacaoWells += d.avaliacao;
+        totalWells += d.pesquisa + d.avaliacao;
+      });
+      (b.geologicalObjectives || []).forEach(o => allObjectives.add(o));
+    });
+
+    const blocksWithWells = filteredBlocks.filter(b => b.wellsData && b.wellsData.length > 0);
+    const blocksWithFields = filteredBlocks.filter(b => b.fields && b.fields.length > 0);
+    const totalDiscoveries = blocksWithFields.reduce((s, b) => s + (b.fields?.length || 0), 0);
+    const successRate = totalWells > 0 ? Math.round((totalDiscoveries / totalWells) * 100) : 0;
+
+    return {
+      total2D, total3D, total4D,
+      totalWells, pesquisaWells, avaliacaoWells,
+      successRate: Math.min(successRate, 100),
+      geologicalObjectives: [...allObjectives].sort(),
+      totalReserves: filteredBlocks.reduce((s, b) => s + b.estimatedReserves, 0),
+    };
+  }, [filteredBlocks]);
+
   const hasFilters = filterOperator !== "all" || filterBasin !== "all" || filterPhase !== "all";
+  const scopeLabel = hasFilters ? "Blocos Filtrados" : "Todos os Blocos";
 
   return (
     <div className="space-y-6">
@@ -177,10 +235,10 @@ export const ExplorationPanel = () => {
       {/* Key Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[
-          { icon: Layers, label: "Sísmica 2D (Bloco 0)", value: `${nationalStats.seismicAcquired2D.toLocaleString()} km`, color: "text-warning" },
-          { icon: Layers, label: "Sísmica 3D (Bloco 0)", value: `${nationalStats.seismicAcquired3D.toLocaleString()} km²`, color: "text-success" },
-          { icon: Target, label: "Taxa de Sucesso (Bloco 0)", value: `${nationalStats.successRate}%`, color: "text-primary" },
-          { icon: Droplets, label: "Descoberta STOOIP (Bloco 0)", value: `${(nationalStats.discoverySTOOIP / 1000).toFixed(0)}B bbl`, color: "text-primary" },
+          { icon: Layers, label: "Sísmica 2D", value: `${explorationStats.total2D.toLocaleString()} km`, color: "text-warning" },
+          { icon: Layers, label: "Sísmica 3D", value: `${explorationStats.total3D.toLocaleString()} km²`, color: "text-success" },
+          { icon: Target, label: "Taxa de Sucesso", value: `${explorationStats.successRate}%`, color: "text-primary" },
+          { icon: Droplets, label: "Reservas Totais", value: `${explorationStats.totalReserves.toLocaleString()} MMbbl`, color: "text-primary" },
         ].map(s => (
           <Card key={s.label} className="glass-card">
             <CardContent className="p-4 flex items-center gap-3">
@@ -198,86 +256,107 @@ export const ExplorationPanel = () => {
       <div className="grid grid-cols-3 gap-3">
         <Card className="glass-card">
           <CardContent className="p-4 text-center">
-            <div className="text-xs text-muted-foreground mb-1">Total Poços Exploração (Bloco 0)</div>
-            <div className="text-3xl font-bold font-mono">{nationalStats.totalExplorationWells}</div>
+            <div className="text-xs text-muted-foreground mb-1">Total Poços Exploração</div>
+            <div className="text-3xl font-bold font-mono">{explorationStats.totalWells}</div>
           </CardContent>
         </Card>
         <Card className="glass-card">
           <CardContent className="p-4 text-center">
             <div className="text-xs text-muted-foreground mb-1">Pesquisa</div>
-            <div className="text-3xl font-bold font-mono text-primary">{nationalStats.pesquisaWells}</div>
+            <div className="text-3xl font-bold font-mono text-primary">{explorationStats.pesquisaWells}</div>
           </CardContent>
         </Card>
         <Card className="glass-card">
           <CardContent className="p-4 text-center">
             <div className="text-xs text-muted-foreground mb-1">Avaliação</div>
-            <div className="text-3xl font-bold font-mono text-warning">{nationalStats.avaliacaoWells}</div>
+            <div className="text-3xl font-bold font-mono text-warning">{explorationStats.avaliacaoWells}</div>
           </CardContent>
         </Card>
       </div>
 
+      {/* Scope indicator */}
+      <div className="flex items-center gap-2">
+        <Badge variant="outline" className="text-[10px] bg-primary/10 text-primary border-primary/30">
+          {scopeLabel} ({stats.count})
+        </Badge>
+        {seismicChartData.length === 0 && wellsChartData.length === 0 && (
+          <span className="text-xs text-muted-foreground">Sem dados de exploração disponíveis para esta selecção</span>
+        )}
+      </div>
+
       {/* Seismic Chart */}
-      <Card className="glass-card">
-        <CardHeader className="p-4 pb-2">
-          <CardTitle className="text-sm">Sísmica Adquirida — Bloco 0 (1960–2012)</CardTitle>
-        </CardHeader>
-        <CardContent className="p-4 pt-0">
-          <ResponsiveContainer width="100%" height={280}>
-            <BarChart data={seismicChartData} barGap={1}>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-              <XAxis dataKey="year" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 9 }} stroke="hsl(var(--border))" interval={2} angle={-45} textAnchor="end" height={50} />
-              <YAxis tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} stroke="hsl(var(--border))" width={50} />
-              <Tooltip contentStyle={tooltipStyle} />
-              <Legend wrapperStyle={{ fontSize: 11 }} />
-              <Bar dataKey="2D" fill="hsl(var(--warning))" radius={[2, 2, 0, 0]} name="2D (km)" />
-              <Bar dataKey="3D" fill="hsl(var(--success))" radius={[2, 2, 0, 0]} name="3D (km²)" />
-              <Bar dataKey="4D" fill="hsl(var(--primary))" radius={[2, 2, 0, 0]} name="4D (km²)" />
-            </BarChart>
-          </ResponsiveContainer>
-        </CardContent>
-      </Card>
+      {seismicChartData.length > 0 && (
+        <Card className="glass-card">
+          <CardHeader className="p-4 pb-2">
+            <CardTitle className="text-sm">Sísmica Adquirida — {scopeLabel}</CardTitle>
+          </CardHeader>
+          <CardContent className="p-4 pt-0">
+            <ResponsiveContainer width="100%" height={280}>
+              <BarChart data={seismicChartData} barGap={1}>
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                <XAxis dataKey="year" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 9 }} stroke="hsl(var(--border))" interval={2} angle={-45} textAnchor="end" height={50} />
+                <YAxis tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} stroke="hsl(var(--border))" width={50} />
+                <Tooltip contentStyle={tooltipStyle} />
+                <Legend wrapperStyle={{ fontSize: 11 }} />
+                <Bar dataKey="2D" fill="hsl(var(--warning))" radius={[2, 2, 0, 0]} name="2D (km)" />
+                <Bar dataKey="3D" fill="hsl(var(--success))" radius={[2, 2, 0, 0]} name="3D (km²)" />
+                <Bar dataKey="4D" fill="hsl(var(--primary))" radius={[2, 2, 0, 0]} name="4D (km²)" />
+              </BarChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Wells Chart */}
-      <Card className="glass-card">
-        <CardHeader className="p-4 pb-2">
-          <CardTitle className="text-sm">Poços de Avaliação vs Pesquisa — Bloco 0 (1966–2025)</CardTitle>
-        </CardHeader>
-        <CardContent className="p-4 pt-0">
-          <ResponsiveContainer width="100%" height={280}>
-            <BarChart data={wellsChartData} barGap={1}>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-              <XAxis dataKey="year" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 9 }} stroke="hsl(var(--border))" interval={2} angle={-45} textAnchor="end" height={50} />
-              <YAxis tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} stroke="hsl(var(--border))" width={30} />
-              <Tooltip contentStyle={tooltipStyle} />
-              <Legend wrapperStyle={{ fontSize: 11 }} />
-              <Bar dataKey="Pesquisa" fill="hsl(var(--primary))" radius={[2, 2, 0, 0]} />
-              <Bar dataKey="Avaliação" fill="hsl(var(--warning))" radius={[2, 2, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
-        </CardContent>
-      </Card>
+      {wellsChartData.length > 0 && (
+        <Card className="glass-card">
+          <CardHeader className="p-4 pb-2">
+            <CardTitle className="text-sm">Poços de Avaliação vs Pesquisa — {scopeLabel}</CardTitle>
+          </CardHeader>
+          <CardContent className="p-4 pt-0">
+            <ResponsiveContainer width="100%" height={280}>
+              <BarChart data={wellsChartData} barGap={1}>
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                <XAxis dataKey="year" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 9 }} stroke="hsl(var(--border))" interval={2} angle={-45} textAnchor="end" height={50} />
+                <YAxis tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} stroke="hsl(var(--border))" width={30} />
+                <Tooltip contentStyle={tooltipStyle} />
+                <Legend wrapperStyle={{ fontSize: 11 }} />
+                <Bar dataKey="Pesquisa" fill="hsl(var(--primary))" radius={[2, 2, 0, 0]} />
+                <Bar dataKey="Avaliação" fill="hsl(var(--warning))" radius={[2, 2, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Resources & Challenges */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Card className="glass-card">
           <CardHeader className="p-4 pb-2">
-            <CardTitle className="text-sm">Recursos — Bloco 0</CardTitle>
+            <CardTitle className="text-sm">Objectivos Geológicos — {scopeLabel}</CardTitle>
           </CardHeader>
           <CardContent className="p-4 pt-2 space-y-3">
-            <div className="glass-card p-3 rounded-lg">
-              <div className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">Descoberta (não desenvolvida)</div>
-              <div className="font-bold font-mono">{nationalStats.undevelopedDiscoverySTOOIP} <span className="text-xs text-muted-foreground">MMBO</span> · {nationalStats.undevelopedDiscoveryGIIP.toLocaleString()} <span className="text-xs text-muted-foreground">BCF</span></div>
-            </div>
-            <div className="glass-card p-3 rounded-lg">
-              <div className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">Prospectivo</div>
-              <div className="font-bold font-mono">{nationalStats.prospectiveSTOOIP.toLocaleString()} <span className="text-xs text-muted-foreground">MMBO</span> · {nationalStats.prospectiveGIIP.toLocaleString()} <span className="text-xs text-muted-foreground">BCF</span></div>
-            </div>
-            <div className="glass-card p-3 rounded-lg">
-              <div className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">Objectivos Geológicos</div>
+            {explorationStats.geologicalObjectives.length > 0 ? (
               <div className="flex gap-2 flex-wrap">
-                {nationalStats.geologicalObjectives.map(o => (
+                {explorationStats.geologicalObjectives.map(o => (
                   <span key={o} className="px-2 py-0.5 bg-primary/10 text-primary rounded text-xs font-medium">{o}</span>
                 ))}
+              </div>
+            ) : (
+              <span className="text-xs text-muted-foreground">Sem objectivos geológicos definidos</span>
+            )}
+            <div className="glass-card p-3 rounded-lg">
+              <div className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">Sísmica Total Adquirida</div>
+              <div className="font-bold font-mono">
+                {explorationStats.total2D.toLocaleString()} <span className="text-xs text-muted-foreground">km (2D)</span>
+                {" · "}
+                {explorationStats.total3D.toLocaleString()} <span className="text-xs text-muted-foreground">km² (3D)</span>
+                {explorationStats.total4D > 0 && (
+                  <>
+                    {" · "}
+                    {explorationStats.total4D.toLocaleString()} <span className="text-xs text-muted-foreground">km² (4D)</span>
+                  </>
+                )}
               </div>
             </div>
           </CardContent>
@@ -287,12 +366,18 @@ export const ExplorationPanel = () => {
           <CardHeader className="p-4 pb-2">
             <CardTitle className="text-sm flex items-center gap-2">
               <AlertTriangle className="w-4 h-4 text-warning" />
-              Desafios — Bloco 0
+              Desafios do Sector
             </CardTitle>
           </CardHeader>
           <CardContent className="p-4 pt-2">
             <ul className="space-y-2">
-              {nationalStats.challenges.map((c, i) => (
+              {[
+                "Alto índice de poços secos e custos operacionais elevados",
+                "Baixa qualidade do dado sísmico em algumas bacias",
+                "Elevado número de descobertas não desenvolvidas",
+                "Optimizar a Rocha Geradora Bucomazi como reservatório não convencional",
+                "Exposição excessiva ao risco financeiro e falta de capital",
+              ].map((c, i) => (
                 <li key={i} className="flex items-start gap-2 text-xs text-muted-foreground">
                   <span className="w-1.5 h-1.5 rounded-full bg-warning mt-1.5 shrink-0" />
                   {c}
