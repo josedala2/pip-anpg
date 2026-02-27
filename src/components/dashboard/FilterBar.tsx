@@ -38,14 +38,14 @@ export const FilterBar = ({ onFilterChange }: FilterBarProps) => {
   };
 
   return (
-    <div className="flex flex-wrap gap-2 md:gap-3">
+    <div className="flex flex-wrap gap-2 md:gap-3 3xl:gap-4">
       {[
         { key: "operator" as const, label: "Operator", options: operators },
         { key: "basin" as const, label: "Basin", options: basins },
         { key: "phase" as const, label: "Phase", options: phases },
       ].map(({ key, label, options }) => (
         <Select key={key} value={filters[key]} onValueChange={(v) => update(key, v)}>
-          <SelectTrigger className="w-36 md:w-40 h-8 text-xs glass-card border-border/50">
+          <SelectTrigger className="w-36 md:w-40 3xl:w-48 h-8 3xl:h-10 text-xs 3xl:text-sm glass-card border-border/50">
             <SelectValue placeholder={label} />
           </SelectTrigger>
           <SelectContent className="bg-card border-border">
@@ -55,7 +55,7 @@ export const FilterBar = ({ onFilterChange }: FilterBarProps) => {
         </Select>
       ))}
       <Select value={filters.productionRange} onValueChange={(v) => update("productionRange", v)}>
-        <SelectTrigger className="w-36 md:w-40 h-8 text-xs glass-card border-border/50">
+        <SelectTrigger className="w-36 md:w-40 3xl:w-48 h-8 3xl:h-10 text-xs 3xl:text-sm glass-card border-border/50">
           <SelectValue placeholder="Production" />
         </SelectTrigger>
         <SelectContent className="bg-card border-border">

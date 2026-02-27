@@ -143,16 +143,16 @@ export const ExplorationPanel = () => {
     <div className="space-y-6 2xl:space-y-8">
       {/* Block Filters */}
       <Card className="glass-card">
-        <CardHeader className="p-4 pb-2">
-           <CardTitle className="text-sm 2xl:text-lg flex items-center gap-2">
-             <Filter className="w-4 h-4 2xl:w-5 2xl:h-5 text-primary" />
+        <CardHeader className="p-4 3xl:p-6 pb-2">
+           <CardTitle className="text-sm 2xl:text-lg 3xl:text-xl flex items-center gap-2">
+             <Filter className="w-4 h-4 2xl:w-5 2xl:h-5 3xl:w-6 3xl:h-6 text-primary" />
             Filtrar por Bloco
           </CardTitle>
         </CardHeader>
-        <CardContent className="p-4 pt-2 space-y-4">
-          <div className="flex flex-wrap gap-2 md:gap-3">
+        <CardContent className="p-4 3xl:p-6 pt-2 space-y-4">
+          <div className="flex flex-wrap gap-2 md:gap-3 3xl:gap-4">
             <Select value={filterBlock} onValueChange={setFilterBlock}>
-              <SelectTrigger className="w-36 md:w-44 h-8 text-xs glass-card border-border/50">
+              <SelectTrigger className="w-36 md:w-44 3xl:w-52 h-8 3xl:h-10 text-xs 3xl:text-sm glass-card border-border/50">
                 <SelectValue placeholder="Bloco" />
               </SelectTrigger>
               <SelectContent className="bg-card border-border max-h-60">
@@ -161,7 +161,7 @@ export const ExplorationPanel = () => {
               </SelectContent>
             </Select>
             <Select value={filterOperator} onValueChange={setFilterOperator}>
-              <SelectTrigger className="w-36 md:w-44 h-8 text-xs glass-card border-border/50">
+              <SelectTrigger className="w-36 md:w-44 3xl:w-52 h-8 3xl:h-10 text-xs 3xl:text-sm glass-card border-border/50">
                 <SelectValue placeholder="Operador" />
               </SelectTrigger>
               <SelectContent className="bg-card border-border">
@@ -170,7 +170,7 @@ export const ExplorationPanel = () => {
               </SelectContent>
             </Select>
             <Select value={filterBasin} onValueChange={setFilterBasin}>
-              <SelectTrigger className="w-36 md:w-44 h-8 text-xs glass-card border-border/50">
+              <SelectTrigger className="w-36 md:w-44 3xl:w-52 h-8 3xl:h-10 text-xs 3xl:text-sm glass-card border-border/50">
                 <SelectValue placeholder="Bacia" />
               </SelectTrigger>
               <SelectContent className="bg-card border-border">
@@ -179,7 +179,7 @@ export const ExplorationPanel = () => {
               </SelectContent>
             </Select>
             <Select value={filterPhase} onValueChange={setFilterPhase}>
-              <SelectTrigger className="w-36 md:w-44 h-8 text-xs glass-card border-border/50">
+              <SelectTrigger className="w-36 md:w-44 3xl:w-52 h-8 3xl:h-10 text-xs 3xl:text-sm glass-card border-border/50">
                 <SelectValue placeholder="Fase" />
               </SelectTrigger>
               <SelectContent className="bg-card border-border">
@@ -190,7 +190,7 @@ export const ExplorationPanel = () => {
             {hasFilters && (
               <button
                 onClick={() => { setFilterBlock("all"); setFilterOperator("all"); setFilterBasin("all"); setFilterPhase("all"); }}
-                className="h-8 px-3 text-xs text-muted-foreground hover:text-foreground transition-colors"
+                className="h-8 3xl:h-10 px-3 text-xs 3xl:text-sm text-muted-foreground hover:text-foreground transition-colors"
               >
                 Limpar filtros
               </button>
@@ -249,17 +249,17 @@ export const ExplorationPanel = () => {
 
       {/* Seismic Total Acquired */}
       <Card className="glass-card">
-        <CardContent className="p-4 flex flex-wrap items-center gap-4">
-          <Layers className="w-5 h-5 text-primary shrink-0" />
-          <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Sísmica Total Adquirida</div>
-          <div className="font-bold font-mono text-lg 2xl:text-xl">
-            {explorationStats.total2D.toLocaleString()} <span className="text-xs text-muted-foreground">km (2D)</span>
+        <CardContent className="p-4 3xl:p-6 flex flex-wrap items-center gap-4 3xl:gap-6">
+          <Layers className="w-5 h-5 3xl:w-7 3xl:h-7 text-primary shrink-0" />
+          <div className="text-[10px] 3xl:text-xs uppercase tracking-wider text-muted-foreground">Sísmica Total Adquirida</div>
+          <div className="font-bold font-mono text-lg 2xl:text-xl 3xl:text-2xl">
+            {explorationStats.total2D.toLocaleString()} <span className="text-xs 3xl:text-sm text-muted-foreground">km (2D)</span>
             {" · "}
-            {explorationStats.total3D.toLocaleString()} <span className="text-xs text-muted-foreground">km² (3D)</span>
+            {explorationStats.total3D.toLocaleString()} <span className="text-xs 3xl:text-sm text-muted-foreground">km² (3D)</span>
             {explorationStats.total4D > 0 && (
               <>
                 {" · "}
-                {explorationStats.total4D.toLocaleString()} <span className="text-xs text-muted-foreground">km² (4D)</span>
+                {explorationStats.total4D.toLocaleString()} <span className="text-xs 3xl:text-sm text-muted-foreground">km² (4D)</span>
               </>
             )}
           </div>
@@ -267,7 +267,7 @@ export const ExplorationPanel = () => {
       </Card>
 
       {/* Key Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 2xl:gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 2xl:gap-4 3xl:gap-6">
         {[
           { icon: Layers, label: "Sísmica 2D", value: `${explorationStats.total2D.toLocaleString()} km`, color: "text-warning" },
           { icon: Layers, label: "Sísmica 3D", value: `${explorationStats.total3D.toLocaleString()} km²`, color: "text-success" },
@@ -275,11 +275,11 @@ export const ExplorationPanel = () => {
           { icon: Droplets, label: "Reservas Totais", value: `${explorationStats.totalReserves.toLocaleString()} MMbbl`, color: "text-primary" },
         ].map(s => (
           <Card key={s.label} className="glass-card">
-           <CardContent className="p-4 2xl:p-5 flex items-center gap-3">
-               <s.icon className={`w-5 h-5 2xl:w-6 2xl:h-6 ${s.color} shrink-0`} />
+           <CardContent className="p-4 2xl:p-5 3xl:p-6 flex items-center gap-3 3xl:gap-4">
+               <s.icon className={`w-5 h-5 2xl:w-6 2xl:h-6 3xl:w-7 3xl:h-7 ${s.color} shrink-0`} />
                <div>
-                 <div className="text-[10px] 2xl:text-xs uppercase tracking-wider text-muted-foreground">{s.label}</div>
-                 <div className="text-lg 2xl:text-xl font-bold font-mono">{s.value}</div>
+                 <div className="text-[10px] 2xl:text-xs 3xl:text-sm uppercase tracking-wider text-muted-foreground">{s.label}</div>
+                 <div className="text-lg 2xl:text-xl 3xl:text-2xl font-bold font-mono">{s.value}</div>
               </div>
             </CardContent>
           </Card>
@@ -287,23 +287,23 @@ export const ExplorationPanel = () => {
       </div>
 
       {/* Wells Stats Row */}
-      <div className="grid grid-cols-3 gap-3 2xl:gap-4">
+      <div className="grid grid-cols-3 gap-3 2xl:gap-4 3xl:gap-6">
         <Card className="glass-card">
-           <CardContent className="p-4 2xl:p-6 text-center">
-             <div className="text-xs 2xl:text-sm text-muted-foreground mb-1">Total Poços Exploração</div>
-             <div className="text-3xl 2xl:text-4xl font-bold font-mono">{explorationStats.totalWells}</div>
+           <CardContent className="p-4 2xl:p-6 3xl:p-8 text-center">
+             <div className="text-xs 2xl:text-sm 3xl:text-base text-muted-foreground mb-1">Total Poços Exploração</div>
+             <div className="text-3xl 2xl:text-4xl 3xl:text-5xl font-bold font-mono">{explorationStats.totalWells}</div>
           </CardContent>
         </Card>
         <Card className="glass-card">
-           <CardContent className="p-4 2xl:p-6 text-center">
-             <div className="text-xs 2xl:text-sm text-muted-foreground mb-1">Pesquisa</div>
-             <div className="text-3xl 2xl:text-4xl font-bold font-mono text-primary">{explorationStats.pesquisaWells}</div>
+           <CardContent className="p-4 2xl:p-6 3xl:p-8 text-center">
+             <div className="text-xs 2xl:text-sm 3xl:text-base text-muted-foreground mb-1">Pesquisa</div>
+             <div className="text-3xl 2xl:text-4xl 3xl:text-5xl font-bold font-mono text-primary">{explorationStats.pesquisaWells}</div>
           </CardContent>
         </Card>
         <Card className="glass-card">
-           <CardContent className="p-4 2xl:p-6 text-center">
-             <div className="text-xs 2xl:text-sm text-muted-foreground mb-1">Avaliação</div>
-             <div className="text-3xl 2xl:text-4xl font-bold font-mono text-warning">{explorationStats.avaliacaoWells}</div>
+           <CardContent className="p-4 2xl:p-6 3xl:p-8 text-center">
+             <div className="text-xs 2xl:text-sm 3xl:text-base text-muted-foreground mb-1">Avaliação</div>
+             <div className="text-3xl 2xl:text-4xl 3xl:text-5xl font-bold font-mono text-warning">{explorationStats.avaliacaoWells}</div>
           </CardContent>
         </Card>
       </div>
@@ -321,10 +321,10 @@ export const ExplorationPanel = () => {
       {/* Seismic Chart */}
       {seismicChartData.length > 0 && (
         <Card className="glass-card">
-          <CardHeader className="p-4 pb-2">
-            <CardTitle className="text-sm">Sísmica Adquirida — {scopeLabel}</CardTitle>
+          <CardHeader className="p-4 3xl:p-6 pb-2">
+            <CardTitle className="text-sm 3xl:text-lg">Sísmica Adquirida — {scopeLabel}</CardTitle>
           </CardHeader>
-          <CardContent className="p-4 pt-0">
+          <CardContent className="p-4 3xl:p-6 pt-0">
              <ResponsiveContainer width="100%" height={360}>
               <BarChart data={seismicChartData} barGap={1}>
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
@@ -344,8 +344,8 @@ export const ExplorationPanel = () => {
       {/* Wells Chart */}
       {wellsChartData.length > 0 && (
         <Card className="glass-card">
-          <CardHeader className="p-4 pb-2">
-            <CardTitle className="text-sm">Poços de Avaliação vs Pesquisa — {scopeLabel}</CardTitle>
+          <CardHeader className="p-4 3xl:p-6 pb-2">
+            <CardTitle className="text-sm 3xl:text-lg">Poços de Avaliação vs Pesquisa — {scopeLabel}</CardTitle>
           </CardHeader>
           <CardContent className="p-4 pt-0">
             <ResponsiveContainer width="100%" height={360}>
@@ -374,14 +374,14 @@ export const ExplorationPanel = () => {
 
       {/* Challenges */}
       <Card className="glass-card">
-        <CardHeader className="p-4 pb-2">
-          <CardTitle className="text-sm flex items-center gap-2">
-            <AlertTriangle className="w-4 h-4 text-warning" />
+        <CardHeader className="p-4 3xl:p-6 pb-2">
+          <CardTitle className="text-sm 3xl:text-lg flex items-center gap-2">
+            <AlertTriangle className="w-4 h-4 3xl:w-5 3xl:h-5 text-warning" />
             Desafios do Sector
           </CardTitle>
         </CardHeader>
-        <CardContent className="p-4 pt-2">
-          <ul className="space-y-2">
+        <CardContent className="p-4 3xl:p-6 pt-2">
+          <ul className="space-y-2 3xl:space-y-3">
             {[
               "Alto índice de poços secos e custos operacionais elevados",
               "Baixa qualidade do dado sísmico em algumas bacias",
@@ -389,8 +389,8 @@ export const ExplorationPanel = () => {
               "Optimizar a Rocha Geradora Bucomazi como reservatório não convencional",
               "Exposição excessiva ao risco financeiro e falta de capital",
             ].map((c, i) => (
-              <li key={i} className="flex items-start gap-2 text-xs text-muted-foreground">
-                <span className="w-1.5 h-1.5 rounded-full bg-warning mt-1.5 shrink-0" />
+              <li key={i} className="flex items-start gap-2 text-xs 3xl:text-sm text-muted-foreground">
+                <span className="w-1.5 h-1.5 3xl:w-2 3xl:h-2 rounded-full bg-warning mt-1.5 shrink-0" />
                 {c}
               </li>
             ))}

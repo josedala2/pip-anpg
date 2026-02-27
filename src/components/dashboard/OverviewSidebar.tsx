@@ -83,47 +83,47 @@ export const OverviewSidebar = ({
   ];
 
   return (
-    <div className="absolute top-0 right-0 z-30 h-full w-[420px] max-w-[90vw] flex flex-col bg-background/85 backdrop-blur-2xl border-l border-border/50 shadow-2xl animate-fade-in">
+    <div className="absolute top-0 right-0 z-30 h-full w-[420px] 3xl:w-[520px] max-w-[90vw] flex flex-col bg-background/85 backdrop-blur-2xl border-l border-border/50 shadow-2xl animate-fade-in">
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-border/50">
-        <div className="flex items-center gap-2">
+      <div className="flex items-center justify-between px-4 3xl:px-6 py-3 3xl:py-4 border-b border-border/50">
+        <div className="flex items-center gap-2 3xl:gap-3">
           {tabs.map((tab) => (
             <button
               key={tab.key}
               onClick={() => setActiveTab(tab.key)}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 3xl:px-4 3xl:py-2 rounded-lg text-xs 3xl:text-sm font-medium transition-all ${
                 activeTab === tab.key
                   ? "bg-primary/10 text-primary border border-primary/30"
                   : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
               }`}
             >
-              <tab.icon className="w-3.5 h-3.5" />
+              <tab.icon className="w-3.5 h-3.5 3xl:w-4 3xl:h-4" />
               {tab.label}
             </button>
           ))}
         </div>
         <button
           onClick={() => setOpen(false)}
-          className="p-1.5 rounded-lg hover:bg-secondary transition-colors"
+          className="p-1.5 3xl:p-2 rounded-lg hover:bg-secondary transition-colors"
           title="Fechar painel"
         >
-          <PanelRightClose className="w-4 h-4 text-muted-foreground" />
+          <PanelRightClose className="w-4 h-4 3xl:w-5 3xl:h-5 text-muted-foreground" />
         </button>
       </div>
 
       {/* Filters (always visible) */}
-      <div className="px-4 py-2 border-b border-border/30">
+      <div className="px-4 3xl:px-6 py-2 3xl:py-3 border-b border-border/30">
         <FilterBar onFilterChange={onFilterChange} />
       </div>
 
       {/* Content */}
-      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
+      <div className="flex-1 overflow-y-auto px-4 3xl:px-6 py-4 3xl:py-5 space-y-4 3xl:space-y-5">
         {activeTab === "kpis" && (
           <div className="animate-fade-in">
             <KPICards compact />
             {/* Mini trend chart */}
-            <div className="mt-4 glass-card rounded-lg p-3">
-              <h4 className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mb-2">Produção Total (6 meses)</h4>
+            <div className="mt-4 3xl:mt-5 glass-card rounded-lg p-3 3xl:p-4">
+              <h4 className="text-[10px] 3xl:text-xs uppercase tracking-wider text-muted-foreground font-medium mb-2 3xl:mb-3">Produção Total (6 meses)</h4>
               <ResponsiveContainer width="100%" height={120}>
                 <AreaChart data={trendData}>
                   <defs>
@@ -157,21 +157,21 @@ export const OverviewSidebar = ({
         )}
 
         {activeTab === "trends" && (
-          <div className="animate-fade-in space-y-4">
+          <div className="animate-fade-in space-y-4 3xl:space-y-5">
             {/* Production by basin */}
-            <div className="glass-card rounded-lg p-3">
-              <h4 className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mb-3">Produção por Bacia</h4>
+            <div className="glass-card rounded-lg p-3 3xl:p-4">
+              <h4 className="text-[10px] 3xl:text-xs uppercase tracking-wider text-muted-foreground font-medium mb-3">Produção por Bacia</h4>
               {[
                 { name: "Bacia do Congo", value: 890000, pct: 68 },
                 { name: "Bacia do Kwanza", value: 320000, pct: 25 },
                 { name: "Bacia do Namibe", value: 94000, pct: 7 },
               ].map((basin) => (
-                <div key={basin.name} className="mb-2">
-                  <div className="flex justify-between text-[10px] mb-0.5">
+                <div key={basin.name} className="mb-2 3xl:mb-3">
+                  <div className="flex justify-between text-[10px] 3xl:text-xs mb-0.5">
                     <span className="text-foreground font-medium">{basin.name}</span>
                     <span className="font-mono text-muted-foreground">{(basin.value / 1000).toFixed(0)}k BOPD</span>
                   </div>
-                  <div className="h-1.5 bg-secondary rounded-full overflow-hidden">
+                  <div className="h-1.5 3xl:h-2 bg-secondary rounded-full overflow-hidden">
                     <div className="h-full bg-primary rounded-full transition-all" style={{ width: `${basin.pct}%` }} />
                   </div>
                 </div>
@@ -179,9 +179,9 @@ export const OverviewSidebar = ({
             </div>
 
             {/* Phase distribution */}
-            <div className="glass-card rounded-lg p-3">
-              <h4 className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mb-3">Distribuição por Fase</h4>
-              <div className="grid grid-cols-2 gap-2">
+            <div className="glass-card rounded-lg p-3 3xl:p-4">
+              <h4 className="text-[10px] 3xl:text-xs uppercase tracking-wider text-muted-foreground font-medium mb-3">Distribuição por Fase</h4>
+              <div className="grid grid-cols-2 gap-2 3xl:gap-3">
                 {[
                   { phase: "Production", count: 28, color: "hsl(var(--success))" },
                   { phase: "Development", count: 8, color: "hsl(var(--warning))" },
@@ -190,9 +190,9 @@ export const OverviewSidebar = ({
                   { phase: "Suspended", count: 2, color: "hsl(var(--danger))" },
                 ].map((item) => (
                   <div key={item.phase} className="flex items-center gap-2">
-                    <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: item.color }} />
-                    <span className="text-[10px] text-foreground">{item.phase}</span>
-                    <span className="text-[10px] font-mono text-muted-foreground ml-auto">{item.count}</span>
+                    <span className="w-2.5 h-2.5 3xl:w-3 3xl:h-3 rounded-full shrink-0" style={{ backgroundColor: item.color }} />
+                    <span className="text-[10px] 3xl:text-xs text-foreground">{item.phase}</span>
+                    <span className="text-[10px] 3xl:text-xs font-mono text-muted-foreground ml-auto">{item.count}</span>
                   </div>
                 ))}
               </div>

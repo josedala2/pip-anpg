@@ -81,28 +81,28 @@ const Index = () => {
     <div className={`min-h-screen bg-background text-foreground ${isPresentation ? "fixed inset-0 z-[100]" : ""}`}>
       {/* Header */}
       <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-border/50">
-        <div className="flex items-center justify-between px-4 md:px-6 py-3">
-          <div className="flex items-center gap-3">
+        <div className="flex items-center justify-between px-4 md:px-6 3xl:px-8 py-3 3xl:py-4">
+          <div className="flex items-center gap-3 3xl:gap-4">
             <img
               src={theme === "dark" ? anpgLogoWhite : anpgLogoColor}
               alt="ANPG Logo"
-              className="h-8 md:h-10"
+              className="h-8 md:h-10 3xl:h-12"
             />
             <div>
-            <h1 className="text-lg md:text-xl 2xl:text-2xl font-bold tracking-tight">
+            <h1 className="text-lg md:text-xl 2xl:text-2xl 3xl:text-3xl font-bold tracking-tight">
                 <span className="text-gradient">ANGOLA</span>
                 <span className="text-muted-foreground font-light ml-2">Oil Concessions</span>
               </h1>
-              <p className="text-[10px] md:text-xs 2xl:text-sm text-muted-foreground">Executive Intelligence Dashboard • Q4 2024</p>
+              <p className="text-[10px] md:text-xs 2xl:text-sm 3xl:text-base text-muted-foreground">Executive Intelligence Dashboard • Q4 2024</p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 3xl:gap-3">
             <button
               onClick={toggleTheme}
-              className="p-2 rounded-lg hover:bg-secondary transition-colors"
+              className="p-2 3xl:p-2.5 rounded-lg hover:bg-secondary transition-colors"
               title={theme === "dark" ? "Modo Claro" : "Modo Escuro"}
             >
-              {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+              {theme === "dark" ? <Sun className="w-4 h-4 3xl:w-5 3xl:h-5" /> : <Moon className="w-4 h-4 3xl:w-5 3xl:h-5" />}
             </button>
             <button
               onClick={() => setIsPresentation(!isPresentation)}
@@ -117,12 +117,12 @@ const Index = () => {
         <Separator className="mx-4 md:mx-6" />
 
         {/* Panel Tabs */}
-        <div className="flex items-center px-4 md:px-6 py-2 gap-1">
+        <div className="flex items-center px-4 md:px-6 3xl:px-8 py-2 3xl:py-3 gap-1 3xl:gap-2">
           {panels.map((panel, i) => (
             <button
               key={panel}
               onClick={() => switchPanel(i)}
-              className={`relative px-3 py-1.5 2xl:px-4 2xl:py-2 rounded-lg text-xs 2xl:text-sm font-medium transition-all group ${
+              className={`relative px-3 py-1.5 2xl:px-4 2xl:py-2 3xl:px-5 3xl:py-2.5 rounded-lg text-xs 2xl:text-sm 3xl:text-base font-medium transition-all group ${
                 activePanel === i
                   ? "text-primary"
                   : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
@@ -168,7 +168,7 @@ const Index = () => {
             </div>
           )}
 
-          <div className="p-4 md:p-6 2xl:p-8 max-w-[1920px] mx-auto">
+          <div className="p-4 md:p-6 2xl:p-8 3xl:p-10 max-w-[1920px] 3xl:max-w-[2400px] mx-auto">
           {activePanel === 1 && <BlocksPanel />}
           {activePanel === 2 && <ExplorationPanel />}
           {activePanel === 3 && <RiskPerformance />}

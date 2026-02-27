@@ -35,20 +35,20 @@ export const RiskPerformance = () => {
     <div className="space-y-6 2xl:space-y-8">
       {/* Risk Heatmap */}
       <Card className="glass-card">
-        <CardHeader className="p-4 pb-2">
-          <CardTitle className="text-sm 2xl:text-lg">Risk Heatmap</CardTitle>
+        <CardHeader className="p-4 3xl:p-6 pb-2">
+          <CardTitle className="text-sm 2xl:text-lg 3xl:text-xl">Risk Heatmap</CardTitle>
         </CardHeader>
-        <CardContent className="p-4 pt-2">
-          <div className="grid grid-cols-3 md:grid-cols-5 2xl:grid-cols-6 gap-2 2xl:gap-3">
+        <CardContent className="p-4 3xl:p-6 pt-2">
+          <div className="grid grid-cols-3 md:grid-cols-5 2xl:grid-cols-6 gap-2 2xl:gap-3 3xl:gap-4">
             {oilBlocks.map(block => (
               <div
                 key={block.id}
-                className={`p-2.5 2xl:p-4 rounded-lg text-center transition-all hover:scale-105 ${riskColor(block.riskScore)} bg-opacity-20`}
+                className={`p-2.5 2xl:p-4 3xl:p-5 rounded-lg text-center transition-all hover:scale-105 ${riskColor(block.riskScore)} bg-opacity-20`}
                 style={{ backgroundColor: `hsl(${block.riskScore <= 3 ? 'var(--success)' : block.riskScore <= 6 ? 'var(--warning)' : 'var(--danger)'} / 0.15)` }}
               >
-                <div className="text-xs 2xl:text-sm font-bold">{block.name}</div>
-                <div className="text-lg 2xl:text-2xl font-mono font-bold">{block.riskScore}</div>
-                <div className="text-[9px] 2xl:text-xs text-muted-foreground">{block.operator}</div>
+                <div className="text-xs 2xl:text-sm 3xl:text-base font-bold">{block.name}</div>
+                <div className="text-lg 2xl:text-2xl 3xl:text-3xl font-mono font-bold">{block.riskScore}</div>
+                <div className="text-[9px] 2xl:text-xs 3xl:text-sm text-muted-foreground">{block.operator}</div>
               </div>
             ))}
           </div>
@@ -57,34 +57,34 @@ export const RiskPerformance = () => {
 
       {/* Ranking Table */}
       <Card className="glass-card">
-        <CardHeader className="p-4 pb-2">
-          <CardTitle className="text-sm 2xl:text-lg">Block Rankings</CardTitle>
+        <CardHeader className="p-4 3xl:p-6 pb-2">
+          <CardTitle className="text-sm 2xl:text-lg 3xl:text-xl">Block Rankings</CardTitle>
         </CardHeader>
         <CardContent className="p-0">
           <Table>
             <TableHeader>
               <TableRow className="border-border hover:bg-transparent">
-                <TableHead className="text-xs 2xl:text-sm">Block</TableHead>
-                <TableHead className="text-xs 2xl:text-sm">Operator</TableHead>
+                <TableHead className="text-xs 2xl:text-sm 3xl:text-base">Block</TableHead>
+                <TableHead className="text-xs 2xl:text-sm 3xl:text-base">Operator</TableHead>
                 {([
                   ["dailyProduction", "Production"],
                   ["riskScore", "Risk"],
                   ["executionRate", "Execution %"],
                   ["accumulatedInvestment", "Investment"],
                 ] as [SortKey, string][]).map(([key, label]) => (
-                  <TableHead key={key} className="text-xs 2xl:text-sm cursor-pointer hover:text-foreground" onClick={() => toggleSort(key)}>
+                  <TableHead key={key} className="text-xs 2xl:text-sm 3xl:text-base cursor-pointer hover:text-foreground" onClick={() => toggleSort(key)}>
                     <div className="flex items-center gap-1">
                       {label}
-                      <ArrowUpDown className="w-3 h-3" />
+                      <ArrowUpDown className="w-3 h-3 3xl:w-4 3xl:h-4" />
                     </div>
                   </TableHead>
                 ))}
-                <TableHead className="text-xs 2xl:text-sm">Status</TableHead>
+                <TableHead className="text-xs 2xl:text-sm 3xl:text-base">Status</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {sorted.map(block => (
-                <TableRow key={block.id} className="border-border text-xs 2xl:text-sm">
+                <TableRow key={block.id} className="border-border text-xs 2xl:text-sm 3xl:text-base">
                   <TableCell className="font-semibold">{block.name}</TableCell>
                   <TableCell className="text-muted-foreground">{block.operator}</TableCell>
                   <TableCell className="font-mono">{block.dailyProduction.toLocaleString()}</TableCell>
