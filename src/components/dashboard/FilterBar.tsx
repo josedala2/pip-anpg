@@ -15,7 +15,7 @@ export interface FilterState {
 
 const operators = [...new Set(oilBlocks.map(b => b.operator))].sort();
 const basins = [...new Set(oilBlocks.map(b => b.basin))].sort();
-const phases = ["Production", "Development", "Exploration", "Suspended"];
+const phases = ["Production", "Development", "Exploration", "Bidding", "Suspended"];
 const productionRanges = [
   { label: "All", value: "all" },
   { label: "> 100k BOPD", value: "100000" },

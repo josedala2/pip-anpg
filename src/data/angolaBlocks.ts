@@ -1,4 +1,4 @@
-export type BlockPhase = "Exploration" | "Development" | "Production" | "Suspended";
+export type BlockPhase = "Exploration" | "Development" | "Production" | "Suspended" | "Bidding";
 export type WaterDepth = "Onshore" | "Shallow Water" | "Deep Water" | "Ultra-Deep Water";
 
 export interface ConcessionPartner {
@@ -2746,6 +2746,48 @@ export const oilBlocks: OilBlock[] = [
     geologicalObjectives: ["Cuvo Sandstones", "Teba Carbonates"],
     fields: [],
   },
+  // ── Blocos em Licitação (Rondas Licitatórias 2023-2025) ──
+  ...[22,23,24,25,26,27,28,29,30,33,34,35,36,37,38,39,40,41,42,43].map((num): OilBlock => {
+    // Approximate positions: blocks 22-30 in deep/ultra-deep Congo/Kwanza, 33-43 in Namibe/Benguela
+    const isNamibe = num >= 33;
+    const idx = isNamibe ? num - 33 : num - 22;
+    const baseLon = isNamibe ? 9.5 + (idx % 4) * 0.8 : 10.0 + (idx % 3) * 0.7;
+    const baseLat = isNamibe ? -11.0 - idx * 0.5 : -7.0 - idx * 0.4;
+    const basin = isNamibe ? "Namibe" : num <= 25 ? "Lower Congo" : "Kwanza";
+    const waterDepth: WaterDepth = isNamibe ? "Ultra-Deep Water" : num <= 25 ? "Deep Water" : "Ultra-Deep Water";
+    const depthRange = isNamibe ? "1500-3000m" : num <= 25 ? "500-1800m" : "1200-2800m";
+    const area = 3000 + Math.round(Math.random() * 4000);
+    return {
+      id: `block-${num}`,
+      name: `Block ${num}`,
+      operator: "Em Licitação",
+      partners: [],
+      basin,
+      phase: "Bidding",
+      waterDepth,
+      contractDate: "",
+      dailyProduction: 0,
+      estimatedReserves: 0,
+      accumulatedInvestment: 0,
+      plannedInvestment: 0,
+      executionRate: 0,
+      riskScore: 0,
+      complianceScore: 0,
+      concession: [],
+      mapPosition: { x: Math.round(baseLon * 5), y: Math.round(Math.abs(baseLat) * 5) },
+      productionHistory: Array(12).fill(null).map((_, i) => ({ month: ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][i], value: 0 })),
+      capexHistory: [],
+      projections: { conservative: Array(10).fill(0), base: Array(10).fill(0), expansion: Array(10).fill(0) },
+      areaKm2: area,
+      waterDepthRange: depthRange,
+      seismicData: [],
+      wellsData: [],
+      geologicalObjectives: isNamibe
+        ? ["Aptian Carbonates", "Albian Clastics", "Pre-Salt Lacustrine"]
+        : ["Oligocene Turbidites", "Miocene Channel Sands", "Pre-Salt Carbonates"],
+      fields: [],
+    };
+  }),
 ];
 
 // ── National Exploration Statistics (from ANPG reference data) ──
@@ -2912,4 +2954,5 @@ export const phaseColors: Record<BlockPhase, string> = {
   Development: "hsl(var(--development))",
   Production: "hsl(var(--production))",
   Suspended: "hsl(var(--suspended))",
+  Bidding: "hsl(var(--bidding))",
 };

@@ -14,6 +14,7 @@ const PhaseColors: Record<string, string> = {
   Development: "bg-warning text-warning-foreground",
   Exploration: "bg-primary text-primary-foreground",
   Suspended: "bg-danger text-danger-foreground",
+  Bidding: "bg-[hsl(280,65%,60%)] text-white",
 };
 
 export const BlockDetail = ({ block, onClose }: BlockDetailProps) => {
