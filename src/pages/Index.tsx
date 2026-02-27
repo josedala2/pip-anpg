@@ -1,6 +1,6 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
 import { KPICards } from "@/components/dashboard/KPICards";
-import { AngolaMap } from "@/components/dashboard/AngolaMap";
+import { ConcessionMap } from "@/components/dashboard/ConcessionMap";
 import { FilterBar, applyFilters, type FilterState } from "@/components/dashboard/FilterBar";
 import { BlockDetail } from "@/components/dashboard/BlockDetail";
 import { OverviewBlockList } from "@/components/dashboard/OverviewBlockList";
@@ -21,7 +21,13 @@ const Index = () => {
   const [activePanel, setActivePanel] = useState(0);
   const [selectedBlock, setSelectedBlock] = useState<OilBlock | null>(null);
   const [filteredIds, setFilteredIds] = useState<string[]>(oilBlocks.map(b => b.id));
+  const [hoveredBlockId, setHoveredBlockId] = useState<string | null>(null);
   const [isPresentation, setIsPresentation] = useState(false);
+
+  const filteredBlocks = useMemo(() =>
+    oilBlocks.filter(b => filteredIds.includes(b.id)),
+    [filteredIds]
+  );
 
   const handleFilterChange = useCallback((filters: FilterState) => {
     const filtered = applyFilters(filters);
@@ -121,10 +127,12 @@ const Index = () => {
               <KPICards />
               <FilterBar onFilterChange={handleFilterChange} />
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <AngolaMap
+                <ConcessionMap
+                  blocks={filteredBlocks}
+                  selectedBlockId={selectedBlock?.id ?? null}
+                  hoveredBlockId={hoveredBlockId}
                   onBlockClick={setSelectedBlock}
-                  selectedBlockId={selectedBlock?.id}
-                  filteredBlockIds={filteredIds}
+                  onBlockHover={setHoveredBlockId}
                 />
                 <OverviewBlockList
                   filteredIds={filteredIds}
