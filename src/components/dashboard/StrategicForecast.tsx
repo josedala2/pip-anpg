@@ -56,11 +56,12 @@ export const StrategicForecast = () => {
           <ResponsiveContainer width="100%" height={300}>
             <LineChart data={projectionData}>
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-              <XAxis dataKey="year" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} />
-              <YAxis tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} width={60} tickFormatter={v => `${(v / 1000).toFixed(0)}k`} />
+              <XAxis dataKey="year" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} stroke="hsl(var(--border))" />
+              <YAxis tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} width={60} tickFormatter={v => `${(v / 1000).toFixed(0)}k`} stroke="hsl(var(--border))" />
               <Tooltip
-                contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }}
+                contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12, color: "hsl(var(--foreground))" }}
                 formatter={(value: number) => [value.toLocaleString() + " BOPD"]}
+                labelStyle={{ color: "hsl(var(--muted-foreground))" }}
               />
               <Legend wrapperStyle={{ fontSize: 11 }} />
               {scenarios.map(s => (
