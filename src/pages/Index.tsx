@@ -186,9 +186,30 @@ const Index = () => {
           <button onClick={nextPanel} disabled={activePanel === panels.length - 1} className="fixed right-4 top-1/2 -translate-y-1/2 z-[101] p-3 glass-card rounded-full disabled:opacity-20">
             <ChevronRight className="w-6 h-6" />
           </button>
-          <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-[101] flex gap-2">
-            {panels.map((_, i) => (
-              <button key={i} onClick={() => setActivePanel(i)} className={`w-2 h-2 rounded-full transition-all ${i === activePanel ? "bg-primary w-6" : "bg-muted-foreground/40"}`} />
+          <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-[101] flex items-center gap-3 glass-card px-4 py-2.5 rounded-full">
+            <span className="text-[10px] text-muted-foreground font-mono mr-1">
+              {activePanel + 1}/{panels.length}
+            </span>
+            {panels.map((label, i) => (
+              <button
+                key={i}
+                onClick={() => switchPanel(i)}
+                title={label}
+                className="relative group"
+              >
+                <span
+                  className={`block rounded-full transition-all duration-300 ${
+                    i === activePanel
+                      ? "w-8 h-2 bg-primary"
+                      : i < activePanel
+                        ? "w-2 h-2 bg-primary/50"
+                        : "w-2 h-2 bg-muted-foreground/30"
+                  }`}
+                />
+                <span className="absolute -top-7 left-1/2 -translate-x-1/2 text-[9px] text-foreground bg-popover px-2 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none border border-border">
+                  {label}
+                </span>
+              </button>
             ))}
           </div>
         </>
