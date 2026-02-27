@@ -1,50 +1,67 @@
 
 
-# Angola Oil Concessions — Executive Intelligence Dashboard
+## Plano: Página dedicada por bloco com informações completas
 
-## Design System
-- Dark premium theme with deep navy/charcoal palette
-- Large executive-readable typography
-- Subtle glow effects and smooth transitions
-- Mobile-first responsive layout (tablet + high-end mobile optimized)
-- No website navigation — pure dashboard experience
+### Objectivo
+Criar uma rota `/block/:blockId` com página completa de informações para cada bloco, incluindo secções de Exploração (sísmica, poços), Produção, CAPEX, Consórcio, Risco e Projecções. No painel BlocksPanel e no mapa, adicionar botão "Mais Detalhes" que navega para essa página.
 
-## Panel 1: National Overview
-- Interactive SVG map of Angola with clickable oil blocks, color-coded by status (Exploration, Development, Production, Suspended)
-- Top KPI cards with animated counters: Total Production (BOPD), Estimated Reserves, Active Blocks, CAPEX in Progress, Execution Rate %
-- Multi-layer filter bar: by operator, basin, phase, production range
+### Estrutura da nova página
 
-## Panel 2: Block Detail (slide-in panel on block click)
-- Operator, partners, contract date, current phase, daily production, reserves, accumulated investment
-- Planned vs actual timeline visualization
-- Internal risk score indicator
-- Production over time chart (Recharts area chart)
-- CAPEX vs Plan chart (bar chart)
-- Compliance indicator (radial gauge)
+```text
+/block/:blockId
+┌──────────────────────────────────────────────┐
+│  Header: Nome do Bloco + Badge Fase + Voltar │
+├──────────────────────────────────────────────┤
+│  Tab 1: Visão Geral                         │
+│    - Info grid (Operador, Bacia, Contrato..) │
+│    - Risk Score + Compliance donut           │
+│    - KPIs (Produção, Reservas, Investimento) │
+├──────────────────────────────────────────────┤
+│  Tab 2: Consórcio                            │
+│    - Tabela de parceiros com % e barras      │
+│    - Gráfico pie/donut do consórcio          │
+├──────────────────────────────────────────────┤
+│  Tab 3: Exploração & Sísmica                │
+│    - Dados sísmicos do bloco (2D/3D/4D)     │
+│    - Poços perfurados (Pesquisa/Avaliação)  │
+│    - Objectivos geológicos                   │
+├──────────────────────────────────────────────┤
+│  Tab 4: Produção                             │
+│    - Production Trend chart (12 meses)       │
+│    - CAPEX vs Plan chart                     │
+├──────────────────────────────────────────────┤
+│  Tab 5: Projecções                           │
+│    - Conservative / Base / Expansion lines   │
+└──────────────────────────────────────────────┘
+```
 
-## Panel 3: Risk & Performance
-- Heatmap grid of blocks by risk level
-- Sortable ranking table: production, delay, investment execution, financial exposure
-- Visual alert badges: Red (critical), Orange (below plan), Green (above target)
+### Passos de implementação
 
-## Panel 4: Strategic Forecast
-- Scenario selector (Conservative / Base / Expansion)
-- 5–10 year production projection line chart
-- Fiscal impact estimation cards
+1. **Expandir dados no `OilBlock` interface** (`angolaBlocks.ts`)
+   - Adicionar campos opcionais: `seismicData` (array com `{ year, km2D, km3D, km4D }`), `wellsData` (array com `{ year, pesquisa, avaliacao }`), `geologicalObjectives` (string[]), `fields` (array de campos/descobertas com nome e status)
+   - Preencher dados de exemplo para os blocos principais (Block 0, 14, 15, 17, etc.)
 
-## Panel 5: Board Presentation Mode
-- Fullscreen toggle button
-- Swipe/arrow navigation between panels
-- Slide-like transitions with large KPI highlight mode
-- Clean presenter-friendly layout
+2. **Criar página `BlockPage.tsx`** (`src/pages/BlockPage.tsx`)
+   - Rota: `/block/:blockId`
+   - Usa `useParams` para obter o blockId e encontrar o bloco em `oilBlocks`
+   - Layout com header fixo (nome, fase, botão voltar)
+   - Tabs (Radix UI Tabs já instalado): Visão Geral, Consórcio, Exploração, Produção, Projecções
+   - Cada tab renderiza secção dedicada com gráficos recharts
 
-## Data
-- Realistic mock data for ~15 Angola oil blocks with operators (Sonangol, TotalEnergies, BP, ENI, Chevron, etc.)
-- Production, reserves, investment, and timeline data
+3. **Adicionar rota em `App.tsx`**
+   - `<Route path="/block/:blockId" element={<BlockPage />} />`
 
-## Technical Approach
-- All panels accessible via tab/swipe navigation (no traditional nav)
-- Recharts for all charts
-- Framer-free CSS animations for transitions
-- Responsive grid layout optimized for tablets
+4. **Adicionar botão "Mais Detalhes" no BlocksPanel**
+   - No `BlockCard` expandido, adicionar link/botão que navega para `/block/${block.id}` usando `useNavigate`
+   - Também acessível a partir do mapa (ao clicar num bloco, popup com opção "Ver Detalhes")
+
+5. **Actualizar `ConcessionMap.tsx`**
+   - No tooltip/popup de cada bloco, adicionar link "Mais Detalhes" que navega para a página do bloco
+
+### Detalhes técnicos
+- Usar `react-router-dom` `useParams` + `useNavigate` (já instalado)
+- Usar `Tabs`/`TabsList`/`TabsTrigger`/`TabsContent` de `@/components/ui/tabs`
+- Gráficos com `recharts` (PieChart para consórcio, AreaChart para produção, BarChart para sísmica/poços, LineChart para projecções)
+- Página 404 se blockId não existir
+- Botão "Voltar" navega para `/` com o painel de blocos activo
 
