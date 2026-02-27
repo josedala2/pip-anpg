@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Target } from "lucide-react";
+import { ScatterChart, Scatter, XAxis, YAxis, ZAxis, Tooltip, ResponsiveContainer, CartesianGrid, Cell } from "recharts";
 import type { OilBlock } from "@/data/angolaBlocks";
 
 interface ProspectsTableProps {
@@ -14,6 +15,34 @@ const posColor = (pos: number) => {
   if (pos >= 50) return "text-success";
   if (pos >= 25) return "text-warning";
   return "text-danger";
+};
+
+const posHsl = (pos: number) => {
+  if (pos >= 50) return "hsl(var(--success))";
+  if (pos >= 25) return "hsl(var(--warning))";
+  return "hsl(var(--danger))";
+};
+
+const tooltipStyle = {
+  background: "hsl(var(--card))",
+  border: "1px solid hsl(var(--border))",
+  borderRadius: 8,
+  fontSize: 12,
+  color: "hsl(var(--foreground))",
+};
+
+const BubbleTooltip = ({ active, payload }: any) => {
+  if (!active || !payload?.length) return null;
+  const d = payload[0].payload;
+  return (
+    <div style={tooltipStyle} className="p-2 space-y-0.5">
+      <div className="font-semibold text-xs">{d.name}</div>
+      <div className="text-[10px] text-muted-foreground">{d.block} · {d.discoveryArea}</div>
+      <div className="text-[10px]">Reservatório: {d.reservoir}</div>
+      <div className="text-[10px] font-mono">{d.resourcesMMBO.toLocaleString()} MMBO · POS {d.pos}%</div>
+      {d.resourcesBCF > 0 && <div className="text-[10px] font-mono">{d.resourcesBCF.toLocaleString()} BCF</div>}
+    </div>
+  );
 };
 
 export const ProspectsTable = ({ blocks, scopeLabel }: ProspectsTableProps) => {
@@ -34,64 +63,129 @@ export const ProspectsTable = ({ blocks, scopeLabel }: ProspectsTableProps) => {
     return { mmbo, bcf, count };
   }, [blocksWithProspects]);
 
+  const bubbleData = useMemo(() => {
+    const data: any[] = [];
+    blocksWithProspects.forEach(b => {
+      b.prospects!.forEach(p => {
+        data.push({
+          ...p,
+          block: b.name,
+          z: Math.max(p.resourcesMMBO, 20),
+        });
+      });
+    });
+    return data;
+  }, [blocksWithProspects]);
+
   if (blocksWithProspects.length === 0) return null;
 
   return (
-    <Card className="glass-card">
-      <CardHeader className="p-4 pb-2">
-        <CardTitle className="text-sm flex items-center gap-2">
-          <Target className="w-4 h-4 text-primary" />
-          Prospectos & Recursos — {scopeLabel}
-          <Badge variant="outline" className="ml-auto text-[10px] bg-primary/10 text-primary border-primary/30">
-            {totals.count} prospectos · {totals.mmbo.toLocaleString(undefined, { maximumFractionDigits: 1 })} MMBO
-            {totals.bcf > 0 && ` · ${totals.bcf.toLocaleString()} BCF`}
-          </Badge>
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="p-4 pt-2">
-        <div className="relative w-full overflow-auto max-h-[500px]">
-          <Table>
-            <TableHeader>
-              <TableRow className="border-border/50">
-                <TableHead className="text-[10px] uppercase tracking-wider">Bloco</TableHead>
-                <TableHead className="text-[10px] uppercase tracking-wider">Discovery Area</TableHead>
-                <TableHead className="text-[10px] uppercase tracking-wider">Prospecto</TableHead>
-                <TableHead className="text-[10px] uppercase tracking-wider">Reservatório</TableHead>
-                <TableHead className="text-[10px] uppercase tracking-wider text-right">MMBO</TableHead>
-                <TableHead className="text-[10px] uppercase tracking-wider text-right">BCF</TableHead>
-                <TableHead className="text-[10px] uppercase tracking-wider text-right">POS (%)</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {blocksWithProspects.map(block =>
-                block.prospects!.map((p, i) => (
-                  <TableRow key={`${block.id}-${i}`} className="border-border/30 hover:bg-secondary/30">
-                    {i === 0 && (
-                      <TableCell rowSpan={block.prospects!.length} className="text-xs font-semibold align-top border-r border-border/20">
-                        {block.name}
+    <>
+      {/* Bubble Chart */}
+      <Card className="glass-card">
+        <CardHeader className="p-4 pb-2">
+          <CardTitle className="text-sm flex items-center gap-2">
+            <Target className="w-4 h-4 text-primary" />
+            Recursos vs Probabilidade de Sucesso — {scopeLabel}
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-4 pt-0">
+          <ResponsiveContainer width="100%" height={340}>
+            <ScatterChart margin={{ top: 10, right: 20, bottom: 20, left: 10 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+              <XAxis
+                type="number"
+                dataKey="pos"
+                name="POS"
+                unit="%"
+                domain={[0, 80]}
+                tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }}
+                stroke="hsl(var(--border))"
+                label={{ value: "POS (%)", position: "bottom", offset: 0, style: { fill: "hsl(var(--muted-foreground))", fontSize: 11 } }}
+              />
+              <YAxis
+                type="number"
+                dataKey="resourcesMMBO"
+                name="MMBO"
+                tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }}
+                stroke="hsl(var(--border))"
+                width={60}
+                label={{ value: "Recursos (MMBO)", angle: -90, position: "insideLeft", offset: 5, style: { fill: "hsl(var(--muted-foreground))", fontSize: 11 } }}
+              />
+              <ZAxis type="number" dataKey="z" range={[40, 600]} />
+              <Tooltip content={<BubbleTooltip />} />
+              <Scatter data={bubbleData} fillOpacity={0.7} strokeWidth={1} stroke="hsl(var(--border))">
+                {bubbleData.map((d, i) => (
+                  <Cell key={i} fill={posHsl(d.pos)} />
+                ))}
+              </Scatter>
+            </ScatterChart>
+          </ResponsiveContainer>
+          <div className="flex items-center justify-center gap-4 mt-2">
+            <div className="flex items-center gap-1.5 text-[10px]"><span className="w-2.5 h-2.5 rounded-full bg-danger" /> POS &lt;25%</div>
+            <div className="flex items-center gap-1.5 text-[10px]"><span className="w-2.5 h-2.5 rounded-full bg-warning" /> POS 25–49%</div>
+            <div className="flex items-center gap-1.5 text-[10px]"><span className="w-2.5 h-2.5 rounded-full bg-success" /> POS ≥50%</div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Table */}
+      <Card className="glass-card">
+        <CardHeader className="p-4 pb-2">
+          <CardTitle className="text-sm flex items-center gap-2">
+            <Target className="w-4 h-4 text-primary" />
+            Prospectos & Recursos — {scopeLabel}
+            <Badge variant="outline" className="ml-auto text-[10px] bg-primary/10 text-primary border-primary/30">
+              {totals.count} prospectos · {totals.mmbo.toLocaleString(undefined, { maximumFractionDigits: 1 })} MMBO
+              {totals.bcf > 0 && ` · ${totals.bcf.toLocaleString()} BCF`}
+            </Badge>
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-4 pt-2">
+          <div className="relative w-full overflow-auto max-h-[500px]">
+            <Table>
+              <TableHeader>
+                <TableRow className="border-border/50">
+                  <TableHead className="text-[10px] uppercase tracking-wider">Bloco</TableHead>
+                  <TableHead className="text-[10px] uppercase tracking-wider">Discovery Area</TableHead>
+                  <TableHead className="text-[10px] uppercase tracking-wider">Prospecto</TableHead>
+                  <TableHead className="text-[10px] uppercase tracking-wider">Reservatório</TableHead>
+                  <TableHead className="text-[10px] uppercase tracking-wider text-right">MMBO</TableHead>
+                  <TableHead className="text-[10px] uppercase tracking-wider text-right">BCF</TableHead>
+                  <TableHead className="text-[10px] uppercase tracking-wider text-right">POS (%)</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {blocksWithProspects.map(block =>
+                  block.prospects!.map((p, i) => (
+                    <TableRow key={`${block.id}-${i}`} className="border-border/30 hover:bg-secondary/30">
+                      {i === 0 && (
+                        <TableCell rowSpan={block.prospects!.length} className="text-xs font-semibold align-top border-r border-border/20">
+                          {block.name}
+                        </TableCell>
+                      )}
+                      <TableCell className="text-xs text-muted-foreground">{p.discoveryArea}</TableCell>
+                      <TableCell className="text-xs font-mono">{p.name}</TableCell>
+                      <TableCell>
+                        <Badge variant="outline" className="text-[10px]">{p.reservoir}</Badge>
                       </TableCell>
-                    )}
-                    <TableCell className="text-xs text-muted-foreground">{p.discoveryArea}</TableCell>
-                    <TableCell className="text-xs font-mono">{p.name}</TableCell>
-                    <TableCell>
-                      <Badge variant="outline" className="text-[10px]">{p.reservoir}</Badge>
-                    </TableCell>
-                    <TableCell className="text-xs font-mono text-right font-medium">
-                      {p.resourcesMMBO.toLocaleString(undefined, { maximumFractionDigits: 1 })}
-                    </TableCell>
-                    <TableCell className="text-xs font-mono text-right text-muted-foreground">
-                      {p.resourcesBCF ? p.resourcesBCF.toLocaleString() : "—"}
-                    </TableCell>
-                    <TableCell className={`text-xs font-mono text-right font-bold ${posColor(p.pos)}`}>
-                      {p.pos}%
-                    </TableCell>
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </div>
-      </CardContent>
-    </Card>
+                      <TableCell className="text-xs font-mono text-right font-medium">
+                        {p.resourcesMMBO.toLocaleString(undefined, { maximumFractionDigits: 1 })}
+                      </TableCell>
+                      <TableCell className="text-xs font-mono text-right text-muted-foreground">
+                        {p.resourcesBCF ? p.resourcesBCF.toLocaleString() : "—"}
+                      </TableCell>
+                      <TableCell className={`text-xs font-mono text-right font-bold ${posColor(p.pos)}`}>
+                        {p.pos}%
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
+              </TableBody>
+            </Table>
+          </div>
+        </CardContent>
+      </Card>
+    </>
   );
 };
