@@ -2,8 +2,16 @@ import { useState } from "react";
 import { KPICards } from "./KPICards";
 import { OverviewBlockList } from "./OverviewBlockList";
 import { FilterBar, type FilterState } from "./FilterBar";
-import { type OilBlock } from "@/data/angolaBlocks";
-import { PanelRightClose, PanelRightOpen, BarChart3, Layers, Filter, TrendingUp } from "lucide-react";
+import { type OilBlock, getTotalProduction, getTotalReserves, getActiveBlocks, getTotalCapex, getAvgExecutionRate } from "@/data/angolaBlocks";
+import { PanelRightClose, PanelRightOpen, BarChart3, Layers, TrendingUp, Activity, Boxes, DollarSign } from "lucide-react";
+
+const kpiData = [
+  { label: "Produção", value: getTotalProduction(), prefix: "", suffix: " BOPD", formatted: Math.round(getTotalProduction()).toLocaleString(), icon: Activity, color: "text-primary" },
+  { label: "Reservas", value: getTotalReserves(), prefix: "", suffix: " Mb", formatted: Math.round(getTotalReserves()).toLocaleString(), icon: BarChart3, color: "text-success" },
+  { label: "Blocos Ativos", value: getActiveBlocks(), prefix: "", suffix: "", formatted: getActiveBlocks().toString(), icon: Boxes, color: "text-warning" },
+  { label: "CAPEX", value: getTotalCapex(), prefix: "$", suffix: "M", formatted: Math.round(getTotalCapex()).toLocaleString(), icon: DollarSign, color: "text-primary" },
+  { label: "Execução", value: getAvgExecutionRate(), prefix: "", suffix: "%", formatted: Math.round(getAvgExecutionRate()).toString(), icon: TrendingUp, color: "text-success" },
+];
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 
 // Mini production trend data (aggregated)
@@ -36,13 +44,35 @@ export const OverviewSidebar = ({
 
   if (!open) {
     return (
-      <button
-        onClick={() => setOpen(true)}
-        className="absolute top-4 right-4 z-30 glass-card p-2.5 rounded-lg border border-border/50 hover:bg-secondary/50 transition-colors shadow-lg"
-        title="Abrir painel"
-      >
-        <PanelRightOpen className="w-5 h-5 text-muted-foreground" />
-      </button>
+      <>
+        <button
+          onClick={() => setOpen(true)}
+          className="absolute top-4 right-4 z-30 glass-card p-2.5 rounded-lg border border-border/50 hover:bg-secondary/50 transition-colors shadow-lg"
+          title="Abrir painel"
+        >
+          <PanelRightOpen className="w-5 h-5 text-muted-foreground" />
+        </button>
+        {/* Floating KPI mini-cards */}
+        <div className="absolute bottom-4 left-4 right-4 z-30 animate-fade-in">
+          <div className="flex flex-wrap gap-2">
+            {kpiData.map((kpi, i) => (
+              <div
+                key={kpi.label}
+                className="glass-card rounded-lg px-3 py-2 border border-border/50 shadow-lg flex items-center gap-2 animate-fade-in"
+                style={{ animationDelay: `${i * 80}ms` }}
+              >
+                <kpi.icon className={`w-3.5 h-3.5 ${kpi.color}`} />
+                <div className="flex flex-col">
+                  <span className="text-[8px] uppercase tracking-wider text-muted-foreground font-medium">{kpi.label}</span>
+                  <span className={`text-sm font-bold font-mono tabular-nums ${kpi.color}`}>
+                    {kpi.prefix}{kpi.formatted}{kpi.suffix}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </>
     );
   }
 
