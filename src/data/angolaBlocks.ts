@@ -498,6 +498,150 @@ export const oilBlocks: OilBlock[] = [
   },
 ];
 
+// ── National Exploration Statistics (from ANPG reference data) ──
+
+export interface SeismicData {
+  year: number;
+  seismic2D: number; // km
+  seismic3D: number; // km²
+  seismic4D: number; // km²
+}
+
+export interface WellsData {
+  year: number;
+  pesquisa: number; // exploration/research wells
+  avaliacao: number; // appraisal wells
+}
+
+export const nationalStats = {
+  seismicAcquired2D: 23816, // km
+  seismicAcquired3D: 20583, // km²
+  successRate: 41, // %
+  totalExplorationWells: 372,
+  pesquisaWells: 169,
+  avaliacaoWells: 203,
+  discoverySTOOIP: 21000, // MMBO
+  undevelopedDiscoverySTOOIP: 403.5, // MMBO
+  undevelopedDiscoveryGIIP: 5035.9, // BCF
+  prospectiveSTOOIP: 3292.1, // MMBO
+  prospectiveGIIP: 6179.7, // BCF
+  geologicalObjectives: ["Albiano", "Toca", "Lucúla"],
+  challenges: [
+    "Alto índice de poços secos e custos operacionais elevados",
+    "Baixa qualidade do dado sísmico",
+    "Elevado número de descobertas não desenvolvidas",
+    "Optimizar a Rocha Geradora Bucomazi como reservatório não convencional",
+    "Exposição excessiva ao risco financeiro e falta de capital",
+  ],
+};
+
+export const seismicHistory: SeismicData[] = [
+  { year: 1960, seismic2D: 195, seismic3D: 0, seismic4D: 0 },
+  { year: 1961, seismic2D: 600, seismic3D: 0, seismic4D: 0 },
+  { year: 1962, seismic2D: 0, seismic3D: 0, seismic4D: 0 },
+  { year: 1963, seismic2D: 0, seismic3D: 0, seismic4D: 0 },
+  { year: 1964, seismic2D: 0, seismic3D: 0, seismic4D: 0 },
+  { year: 1965, seismic2D: 52, seismic3D: 0, seismic4D: 0 },
+  { year: 1966, seismic2D: 0, seismic3D: 0, seismic4D: 0 },
+  { year: 1967, seismic2D: 2020, seismic3D: 0, seismic4D: 0 },
+  { year: 1968, seismic2D: 1863, seismic3D: 0, seismic4D: 0 },
+  { year: 1969, seismic2D: 0, seismic3D: 0, seismic4D: 0 },
+  { year: 1970, seismic2D: 910, seismic3D: 0, seismic4D: 0 },
+  { year: 1971, seismic2D: 1704, seismic3D: 0, seismic4D: 0 },
+  { year: 1972, seismic2D: 286, seismic3D: 0, seismic4D: 0 },
+  { year: 1973, seismic2D: 92, seismic3D: 0, seismic4D: 0 },
+  { year: 1974, seismic2D: 1202, seismic3D: 0, seismic4D: 0 },
+  { year: 1975, seismic2D: 0, seismic3D: 0, seismic4D: 0 },
+  { year: 1976, seismic2D: 0, seismic3D: 0, seismic4D: 0 },
+  { year: 1977, seismic2D: 1380, seismic3D: 0, seismic4D: 0 },
+  { year: 1978, seismic2D: 910, seismic3D: 0, seismic4D: 0 },
+  { year: 1979, seismic2D: 0, seismic3D: 0, seismic4D: 0 },
+  { year: 1980, seismic2D: 680, seismic3D: 0, seismic4D: 0 },
+  { year: 1981, seismic2D: 2572, seismic3D: 0, seismic4D: 0 },
+  { year: 1982, seismic2D: 230, seismic3D: 0, seismic4D: 0 },
+  { year: 1983, seismic2D: 0, seismic3D: 0, seismic4D: 0 },
+  { year: 1984, seismic2D: 3951, seismic3D: 0, seismic4D: 0 },
+  { year: 1985, seismic2D: 1358, seismic3D: 0, seismic4D: 0 },
+  { year: 1986, seismic2D: 1099, seismic3D: 0, seismic4D: 0 },
+  { year: 1987, seismic2D: 241, seismic3D: 0, seismic4D: 0 },
+  { year: 1988, seismic2D: 2070, seismic3D: 0, seismic4D: 0 },
+  { year: 1989, seismic2D: 345, seismic3D: 0, seismic4D: 0 },
+  { year: 1990, seismic2D: 240, seismic3D: 0, seismic4D: 0 },
+  { year: 1991, seismic2D: 156, seismic3D: 0, seismic4D: 0 },
+  { year: 1992, seismic2D: 92, seismic3D: 5240, seismic4D: 0 },
+  { year: 1993, seismic2D: 0, seismic3D: 1489, seismic4D: 0 },
+  { year: 1994, seismic2D: 0, seismic3D: 2751, seismic4D: 0 },
+  { year: 1995, seismic2D: 0, seismic3D: 0, seismic4D: 0 },
+  { year: 1996, seismic2D: 0, seismic3D: 761, seismic4D: 0 },
+  { year: 1997, seismic2D: 0, seismic3D: 224, seismic4D: 0 },
+  { year: 1998, seismic2D: 0, seismic3D: 0, seismic4D: 0 },
+  { year: 1999, seismic2D: 0, seismic3D: 829, seismic4D: 0 },
+  { year: 2000, seismic2D: 0, seismic3D: 197, seismic4D: 0 },
+  { year: 2001, seismic2D: 0, seismic3D: 0, seismic4D: 0 },
+  { year: 2002, seismic2D: 0, seismic3D: 0, seismic4D: 0 },
+  { year: 2003, seismic2D: 0, seismic3D: 0, seismic4D: 0 },
+  { year: 2004, seismic2D: 0, seismic3D: 0, seismic4D: 0 },
+  { year: 2005, seismic2D: 0, seismic3D: 0, seismic4D: 0 },
+  { year: 2006, seismic2D: 0, seismic3D: 0, seismic4D: 0 },
+  { year: 2007, seismic2D: 0, seismic3D: 0, seismic4D: 0 },
+  { year: 2008, seismic2D: 0, seismic3D: 4209, seismic4D: 0 },
+  { year: 2009, seismic2D: 0, seismic3D: 0, seismic4D: 0 },
+  { year: 2010, seismic2D: 0, seismic3D: 3160, seismic4D: 0 },
+  { year: 2011, seismic2D: 0, seismic3D: 0, seismic4D: 0 },
+  { year: 2012, seismic2D: 0, seismic3D: 1050, seismic4D: 0 },
+];
+
+export const wellsHistory: WellsData[] = [
+  { year: 1966, pesquisa: 5, avaliacao: 0 },
+  { year: 1967, pesquisa: 9, avaliacao: 1 },
+  { year: 1968, pesquisa: 7, avaliacao: 3 },
+  { year: 1969, pesquisa: 14, avaliacao: 2 },
+  { year: 1970, pesquisa: 4, avaliacao: 12 },
+  { year: 1971, pesquisa: 10, avaliacao: 1 },
+  { year: 1972, pesquisa: 4, avaliacao: 5 },
+  { year: 1973, pesquisa: 1, avaliacao: 2 },
+  { year: 1974, pesquisa: 0, avaliacao: 5 },
+  { year: 1975, pesquisa: 0, avaliacao: 0 },
+  { year: 1976, pesquisa: 5, avaliacao: 2 },
+  { year: 1977, pesquisa: 0, avaliacao: 0 },
+  { year: 1978, pesquisa: 5, avaliacao: 3 },
+  { year: 1979, pesquisa: 0, avaliacao: 0 },
+  { year: 1980, pesquisa: 7, avaliacao: 2 },
+  { year: 1981, pesquisa: 7, avaliacao: 2 },
+  { year: 1982, pesquisa: 5, avaliacao: 18 },
+  { year: 1983, pesquisa: 8, avaliacao: 9 },
+  { year: 1984, pesquisa: 7, avaliacao: 8 },
+  { year: 1985, pesquisa: 6, avaliacao: 6 },
+  { year: 1986, pesquisa: 2, avaliacao: 8 },
+  { year: 1987, pesquisa: 10, avaliacao: 11 },
+  { year: 1988, pesquisa: 10, avaliacao: 11 },
+  { year: 1989, pesquisa: 5, avaliacao: 14 },
+  { year: 1990, pesquisa: 3, avaliacao: 24 },
+  { year: 1991, pesquisa: 8, avaliacao: 7 },
+  { year: 1992, pesquisa: 8, avaliacao: 6 },
+  { year: 1993, pesquisa: 6, avaliacao: 5 },
+  { year: 1994, pesquisa: 5, avaliacao: 13 },
+  { year: 1995, pesquisa: 5, avaliacao: 5 },
+  { year: 1996, pesquisa: 10, avaliacao: 18 },
+  { year: 1997, pesquisa: 0, avaliacao: 3 },
+  { year: 1998, pesquisa: 0, avaliacao: 3 },
+  { year: 1999, pesquisa: 0, avaliacao: 0 },
+  { year: 2000, pesquisa: 2, avaliacao: 1 },
+  { year: 2001, pesquisa: 0, avaliacao: 2 },
+  { year: 2005, pesquisa: 0, avaliacao: 0 },
+  { year: 2006, pesquisa: 3, avaliacao: 4 },
+  { year: 2007, pesquisa: 3, avaliacao: 2 },
+  { year: 2008, pesquisa: 2, avaliacao: 2 },
+  { year: 2009, pesquisa: 0, avaliacao: 1 },
+  { year: 2010, pesquisa: 2, avaliacao: 1 },
+  { year: 2011, pesquisa: 0, avaliacao: 1 },
+  { year: 2013, pesquisa: 2, avaliacao: 1 },
+  { year: 2014, pesquisa: 0, avaliacao: 1 },
+  { year: 2015, pesquisa: 0, avaliacao: 1 },
+  { year: 2019, pesquisa: 1, avaliacao: 0 },
+  { year: 2025, pesquisa: 0, avaliacao: 1 },
+];
+
 export const getBlocksByPhase = (phase: BlockPhase) => oilBlocks.filter(b => b.phase === phase);
 
 export const getTotalProduction = () => oilBlocks.reduce((sum, b) => sum + b.dailyProduction, 0);
