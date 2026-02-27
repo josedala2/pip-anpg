@@ -233,6 +233,25 @@ export const ExplorationPanel = () => {
         </CardContent>
       </Card>
 
+      {/* Seismic Total Acquired */}
+      <Card className="glass-card">
+        <CardContent className="p-4 flex flex-wrap items-center gap-4">
+          <Layers className="w-5 h-5 text-primary shrink-0" />
+          <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Sísmica Total Adquirida</div>
+          <div className="font-bold font-mono text-lg">
+            {explorationStats.total2D.toLocaleString()} <span className="text-xs text-muted-foreground">km (2D)</span>
+            {" · "}
+            {explorationStats.total3D.toLocaleString()} <span className="text-xs text-muted-foreground">km² (3D)</span>
+            {explorationStats.total4D > 0 && (
+              <>
+                {" · "}
+                {explorationStats.total4D.toLocaleString()} <span className="text-xs text-muted-foreground">km² (4D)</span>
+              </>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Key Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[
@@ -330,64 +349,31 @@ export const ExplorationPanel = () => {
         </Card>
       )}
 
-      {/* Resources & Challenges */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Card className="glass-card">
-          <CardHeader className="p-4 pb-2">
-            <CardTitle className="text-sm">Objectivos Geológicos — {scopeLabel}</CardTitle>
-          </CardHeader>
-          <CardContent className="p-4 pt-2 space-y-3">
-            {explorationStats.geologicalObjectives.length > 0 ? (
-              <div className="flex gap-2 flex-wrap">
-                {explorationStats.geologicalObjectives.map(o => (
-                  <span key={o} className="px-2 py-0.5 bg-primary/10 text-primary rounded text-xs font-medium">{o}</span>
-                ))}
-              </div>
-            ) : (
-              <span className="text-xs text-muted-foreground">Sem objectivos geológicos definidos</span>
-            )}
-            <div className="glass-card p-3 rounded-lg">
-              <div className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">Sísmica Total Adquirida</div>
-              <div className="font-bold font-mono">
-                {explorationStats.total2D.toLocaleString()} <span className="text-xs text-muted-foreground">km (2D)</span>
-                {" · "}
-                {explorationStats.total3D.toLocaleString()} <span className="text-xs text-muted-foreground">km² (3D)</span>
-                {explorationStats.total4D > 0 && (
-                  <>
-                    {" · "}
-                    {explorationStats.total4D.toLocaleString()} <span className="text-xs text-muted-foreground">km² (4D)</span>
-                  </>
-                )}
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="glass-card">
-          <CardHeader className="p-4 pb-2">
-            <CardTitle className="text-sm flex items-center gap-2">
-              <AlertTriangle className="w-4 h-4 text-warning" />
-              Desafios do Sector
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-4 pt-2">
-            <ul className="space-y-2">
-              {[
-                "Alto índice de poços secos e custos operacionais elevados",
-                "Baixa qualidade do dado sísmico em algumas bacias",
-                "Elevado número de descobertas não desenvolvidas",
-                "Optimizar a Rocha Geradora Bucomazi como reservatório não convencional",
-                "Exposição excessiva ao risco financeiro e falta de capital",
-              ].map((c, i) => (
-                <li key={i} className="flex items-start gap-2 text-xs text-muted-foreground">
-                  <span className="w-1.5 h-1.5 rounded-full bg-warning mt-1.5 shrink-0" />
-                  {c}
-                </li>
-              ))}
-            </ul>
-          </CardContent>
-        </Card>
-      </div>
+      {/* Challenges */}
+      <Card className="glass-card">
+        <CardHeader className="p-4 pb-2">
+          <CardTitle className="text-sm flex items-center gap-2">
+            <AlertTriangle className="w-4 h-4 text-warning" />
+            Desafios do Sector
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-4 pt-2">
+          <ul className="space-y-2">
+            {[
+              "Alto índice de poços secos e custos operacionais elevados",
+              "Baixa qualidade do dado sísmico em algumas bacias",
+              "Elevado número de descobertas não desenvolvidas",
+              "Optimizar a Rocha Geradora Bucomazi como reservatório não convencional",
+              "Exposição excessiva ao risco financeiro e falta de capital",
+            ].map((c, i) => (
+              <li key={i} className="flex items-start gap-2 text-xs text-muted-foreground">
+                <span className="w-1.5 h-1.5 rounded-full bg-warning mt-1.5 shrink-0" />
+                {c}
+              </li>
+            ))}
+          </ul>
+        </CardContent>
+      </Card>
 
       {/* Summary Table */}
       <ExplorationSummaryTable blocks={filteredBlocks} scopeLabel={scopeLabel} />
