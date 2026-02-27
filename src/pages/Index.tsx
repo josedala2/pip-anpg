@@ -3,6 +3,7 @@ import { KPICards } from "@/components/dashboard/KPICards";
 import { AngolaMap } from "@/components/dashboard/AngolaMap";
 import { FilterBar, applyFilters, type FilterState } from "@/components/dashboard/FilterBar";
 import { BlockDetail } from "@/components/dashboard/BlockDetail";
+import { OverviewBlockList } from "@/components/dashboard/OverviewBlockList";
 import { RiskPerformance } from "@/components/dashboard/RiskPerformance";
 import { StrategicForecast } from "@/components/dashboard/StrategicForecast";
 import { BlocksPanel } from "@/components/dashboard/BlocksPanel";
@@ -125,42 +126,11 @@ const Index = () => {
                   selectedBlockId={selectedBlock?.id}
                   filteredBlockIds={filteredIds}
                 />
-                {/* Quick stats */}
-                <div className="space-y-3">
-                  <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Active Blocks</h3>
-                  <div className="space-y-2 max-h-[500px] overflow-y-auto pr-1">
-                    {oilBlocks.filter(b => filteredIds.includes(b.id)).map(block => (
-                      <button
-                        key={block.id}
-                        onClick={() => setSelectedBlock(block)}
-                        className={`w-full text-left glass-card p-3 rounded-lg transition-all hover:bg-secondary/50 ${
-                          selectedBlock?.id === block.id ? "border-primary/50 glow-primary" : ""
-                        }`}
-                      >
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <span className="font-semibold text-sm">{block.name}</span>
-                            <span className="text-xs text-muted-foreground ml-2">{block.operator}</span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <span
-                              className="w-2 h-2 rounded-full"
-                              style={{
-                                backgroundColor: block.phase === "Production" ? "hsl(var(--success))"
-                                  : block.phase === "Development" ? "hsl(var(--warning))"
-                                  : block.phase === "Exploration" ? "hsl(var(--primary))"
-                                  : "hsl(var(--danger))"
-                              }}
-                            />
-                            <span className="text-xs font-mono text-muted-foreground">
-                              {block.dailyProduction > 0 ? `${(block.dailyProduction / 1000).toFixed(0)}k` : "—"}
-                            </span>
-                          </div>
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-                </div>
+                <OverviewBlockList
+                  filteredIds={filteredIds}
+                  selectedBlock={selectedBlock}
+                  onBlockSelect={setSelectedBlock}
+                />
               </div>
             </div>
           )}
