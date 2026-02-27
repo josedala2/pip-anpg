@@ -55,25 +55,25 @@ const SwotSection = ({
   bgColor: string;
 }) => (
    <Card className={`glass-card border-l-4 ${color}`}>
-     <CardHeader className="p-4 2xl:p-5 pb-2">
-       <CardTitle className="text-sm 2xl:text-base flex items-center gap-2">
-         <div className={`p-1.5 2xl:p-2 rounded-md ${bgColor}`}>
-           <Icon className="w-4 h-4 2xl:w-5 2xl:h-5" />
+     <CardHeader className="p-4 2xl:p-6 3xl:p-8 pb-2">
+       <CardTitle className="text-sm 2xl:text-lg 3xl:text-xl flex items-center gap-2 3xl:gap-3">
+         <div className={`p-1.5 2xl:p-2.5 3xl:p-3 rounded-md ${bgColor}`}>
+           <Icon className="w-4 h-4 2xl:w-6 2xl:h-6 3xl:w-7 3xl:h-7" />
          </div>
          {title}
-         <Badge variant="outline" className="ml-auto text-[10px] 2xl:text-xs">{items.length}</Badge>
+         <Badge variant="outline" className="ml-auto text-[10px] 2xl:text-sm 3xl:text-base">{items.length}</Badge>
        </CardTitle>
      </CardHeader>
-     <CardContent className="p-4 2xl:p-5 pt-0 space-y-3 2xl:space-y-4">
+     <CardContent className="p-4 2xl:p-6 3xl:p-8 pt-0 space-y-3 2xl:space-y-5 3xl:space-y-6">
        {items.map((item, i) => (
-         <div key={i} className="space-y-1">
-           <div className="flex items-center gap-2">
-             <span className="text-sm 2xl:text-base font-medium">{item.title}</span>
-             <Badge variant="outline" className={`text-[9px] 2xl:text-[11px] ${impactColor(item.impact)}`}>
+         <div key={i} className="space-y-1 2xl:space-y-2">
+           <div className="flex items-center gap-2 3xl:gap-3">
+             <span className="text-sm 2xl:text-base 3xl:text-lg font-medium">{item.title}</span>
+             <Badge variant="outline" className={`text-[9px] 2xl:text-xs 3xl:text-sm ${impactColor(item.impact)}`}>
                {impactLabel(item.impact)}
              </Badge>
            </div>
-           <p className="text-xs 2xl:text-sm text-muted-foreground leading-relaxed">{item.description}</p>
+           <p className="text-xs 2xl:text-base 3xl:text-lg text-muted-foreground leading-relaxed">{item.description}</p>
          </div>
        ))}
      </CardContent>
@@ -126,13 +126,13 @@ export const SwotAnalysis = ({ block }: { block: OilBlock }) => {
   if (!hasGenerated && !loading) {
     return (
       <Card className="glass-card">
-        <CardContent className="p-12 text-center space-y-4">
-          <div className="mx-auto w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center">
-            <Brain className="w-8 h-8 text-primary" />
-          </div>
-          <div>
-             <h3 className="text-lg 2xl:text-xl font-bold mb-1">Análise SWOT Preditiva com IA</h3>
-             <p className="text-sm 2xl:text-base text-muted-foreground max-w-md mx-auto">
+       <CardContent className="p-12 2xl:p-16 3xl:p-20 text-center space-y-4 2xl:space-y-6">
+          <div className="mx-auto w-16 h-16 2xl:w-20 2xl:h-20 3xl:w-24 3xl:h-24 rounded-2xl bg-primary/10 flex items-center justify-center">
+             <Brain className="w-8 h-8 2xl:w-10 2xl:h-10 3xl:w-12 3xl:h-12 text-primary" />
+           </div>
+           <div>
+              <h3 className="text-lg 2xl:text-2xl 3xl:text-3xl font-bold mb-1">Análise SWOT Preditiva com IA</h3>
+              <p className="text-sm 2xl:text-lg 3xl:text-xl text-muted-foreground max-w-md 2xl:max-w-lg mx-auto">
               Gere uma análise SWOT baseada em inteligência artificial considerando os dados operacionais, 
               exploratórios e financeiros do {block.name}.
             </p>
@@ -163,25 +163,25 @@ export const SwotAnalysis = ({ block }: { block: OilBlock }) => {
   if (!swot) return null;
 
   return (
-     <div className="space-y-4 2xl:space-y-6">
+      <div className="space-y-4 2xl:space-y-6 3xl:space-y-8">
       {/* Summary */}
       <Card className="glass-card bg-primary/5 border-primary/20">
-        <CardContent className="p-4">
-          <div className="flex items-start gap-3">
-            <div className="p-2 rounded-lg bg-primary/10 shrink-0">
-              <Brain className="w-5 h-5 text-primary" />
+        <CardContent className="p-4 2xl:p-6 3xl:p-8">
+          <div className="flex items-start gap-3 2xl:gap-4 3xl:gap-5">
+            <div className="p-2 2xl:p-3 3xl:p-4 rounded-lg bg-primary/10 shrink-0">
+              <Brain className="w-5 h-5 2xl:w-7 2xl:h-7 3xl:w-8 3xl:h-8 text-primary" />
             </div>
-            <div className="space-y-2 flex-1">
+            <div className="space-y-2 2xl:space-y-3 flex-1">
               <div className="flex items-center justify-between">
-                <h3 className="font-semibold text-sm 2xl:text-base">Resumo Executivo</h3>
-                <Button onClick={generate} variant="ghost" size="sm" className="gap-1.5 text-xs h-7">
-                  <RefreshCw className="w-3 h-3" />
+                <h3 className="font-semibold text-sm 2xl:text-lg 3xl:text-xl">Resumo Executivo</h3>
+                <Button onClick={generate} variant="ghost" size="sm" className="gap-1.5 text-xs 2xl:text-sm 3xl:text-base h-7 2xl:h-9">
+                  <RefreshCw className="w-3 h-3 2xl:w-4 2xl:h-4" />
                   Regenerar
                 </Button>
               </div>
-               <p className="text-sm 2xl:text-base text-muted-foreground leading-relaxed">{swot.summary}</p>
-               <div className="pt-1 border-t border-border/50">
-                 <p className="text-xs 2xl:text-sm font-medium text-primary">{swot.recommendation}</p>
+               <p className="text-sm 2xl:text-base 3xl:text-lg text-muted-foreground leading-relaxed">{swot.summary}</p>
+               <div className="pt-1 2xl:pt-2 border-t border-border/50">
+                 <p className="text-xs 2xl:text-base 3xl:text-lg font-medium text-primary">{swot.recommendation}</p>
               </div>
             </div>
           </div>
@@ -189,7 +189,7 @@ export const SwotAnalysis = ({ block }: { block: OilBlock }) => {
       </Card>
 
       {/* SWOT Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 2xl:gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 2xl:gap-6 3xl:gap-8">
         <SwotSection title="Forças" icon={Shield} items={swot.strengths}
           color="border-l-success" bgColor="bg-success/10 text-success" />
         <SwotSection title="Fraquezas" icon={TrendingDown} items={swot.weaknesses}
