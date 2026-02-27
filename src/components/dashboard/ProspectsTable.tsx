@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState, useRef, useCallback } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
@@ -46,6 +46,9 @@ const BubbleTooltip = ({ active, payload }: any) => {
 };
 
 export const ProspectsTable = ({ blocks, scopeLabel }: ProspectsTableProps) => {
+  const [selectedKey, setSelectedKey] = useState<string | null>(null);
+  const tableRef = useRef<HTMLDivElement>(null);
+
   const blocksWithProspects = useMemo(
     () => blocks.filter(b => b.prospects && b.prospects.length > 0),
     [blocks]
@@ -66,16 +69,32 @@ export const ProspectsTable = ({ blocks, scopeLabel }: ProspectsTableProps) => {
   const bubbleData = useMemo(() => {
     const data: any[] = [];
     blocksWithProspects.forEach(b => {
-      b.prospects!.forEach(p => {
+      b.prospects!.forEach((p, i) => {
         data.push({
           ...p,
           block: b.name,
+          blockId: b.id,
+          idx: i,
+          key: `${b.id}-${i}`,
           z: Math.max(p.resourcesMMBO, 20),
         });
       });
     });
     return data;
   }, [blocksWithProspects]);
+
+  const handleBubbleClick = useCallback((data: any) => {
+    if (!data) return;
+    const key = data.key;
+    setSelectedKey(prev => prev === key ? null : key);
+    // Scroll to highlighted row
+    setTimeout(() => {
+      const row = document.getElementById(`prospect-row-${key}`);
+      if (row) {
+        row.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    }, 100);
+  }, []);
 
   if (blocksWithProspects.length === 0) return null;
 
@@ -87,6 +106,14 @@ export const ProspectsTable = ({ blocks, scopeLabel }: ProspectsTableProps) => {
           <CardTitle className="text-sm flex items-center gap-2">
             <Target className="w-4 h-4 text-primary" />
             Recursos vs Probabilidade de Sucesso — {scopeLabel}
+            {selectedKey && (
+              <button
+                onClick={() => setSelectedKey(null)}
+                className="ml-auto text-[10px] text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Limpar selecção
+              </button>
+            )}
           </CardTitle>
         </CardHeader>
         <CardContent className="p-4 pt-0">
@@ -114,9 +141,22 @@ export const ProspectsTable = ({ blocks, scopeLabel }: ProspectsTableProps) => {
               />
               <ZAxis type="number" dataKey="z" range={[40, 600]} />
               <Tooltip content={<BubbleTooltip />} />
-              <Scatter data={bubbleData} fillOpacity={0.7} strokeWidth={1} stroke="hsl(var(--border))">
+              <Scatter
+                data={bubbleData}
+                fillOpacity={0.7}
+                strokeWidth={1}
+                stroke="hsl(var(--border))"
+                onClick={handleBubbleClick}
+                className="cursor-pointer"
+              >
                 {bubbleData.map((d, i) => (
-                  <Cell key={i} fill={posHsl(d.pos)} />
+                  <Cell
+                    key={i}
+                    fill={posHsl(d.pos)}
+                    fillOpacity={selectedKey === null || selectedKey === d.key ? 0.8 : 0.15}
+                    strokeWidth={selectedKey === d.key ? 3 : 1}
+                    stroke={selectedKey === d.key ? "hsl(var(--foreground))" : "hsl(var(--border))"}
+                  />
                 ))}
               </Scatter>
             </ScatterChart>
@@ -142,7 +182,7 @@ export const ProspectsTable = ({ blocks, scopeLabel }: ProspectsTableProps) => {
           </CardTitle>
         </CardHeader>
         <CardContent className="p-4 pt-2">
-          <div className="relative w-full overflow-auto max-h-[500px]">
+          <div ref={tableRef} className="relative w-full overflow-auto max-h-[500px]">
             <Table>
               <TableHeader>
                 <TableRow className="border-border/50">
@@ -157,29 +197,44 @@ export const ProspectsTable = ({ blocks, scopeLabel }: ProspectsTableProps) => {
               </TableHeader>
               <TableBody>
                 {blocksWithProspects.map(block =>
-                  block.prospects!.map((p, i) => (
-                    <TableRow key={`${block.id}-${i}`} className="border-border/30 hover:bg-secondary/30">
-                      {i === 0 && (
-                        <TableCell rowSpan={block.prospects!.length} className="text-xs font-semibold align-top border-r border-border/20">
-                          {block.name}
+                  block.prospects!.map((p, i) => {
+                    const key = `${block.id}-${i}`;
+                    const isSelected = selectedKey === key;
+                    return (
+                      <TableRow
+                        key={key}
+                        id={`prospect-row-${key}`}
+                        className={`border-border/30 cursor-pointer transition-all duration-300 ${
+                          isSelected
+                            ? "bg-primary/15 ring-1 ring-primary/40"
+                            : selectedKey !== null
+                              ? "opacity-40 hover:opacity-70"
+                              : "hover:bg-secondary/30"
+                        }`}
+                        onClick={() => setSelectedKey(isSelected ? null : key)}
+                      >
+                        {i === 0 && (
+                          <TableCell rowSpan={block.prospects!.length} className="text-xs font-semibold align-top border-r border-border/20">
+                            {block.name}
+                          </TableCell>
+                        )}
+                        <TableCell className="text-xs text-muted-foreground">{p.discoveryArea}</TableCell>
+                        <TableCell className="text-xs font-mono">{p.name}</TableCell>
+                        <TableCell>
+                          <Badge variant="outline" className="text-[10px]">{p.reservoir}</Badge>
                         </TableCell>
-                      )}
-                      <TableCell className="text-xs text-muted-foreground">{p.discoveryArea}</TableCell>
-                      <TableCell className="text-xs font-mono">{p.name}</TableCell>
-                      <TableCell>
-                        <Badge variant="outline" className="text-[10px]">{p.reservoir}</Badge>
-                      </TableCell>
-                      <TableCell className="text-xs font-mono text-right font-medium">
-                        {p.resourcesMMBO.toLocaleString(undefined, { maximumFractionDigits: 1 })}
-                      </TableCell>
-                      <TableCell className="text-xs font-mono text-right text-muted-foreground">
-                        {p.resourcesBCF ? p.resourcesBCF.toLocaleString() : "—"}
-                      </TableCell>
-                      <TableCell className={`text-xs font-mono text-right font-bold ${posColor(p.pos)}`}>
-                        {p.pos}%
-                      </TableCell>
-                    </TableRow>
-                  ))
+                        <TableCell className="text-xs font-mono text-right font-medium">
+                          {p.resourcesMMBO.toLocaleString(undefined, { maximumFractionDigits: 1 })}
+                        </TableCell>
+                        <TableCell className="text-xs font-mono text-right text-muted-foreground">
+                          {p.resourcesBCF ? p.resourcesBCF.toLocaleString() : "—"}
+                        </TableCell>
+                        <TableCell className={`text-xs font-mono text-right font-bold ${posColor(p.pos)}`}>
+                          {p.pos}%
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })
                 )}
               </TableBody>
             </Table>
