@@ -5,6 +5,7 @@ import { oilBlocks } from "@/data/angolaBlocks";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend } from "recharts";
 import { AlertTriangle, Target, Layers, Droplets, Filter, ChevronDown } from "lucide-react";
 import { ExplorationSummaryTable } from "./ExplorationSummaryTable";
+import { ProspectsTable } from "./ProspectsTable";
 import { Badge } from "@/components/ui/badge";
 import {
   Collapsible,
@@ -363,6 +364,9 @@ export const ExplorationPanel = () => {
 
       {/* Summary Table */}
       <ExplorationSummaryTable blocks={filteredBlocks} scopeLabel={scopeLabel} />
+
+      {/* Prospects Table */}
+      <ProspectsTable blocks={filteredBlocks} scopeLabel={scopeLabel} />
 
       {/* Challenges */}
       <Card className="glass-card">
