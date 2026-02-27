@@ -1,7 +1,10 @@
+import { useState, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { seismicHistory, wellsHistory, nationalStats } from "@/data/angolaBlocks";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { seismicHistory, wellsHistory, nationalStats, oilBlocks } from "@/data/angolaBlocks";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend } from "recharts";
-import { AlertTriangle, Target, Layers, Droplets } from "lucide-react";
+import { AlertTriangle, Target, Layers, Droplets, Filter } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 const seismicChartData = seismicHistory
   .filter(d => d.seismic2D > 0 || d.seismic3D > 0 || d.seismic4D > 0)
@@ -19,9 +22,120 @@ const tooltipStyle = {
   color: "hsl(var(--foreground))",
 };
 
+const operators = [...new Set(oilBlocks.map(b => b.operator))].sort();
+const basins = [...new Set(oilBlocks.map(b => b.basin))].sort();
+const phases = ["Production", "Development", "Exploration", "Suspended"];
+
+const phaseColor = (phase: string) => {
+  switch (phase) {
+    case "Production": return "bg-success/15 text-success border-success/30";
+    case "Development": return "bg-warning/15 text-warning border-warning/30";
+    case "Exploration": return "bg-primary/15 text-primary border-primary/30";
+    case "Suspended": return "bg-danger/15 text-danger border-danger/30";
+    default: return "bg-muted text-muted-foreground";
+  }
+};
+
 export const ExplorationPanel = () => {
+  const [filterOperator, setFilterOperator] = useState("all");
+  const [filterBasin, setFilterBasin] = useState("all");
+  const [filterPhase, setFilterPhase] = useState("all");
+
+  const filteredBlocks = useMemo(() => {
+    return oilBlocks.filter(b => {
+      if (filterOperator !== "all" && b.operator !== filterOperator) return false;
+      if (filterBasin !== "all" && b.basin !== filterBasin) return false;
+      if (filterPhase !== "all" && b.phase !== filterPhase) return false;
+      return true;
+    });
+  }, [filterOperator, filterBasin, filterPhase]);
+
+  const stats = useMemo(() => {
+    const totalProd = filteredBlocks.reduce((s, b) => s + b.dailyProduction, 0);
+    const totalReserves = filteredBlocks.reduce((s, b) => s + b.estimatedReserves, 0);
+    const totalInvest = filteredBlocks.reduce((s, b) => s + b.accumulatedInvestment, 0);
+    return { totalProd, totalReserves, totalInvest, count: filteredBlocks.length };
+  }, [filteredBlocks]);
+
+  const hasFilters = filterOperator !== "all" || filterBasin !== "all" || filterPhase !== "all";
+
   return (
     <div className="space-y-6">
+      {/* Block Filters */}
+      <Card className="glass-card">
+        <CardHeader className="p-4 pb-2">
+          <CardTitle className="text-sm flex items-center gap-2">
+            <Filter className="w-4 h-4 text-primary" />
+            Filtrar por Bloco
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-4 pt-2 space-y-4">
+          <div className="flex flex-wrap gap-2 md:gap-3">
+            <Select value={filterOperator} onValueChange={setFilterOperator}>
+              <SelectTrigger className="w-36 md:w-44 h-8 text-xs glass-card border-border/50">
+                <SelectValue placeholder="Operador" />
+              </SelectTrigger>
+              <SelectContent className="bg-card border-border">
+                <SelectItem value="all">Todos Operadores</SelectItem>
+                {operators.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}
+              </SelectContent>
+            </Select>
+            <Select value={filterBasin} onValueChange={setFilterBasin}>
+              <SelectTrigger className="w-36 md:w-44 h-8 text-xs glass-card border-border/50">
+                <SelectValue placeholder="Bacia" />
+              </SelectTrigger>
+              <SelectContent className="bg-card border-border">
+                <SelectItem value="all">Todas Bacias</SelectItem>
+                {basins.map(b => <SelectItem key={b} value={b}>{b}</SelectItem>)}
+              </SelectContent>
+            </Select>
+            <Select value={filterPhase} onValueChange={setFilterPhase}>
+              <SelectTrigger className="w-36 md:w-44 h-8 text-xs glass-card border-border/50">
+                <SelectValue placeholder="Fase" />
+              </SelectTrigger>
+              <SelectContent className="bg-card border-border">
+                <SelectItem value="all">Todas Fases</SelectItem>
+                {phases.map(p => <SelectItem key={p} value={p}>{p}</SelectItem>)}
+              </SelectContent>
+            </Select>
+            {hasFilters && (
+              <button
+                onClick={() => { setFilterOperator("all"); setFilterBasin("all"); setFilterPhase("all"); }}
+                className="h-8 px-3 text-xs text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Limpar filtros
+              </button>
+            )}
+          </div>
+
+          {/* Filtered Blocks List */}
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-xs text-muted-foreground">
+                {stats.count} bloco{stats.count !== 1 ? "s" : ""} contemplado{stats.count !== 1 ? "s" : ""}
+              </span>
+              <span className="text-xs font-mono text-muted-foreground">
+                {stats.totalProd > 0 ? `${(stats.totalProd / 1000).toFixed(0)}k BOPD` : ""} · {stats.totalReserves.toLocaleString()} MMbbl · ${(stats.totalInvest / 1000).toFixed(1)}B investido
+              </span>
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+              {filteredBlocks.map(block => (
+                <Badge
+                  key={block.id}
+                  variant="outline"
+                  className={`text-[10px] font-medium ${phaseColor(block.phase)}`}
+                >
+                  {block.name}
+                  {block.dailyProduction > 0 && (
+                    <span className="ml-1 opacity-70">{(block.dailyProduction / 1000).toFixed(0)}k</span>
+                  )}
+                </Badge>
+              ))}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Key Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[
