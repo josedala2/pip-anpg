@@ -11,6 +11,7 @@ const phaseColorMap: Record<BlockPhase, string> = {
   Development: "hsl(var(--development))",
   Exploration: "hsl(var(--exploration))",
   Suspended: "hsl(var(--suspended))",
+  Bidding: "hsl(var(--bidding))",
 };
 
 const phaseGlowMap: Record<BlockPhase, string> = {
@@ -18,6 +19,7 @@ const phaseGlowMap: Record<BlockPhase, string> = {
   Development: "drop-shadow(0 0 6px hsl(var(--development) / 0.6))",
   Exploration: "drop-shadow(0 0 6px hsl(var(--exploration) / 0.6))",
   Suspended: "drop-shadow(0 0 4px hsl(var(--suspended) / 0.4))",
+  Bidding: "drop-shadow(0 0 5px hsl(var(--bidding) / 0.5))",
 };
 
 export const AngolaMap = ({ onBlockClick, selectedBlockId, filteredBlockIds }: AngolaMapProps) => {
@@ -105,7 +107,7 @@ export const AngolaMap = ({ onBlockClick, selectedBlockId, filteredBlockIds }: A
 
       {/* Legend */}
       <div className="absolute bottom-2 left-2 flex flex-col gap-1.5 glass-card p-2.5 text-[10px] md:text-xs">
-        {(["Production", "Development", "Exploration", "Suspended"] as BlockPhase[]).map(phase => (
+        {(["Production", "Development", "Exploration", "Bidding", "Suspended"] as BlockPhase[]).map(phase => (
           <div key={phase} className="flex items-center gap-1.5">
             <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: phaseColorMap[phase] }} />
             <span className="text-muted-foreground">{phase}</span>

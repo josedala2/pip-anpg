@@ -15,6 +15,7 @@ const phaseColorMap: Record<BlockPhase, string> = {
   Development: "hsl(var(--development))",
   Exploration: "hsl(var(--exploration))",
   Suspended: "hsl(var(--suspended))",
+  Bidding: "hsl(var(--bidding))",
 };
 
 // ── Real geographic coordinates for Angola oil blocks ──
@@ -102,6 +103,28 @@ const blockGeoPositions: Record<string, [number, number]> = {
   "block-47":       [8.8, -16.0],
   "block-49":       [8.2, -16.5],
   "block-50":       [8.5, -17.0],
+  // Bidding blocks (22-30): Congo/Kwanza deep water
+  "block-22":       [10.0, -7.0],
+  "block-23":       [10.7, -7.4],
+  "block-24":       [10.0, -7.8],
+  "block-25":       [10.7, -8.2],
+  "block-26":       [10.0, -8.6],
+  "block-27":       [10.7, -9.0],
+  "block-28":       [10.0, -9.4],
+  "block-29":       [10.7, -9.8],
+  "block-30":       [10.0, -10.2],
+  // Bidding blocks (33-43): Namibe/Benguela
+  "block-33":       [9.5, -11.0],
+  "block-34":       [10.3, -11.5],
+  "block-35":       [9.5, -12.0],
+  "block-36":       [10.3, -12.5],
+  "block-37":       [9.5, -13.0],
+  "block-38":       [10.3, -13.5],
+  "block-39":       [9.5, -14.0],
+  "block-40":       [10.3, -14.5],
+  "block-41":       [9.5, -15.0],
+  "block-42":       [10.3, -15.5],
+  "block-43":       [9.5, -16.0],
 };
 
 const getBlockSvgPos = (block: OilBlock) => {
@@ -411,7 +434,7 @@ export const ConcessionMap = ({
       {/* Legend */}
       <div className="absolute bottom-2 left-2 glass-card p-2 rounded-lg">
         <div className="flex flex-wrap gap-x-3 gap-y-1">
-          {(["Production", "Development", "Exploration", "Suspended"] as BlockPhase[]).map(phase => (
+          {(["Production", "Development", "Exploration", "Bidding", "Suspended"] as BlockPhase[]).map(phase => (
             <div key={phase} className="flex items-center gap-1">
               <span className="w-2 h-2 rounded-full" style={{ backgroundColor: phaseColorMap[phase] }} />
               <span className="text-[9px] text-muted-foreground">{phase}</span>

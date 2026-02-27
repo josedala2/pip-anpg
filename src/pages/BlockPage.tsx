@@ -16,6 +16,7 @@ const phaseColor = (phase: string) => {
     case "Development": return "bg-warning/15 text-warning border-warning/30";
     case "Exploration": return "bg-primary/15 text-primary border-primary/30";
     case "Suspended": return "bg-danger/15 text-danger border-danger/30";
+    case "Bidding": return "bg-[hsl(280,65%,60%)]/15 text-[hsl(280,65%,60%)] border-[hsl(280,65%,60%)]/30";
     default: return "bg-muted text-muted-foreground";
   }
 };

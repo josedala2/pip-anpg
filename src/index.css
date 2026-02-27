@@ -53,6 +53,7 @@
     --development: 38 92% 50%;
     --production: 152 69% 40%;
     --suspended: 0 72% 51%;
+    --bidding: 280 65% 60%;
 
     --sidebar-background: 0 0% 100%;
     --sidebar-foreground: 222 47% 11%;
@@ -110,6 +111,7 @@
     --development: 38 92% 50%;
     --production: 152 69% 40%;
     --suspended: 0 72% 51%;
+    --bidding: 280 65% 60%;
 
     --sidebar-background: 222 47% 6%;
     --sidebar-foreground: 210 40% 96%;
