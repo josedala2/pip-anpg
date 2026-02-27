@@ -4,6 +4,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { oilBlocks } from "@/data/angolaBlocks";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend } from "recharts";
 import { AlertTriangle, Target, Layers, Droplets, Filter, ChevronDown } from "lucide-react";
+import { ExplorationSummaryTable } from "./ExplorationSummaryTable";
 import { Badge } from "@/components/ui/badge";
 import {
   Collapsible,
@@ -387,6 +388,9 @@ export const ExplorationPanel = () => {
           </CardContent>
         </Card>
       </div>
+
+      {/* Summary Table */}
+      <ExplorationSummaryTable blocks={filteredBlocks} scopeLabel={scopeLabel} />
     </div>
   );
 };
