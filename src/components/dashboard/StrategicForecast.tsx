@@ -29,14 +29,14 @@ export const StrategicForecast = () => {
   const fiscalMultiplier = 75; // $/barrel simplified
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 2xl:space-y-8">
       {/* Scenario Selector */}
       <div className="flex gap-2">
         {scenarios.map(s => (
           <button
             key={s.id}
             onClick={() => setActiveScenario(s.id)}
-            className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all ${
+            className={`px-4 py-2 2xl:px-5 2xl:py-2.5 rounded-lg text-xs 2xl:text-sm font-semibold transition-all ${
               activeScenario === s.id
                 ? "glass-card border border-primary/50 text-foreground glow-primary"
                 : "bg-secondary/50 text-muted-foreground hover:bg-secondary"
@@ -50,10 +50,10 @@ export const StrategicForecast = () => {
       {/* Projection Chart */}
       <Card className="glass-card">
         <CardHeader className="p-4 pb-2">
-          <CardTitle className="text-sm">10-Year Production Projection (BOPD)</CardTitle>
+          <CardTitle className="text-sm 2xl:text-lg">10-Year Production Projection (BOPD)</CardTitle>
         </CardHeader>
         <CardContent className="p-4 pt-0">
-          <ResponsiveContainer width="100%" height={300}>
+          <ResponsiveContainer width="100%" height={400}>
             <LineChart data={projectionData}>
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
               <XAxis dataKey="year" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} stroke="hsl(var(--border))" />
@@ -82,30 +82,30 @@ export const StrategicForecast = () => {
       </Card>
 
       {/* Fiscal Impact */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 2xl:gap-6">
         <Card className="glass-card">
-          <CardContent className="p-4 text-center">
-            <div className="text-xs text-muted-foreground mb-1">Current Output</div>
-            <div className="text-2xl font-bold font-mono text-foreground">{(currentTotal / 1000).toFixed(0)}k</div>
-            <div className="text-[10px] text-muted-foreground">BOPD</div>
+           <CardContent className="p-4 2xl:p-6 text-center">
+             <div className="text-xs 2xl:text-sm text-muted-foreground mb-1">Current Output</div>
+             <div className="text-2xl 2xl:text-4xl font-bold font-mono text-foreground">{(currentTotal / 1000).toFixed(0)}k</div>
+             <div className="text-[10px] 2xl:text-xs text-muted-foreground">BOPD</div>
           </CardContent>
         </Card>
         <Card className="glass-card">
-          <CardContent className="p-4 text-center">
-            <div className="text-xs text-muted-foreground mb-1">2029 Projection ({activeScenario})</div>
-            <div className="text-2xl font-bold font-mono text-primary">
-              {((projected[activeScenario] || 0) / 1000).toFixed(0)}k
-            </div>
-            <div className="text-[10px] text-muted-foreground">BOPD</div>
+           <CardContent className="p-4 2xl:p-6 text-center">
+             <div className="text-xs 2xl:text-sm text-muted-foreground mb-1">2029 Projection ({activeScenario})</div>
+             <div className="text-2xl 2xl:text-4xl font-bold font-mono text-primary">
+               {((projected[activeScenario] || 0) / 1000).toFixed(0)}k
+             </div>
+             <div className="text-[10px] 2xl:text-xs text-muted-foreground">BOPD</div>
           </CardContent>
         </Card>
         <Card className="glass-card">
-          <CardContent className="p-4 text-center">
-            <div className="text-xs text-muted-foreground mb-1">Est. Annual Revenue (2029)</div>
-            <div className="text-2xl font-bold font-mono text-success">
-              ${(((projected[activeScenario] || 0) * 365 * fiscalMultiplier) / 1e9).toFixed(1)}B
-            </div>
-            <div className="text-[10px] text-muted-foreground">at ${fiscalMultiplier}/bbl</div>
+           <CardContent className="p-4 2xl:p-6 text-center">
+             <div className="text-xs 2xl:text-sm text-muted-foreground mb-1">Est. Annual Revenue (2029)</div>
+             <div className="text-2xl 2xl:text-4xl font-bold font-mono text-success">
+               ${(((projected[activeScenario] || 0) * 365 * fiscalMultiplier) / 1e9).toFixed(1)}B
+             </div>
+             <div className="text-[10px] 2xl:text-xs text-muted-foreground">at ${fiscalMultiplier}/bbl</div>
           </CardContent>
         </Card>
       </div>
