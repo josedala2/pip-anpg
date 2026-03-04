@@ -36,6 +36,22 @@ export interface Prospect {
   pos: number; // probability of success %
 }
 
+export interface ContractInfo {
+  decretoLei?: string;
+  contractType?: string; // e.g. "Associação", "Partilha de Produção"
+  signingDate?: string;
+  effectiveDate?: string;
+  location?: string;
+  initialConsortium?: ConcessionPartner[];
+  signatureBonus?: number; // USD
+  socialBonus?: number; // USD
+  socialProjects?: number; // USD (cumulative)
+  socialProjectsPeriod?: string;
+  regulatoryContribution?: number; // USD
+  regulatoryContributionPeriod?: string;
+  productionBonus?: number; // USD
+}
+
 export interface OilBlock {
   id: string;
   name: string;
@@ -69,6 +85,7 @@ export interface OilBlock {
   areaKm2?: number;
   waterDepthRange?: string; // e.g., "200-1500m"
   prospects?: Prospect[];
+  contractInfo?: ContractInfo;
 }
 
 export const oilBlocks: OilBlock[] = [
@@ -113,6 +130,26 @@ export const oilBlocks: OilBlock[] = [
     },
     areaKm2: 5800,
     waterDepthRange: "15-200m",
+    contractInfo: {
+      decretoLei: "Decreto Lei n.° 2/04, de 7 de Maio",
+      contractType: "Associação",
+      signingDate: "2004-05-13",
+      effectiveDate: "2004-06-01",
+      location: "Offshore Bacia do Congo",
+      initialConsortium: [
+        { name: "SNL", share: 41.0 },
+        { name: "CABGOC", share: 39.2, isOperator: true },
+        { name: "TOTAL", share: 10.0 },
+        { name: "ENI", share: 9.8 },
+      ],
+      signatureBonus: 210000000,
+      socialBonus: 80000000,
+      socialProjects: 2250000,
+      socialProjectsPeriod: "2004-2023",
+      regulatoryContribution: 1750000,
+      regulatoryContributionPeriod: "2004-2023",
+      productionBonus: 10000000,
+    },
     seismicData: [
       { year: 1993, seismic2D: 4184, seismic3D: 0, seismic4D: 0 },
       { year: 1994, seismic2D: 894, seismic3D: 0, seismic4D: 0 },
