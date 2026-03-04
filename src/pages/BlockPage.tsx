@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { oilBlocks } from "@/data/angolaBlocks";
 import { ProspectsTable } from "@/components/dashboard/ProspectsTable";
@@ -6,8 +7,11 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft, Droplets, DollarSign, ShieldCheck, TrendingUp, Users, Activity, Target, Layers, BarChart3, MapPin, Brain, FileText, Landmark, Building2, Clock, Scale, ArrowRight, History, BookOpen, ExternalLink, AlertTriangle, Crosshair } from "lucide-react";
+import { ArrowLeft, Droplets, DollarSign, ShieldCheck, TrendingUp, Users, Activity, Target, Layers, BarChart3, MapPin, Brain, FileText, Landmark, Building2, Clock, Scale, ArrowRight, History, BookOpen, ExternalLink, AlertTriangle, Crosshair, Search, Filter } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { SwotAnalysis } from "@/components/dashboard/SwotAnalysis";
+import type { LegislationDocument, ContractInfo } from "@/data/angolaBlocks";
 import {
   PieChart, Pie, Cell, AreaChart, Area, BarChart, Bar, LineChart, Line,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend,
@@ -29,6 +33,175 @@ const CONSORTIUM_COLORS = [
   "hsl(280, 65%, 60%)", "hsl(0, 72%, 51%)", "hsl(170, 60%, 45%)",
   "hsl(220, 70%, 55%)", "hsl(340, 65%, 50%)",
 ];
+
+const typeLabelsMap: Record<string, { label: string; color: string }> = {
+  "decreto-lei": { label: "Decreto-Lei", color: "bg-primary/15 text-primary border-primary/30" },
+  "contrato": { label: "Contrato", color: "bg-success/15 text-success border-success/30" },
+  "despacho": { label: "Despacho", color: "bg-warning/15 text-warning border-warning/30" },
+  "resolução": { label: "Resolução", color: "bg-[hsl(280,65%,60%)]/15 text-[hsl(280,65%,60%)] border-[hsl(280,65%,60%)]/30" },
+  "nota": { label: "Nota", color: "bg-muted text-muted-foreground border-border" },
+  "outro": { label: "Outro", color: "bg-muted text-muted-foreground border-border" },
+};
+
+const LegislationSearch = ({ docs, contractInfo }: { docs: LegislationDocument[]; contractInfo?: ContractInfo }) => {
+  const [search, setSearch] = useState("");
+  const [typeFilter, setTypeFilter] = useState("all");
+
+  const filtered = docs.filter(doc => {
+    if (typeFilter !== "all" && doc.type !== typeFilter) return false;
+    if (search.trim()) {
+      const q = search.toLowerCase();
+      return (
+        doc.title.toLowerCase().includes(q) ||
+        (doc.reference?.toLowerCase().includes(q)) ||
+        (doc.description?.toLowerCase().includes(q))
+      );
+    }
+    return true;
+  });
+
+  const docTypes = [...new Set(docs.map(d => d.type))];
+
+  return (
+    <>
+      {docs.length > 0 && (
+        <>
+          {/* Search & Filter Bar */}
+          <div className="flex flex-wrap gap-3">
+            <div className="relative flex-1 min-w-[200px] max-w-md">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input
+                placeholder="Pesquisar decretos, contratos..."
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                className="pl-9 h-9 text-sm glass-card border-border/50"
+              />
+            </div>
+            <Select value={typeFilter} onValueChange={setTypeFilter}>
+              <SelectTrigger className="w-44 h-9 text-xs glass-card border-border/50">
+                <Filter className="w-3.5 h-3.5 mr-1.5 text-muted-foreground" />
+                <SelectValue placeholder="Tipo" />
+              </SelectTrigger>
+              <SelectContent className="bg-card border-border">
+                <SelectItem value="all">Todos os tipos</SelectItem>
+                {docTypes.map(t => (
+                  <SelectItem key={t} value={t}>{typeLabelsMap[t]?.label || t}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {(search || typeFilter !== "all") && (
+              <Badge variant="outline" className="h-9 px-3 text-xs flex items-center gap-1.5">
+                {filtered.length} de {docs.length} documentos
+              </Badge>
+            )}
+          </div>
+
+          {/* Results */}
+          {filtered.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 2xl:gap-6">
+              {filtered.map((doc, i) => {
+                const typeInfo = typeLabelsMap[doc.type] || typeLabelsMap["outro"];
+                return (
+                  <Card key={i} className="glass-card hover:border-primary/30 transition-colors group">
+                    <CardContent className="p-4 2xl:p-5 space-y-3">
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="flex items-center gap-2">
+                          <FileText className="w-4 h-4 text-primary shrink-0" />
+                          <h3 className="font-semibold text-sm 2xl:text-base leading-tight">{doc.title}</h3>
+                        </div>
+                        <Badge variant="outline" className={`text-[9px] shrink-0 ${typeInfo.color}`}>{typeInfo.label}</Badge>
+                      </div>
+                      {doc.reference && (
+                        <div className="text-xs text-muted-foreground font-mono">{doc.reference}</div>
+                      )}
+                      {doc.date && (
+                        <div className="text-[10px] text-muted-foreground flex items-center gap-1">
+                          <Clock className="w-3 h-3" />
+                          {new Date(doc.date).toLocaleDateString("pt-AO", { year: "numeric", month: "long", day: "numeric" })}
+                        </div>
+                      )}
+                      {doc.description && (
+                        <p className="text-xs 2xl:text-sm text-muted-foreground leading-relaxed">{doc.description}</p>
+                      )}
+                      {doc.url && (
+                        <a href={doc.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-xs text-primary hover:underline">
+                          <ExternalLink className="w-3 h-3" /> Ver documento
+                        </a>
+                      )}
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
+          ) : (
+            <Card className="glass-card">
+              <CardContent className="p-8 text-center">
+                <Search className="w-10 h-10 text-muted-foreground/30 mx-auto mb-3" />
+                <p className="text-muted-foreground">Nenhum documento encontrado para "{search}"</p>
+                <p className="text-xs text-muted-foreground mt-1">Tente ajustar os termos de pesquisa ou filtros.</p>
+              </CardContent>
+            </Card>
+          )}
+        </>
+      )}
+
+      {docs.length === 0 && (
+        <Card className="glass-card">
+          <CardContent className="p-8 text-center">
+            <BookOpen className="w-12 h-12 text-muted-foreground/30 mx-auto mb-3" />
+            <p className="text-muted-foreground">Documentos e legislação não disponíveis para este bloco.</p>
+            <p className="text-xs text-muted-foreground mt-1">Serão adicionados conforme disponibilização pela ANPG.</p>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Contract info summary */}
+      {contractInfo && (
+        <Card className="glass-card">
+          <CardHeader className="p-4 pb-2">
+            <CardTitle className="text-sm 2xl:text-base flex items-center gap-2"><Landmark className="w-4 h-4 text-warning" />Referência Contratual</CardTitle>
+          </CardHeader>
+          <CardContent className="p-4 pt-0">
+            <div className="space-y-2 text-sm">
+              {contractInfo.decretoLei && (
+                <div className="flex justify-between items-center py-1.5 border-b border-border/30">
+                  <span className="text-muted-foreground">Decreto-Lei Base</span>
+                  <span className="font-medium">{contractInfo.decretoLei}</span>
+                </div>
+              )}
+              {contractInfo.contractType && (
+                <div className="flex justify-between items-center py-1.5 border-b border-border/30">
+                  <span className="text-muted-foreground">Tipo de Contrato</span>
+                  <span className="font-medium">{contractInfo.contractType}</span>
+                </div>
+              )}
+              {contractInfo.signingDate && (
+                <div className="flex justify-between items-center py-1.5 border-b border-border/30">
+                  <span className="text-muted-foreground">Assinatura</span>
+                  <span className="font-medium">{new Date(contractInfo.signingDate).toLocaleDateString("pt-AO")}</span>
+                </div>
+              )}
+              {contractInfo.productionPeriodStart && contractInfo.productionPeriodEnd && (
+                <div className="flex justify-between items-center py-1.5 border-b border-border/30">
+                  <span className="text-muted-foreground">Período de Produção</span>
+                  <span className="font-medium font-mono text-xs">{new Date(contractInfo.productionPeriodStart).getFullYear()} — {new Date(contractInfo.productionPeriodEnd).getFullYear()}</span>
+                </div>
+              )}
+            </div>
+            {contractInfo.historicalNotes && contractInfo.historicalNotes.length > 0 && (
+              <div className="mt-4 pt-3 border-t border-border/30 space-y-1.5">
+                <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium flex items-center gap-1"><History className="w-3 h-3" />Notas Históricas</div>
+                {contractInfo.historicalNotes.map((note, i) => (
+                  <p key={i} className="text-xs text-muted-foreground leading-relaxed">{note}</p>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
+    </>
+  );
+};
 
 const BlockPage = () => {
   const { blockId } = useParams<{ blockId: string }>();
@@ -885,104 +1058,7 @@ const BlockPage = () => {
 
           {/* Tab 7: Documentos & Legislação */}
           <TabsContent value="legislation" className="space-y-4 2xl:space-y-6">
-            {block.legislationDocs && block.legislationDocs.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 2xl:gap-6">
-                {block.legislationDocs.map((doc, i) => {
-                  const typeLabels: Record<string, { label: string; color: string }> = {
-                    "decreto-lei": { label: "Decreto-Lei", color: "bg-primary/15 text-primary border-primary/30" },
-                    "contrato": { label: "Contrato", color: "bg-success/15 text-success border-success/30" },
-                    "despacho": { label: "Despacho", color: "bg-warning/15 text-warning border-warning/30" },
-                    "resolução": { label: "Resolução", color: "bg-[hsl(280,65%,60%)]/15 text-[hsl(280,65%,60%)] border-[hsl(280,65%,60%)]/30" },
-                    "nota": { label: "Nota", color: "bg-muted text-muted-foreground border-border" },
-                    "outro": { label: "Outro", color: "bg-muted text-muted-foreground border-border" },
-                  };
-                  const typeInfo = typeLabels[doc.type] || typeLabels["outro"];
-                  return (
-                    <Card key={i} className="glass-card hover:border-primary/30 transition-colors group">
-                      <CardContent className="p-4 2xl:p-5 space-y-3">
-                        <div className="flex items-start justify-between gap-2">
-                          <div className="flex items-center gap-2">
-                            <FileText className="w-4 h-4 text-primary shrink-0" />
-                            <h3 className="font-semibold text-sm 2xl:text-base leading-tight">{doc.title}</h3>
-                          </div>
-                          <Badge variant="outline" className={`text-[9px] shrink-0 ${typeInfo.color}`}>{typeInfo.label}</Badge>
-                        </div>
-                        {doc.reference && (
-                          <div className="text-xs text-muted-foreground font-mono">{doc.reference}</div>
-                        )}
-                        {doc.date && (
-                          <div className="text-[10px] text-muted-foreground flex items-center gap-1">
-                            <Clock className="w-3 h-3" />
-                            {new Date(doc.date).toLocaleDateString("pt-AO", { year: "numeric", month: "long", day: "numeric" })}
-                          </div>
-                        )}
-                        {doc.description && (
-                          <p className="text-xs 2xl:text-sm text-muted-foreground leading-relaxed">{doc.description}</p>
-                        )}
-                        {doc.url && (
-                          <a href={doc.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-xs text-primary hover:underline">
-                            <ExternalLink className="w-3 h-3" /> Ver documento
-                          </a>
-                        )}
-                      </CardContent>
-                    </Card>
-                  );
-                })}
-              </div>
-            ) : (
-              <Card className="glass-card">
-                <CardContent className="p-8 text-center">
-                  <BookOpen className="w-12 h-12 text-muted-foreground/30 mx-auto mb-3" />
-                  <p className="text-muted-foreground">Documentos e legislação não disponíveis para este bloco.</p>
-                  <p className="text-xs text-muted-foreground mt-1">Serão adicionados conforme disponibilização pela ANPG.</p>
-                </CardContent>
-              </Card>
-            )}
-
-            {/* Contract info summary */}
-            {block.contractInfo && (
-              <Card className="glass-card">
-                <CardHeader className="p-4 pb-2">
-                  <CardTitle className="text-sm 2xl:text-base flex items-center gap-2"><Landmark className="w-4 h-4 text-warning" />Referência Contratual</CardTitle>
-                </CardHeader>
-                <CardContent className="p-4 pt-0">
-                  <div className="space-y-2 text-sm">
-                    {block.contractInfo.decretoLei && (
-                      <div className="flex justify-between items-center py-1.5 border-b border-border/30">
-                        <span className="text-muted-foreground">Decreto-Lei Base</span>
-                        <span className="font-medium">{block.contractInfo.decretoLei}</span>
-                      </div>
-                    )}
-                    {block.contractInfo.contractType && (
-                      <div className="flex justify-between items-center py-1.5 border-b border-border/30">
-                        <span className="text-muted-foreground">Tipo de Contrato</span>
-                        <span className="font-medium">{block.contractInfo.contractType}</span>
-                      </div>
-                    )}
-                    {block.contractInfo.signingDate && (
-                      <div className="flex justify-between items-center py-1.5 border-b border-border/30">
-                        <span className="text-muted-foreground">Assinatura</span>
-                        <span className="font-medium">{new Date(block.contractInfo.signingDate).toLocaleDateString("pt-AO")}</span>
-                      </div>
-                    )}
-                    {block.contractInfo.productionPeriodStart && block.contractInfo.productionPeriodEnd && (
-                      <div className="flex justify-between items-center py-1.5 border-b border-border/30">
-                        <span className="text-muted-foreground">Período de Produção</span>
-                        <span className="font-medium font-mono text-xs">{new Date(block.contractInfo.productionPeriodStart).getFullYear()} — {new Date(block.contractInfo.productionPeriodEnd).getFullYear()}</span>
-                      </div>
-                    )}
-                  </div>
-                  {block.contractInfo.historicalNotes && block.contractInfo.historicalNotes.length > 0 && (
-                    <div className="mt-4 pt-3 border-t border-border/30 space-y-1.5">
-                      <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium flex items-center gap-1"><History className="w-3 h-3" />Notas Históricas</div>
-                      {block.contractInfo.historicalNotes.map((note, i) => (
-                        <p key={i} className="text-xs text-muted-foreground leading-relaxed">{note}</p>
-                      ))}
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            )}
+            <LegislationSearch docs={block.legislationDocs || []} contractInfo={block.contractInfo} />
           </TabsContent>
         </Tabs>
       </main>
