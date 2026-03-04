@@ -181,6 +181,19 @@ const BlockPage = () => {
                 }
                 return acc;
               }, {} as Record<string, number>);
+              // Build yearly discovery timeline with cumulative count
+              const yearlyMap = block.fields.reduce((acc, f) => {
+                if (f.discoveryYear) {
+                  acc[f.discoveryYear] = (acc[f.discoveryYear] || 0) + 1;
+                }
+                return acc;
+              }, {} as Record<number, number>);
+              const years = Object.keys(yearlyMap).map(Number).sort((a, b) => a - b);
+              let cumulative = 0;
+              const timelineData = years.map(y => {
+                cumulative += yearlyMap[y];
+                return { year: y, discoveries: yearlyMap[y], cumulative };
+              });
               const sortedFields = [...block.fields].sort((a, b) => (a.discoveryYear || 0) - (b.discoveryYear || 0));
               const statusColor: Record<string, string> = {
                 Producing: "bg-success/15 text-success border-success/30",
@@ -224,6 +237,34 @@ const BlockPage = () => {
                         );
                       })}
                     </div>
+
+                    {/* Discovery timeline chart */}
+                    {timelineData.length > 1 && (
+                      <div className="glass-card rounded-lg p-3 2xl:p-4">
+                        <div className="text-[10px] 2xl:text-xs uppercase tracking-wider text-muted-foreground mb-2 font-medium">Timeline de Descobertas</div>
+                        <ResponsiveContainer width="100%" height={140}>
+                          <AreaChart data={timelineData} margin={{ top: 5, right: 10, left: 0, bottom: 0 }}>
+                            <defs>
+                              <linearGradient id="discGrad" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="5%" stopColor="hsl(152, 69%, 40%)" stopOpacity={0.3} />
+                                <stop offset="95%" stopColor="hsl(152, 69%, 40%)" stopOpacity={0} />
+                              </linearGradient>
+                            </defs>
+                            <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                            <XAxis dataKey="year" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} stroke="hsl(var(--border))" />
+                            <YAxis yAxisId="left" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} stroke="hsl(var(--border))" width={30} allowDecimals={false} />
+                            <YAxis yAxisId="right" orientation="right" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} stroke="hsl(var(--border))" width={30} allowDecimals={false} />
+                            <Tooltip
+                              contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 11, color: "hsl(var(--foreground))" }}
+                              formatter={(val: number, name: string) => [val, name === "discoveries" ? "Descobertas" : "Acumulado"]}
+                              labelFormatter={(label) => `Ano ${label}`}
+                            />
+                            <Bar yAxisId="left" dataKey="discoveries" fill="hsl(199, 89%, 48%)" radius={[3, 3, 0, 0]} name="discoveries" barSize={12} />
+                            <Area yAxisId="right" type="monotone" dataKey="cumulative" stroke="hsl(152, 69%, 40%)" fill="url(#discGrad)" strokeWidth={2} name="cumulative" />
+                          </AreaChart>
+                        </ResponsiveContainer>
+                      </div>
+                    )}
 
                     {/* Fields grid */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 2xl:gap-3">
