@@ -36,20 +36,47 @@ export interface Prospect {
   pos: number; // probability of success %
 }
 
+export interface FiscalConditions {
+  costRecoveryPreProd?: number; // percentage
+  costRecoveryPostProd?: number; // percentage
+  irp?: number; // Imposto sobre Rendimento de Petróleo %
+  ipp?: number; // Imposto de Produção de Petróleo %
+  itp?: number; // Imposto de Transação de Petróleo %
+  productionPremium?: number; // USD/barrel
+  investmentPremiumAreaA?: number; // percentage
+  investmentPremiumAreaB?: number; // percentage
+  investmentPremiumReduction?: string; // description of reduction conditions
+  irpNoteAngolan?: string; // special rate for Angolan companies
+}
+
+export interface ResearchPeriod {
+  initialPhaseYears?: number;
+  initialPhaseWells?: number;
+  seismic3dKm2?: number;
+  seismic3dReprocKm2?: number;
+  subsequentPhaseYears?: number;
+  subsequentPhaseWells?: number;
+}
+
 export interface ContractInfo {
   decretoLei?: string;
-  contractType?: string; // e.g. "Associação", "Partilha de Produção"
+  contractType?: string;
   signingDate?: string;
   effectiveDate?: string;
   location?: string;
   initialConsortium?: ConcessionPartner[];
-  signatureBonus?: number; // USD
-  socialBonus?: number; // USD
-  socialProjects?: number; // USD (cumulative)
+  signatureBonus?: number;
+  socialBonus?: number;
+  socialProjects?: number;
   socialProjectsPeriod?: string;
-  regulatoryContribution?: number; // USD
+  regulatoryContribution?: number;
   regulatoryContributionPeriod?: string;
-  productionBonus?: number; // USD
+  productionBonus?: number;
+  productionPeriodStart?: string;
+  productionPeriodEnd?: string;
+  researchPeriod?: ResearchPeriod;
+  fiscalConditions?: FiscalConditions;
+  historicalNotes?: string[];
 }
 
 export interface OilBlock {
@@ -149,6 +176,32 @@ export const oilBlocks: OilBlock[] = [
       regulatoryContribution: 1750000,
       regulatoryContributionPeriod: "2004-2023",
       productionBonus: 10000000,
+      productionPeriodStart: "1977-01-01",
+      productionPeriodEnd: "2030-12-31",
+      researchPeriod: {
+        initialPhaseYears: 7,
+        initialPhaseWells: 7,
+        seismic3dKm2: 250,
+        seismic3dReprocKm2: 1000,
+        subsequentPhaseYears: 10,
+        subsequentPhaseWells: 3,
+      },
+      fiscalConditions: {
+        costRecoveryPreProd: 25,
+        costRecoveryPostProd: 16.67,
+        irp: 65.75,
+        ipp: 20,
+        itp: 70,
+        productionPremium: 15,
+        investmentPremiumAreaA: 50,
+        investmentPremiumAreaB: 100,
+        investmentPremiumReduction: "Reduzido para 60% quando a TIR da Área B atingir 23%",
+        irpNoteAngolan: "30% para empresas petrolíferas angolanas (Decreto Legislativo Presidencial n.° 3/12, de 16 de Março)",
+      },
+      historicalNotes: [
+        "Nos termos do Decreto 29/86 de 30 de Dezembro, entre as Associações das Áreas A, B e C.",
+        "Com efeito a partir de 1 de Junho de 2002, as Áreas B e C são consolidadas numa só Área designada B.",
+      ],
     },
     seismicData: [
       { year: 1993, seismic2D: 4184, seismic3D: 0, seismic4D: 0 },
