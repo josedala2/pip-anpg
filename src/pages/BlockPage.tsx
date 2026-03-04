@@ -170,25 +170,97 @@ const BlockPage = () => {
             </div>
 
             {/* Fields/Discoveries */}
-            {block.fields && block.fields.length > 0 && (
-              <Card className="glass-card">
-                <CardHeader className="p-4 pb-2">
-                  <CardTitle className="text-sm 2xl:text-base">Campos & Descobertas</CardTitle>
-                </CardHeader>
-                <CardContent className="p-4 pt-0">
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-2 2xl:gap-3">
-                    {block.fields.map(f => (
-                      <div key={f.name} className="glass-card p-3 2xl:p-4 rounded-lg">
-                        <div className="font-medium text-sm 2xl:text-base">{f.name}</div>
-                        <Badge variant="outline" className="text-[10px] mt-1">{f.status}</Badge>
-                        {f.discoveryYear && <div className="text-[10px] text-muted-foreground mt-1">Descoberto: {f.discoveryYear}</div>}
-                        {f.peakProduction && <div className="text-[10px] text-muted-foreground">{(f.peakProduction / 1000).toFixed(0)}k BOPD pico</div>}
+            {block.fields && block.fields.length > 0 && (() => {
+              const totalFields = block.fields.length;
+              const producing = block.fields.filter(f => f.status === "Producing").length;
+              const totalPeakProd = block.fields.reduce((s, f) => s + (f.peakProduction || 0), 0);
+              const decades = block.fields.reduce((acc, f) => {
+                if (f.discoveryYear) {
+                  const decade = `${Math.floor(f.discoveryYear / 10) * 10}s`;
+                  acc[decade] = (acc[decade] || 0) + 1;
+                }
+                return acc;
+              }, {} as Record<string, number>);
+              const sortedFields = [...block.fields].sort((a, b) => (a.discoveryYear || 0) - (b.discoveryYear || 0));
+              const statusColor: Record<string, string> = {
+                Producing: "bg-success/15 text-success border-success/30",
+                Development: "bg-warning/15 text-warning border-warning/30",
+                Discovery: "bg-primary/15 text-primary border-primary/30",
+                Abandoned: "bg-danger/15 text-danger border-danger/30",
+              };
+
+              return (
+                <Card className="glass-card">
+                  <CardHeader className="p-4 pb-2">
+                    <div className="flex items-center justify-between flex-wrap gap-2">
+                      <CardTitle className="text-sm 2xl:text-base flex items-center gap-2">
+                        <Layers className="w-4 h-4 text-primary" />
+                        Campos & Descobertas
+                      </CardTitle>
+                      <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                        <span><span className="font-bold text-foreground font-mono">{totalFields}</span> campos</span>
+                        <span className="text-border">|</span>
+                        <span><span className="font-bold text-success font-mono">{producing}</span> em produção</span>
+                        <span className="text-border">|</span>
+                        <span>Pico combinado: <span className="font-bold text-foreground font-mono">{(totalPeakProd / 1000).toFixed(0)}k</span> BOPD</span>
                       </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            )}
+                    </div>
+                  </CardHeader>
+                  <CardContent className="p-4 pt-2 space-y-4">
+                    {/* Decade summary bar */}
+                    <div className="flex items-center gap-1">
+                      {Object.entries(decades).sort(([a], [b]) => a.localeCompare(b)).map(([decade, count]) => {
+                        const pct = Math.max((count / totalFields) * 100, 8);
+                        return (
+                          <div
+                            key={decade}
+                            className="relative h-7 rounded bg-primary/15 flex items-center justify-center transition-all hover:bg-primary/25"
+                            style={{ width: `${pct}%`, minWidth: 48 }}
+                            title={`${decade}: ${count} campo${count > 1 ? "s" : ""}`}
+                          >
+                            <span className="text-[10px] font-mono font-semibold text-primary">{decade}</span>
+                            <span className="absolute -top-1.5 right-1 text-[9px] font-bold bg-primary text-primary-foreground rounded-full w-4 h-4 flex items-center justify-center">{count}</span>
+                          </div>
+                        );
+                      })}
+                    </div>
+
+                    {/* Fields grid */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 2xl:gap-3">
+                      {sortedFields.map(f => (
+                        <div key={f.name} className="glass-card p-3 2xl:p-4 rounded-lg group hover:border-primary/30 transition-colors border border-transparent relative overflow-hidden">
+                          <div className="absolute top-0 left-0 w-1 h-full rounded-l" style={{
+                            backgroundColor: f.status === "Producing" ? "hsl(152, 69%, 40%)" :
+                              f.status === "Development" ? "hsl(38, 92%, 50%)" :
+                              f.status === "Discovery" ? "hsl(199, 89%, 48%)" : "hsl(0, 72%, 51%)"
+                          }} />
+                          <div className="pl-2">
+                            <div className="flex items-start justify-between gap-1">
+                              <div className="font-semibold text-sm 2xl:text-base leading-tight">{f.name}</div>
+                              <Badge variant="outline" className={`text-[9px] shrink-0 ${statusColor[f.status] || "bg-muted text-muted-foreground"}`}>{f.status === "Producing" ? "Produção" : f.status === "Development" ? "Desenvolvimento" : f.status === "Discovery" ? "Descoberta" : "Abandonado"}</Badge>
+                            </div>
+                            <div className="flex items-center gap-3 mt-2 text-[10px] 2xl:text-xs text-muted-foreground">
+                              {f.discoveryYear && (
+                                <span className="flex items-center gap-1">
+                                  <span className="w-1 h-1 rounded-full bg-muted-foreground/50" />
+                                  {f.discoveryYear}
+                                </span>
+                              )}
+                              {f.peakProduction && (
+                                <span className="flex items-center gap-1 font-mono">
+                                  <Droplets className="w-3 h-3 text-primary/60" />
+                                  {(f.peakProduction / 1000).toFixed(0)}k BOPD
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })()}
           </TabsContent>
 
           {/* Tab 2: Consórcio */}
