@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft, Droplets, DollarSign, ShieldCheck, TrendingUp, Users, Activity, Target, Layers, BarChart3, MapPin, Brain, FileText, Landmark, Building2 } from "lucide-react";
+import { ArrowLeft, Droplets, DollarSign, ShieldCheck, TrendingUp, Users, Activity, Target, Layers, BarChart3, MapPin, Brain, FileText, Landmark, Building2, Clock, Scale, ArrowRight, History } from "lucide-react";
 import { SwotAnalysis } from "@/components/dashboard/SwotAnalysis";
 import {
   PieChart, Pie, Cell, AreaChart, Area, BarChart, Bar, LineChart, Line,
@@ -180,6 +180,14 @@ const BlockPage = () => {
                       </div>
                     )}
 
+                    {/* Production Period */}
+                    {block.contractInfo.productionPeriodStart && (
+                      <div className="flex justify-between items-center py-1.5 border-b border-border/30">
+                        <span className="text-xs 2xl:text-sm text-muted-foreground flex items-center gap-1"><Clock className="w-3 h-3" />Período de Produção</span>
+                        <span className="text-xs font-medium font-mono">{new Date(block.contractInfo.productionPeriodStart).toLocaleDateString("pt-AO")} — {block.contractInfo.productionPeriodEnd && new Date(block.contractInfo.productionPeriodEnd).toLocaleDateString("pt-AO")}</span>
+                      </div>
+                    )}
+
                     {/* GE Inicial mini-table */}
                     {block.contractInfo.initialConsortium && (
                       <div className="mt-2">
@@ -194,6 +202,110 @@ const BlockPage = () => {
                             </div>
                           ))}
                         </div>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Periods & Fiscal Conditions */}
+              {block.contractInfo && (block.contractInfo.researchPeriod || block.contractInfo.fiscalConditions) && (
+                <Card className="glass-card md:col-span-2 xl:col-span-1">
+                  <CardHeader className="p-4 pb-2">
+                    <CardTitle className="text-sm 2xl:text-base flex items-center gap-2"><Scale className="w-4 h-4 text-primary" />Períodos & Condições Fiscais</CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-4 pt-0 space-y-4">
+                    {/* Research Period */}
+                    {block.contractInfo.researchPeriod && (
+                      <div className="space-y-2">
+                        <div className="text-[10px] 2xl:text-xs uppercase tracking-wider text-muted-foreground font-medium">Período de Pesquisa</div>
+                        <div className="grid grid-cols-2 gap-2">
+                          <div className="glass-card rounded-lg p-2.5">
+                            <div className="text-[9px] uppercase text-muted-foreground">F. Inicial</div>
+                            <div className="font-bold font-mono text-sm">{block.contractInfo.researchPeriod.initialPhaseYears} <span className="text-xs font-normal text-muted-foreground">anos</span></div>
+                            <div className="text-[10px] text-muted-foreground">{block.contractInfo.researchPeriod.initialPhaseWells} poços</div>
+                          </div>
+                          <div className="glass-card rounded-lg p-2.5">
+                            <div className="text-[9px] uppercase text-muted-foreground">F. Subsequente</div>
+                            <div className="font-bold font-mono text-sm">{block.contractInfo.researchPeriod.subsequentPhaseYears} <span className="text-xs font-normal text-muted-foreground">anos</span></div>
+                            <div className="text-[10px] text-muted-foreground">{block.contractInfo.researchPeriod.subsequentPhaseWells} poços</div>
+                          </div>
+                        </div>
+                        {block.contractInfo.researchPeriod.seismic3dKm2 && (
+                          <div className="text-xs text-muted-foreground">
+                            Sísmica 3D: <span className="font-mono font-medium text-foreground">{block.contractInfo.researchPeriod.seismic3dKm2} km²</span>
+                            {block.contractInfo.researchPeriod.seismic3dReprocKm2 && <span> (Reproc. {block.contractInfo.researchPeriod.seismic3dReprocKm2} km²)</span>}
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Fiscal Conditions */}
+                    {block.contractInfo.fiscalConditions && (
+                      <div className="space-y-2">
+                        <div className="text-[10px] 2xl:text-xs uppercase tracking-wider text-muted-foreground font-medium">Condições Fiscais</div>
+                        <div className="space-y-1.5">
+                          {block.contractInfo.fiscalConditions.costRecoveryPostProd != null && (
+                            <div className="flex justify-between py-1 border-b border-border/30 text-xs">
+                              <span className="text-muted-foreground">C. Pesq. e Desenv. (pós-prod)</span>
+                              <span className="font-mono font-semibold">{block.contractInfo.fiscalConditions.costRecoveryPostProd}%</span>
+                            </div>
+                          )}
+                          {block.contractInfo.fiscalConditions.costRecoveryPreProd != null && (
+                            <div className="flex justify-between py-1 border-b border-border/30 text-xs">
+                              <span className="text-muted-foreground">C. Pesq. e Desenv. (pré-prod)</span>
+                              <span className="font-mono font-semibold">{block.contractInfo.fiscalConditions.costRecoveryPreProd}%</span>
+                            </div>
+                          )}
+                          <div className="grid grid-cols-3 gap-2 mt-2">
+                            {block.contractInfo.fiscalConditions.irp != null && (
+                              <div className="glass-card rounded-lg p-2 text-center">
+                                <div className="text-[9px] uppercase text-muted-foreground">IRP</div>
+                                <div className="font-bold font-mono text-sm text-primary">{block.contractInfo.fiscalConditions.irp}%</div>
+                              </div>
+                            )}
+                            {block.contractInfo.fiscalConditions.ipp != null && (
+                              <div className="glass-card rounded-lg p-2 text-center">
+                                <div className="text-[9px] uppercase text-muted-foreground">IPP</div>
+                                <div className="font-bold font-mono text-sm">{block.contractInfo.fiscalConditions.ipp}%</div>
+                              </div>
+                            )}
+                            {block.contractInfo.fiscalConditions.itp != null && (
+                              <div className="glass-card rounded-lg p-2 text-center">
+                                <div className="text-[9px] uppercase text-muted-foreground">ITP</div>
+                                <div className="font-bold font-mono text-sm">{block.contractInfo.fiscalConditions.itp}%</div>
+                              </div>
+                            )}
+                          </div>
+                          {block.contractInfo.fiscalConditions.productionPremium != null && (
+                            <div className="flex justify-between py-1 border-b border-border/30 text-xs">
+                              <span className="text-muted-foreground">Prémio de Produção</span>
+                              <span className="font-mono font-semibold">{block.contractInfo.fiscalConditions.productionPremium} USD/bbl</span>
+                            </div>
+                          )}
+                          {block.contractInfo.fiscalConditions.investmentPremiumAreaA != null && (
+                            <div className="flex justify-between py-1 border-b border-border/30 text-xs">
+                              <span className="text-muted-foreground">Prémio Invest. (Área A / B)</span>
+                              <span className="font-mono font-semibold">{block.contractInfo.fiscalConditions.investmentPremiumAreaA}% / {block.contractInfo.fiscalConditions.investmentPremiumAreaB}%</span>
+                            </div>
+                          )}
+                          {block.contractInfo.fiscalConditions.investmentPremiumReduction && (
+                            <div className="text-[10px] text-muted-foreground italic">{block.contractInfo.fiscalConditions.investmentPremiumReduction}</div>
+                          )}
+                          {block.contractInfo.fiscalConditions.irpNoteAngolan && (
+                            <div className="text-[10px] text-muted-foreground italic mt-1">* {block.contractInfo.fiscalConditions.irpNoteAngolan}</div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Historical Notes */}
+                    {block.contractInfo.historicalNotes && block.contractInfo.historicalNotes.length > 0 && (
+                      <div className="space-y-1.5 mt-3 pt-3 border-t border-border/30">
+                        <div className="text-[10px] 2xl:text-xs uppercase tracking-wider text-muted-foreground font-medium flex items-center gap-1"><History className="w-3 h-3" /> Histórico</div>
+                        {block.contractInfo.historicalNotes.map((note, i) => (
+                          <p key={i} className="text-[11px] text-muted-foreground leading-relaxed">{note}</p>
+                        ))}
                       </div>
                     )}
                   </CardContent>
@@ -370,10 +482,121 @@ const BlockPage = () => {
 
           {/* Tab 2: Consórcio */}
           <TabsContent value="consortium" className="space-y-4 2xl:space-y-6">
-             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 2xl:gap-6">
+            {/* GE Inicial → GE Actual comparative */}
+            {block.contractInfo?.initialConsortium && (
               <Card className="glass-card">
                 <CardHeader className="p-4 pb-2">
-                  <CardTitle className="text-sm 2xl:text-base">Parceiros do Consórcio</CardTitle>
+                  <CardTitle className="text-sm 2xl:text-base flex items-center gap-2"><History className="w-4 h-4 text-primary" />Evolução do Grupo Empreiteiro</CardTitle>
+                </CardHeader>
+                <CardContent className="p-4 pt-2">
+                  <div className="grid grid-cols-1 lg:grid-cols-[1fr,auto,1fr] gap-4 items-start">
+                    {/* GE Inicial */}
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="w-2 h-2 rounded-full bg-muted-foreground" />
+                        <span className="text-xs 2xl:text-sm font-semibold uppercase tracking-wider text-muted-foreground">GE Inicial</span>
+                        {block.contractInfo.signingDate && <span className="text-[10px] text-muted-foreground">({new Date(block.contractInfo.signingDate).getFullYear()})</span>}
+                      </div>
+                      {block.contractInfo.initialConsortium.map((p, i) => (
+                        <div key={p.name} className="flex items-center gap-3">
+                          <div className="w-2.5 h-2.5 rounded-full shrink-0 opacity-50" style={{ backgroundColor: CONSORTIUM_COLORS[i % CONSORTIUM_COLORS.length] }} />
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2">
+                              <span className="text-sm font-medium truncate">{p.name}</span>
+                              {p.isOperator && <Badge variant="outline" className="text-[8px] bg-primary/10 text-primary border-primary/30 py-0 px-1">Op.</Badge>}
+                            </div>
+                            <div className="w-full h-1.5 bg-secondary rounded-full mt-1 overflow-hidden">
+                              <div className="h-full rounded-full opacity-50" style={{ width: `${p.share}%`, backgroundColor: CONSORTIUM_COLORS[i % CONSORTIUM_COLORS.length] }} />
+                            </div>
+                          </div>
+                          <span className="font-mono text-sm font-bold w-14 text-right text-muted-foreground">{p.share.toFixed(1)}%</span>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Arrow */}
+                    <div className="hidden lg:flex flex-col items-center justify-center gap-2 py-8">
+                      <div className="w-px h-8 bg-border" />
+                      <div className="w-10 h-10 rounded-full glass-card flex items-center justify-center border border-primary/30">
+                        <ArrowRight className="w-4 h-4 text-primary" />
+                      </div>
+                      <div className="w-px h-8 bg-border" />
+                      <span className="text-[9px] uppercase tracking-widest text-muted-foreground font-medium">Evolução</span>
+                    </div>
+                    <div className="lg:hidden flex items-center justify-center py-2">
+                      <div className="flex items-center gap-2 text-muted-foreground">
+                        <div className="h-px w-12 bg-border" />
+                        <ArrowRight className="w-4 h-4 text-primary rotate-90 lg:rotate-0" />
+                        <div className="h-px w-12 bg-border" />
+                      </div>
+                    </div>
+
+                    {/* GE Actual */}
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="w-2 h-2 rounded-full bg-primary" />
+                        <span className="text-xs 2xl:text-sm font-semibold uppercase tracking-wider text-primary">GE Actual</span>
+                        <span className="text-[10px] text-muted-foreground">(Presente)</span>
+                      </div>
+                      {block.concession.map((p, i) => (
+                        <div key={i} className="flex items-center gap-3">
+                          <div className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: CONSORTIUM_COLORS[i % CONSORTIUM_COLORS.length] }} />
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2">
+                              <span className="text-sm font-medium truncate">{p.name}</span>
+                              {p.isOperator && <Badge variant="outline" className="text-[9px] bg-primary/10 text-primary border-primary/30">Operador</Badge>}
+                            </div>
+                            <div className="w-full h-2 bg-secondary rounded-full mt-1 overflow-hidden">
+                              <div className="h-full rounded-full transition-all" style={{ width: `${p.share}%`, backgroundColor: CONSORTIUM_COLORS[i % CONSORTIUM_COLORS.length] }} />
+                            </div>
+                          </div>
+                          <span className="font-mono text-sm font-bold w-14 text-right">{p.share.toFixed(1)}%</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Change summary */}
+                  {(() => {
+                    const initial = block.contractInfo.initialConsortium;
+                    const actual = block.concession;
+                    const allNames = new Set([...initial.map(p => p.name), ...actual.map(p => p.name)]);
+                    const changes: { name: string; from: number; to: number }[] = [];
+                    allNames.forEach(name => {
+                      const ini = initial.find(p => p.name === name)?.share || 0;
+                      const act = actual.find(p => p.name === name)?.share || 0;
+                      if (Math.abs(ini - act) > 0.01) {
+                        changes.push({ name, from: ini, to: act });
+                      }
+                    });
+                    if (changes.length === 0) return null;
+                    return (
+                      <div className="mt-4 pt-4 border-t border-border/30">
+                        <div className="text-[10px] uppercase tracking-wider text-muted-foreground mb-2 font-medium">Alterações Relevantes</div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+                          {changes.map(c => (
+                            <div key={c.name} className="glass-card rounded-lg p-2.5 flex items-center justify-between text-xs">
+                              <span className="truncate font-medium">{c.name}</span>
+                              <div className="flex items-center gap-1 font-mono shrink-0 ml-2">
+                                <span className="text-muted-foreground">{c.from > 0 ? `${c.from.toFixed(1)}%` : "—"}</span>
+                                <ArrowRight className="w-3 h-3 text-primary" />
+                                <span className={c.to > 0 ? "font-bold" : "text-danger"}>{c.to > 0 ? `${c.to.toFixed(1)}%` : "Saiu"}</span>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  })()}
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Pie chart */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 2xl:gap-6">
+              <Card className="glass-card">
+                <CardHeader className="p-4 pb-2">
+                  <CardTitle className="text-sm 2xl:text-base">Parceiros Actuais</CardTitle>
                 </CardHeader>
                 <CardContent className="p-4 pt-0">
                   <div className="space-y-3">
