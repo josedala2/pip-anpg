@@ -1,67 +1,36 @@
 
 
-## Plano: Página dedicada por bloco com informações completas
+## Plan: Populate Block 0 with Real Data from Spreadsheet
 
-### Objectivo
-Criar uma rota `/block/:blockId` com página completa de informações para cada bloco, incluindo secções de Exploração (sísmica, poços), Produção, CAPEX, Consórcio, Risco e Projecções. No painel BlocksPanel e no mapa, adicionar botão "Mais Detalhes" que navega para essa página.
+### Objective
+Replace the placeholder/sample data for Block 0 in `src/data/angolaBlocks.ts` with the real data extracted from the uploaded `Bloco_O.xlsx` spreadsheet.
 
-### Estrutura da nova página
+### Data Extracted from Spreadsheet
 
-```text
-/block/:blockId
-┌──────────────────────────────────────────────┐
-│  Header: Nome do Bloco + Badge Fase + Voltar │
-├──────────────────────────────────────────────┤
-│  Tab 1: Visão Geral                         │
-│    - Info grid (Operador, Bacia, Contrato..) │
-│    - Risk Score + Compliance donut           │
-│    - KPIs (Produção, Reservas, Investimento) │
-├──────────────────────────────────────────────┤
-│  Tab 2: Consórcio                            │
-│    - Tabela de parceiros com % e barras      │
-│    - Gráfico pie/donut do consórcio          │
-├──────────────────────────────────────────────┤
-│  Tab 3: Exploração & Sísmica                │
-│    - Dados sísmicos do bloco (2D/3D/4D)     │
-│    - Poços perfurados (Pesquisa/Avaliação)  │
-│    - Objectivos geológicos                   │
-├──────────────────────────────────────────────┤
-│  Tab 4: Produção                             │
-│    - Production Trend chart (12 meses)       │
-│    - CAPEX vs Plan chart                     │
-├──────────────────────────────────────────────┤
-│  Tab 5: Projecções                           │
-│    - Conservative / Base / Expansion lines   │
-└──────────────────────────────────────────────┘
-```
+**Page 1 - Seismic Data (2D/3D/4D km):**
+Real yearly seismic acquisition data from 1993 to 2024, including 2D (5,179 km total), 3D (9,785 km total), and 4D (8,082 km total).
 
-### Passos de implementação
+**Page 2 - Wells Summary Table:**
+Annual well counts by status from 1966 to 2025. Totals: 144 Pesquisa, 84 Avaliação = 228 wells total. Discoveries: 57 commercial, 32 non-commercial, 55 dry.
 
-1. **Expandir dados no `OilBlock` interface** (`angolaBlocks.ts`)
-   - Adicionar campos opcionais: `seismicData` (array com `{ year, km2D, km3D, km4D }`), `wellsData` (array com `{ year, pesquisa, avaliacao }`), `geologicalObjectives` (string[]), `fields` (array de campos/descobertas com nome e status)
-   - Preencher dados de exemplo para os blocos principais (Block 0, 14, 15, 17, etc.)
+**Page 2 - Wells Detail:**
+Individual well names with discovery fields including Takula, Malongo Norte/Sul/West, Limba, Wamba, Kali, N Kassa, Livuite, Kungulo Lola, Banzala, Bomboco, Vanza, N'tene, Senha, Sanzamo, Lifuma, Nemba, Sanha, Vuko, and more.
 
-2. **Criar página `BlockPage.tsx`** (`src/pages/BlockPage.tsx`)
-   - Rota: `/block/:blockId`
-   - Usa `useParams` para obter o blockId e encontrar o bloco em `oilBlocks`
-   - Layout com header fixo (nome, fase, botão voltar)
-   - Tabs (Radix UI Tabs já instalado): Visão Geral, Consórcio, Exploração, Produção, Projecções
-   - Cada tab renderiza secção dedicada com gráficos recharts
+### Implementation Steps
 
-3. **Adicionar rota em `App.tsx`**
-   - `<Route path="/block/:blockId" element={<BlockPage />} />`
+1. **Update seismic data** for Block 0 with real yearly values (1993-2024) replacing the generic 5-year interval placeholders.
 
-4. **Adicionar botão "Mais Detalhes" no BlocksPanel**
-   - No `BlockCard` expandido, adicionar link/botão que navega para `/block/${block.id}` usando `useNavigate`
-   - Também acessível a partir do mapa (ao clicar num bloco, popup com opção "Ver Detalhes")
+2. **Update wells data** for Block 0 with the real annual summary (pesquisa + avaliação counts per year from 1966-2025).
 
-5. **Actualizar `ConcessionMap.tsx`**
-   - No tooltip/popup de cada bloco, adicionar link "Mais Detalhes" que navega para a página do bloco
+3. **Update fields array** with all discovered fields extracted from the wells detail, including discovery years and status.
 
-### Detalhes técnicos
-- Usar `react-router-dom` `useParams` + `useNavigate` (já instalado)
-- Usar `Tabs`/`TabsList`/`TabsTrigger`/`TabsContent` de `@/components/ui/tabs`
-- Gráficos com `recharts` (PieChart para consórcio, AreaChart para produção, BarChart para sísmica/poços, LineChart para projecções)
-- Página 404 se blockId não existir
-- Botão "Voltar" navega para `/` com o painel de blocos activo
+4. **Update geological objectives** based on the reservoir types found in the well data (Pinda, Pre-Salt, etc.).
+
+### Technical Details
+
+- File to modify: `src/data/angolaBlocks.ts` (Block 0 entry, lines 76-152)
+- Replace `seismicData` array with ~25 yearly entries from real data
+- Replace `wellsData` array with yearly summary counts (consolidating years with activity)
+- Expand `fields` array with all discovered fields (Takula, Malongo N/S/W, Limba, Wamba, Kali, N Kassa, Livuite, Kungulo Lola, Banzala, Bomboco, Vanza, N'tene, Senha, Sanzamo, Lifuma, Nemba, Sanha, Vuko, Desc Pinda, etc.)
+- Keep existing `concession`, `mapPosition`, `productionHistory`, `capexHistory`, `projections`, and `prospects` data as-is (no changes from spreadsheet)
 
