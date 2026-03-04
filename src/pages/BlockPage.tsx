@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft, Droplets, DollarSign, ShieldCheck, TrendingUp, Users, Activity, Target, Layers, BarChart3, MapPin, Brain } from "lucide-react";
+import { ArrowLeft, Droplets, DollarSign, ShieldCheck, TrendingUp, Users, Activity, Target, Layers, BarChart3, MapPin, Brain, FileText, Landmark, Building2 } from "lucide-react";
 import { SwotAnalysis } from "@/components/dashboard/SwotAnalysis";
 import {
   PieChart, Pie, Cell, AreaChart, Area, BarChart, Bar, LineChart, Line,
@@ -110,7 +110,7 @@ const BlockPage = () => {
               ))}
             </div>
 
-             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 2xl:gap-6">
+             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 2xl:gap-6">
               {/* Info Grid */}
               <Card className="glass-card">
                 <CardHeader className="p-4 pb-2">
@@ -123,18 +123,82 @@ const BlockPage = () => {
                       { label: "Bacia Sedimentar", value: block.basin },
                       { label: "Profundidade", value: block.waterDepth },
                       { label: "Data do Contrato", value: new Date(block.contractDate).toLocaleDateString("pt-AO") },
-                      { label: "Investimento Planeado", value: `$${(block.plannedInvestment / 1000).toFixed(1)}B` },
+                      ...(block.contractInfo?.contractType ? [{ label: "Tipo de Contrato", value: block.contractInfo.contractType }] : []),
+                      ...(block.contractInfo?.decretoLei ? [{ label: "Decreto-Lei", value: block.contractInfo.decretoLei }] : []),
+                      ...(block.contractInfo?.location ? [{ label: "Localização", value: block.contractInfo.location }] : []),
                       ...(block.areaKm2 ? [{ label: "Área", value: `${block.areaKm2.toLocaleString()} km²` }] : []),
                       ...(block.waterDepthRange ? [{ label: "Lâmina d'Água", value: block.waterDepthRange }] : []),
+                      ...(block.contractInfo?.signingDate ? [{ label: "Data de Assinatura", value: new Date(block.contractInfo.signingDate).toLocaleDateString("pt-AO") }] : []),
+                      ...(block.contractInfo?.effectiveDate ? [{ label: "Data Efectiva", value: new Date(block.contractInfo.effectiveDate).toLocaleDateString("pt-AO") }] : []),
                     ].map(item => (
                       <div key={item.label} className="flex justify-between items-center py-1.5 border-b border-border/30 last:border-0">
                          <span className="text-xs 2xl:text-sm text-muted-foreground">{item.label}</span>
-                         <span className="text-sm 2xl:text-base font-medium">{item.value}</span>
+                         <span className="text-sm 2xl:text-base font-medium text-right max-w-[60%]">{item.value}</span>
                       </div>
                     ))}
                   </div>
                 </CardContent>
               </Card>
+
+              {/* Contract Financial Data */}
+              {block.contractInfo && (block.contractInfo.signatureBonus || block.contractInfo.socialBonus || block.contractInfo.productionBonus) && (
+                <Card className="glass-card">
+                  <CardHeader className="p-4 pb-2">
+                    <CardTitle className="text-sm 2xl:text-base flex items-center gap-2"><Landmark className="w-4 h-4 text-warning" />Dados Contratuais</CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-4 pt-0 space-y-3">
+                    {block.contractInfo.signatureBonus && (
+                      <div className="glass-card rounded-lg p-3">
+                        <div className="text-[10px] 2xl:text-xs uppercase tracking-wider text-muted-foreground mb-1">Bónus de Assinatura</div>
+                        <div className="text-lg 2xl:text-xl font-bold font-mono text-warning">US$ {(block.contractInfo.signatureBonus / 1e6).toFixed(0)}M</div>
+                      </div>
+                    )}
+                    <div className="grid grid-cols-2 gap-2">
+                      {block.contractInfo.socialBonus && (
+                        <div className="glass-card rounded-lg p-3">
+                          <div className="text-[10px] 2xl:text-xs uppercase tracking-wider text-muted-foreground mb-1">Bónus Social</div>
+                          <div className="text-sm 2xl:text-base font-bold font-mono">US$ {(block.contractInfo.socialBonus / 1e6).toFixed(0)}M</div>
+                        </div>
+                      )}
+                      {block.contractInfo.productionBonus && (
+                        <div className="glass-card rounded-lg p-3">
+                          <div className="text-[10px] 2xl:text-xs uppercase tracking-wider text-muted-foreground mb-1">Bónus de Produção</div>
+                          <div className="text-sm 2xl:text-base font-bold font-mono">US$ {(block.contractInfo.productionBonus / 1e6).toFixed(0)}M</div>
+                        </div>
+                      )}
+                    </div>
+                    {block.contractInfo.socialProjects && (
+                      <div className="flex justify-between items-center py-1.5 border-b border-border/30">
+                        <span className="text-xs 2xl:text-sm text-muted-foreground">P. Sociais {block.contractInfo.socialProjectsPeriod && `(${block.contractInfo.socialProjectsPeriod})`}</span>
+                        <span className="text-sm font-medium font-mono">US$ {(block.contractInfo.socialProjects / 1e6).toFixed(2)}M</span>
+                      </div>
+                    )}
+                    {block.contractInfo.regulatoryContribution && (
+                      <div className="flex justify-between items-center py-1.5 border-b border-border/30">
+                        <span className="text-xs 2xl:text-sm text-muted-foreground">C. Regulatória {block.contractInfo.regulatoryContributionPeriod && `(${block.contractInfo.regulatoryContributionPeriod})`}</span>
+                        <span className="text-sm font-medium font-mono">US$ {(block.contractInfo.regulatoryContribution / 1e6).toFixed(2)}M</span>
+                      </div>
+                    )}
+
+                    {/* GE Inicial mini-table */}
+                    {block.contractInfo.initialConsortium && (
+                      <div className="mt-2">
+                        <div className="text-[10px] 2xl:text-xs uppercase tracking-wider text-muted-foreground mb-2 font-medium flex items-center gap-1.5">
+                          <Building2 className="w-3 h-3" /> GE Inicial
+                        </div>
+                        <div className="space-y-1">
+                          {block.contractInfo.initialConsortium.map(p => (
+                            <div key={p.name} className="flex justify-between items-center py-1 text-xs 2xl:text-sm">
+                              <span className="text-muted-foreground">{p.name} {p.isOperator && <Badge variant="outline" className="text-[8px] ml-1 py-0 px-1">Op.</Badge>}</span>
+                              <span className="font-mono font-semibold">{p.share.toFixed(2)}%</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              )}
 
               {/* Risk & Compliance */}
               <Card className="glass-card">
