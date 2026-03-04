@@ -58,6 +58,33 @@ export interface ResearchPeriod {
   subsequentPhaseWells?: number;
 }
 
+export interface ExplorationSummary {
+  totalSeismic2DKm?: number;
+  totalSeismic3DKm2?: number;
+  totalSeismic4DKm2?: number;
+  totalWellsPesquisa?: number;
+  totalWellsAvaliacao?: number;
+  commercialDiscoveries?: number;
+  nonCommercialDiscoveries?: number;
+  dryWells?: number;
+  geologicalSuccessRate?: number; // percentage
+  stooipMMBO?: number;
+  explorationCostsUSD?: number;
+  prospectivitySTOOIPMMBOE?: number;
+  prospectivityNote?: string;
+  complexity?: string[];
+  geologicalTargets?: string; // e.g. "Cretáceo (Pinda/Pós-sal, Toca e Lucula/Pré-sal)"
+}
+
+export interface LegislationDocument {
+  title: string;
+  type: "decreto-lei" | "contrato" | "despacho" | "resolução" | "nota" | "outro";
+  reference?: string;
+  date?: string;
+  description?: string;
+  url?: string;
+}
+
 export interface ContractInfo {
   decretoLei?: string;
   contractType?: string;
@@ -113,6 +140,8 @@ export interface OilBlock {
   waterDepthRange?: string; // e.g., "200-1500m"
   prospects?: Prospect[];
   contractInfo?: ContractInfo;
+  explorationSummary?: ExplorationSummary;
+  legislationDocs?: LegislationDocument[];
 }
 
 export const oilBlocks: OilBlock[] = [
@@ -278,29 +307,68 @@ export const oilBlocks: OilBlock[] = [
       { year: 2019, pesquisa: 1, avaliacao: 0 },
       { year: 2025, pesquisa: 1, avaliacao: 0 },
     ],
-    geologicalObjectives: ["Pinda Carbonates", "Pre-Salt Reservoirs", "Vermelha Formation", "Albian Carbonates"],
+    geologicalObjectives: ["Pinda Carbonates", "Pre-Salt Reservoirs", "Toca Formation", "Lucula Formation", "Vermelha Formation", "Albian Carbonates"],
     fields: [
-      { name: "Limba", status: "Producing", discoveryYear: 1966, peakProduction: 25000 },
+      // Area A discoveries
       { name: "Malongo Norte", status: "Producing", discoveryYear: 1966, peakProduction: 45000 },
       { name: "Malongo Sul", status: "Producing", discoveryYear: 1966, peakProduction: 35000 },
       { name: "Malongo West", status: "Producing", discoveryYear: 1966, peakProduction: 40000 },
-      { name: "N Kassa", status: "Producing", discoveryYear: 1968, peakProduction: 8000 },
+      { name: "Limba", status: "Producing", discoveryYear: 1966, peakProduction: 25000 },
       { name: "Kali", status: "Producing", discoveryYear: 1968, peakProduction: 12000 },
-      { name: "Takula", status: "Producing", discoveryYear: 1979, peakProduction: 80000 },
-      { name: "Wamba", status: "Producing", discoveryYear: 1981, peakProduction: 15000 },
+      { name: "Takula", status: "Producing", discoveryYear: 1971, peakProduction: 80000 },
+      { name: "Kambala", status: "Producing", discoveryYear: 1971, peakProduction: 8000 },
+      { name: "Kungulo", status: "Producing", discoveryYear: 1974, peakProduction: 5000 },
       { name: "Livuite", status: "Producing", discoveryYear: 1980, peakProduction: 6000 },
-      { name: "Kungulo Lola", status: "Producing", discoveryYear: 1975, peakProduction: 5000 },
+      { name: "Wamba", status: "Producing", discoveryYear: 1982, peakProduction: 15000 },
+      { name: "Numbi", status: "Producing", discoveryYear: 1982, peakProduction: 4000 },
       { name: "Banzala", status: "Producing", discoveryYear: 1983, peakProduction: 10000 },
-      { name: "Desc Pinda", status: "Producing", discoveryYear: 1983, peakProduction: 7000 },
-      { name: "Vuko", status: "Producing", discoveryYear: 1983, peakProduction: 4000 },
       { name: "Lifuma", status: "Producing", discoveryYear: 1984, peakProduction: 5000 },
+      { name: "Mafumeira", status: "Producing", discoveryYear: 1988, peakProduction: 30000 },
+      { name: "N'Sano", status: "Producing", discoveryYear: 1992, peakProduction: 4000 },
+      { name: "Lifua", status: "Producing", discoveryYear: 1993, peakProduction: 3000 },
+      { name: "Vuko", status: "Producing", discoveryYear: 1993, peakProduction: 4000 },
+      // Area B discoveries
+      { name: "N'Kassa", status: "Producing", discoveryYear: 1968, peakProduction: 8000 },
+      { name: "N'Dola", status: "Producing", discoveryYear: 1972, peakProduction: 5000 },
       { name: "Bomboco", status: "Producing", discoveryYear: 1986, peakProduction: 8000 },
-      { name: "Vanza", status: "Producing", discoveryYear: 1987, peakProduction: 6000 },
-      { name: "N'tene", status: "Producing", discoveryYear: 1987, peakProduction: 4000 },
-      { name: "Senha", status: "Producing", discoveryYear: 1987, peakProduction: 5000 },
-      { name: "Sanzamo", status: "Producing", discoveryYear: 1987, peakProduction: 3000 },
+      { name: "Sanha", status: "Producing", discoveryYear: 1987, peakProduction: 18000 },
+      { name: "Vanza", status: "Producing", discoveryYear: 1988, peakProduction: 6000 },
+      { name: "Sanzano", status: "Producing", discoveryYear: 1988, peakProduction: 3000 },
+      { name: "N'Tene", status: "Producing", discoveryYear: 1988, peakProduction: 4000 },
+      { name: "Kokongo", status: "Producing", discoveryYear: 1989, peakProduction: 5000 },
       { name: "Nemba", status: "Producing", discoveryYear: 1990, peakProduction: 20000 },
-      { name: "Sanha", status: "Producing", discoveryYear: 1994, peakProduction: 18000 },
+      { name: "Longui", status: "Producing", discoveryYear: 1990, peakProduction: 3000 },
+      { name: "Lomba", status: "Producing", discoveryYear: 1992, peakProduction: 4000 },
+      { name: "M'Bili", status: "Producing", discoveryYear: 1993, peakProduction: 3000 },
+      { name: "N'Sangui", status: "Producing", discoveryYear: 1993, peakProduction: 3000 },
+      { name: "Minzu", status: "Producing", discoveryYear: 1994, peakProduction: 3000 },
+    ],
+    explorationSummary: {
+      totalSeismic2DKm: 23816,
+      totalSeismic3DKm2: 20451,
+      totalSeismic4DKm2: 340,
+      totalWellsPesquisa: 143,
+      totalWellsAvaliacao: 71,
+      commercialDiscoveries: 58,
+      nonCommercialDiscoveries: 44,
+      dryWells: 41,
+      geologicalSuccessRate: 41,
+      stooipMMBO: 21000,
+      explorationCostsUSD: 1700000000,
+      prospectivitySTOOIPMMBOE: 470,
+      prospectivityNote: "Potencial de Exploração do play Cretáceo estimado em 470 MMBOE (STOOIP) próximo às Áreas de produção dos campos Mafumeira, Sanha, Vuco e Kungulo",
+      complexity: [
+        "Vugs a nível dos carbonatos no pré-sal (Área A)",
+        "Compactação dos reservatórios carbonáticos (Área B)",
+      ],
+      geologicalTargets: "Cretáceo (Pinda/Pós-sal, Toca e Lucula/Pré-sal)",
+    },
+    legislationDocs: [
+      { title: "Decreto Lei n.° 2/04", type: "decreto-lei", reference: "Decreto Lei n.° 2/04, de 7 de Maio", date: "2004-05-07", description: "Aprovação do Contrato de Associação do Bloco 0 (Áreas A e B)" },
+      { title: "Decreto 29/86", type: "decreto-lei", reference: "Decreto 29/86, de 30 de Dezembro", date: "1986-12-30", description: "Associações das Áreas A, B e C do Bloco 0" },
+      { title: "Decreto Legislativo Presidencial n.° 3/12", type: "decreto-lei", reference: "DLP n.° 3/12, de 16 de Março", date: "2012-03-16", description: "Regime fiscal especial — IRP 30% para empresas petrolíferas angolanas" },
+      { title: "Contrato de Associação (2004)", type: "contrato", date: "2004-05-13", description: "Contrato de Associação entre SNL, CABGOC, TOTAL e ENI para exploração e produção do Bloco 0" },
+      { title: "Consolidação Áreas B e C", type: "nota", date: "2002-06-01", description: "Com efeito a partir de 1 de Junho de 2002, as Áreas B e C são consolidadas numa só Área designada B" },
     ],
     prospects: [
       { discoveryArea: "Takula", name: "Takula Deep", reservoir: "Pinda", resourcesMMBO: 180, resourcesBCF: 45, pos: 62 },

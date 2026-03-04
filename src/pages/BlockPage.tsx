@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft, Droplets, DollarSign, ShieldCheck, TrendingUp, Users, Activity, Target, Layers, BarChart3, MapPin, Brain, FileText, Landmark, Building2, Clock, Scale, ArrowRight, History } from "lucide-react";
+import { ArrowLeft, Droplets, DollarSign, ShieldCheck, TrendingUp, Users, Activity, Target, Layers, BarChart3, MapPin, Brain, FileText, Landmark, Building2, Clock, Scale, ArrowRight, History, BookOpen, ExternalLink, AlertTriangle, Crosshair } from "lucide-react";
 import { SwotAnalysis } from "@/components/dashboard/SwotAnalysis";
 import {
   PieChart, Pie, Cell, AreaChart, Area, BarChart, Bar, LineChart, Line,
@@ -86,8 +86,9 @@ const BlockPage = () => {
              <TabsTrigger value="exploration" className="gap-1.5 text-xs 2xl:text-sm"><Target className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Exploração</TabsTrigger>
              <TabsTrigger value="production" className="gap-1.5 text-xs 2xl:text-sm"><BarChart3 className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Produção</TabsTrigger>
              <TabsTrigger value="projections" className="gap-1.5 text-xs 2xl:text-sm"><TrendingUp className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Projecções</TabsTrigger>
-             <TabsTrigger value="swot" className="gap-1.5 text-xs 2xl:text-sm"><Brain className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Análise SWOT</TabsTrigger>
-          </TabsList>
+              <TabsTrigger value="swot" className="gap-1.5 text-xs 2xl:text-sm"><Brain className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Análise SWOT</TabsTrigger>
+              <TabsTrigger value="legislation" className="gap-1.5 text-xs 2xl:text-sm"><BookOpen className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Documentos & Legislação</TabsTrigger>
+           </TabsList>
 
           {/* Tab 1: Visão Geral */}
           <TabsContent value="overview" className="space-y-4 2xl:space-y-6">
@@ -711,6 +712,92 @@ const BlockPage = () => {
               </Card>
             )}
 
+            {/* Exploration Summary */}
+            {block.explorationSummary && (
+              <Card className="glass-card">
+                <CardHeader className="p-4 pb-2">
+                  <CardTitle className="text-sm 2xl:text-base flex items-center gap-2"><Crosshair className="w-4 h-4 text-primary" />Resumo da Exploração</CardTitle>
+                </CardHeader>
+                <CardContent className="p-4 pt-2">
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+                    {block.explorationSummary.totalSeismic2DKm != null && (
+                      <div className="glass-card rounded-lg p-3 text-center">
+                        <div className="text-[9px] uppercase text-muted-foreground">Sísmica 2D</div>
+                        <div className="text-lg font-bold font-mono">{block.explorationSummary.totalSeismic2DKm.toLocaleString()}</div>
+                        <div className="text-[10px] text-muted-foreground">km</div>
+                      </div>
+                    )}
+                    {block.explorationSummary.totalSeismic3DKm2 != null && (
+                      <div className="glass-card rounded-lg p-3 text-center">
+                        <div className="text-[9px] uppercase text-muted-foreground">Sísmica 3D</div>
+                        <div className="text-lg font-bold font-mono">{block.explorationSummary.totalSeismic3DKm2.toLocaleString()}</div>
+                        <div className="text-[10px] text-muted-foreground">km²</div>
+                      </div>
+                    )}
+                    {block.explorationSummary.totalSeismic4DKm2 != null && (
+                      <div className="glass-card rounded-lg p-3 text-center">
+                        <div className="text-[9px] uppercase text-muted-foreground">Sísmica 4D</div>
+                        <div className="text-lg font-bold font-mono">{block.explorationSummary.totalSeismic4DKm2.toLocaleString()}</div>
+                        <div className="text-[10px] text-muted-foreground">km²</div>
+                      </div>
+                    )}
+                    {block.explorationSummary.stooipMMBO != null && (
+                      <div className="glass-card rounded-lg p-3 text-center">
+                        <div className="text-[9px] uppercase text-muted-foreground">STOOIP</div>
+                        <div className="text-lg font-bold font-mono text-warning">{block.explorationSummary.stooipMMBO.toLocaleString()}</div>
+                        <div className="text-[10px] text-muted-foreground">MMBO</div>
+                      </div>
+                    )}
+                  </div>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-4">
+                    <div className="glass-card rounded-lg p-3">
+                      <div className="text-[9px] uppercase text-muted-foreground mb-1">Poços Perfurados</div>
+                      <div className="flex items-baseline gap-2">
+                        <span className="text-base font-bold font-mono">{(block.explorationSummary.totalWellsPesquisa || 0) + (block.explorationSummary.totalWellsAvaliacao || 0)}</span>
+                        <span className="text-[10px] text-muted-foreground">({block.explorationSummary.totalWellsPesquisa} pesq. + {block.explorationSummary.totalWellsAvaliacao} aval.)</span>
+                      </div>
+                    </div>
+                    <div className="glass-card rounded-lg p-3">
+                      <div className="text-[9px] uppercase text-muted-foreground mb-1">Resultados</div>
+                      <div className="flex items-center gap-2 text-xs">
+                        <span className="text-success font-bold font-mono">{block.explorationSummary.commercialDiscoveries}</span><span className="text-muted-foreground">com.</span>
+                        <span className="text-warning font-bold font-mono">{block.explorationSummary.nonCommercialDiscoveries}</span><span className="text-muted-foreground">n/com.</span>
+                        <span className="text-danger font-bold font-mono">{block.explorationSummary.dryWells}</span><span className="text-muted-foreground">secos</span>
+                      </div>
+                    </div>
+                    {block.explorationSummary.geologicalSuccessRate != null && (
+                      <div className="glass-card rounded-lg p-3">
+                        <div className="text-[9px] uppercase text-muted-foreground mb-1">Taxa Sucesso Geológico</div>
+                        <div className="text-base font-bold font-mono text-success">{block.explorationSummary.geologicalSuccessRate}%</div>
+                      </div>
+                    )}
+                  </div>
+                  {block.explorationSummary.geologicalTargets && (
+                    <div className="text-xs text-muted-foreground mb-3">
+                      <span className="font-medium text-foreground">Objectivos geológicos:</span> {block.explorationSummary.geologicalTargets}
+                    </div>
+                  )}
+                  {block.explorationSummary.complexity && block.explorationSummary.complexity.length > 0 && (
+                    <div className="space-y-1.5 mb-3">
+                      <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium flex items-center gap-1"><AlertTriangle className="w-3 h-3 text-warning" /> Complexidade</div>
+                      {block.explorationSummary.complexity.map((c, i) => (
+                        <p key={i} className="text-xs text-muted-foreground pl-4">› {c}</p>
+                      ))}
+                    </div>
+                  )}
+                  {block.explorationSummary.prospectivityNote && (
+                    <div className="glass-card rounded-lg p-3 border-l-2 border-primary">
+                      <div className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1 font-medium">Prospectividade Futura</div>
+                      <p className="text-xs text-muted-foreground leading-relaxed">{block.explorationSummary.prospectivityNote}</p>
+                      {block.explorationSummary.explorationCostsUSD != null && (
+                        <div className="mt-2 text-xs">Custos de Exploração: <span className="font-bold font-mono text-foreground">US$ {(block.explorationSummary.explorationCostsUSD / 1e9).toFixed(1)} mil milhões</span></div>
+                      )}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            )}
+
             {/* Prospects Summary */}
             <ProspectsSummary blocks={[block]} scopeLabel={block.name} />
 
@@ -794,6 +881,108 @@ const BlockPage = () => {
           {/* Tab 6: Análise SWOT */}
           <TabsContent value="swot" className="space-y-4">
             <SwotAnalysis block={block} />
+          </TabsContent>
+
+          {/* Tab 7: Documentos & Legislação */}
+          <TabsContent value="legislation" className="space-y-4 2xl:space-y-6">
+            {block.legislationDocs && block.legislationDocs.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 2xl:gap-6">
+                {block.legislationDocs.map((doc, i) => {
+                  const typeLabels: Record<string, { label: string; color: string }> = {
+                    "decreto-lei": { label: "Decreto-Lei", color: "bg-primary/15 text-primary border-primary/30" },
+                    "contrato": { label: "Contrato", color: "bg-success/15 text-success border-success/30" },
+                    "despacho": { label: "Despacho", color: "bg-warning/15 text-warning border-warning/30" },
+                    "resolução": { label: "Resolução", color: "bg-[hsl(280,65%,60%)]/15 text-[hsl(280,65%,60%)] border-[hsl(280,65%,60%)]/30" },
+                    "nota": { label: "Nota", color: "bg-muted text-muted-foreground border-border" },
+                    "outro": { label: "Outro", color: "bg-muted text-muted-foreground border-border" },
+                  };
+                  const typeInfo = typeLabels[doc.type] || typeLabels["outro"];
+                  return (
+                    <Card key={i} className="glass-card hover:border-primary/30 transition-colors group">
+                      <CardContent className="p-4 2xl:p-5 space-y-3">
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="flex items-center gap-2">
+                            <FileText className="w-4 h-4 text-primary shrink-0" />
+                            <h3 className="font-semibold text-sm 2xl:text-base leading-tight">{doc.title}</h3>
+                          </div>
+                          <Badge variant="outline" className={`text-[9px] shrink-0 ${typeInfo.color}`}>{typeInfo.label}</Badge>
+                        </div>
+                        {doc.reference && (
+                          <div className="text-xs text-muted-foreground font-mono">{doc.reference}</div>
+                        )}
+                        {doc.date && (
+                          <div className="text-[10px] text-muted-foreground flex items-center gap-1">
+                            <Clock className="w-3 h-3" />
+                            {new Date(doc.date).toLocaleDateString("pt-AO", { year: "numeric", month: "long", day: "numeric" })}
+                          </div>
+                        )}
+                        {doc.description && (
+                          <p className="text-xs 2xl:text-sm text-muted-foreground leading-relaxed">{doc.description}</p>
+                        )}
+                        {doc.url && (
+                          <a href={doc.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-xs text-primary hover:underline">
+                            <ExternalLink className="w-3 h-3" /> Ver documento
+                          </a>
+                        )}
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </div>
+            ) : (
+              <Card className="glass-card">
+                <CardContent className="p-8 text-center">
+                  <BookOpen className="w-12 h-12 text-muted-foreground/30 mx-auto mb-3" />
+                  <p className="text-muted-foreground">Documentos e legislação não disponíveis para este bloco.</p>
+                  <p className="text-xs text-muted-foreground mt-1">Serão adicionados conforme disponibilização pela ANPG.</p>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Contract info summary */}
+            {block.contractInfo && (
+              <Card className="glass-card">
+                <CardHeader className="p-4 pb-2">
+                  <CardTitle className="text-sm 2xl:text-base flex items-center gap-2"><Landmark className="w-4 h-4 text-warning" />Referência Contratual</CardTitle>
+                </CardHeader>
+                <CardContent className="p-4 pt-0">
+                  <div className="space-y-2 text-sm">
+                    {block.contractInfo.decretoLei && (
+                      <div className="flex justify-between items-center py-1.5 border-b border-border/30">
+                        <span className="text-muted-foreground">Decreto-Lei Base</span>
+                        <span className="font-medium">{block.contractInfo.decretoLei}</span>
+                      </div>
+                    )}
+                    {block.contractInfo.contractType && (
+                      <div className="flex justify-between items-center py-1.5 border-b border-border/30">
+                        <span className="text-muted-foreground">Tipo de Contrato</span>
+                        <span className="font-medium">{block.contractInfo.contractType}</span>
+                      </div>
+                    )}
+                    {block.contractInfo.signingDate && (
+                      <div className="flex justify-between items-center py-1.5 border-b border-border/30">
+                        <span className="text-muted-foreground">Assinatura</span>
+                        <span className="font-medium">{new Date(block.contractInfo.signingDate).toLocaleDateString("pt-AO")}</span>
+                      </div>
+                    )}
+                    {block.contractInfo.productionPeriodStart && block.contractInfo.productionPeriodEnd && (
+                      <div className="flex justify-between items-center py-1.5 border-b border-border/30">
+                        <span className="text-muted-foreground">Período de Produção</span>
+                        <span className="font-medium font-mono text-xs">{new Date(block.contractInfo.productionPeriodStart).getFullYear()} — {new Date(block.contractInfo.productionPeriodEnd).getFullYear()}</span>
+                      </div>
+                    )}
+                  </div>
+                  {block.contractInfo.historicalNotes && block.contractInfo.historicalNotes.length > 0 && (
+                    <div className="mt-4 pt-3 border-t border-border/30 space-y-1.5">
+                      <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium flex items-center gap-1"><History className="w-3 h-3" />Notas Históricas</div>
+                      {block.contractInfo.historicalNotes.map((note, i) => (
+                        <p key={i} className="text-xs text-muted-foreground leading-relaxed">{note}</p>
+                      ))}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            )}
           </TabsContent>
         </Tabs>
       </main>
