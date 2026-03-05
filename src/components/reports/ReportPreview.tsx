@@ -17,10 +17,124 @@ const CHART_COLORS = [
 
 interface Props {
   config: ReportConfig;
+  aiNarrative?: string | null;
+  aiLoading?: boolean;
 }
 
 const formatNumber = (n: number) => n.toLocaleString("pt-AO");
 const formatUSD = (n: number) => `US$ ${formatNumber(n)}M`;
+
+// ─── DESCRIPTIVE TEXT HELPERS ─────────────────────────────
+const Prose = ({ children }: { children: React.ReactNode }) => (
+  <p className="text-sm text-foreground/90 leading-relaxed mb-4">{children}</p>
+);
+
+const generateExecutiveNarrative = (blocks: OilBlock[]) => {
+  const totalProd = blocks.reduce((s, b) => s + b.dailyProduction, 0);
+  const totalReserves = blocks.reduce((s, b) => s + b.estimatedReserves, 0);
+  const totalInv = blocks.reduce((s, b) => s + b.accumulatedInvestment, 0);
+  const producing = blocks.filter(b => b.phase === "Production");
+  const exploring = blocks.filter(b => b.phase === "Exploration");
+  const topProducer = [...blocks].sort((a, b) => b.dailyProduction - a.dailyProduction)[0];
+  const avgRisk = blocks.length > 0 ? (blocks.reduce((s, b) => s + b.riskScore, 0) / blocks.length).toFixed(1) : "N/A";
+  const avgCompliance = blocks.length > 0 ? Math.round(blocks.reduce((s, b) => s + b.complianceScore, 0) / blocks.length) : 0;
+
+  return (
+    <>
+      <Prose>
+        O conjunto de {blocks.length} blocos seleccionados totaliza uma produção diária de {formatNumber(totalProd)} BOPD,
+        com reservas estimadas de {formatNumber(totalReserves)} milhões de barris e um investimento acumulado de {formatUSD(totalInv)}.
+        {producing.length > 0 && ` ${producing.length} bloco${producing.length > 1 ? "s encontram-se" : " encontra-se"} em fase de produção activa.`}
+        {exploring.length > 0 && ` ${exploring.length} bloco${exploring.length > 1 ? "s estão" : " está"} em fase de exploração.`}
+      </Prose>
+      {topProducer && topProducer.dailyProduction > 0 && (
+        <Prose>
+          O bloco com maior contribuição para a produção é o {topProducer.name}, operado pela {topProducer.operator},
+          com {formatNumber(topProducer.dailyProduction)} BOPD ({((topProducer.dailyProduction / totalProd) * 100).toFixed(1)}% do total seleccionado).
+          A pontuação média de risco do portfólio é de {avgRisk}/10, com uma taxa de compliance média de {avgCompliance}%.
+        </Prose>
+      )}
+    </>
+  );
+};
+
+const generateBlockDescription = (b: OilBlock) => {
+  const parts: string[] = [];
+  parts.push(`${b.name} é um bloco ${b.waterDepth.toLowerCase()} na Bacia ${b.basin}, operado pela ${b.operator}.`);
+  if (b.areaKm2) parts.push(`Abrange uma área de ${formatNumber(b.areaKm2)} km².`);
+  if (b.waterDepthRange) parts.push(`Profundidade de água: ${b.waterDepthRange}.`);
+  if (b.geologicalObjectives && b.geologicalObjectives.length > 0) {
+    parts.push(`Objectivos geológicos: ${b.geologicalObjectives.join(", ")}.`);
+  }
+  if (b.explorationSummary?.complexity && b.explorationSummary.complexity.length > 0) {
+    parts.push(`Complexidade: ${b.explorationSummary.complexity.join(", ")}.`);
+  }
+  if (b.explorationSummary?.geologicalTargets) {
+    parts.push(`Alvos geológicos: ${b.explorationSummary.geologicalTargets}.`);
+  }
+  return parts.join(" ");
+};
+
+const generateContractualNarrative = (blocks: OilBlock[]) => {
+  const withContract = blocks.filter(b => b.contractInfo);
+  const withBonus = withContract.filter(b => b.contractInfo!.signatureBonus || b.contractInfo!.socialBonus || b.contractInfo!.socialProjects);
+  const totalSignature = withContract.reduce((s, b) => s + (b.contractInfo?.signatureBonus ?? 0), 0);
+  const totalSocial = withContract.reduce((s, b) => s + (b.contractInfo?.socialProjects ?? 0) + (b.contractInfo?.socialBonus ?? 0), 0);
+
+  if (withContract.length === 0) return null;
+
+  return (
+    <Prose>
+      Dos {blocks.length} blocos analisados, {withContract.length} possuem dados contratuais detalhados.
+      {withBonus.length > 0 && ` ${withBonus.length} bloco${withBonus.length > 1 ? "s têm" : " tem"} bónus registados, totalizando US$ ${formatNumber(totalSignature)} em bónus de assinatura e US$ ${formatNumber(totalSocial)} em contribuições sociais.`}
+      {" "}Os contratos abrangem diferentes regimes fiscais, com variações no IRP, Cost Oil e períodos de pesquisa conforme detalhado abaixo.
+    </Prose>
+  );
+};
+
+const generateExplorationNarrative = (blocks: OilBlock[]) => {
+  const withExploration = blocks.filter(b => b.explorationSummary);
+  const totalWells = withExploration.reduce((s, b) => s + (b.explorationSummary?.totalWellsPesquisa ?? 0) + (b.explorationSummary?.totalWellsAvaliacao ?? 0), 0);
+  const totalDiscoveries = withExploration.reduce((s, b) => s + (b.explorationSummary?.commercialDiscoveries ?? 0), 0);
+  const totalFields = blocks.reduce((s, b) => s + (b.fields?.length ?? 0), 0);
+
+  return (
+    <Prose>
+      A actividade exploratória nos blocos seleccionados compreende um total de {totalWells} poços perfurados
+      {totalDiscoveries > 0 && `, resultando em ${totalDiscoveries} descoberta${totalDiscoveries > 1 ? "s comerciais" : " comercial"}`}.
+      {totalFields > 0 && ` Foram identificados ${totalFields} campos/descobertas ao longo dos blocos analisados.`}
+      {withExploration.length < blocks.length && ` ${blocks.length - withExploration.length} bloco${blocks.length - withExploration.length > 1 ? "s não possuem" : " não possui"} dados exploratórios detalhados.`}
+    </Prose>
+  );
+};
+
+const generateConsortiumNarrative = (blocks: OilBlock[]) => {
+  const withInitial = blocks.filter(b => b.contractInfo?.initialConsortium);
+  const operators = [...new Set(blocks.map(b => b.operator))];
+
+  return (
+    <Prose>
+      Os {blocks.length} blocos seleccionados são operados por {operators.length} operador{operators.length > 1 ? "es distintos" : ""}: {operators.join(", ")}.
+      {withInitial.length > 0 && ` ${withInitial.length} bloco${withInitial.length > 1 ? "s dispõem" : " dispõe"} de dados de evolução do grupo empreiteiro (GE Inicial → GE Actual), permitindo uma análise das mudanças de participação ao longo do tempo.`}
+    </Prose>
+  );
+};
+
+const generateLegislationNarrative = (blocks: OilBlock[]) => {
+  const totalDocs = blocks.reduce((s, b) => s + (b.legislationDocs?.length ?? 0), 0);
+  const types = new Set(blocks.flatMap(b => (b.legislationDocs ?? []).map(d => d.type)));
+
+  if (totalDocs === 0) return null;
+  return (
+    <Prose>
+      A base documental para os blocos seleccionados compreende {totalDocs} documento{totalDocs > 1 ? "s" : ""} legislativo{totalDocs > 1 ? "s" : ""},
+      abrangendo as categorias: {[...types].join(", ")}.
+      A tabela abaixo consolida todos os documentos por bloco, permitindo uma visão integrada do enquadramento legal e regulatório.
+    </Prose>
+  );
+};
+
+// ─── EXISTING COMPONENTS ─────────────────────────────────
 
 const ReportHeader = ({ title }: { title: string }) => (
   <div className="flex items-center justify-between border-b border-border pb-4 mb-6 print:mb-4">
@@ -42,7 +156,6 @@ const SectionTitle = ({ children }: { children: React.ReactNode }) => (
   </h2>
 );
 
-// ─── CHART WRAPPER ────────────────────────────────────────
 const ChartCard = ({ title, children }: { title: string; children: React.ReactNode }) => (
   <div className="p-4 rounded-lg border border-border bg-card mb-4 print:break-inside-avoid">
     <p className="text-xs font-medium text-muted-foreground mb-3">{title}</p>
@@ -85,6 +198,8 @@ const ExecutiveSection = ({ blocks, showTables, showCharts }: { blocks: OilBlock
   return (
     <>
       <SectionTitle>Resumo Executivo</SectionTitle>
+      {generateExecutiveNarrative(blocks)}
+
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
         {[
           { label: "Produção Total", value: `${formatNumber(totals.production)} BOPD` },
@@ -182,6 +297,7 @@ const ExecutiveSection = ({ blocks, showTables, showCharts }: { blocks: OilBlock
 const ContractualSection = ({ blocks, showTables }: { blocks: OilBlock[]; showTables: boolean }) => (
   <>
     <SectionTitle>Contractual & Fiscal</SectionTitle>
+    {generateContractualNarrative(blocks)}
     {blocks.map(b => {
       const c = b.contractInfo;
       if (!c) return (
@@ -189,7 +305,8 @@ const ContractualSection = ({ blocks, showTables }: { blocks: OilBlock[]; showTa
       );
       return (
         <div key={b.id} className="mb-6 p-4 rounded-lg border border-border bg-card print:break-inside-avoid">
-          <h3 className="text-sm font-semibold text-foreground mb-2">{b.name}</h3>
+          <h3 className="text-sm font-semibold text-foreground mb-1">{b.name}</h3>
+          <p className="text-xs text-muted-foreground mb-3">{generateBlockDescription(b)}</p>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-1 text-sm">
             {c.decretoLei && <Detail label="Decreto-Lei" value={c.decretoLei} />}
             {c.contractType && <Detail label="Tipo de Contrato" value={c.contractType} />}
@@ -233,75 +350,83 @@ const ExplorationSection = ({ blocks, showTables, showCharts }: { blocks: OilBlo
   const blockNames = blocks.map(b => b.name);
 
   return (
-  <>
-    <SectionTitle>Exploração & Produção</SectionTitle>
+    <>
+      <SectionTitle>Exploração & Produção</SectionTitle>
+      {generateExplorationNarrative(blocks)}
 
-    {showCharts && prodHistoryData.length > 0 && (
-      <ChartCard title="Histórico de Produção — Últimos 12 Meses (BOPD)">
-        <ResponsiveContainer width="100%" height={280}>
-          <LineChart data={prodHistoryData} margin={{ left: 10, right: 10 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} />
-            <XAxis dataKey="month" tick={axisStyle} />
-            <YAxis tick={axisStyle} />
-            <Tooltip contentStyle={{ background: "hsl(var(--popover))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }} />
-            <Legend wrapperStyle={{ fontSize: 11 }} />
-            {blockNames.map((name, i) => (
-              <Line key={name} type="monotone" dataKey={name} stroke={CHART_COLORS[i % CHART_COLORS.length]} strokeWidth={2} dot={{ r: 2 }} />
-            ))}
-          </LineChart>
-        </ResponsiveContainer>
-      </ChartCard>
-    )}
-
-    {showTables && (
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Bloco</TableHead>
-            <TableHead className="text-right">Sísmica 2D (km)</TableHead>
-            <TableHead className="text-right">Sísmica 3D (km²)</TableHead>
-            <TableHead className="text-right">Poços Pesquisa</TableHead>
-            <TableHead className="text-right">Poços Avaliação</TableHead>
-            <TableHead className="text-right">Descobertas</TableHead>
-            <TableHead className="text-right">Taxa Sucesso (%)</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {blocks.map(b => {
-            const e = b.explorationSummary;
-            return (
-              <TableRow key={b.id}>
-                <TableCell className="font-medium">{b.name}</TableCell>
-                <TableCell className="text-right">{e?.totalSeismic2DKm != null ? formatNumber(e.totalSeismic2DKm) : "—"}</TableCell>
-                <TableCell className="text-right">{e?.totalSeismic3DKm2 != null ? formatNumber(e.totalSeismic3DKm2) : "—"}</TableCell>
-                <TableCell className="text-right">{e?.totalWellsPesquisa ?? "—"}</TableCell>
-                <TableCell className="text-right">{e?.totalWellsAvaliacao ?? "—"}</TableCell>
-                <TableCell className="text-right">{e?.commercialDiscoveries ?? "—"}</TableCell>
-                <TableCell className="text-right">{e?.geologicalSuccessRate != null ? `${e.geologicalSuccessRate}%` : "—"}</TableCell>
-              </TableRow>
-            );
-          })}
-        </TableBody>
-      </Table>
-    )}
-
-    {blocks.filter(b => b.fields && b.fields.length > 0).map(b => (
-      <div key={b.id} className="mt-4 p-4 rounded-lg border border-border bg-card print:break-inside-avoid">
-        <h3 className="text-sm font-semibold text-foreground mb-2">{b.name} — Campos & Descobertas</h3>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-          {b.fields!.map(f => (
-            <div key={f.name} className="text-sm">
-              <span className="font-medium text-foreground">{f.name}</span>
-              <span className="text-muted-foreground ml-2">({f.status})</span>
-              {f.peakProduction != null && (
-                <span className="text-xs text-muted-foreground ml-1">• Pico: {formatNumber(f.peakProduction)} BOPD</span>
-              )}
-            </div>
-          ))}
+      {/* Block descriptions */}
+      {blocks.map(b => (
+        <div key={b.id} className="mb-3 p-3 rounded-lg bg-secondary/30 print:break-inside-avoid">
+          <p className="text-xs text-foreground/80 leading-relaxed">{generateBlockDescription(b)}</p>
         </div>
-      </div>
-    ))}
-  </>
+      ))}
+
+      {showCharts && prodHistoryData.length > 0 && (
+        <ChartCard title="Histórico de Produção — Últimos 12 Meses (BOPD)">
+          <ResponsiveContainer width="100%" height={280}>
+            <LineChart data={prodHistoryData} margin={{ left: 10, right: 10 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} />
+              <XAxis dataKey="month" tick={axisStyle} />
+              <YAxis tick={axisStyle} />
+              <Tooltip contentStyle={{ background: "hsl(var(--popover))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }} />
+              <Legend wrapperStyle={{ fontSize: 11 }} />
+              {blockNames.map((name, i) => (
+                <Line key={name} type="monotone" dataKey={name} stroke={CHART_COLORS[i % CHART_COLORS.length]} strokeWidth={2} dot={{ r: 2 }} />
+              ))}
+            </LineChart>
+          </ResponsiveContainer>
+        </ChartCard>
+      )}
+
+      {showTables && (
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Bloco</TableHead>
+              <TableHead className="text-right">Sísmica 2D (km)</TableHead>
+              <TableHead className="text-right">Sísmica 3D (km²)</TableHead>
+              <TableHead className="text-right">Poços Pesquisa</TableHead>
+              <TableHead className="text-right">Poços Avaliação</TableHead>
+              <TableHead className="text-right">Descobertas</TableHead>
+              <TableHead className="text-right">Taxa Sucesso (%)</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {blocks.map(b => {
+              const e = b.explorationSummary;
+              return (
+                <TableRow key={b.id}>
+                  <TableCell className="font-medium">{b.name}</TableCell>
+                  <TableCell className="text-right">{e?.totalSeismic2DKm != null ? formatNumber(e.totalSeismic2DKm) : "—"}</TableCell>
+                  <TableCell className="text-right">{e?.totalSeismic3DKm2 != null ? formatNumber(e.totalSeismic3DKm2) : "—"}</TableCell>
+                  <TableCell className="text-right">{e?.totalWellsPesquisa ?? "—"}</TableCell>
+                  <TableCell className="text-right">{e?.totalWellsAvaliacao ?? "—"}</TableCell>
+                  <TableCell className="text-right">{e?.commercialDiscoveries ?? "—"}</TableCell>
+                  <TableCell className="text-right">{e?.geologicalSuccessRate != null ? `${e.geologicalSuccessRate}%` : "—"}</TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+      )}
+
+      {blocks.filter(b => b.fields && b.fields.length > 0).map(b => (
+        <div key={b.id} className="mt-4 p-4 rounded-lg border border-border bg-card print:break-inside-avoid">
+          <h3 className="text-sm font-semibold text-foreground mb-2">{b.name} — Campos & Descobertas</h3>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+            {b.fields!.map(f => (
+              <div key={f.name} className="text-sm">
+                <span className="font-medium text-foreground">{f.name}</span>
+                <span className="text-muted-foreground ml-2">({f.status})</span>
+                {f.peakProduction != null && (
+                  <span className="text-xs text-muted-foreground ml-1">• Pico: {formatNumber(f.peakProduction)} BOPD</span>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </>
   );
 };
 
@@ -309,6 +434,7 @@ const ExplorationSection = ({ blocks, showTables, showCharts }: { blocks: OilBlo
 const ConsortiumSection = ({ blocks, showTables }: { blocks: OilBlock[]; showTables: boolean }) => (
   <>
     <SectionTitle>Consórcio & Participações</SectionTitle>
+    {generateConsortiumNarrative(blocks)}
     {blocks.map(b => (
       <div key={b.id} className="mb-6 p-4 rounded-lg border border-border bg-card print:break-inside-avoid">
         <h3 className="text-sm font-semibold text-foreground mb-3">{b.name}</h3>
@@ -348,6 +474,7 @@ const LegislationSection = ({ blocks }: { blocks: OilBlock[] }) => {
   return (
     <>
       <SectionTitle>Legislação & Documentos</SectionTitle>
+      {generateLegislationNarrative(blocks)}
       {allDocs.length === 0 ? (
         <p className="text-sm text-muted-foreground">Sem documentos legislativos disponíveis para os blocos seleccionados.</p>
       ) : (
@@ -386,6 +513,41 @@ const Detail = ({ label, value }: { label: string; value: string }) => (
   </div>
 );
 
+// ─── AI NARRATIVE SECTION ─────────────────────────────────
+const AINarrativeSection = ({ narrative, loading }: { narrative?: string | null; loading?: boolean }) => {
+  if (loading) {
+    return (
+      <div className="mb-6 p-5 rounded-lg border border-primary/20 bg-primary/5">
+        <div className="flex items-center gap-2 mb-3">
+          <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+          <p className="text-xs font-medium text-primary">A gerar sumário executivo com IA...</p>
+        </div>
+        <div className="space-y-2">
+          <div className="h-3 bg-primary/10 rounded animate-pulse w-full" />
+          <div className="h-3 bg-primary/10 rounded animate-pulse w-5/6" />
+          <div className="h-3 bg-primary/10 rounded animate-pulse w-4/6" />
+        </div>
+      </div>
+    );
+  }
+
+  if (!narrative) return null;
+
+  return (
+    <div className="mb-6 p-5 rounded-lg border border-primary/20 bg-primary/5 print:break-inside-avoid">
+      <div className="flex items-center gap-2 mb-3">
+        <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+        <p className="text-xs font-semibold text-primary uppercase tracking-wider">Sumário Executivo — Análise IA</p>
+      </div>
+      {narrative.split("\n").filter(p => p.trim()).map((paragraph, i) => (
+        <p key={i} className="text-sm text-foreground/90 leading-relaxed mb-3 last:mb-0">
+          {paragraph}
+        </p>
+      ))}
+    </div>
+  );
+};
+
 // ─── MAIN REPORT PREVIEW ─────────────────────────────────
 const reportTitles: Record<ReportType, string> = {
   executive: "Resumo Executivo",
@@ -395,7 +557,7 @@ const reportTitles: Record<ReportType, string> = {
   legislation: "Legislação & Documentos",
 };
 
-export const ReportPreview = ({ config }: Props) => {
+export const ReportPreview = ({ config, aiNarrative, aiLoading }: Props) => {
   const blocks = useMemo(
     () => oilBlocks.filter(b => config.selectedBlockIds.includes(b.id)),
     [config.selectedBlockIds]
@@ -412,6 +574,9 @@ export const ReportPreview = ({ config }: Props) => {
       <p className="text-sm text-muted-foreground mb-4">
         {blocks.length} bloco{blocks.length !== 1 ? "s" : ""} seleccionado{blocks.length !== 1 ? "s" : ""}: {blocks.map(b => b.name).join(", ")}
       </p>
+
+      {/* AI Narrative at the top */}
+      <AINarrativeSection narrative={aiNarrative} loading={aiLoading} />
 
       {config.reportTypes.includes("executive") && (
         <ExecutiveSection blocks={blocks} showTables={config.includeTables} showCharts={config.includeCharts} />

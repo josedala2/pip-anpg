@@ -3,7 +3,7 @@ import { oilBlocks } from "@/data/angolaBlocks";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
-import { FileText, CheckSquare, X } from "lucide-react";
+import { FileText, X, Sparkles } from "lucide-react";
 
 export type ReportType =
   | "executive"
@@ -17,6 +17,7 @@ export interface ReportConfig {
   selectedBlockIds: string[];
   includeCharts: boolean;
   includeTables: boolean;
+  includeAiNarrative: boolean;
 }
 
 const reportTypeLabels: Record<ReportType, { label: string; description: string }> = {
@@ -171,6 +172,16 @@ export const ReportConfigurator = ({ config, onChange, onGenerate }: Props) => {
               onCheckedChange={(checked) => onChange({ ...config, includeCharts: !!checked })}
             />
             Incluir gráficos
+          </label>
+          <label className="flex items-center gap-2 text-sm cursor-pointer">
+            <Checkbox
+              checked={config.includeAiNarrative}
+              onCheckedChange={(checked) => onChange({ ...config, includeAiNarrative: !!checked })}
+            />
+            <span className="flex items-center gap-1 text-foreground">
+              <Sparkles className="w-3.5 h-3.5 text-primary" />
+              Sumário narrativo com IA
+            </span>
           </label>
         </div>
       </div>
