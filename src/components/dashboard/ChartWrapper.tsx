@@ -6,19 +6,16 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Download, Maximize2, X } from "lucide-react";
 import { toast } from "sonner";
+import anpgLogoColor from "@/assets/anpg-logo-color.svg";
+import anpgLogoWhite from "@/assets/anpg-logo-white.svg";
 
 interface ChartWrapperProps {
   title: string;
   children: ReactNode;
-  /** Height of the chart in normal mode */
   height?: number;
-  /** Height of the chart in fullscreen mode */
   fullscreenHeight?: number;
-  /** Extra class for the card */
   className?: string;
-  /** Icon to show next to the title */
   icon?: ReactNode;
-  /** Additional header content (e.g. badges) */
   headerExtra?: ReactNode;
 }
 
@@ -42,8 +39,12 @@ export const ChartWrapper = ({
     if (!node) return;
 
     setIsExporting(true);
+
+    // Show watermark before capture
+    const watermarks = node.querySelectorAll<HTMLElement>("[data-watermark]");
+    watermarks.forEach(el => (el.style.display = "flex"));
+
     try {
-      // Wait a frame for any animations to settle
       await new Promise(r => setTimeout(r, 100));
 
       const bgColor = getComputedStyle(document.documentElement)
@@ -53,7 +54,6 @@ export const ChartWrapper = ({
         pixelRatio: 2,
         quality: 1,
         filter: (domNode) => {
-          // Exclude the toolbar buttons from the export
           if (domNode instanceof HTMLElement && domNode.dataset.chartToolbar === "true") {
             return false;
           }
@@ -70,14 +70,28 @@ export const ChartWrapper = ({
       console.error("Export failed:", err);
       toast.error("Erro ao exportar gráfico");
     } finally {
+      // Hide watermark again
+      watermarks.forEach(el => (el.style.display = "none"));
       setIsExporting(false);
     }
   };
 
+  const logoSrc = theme === "dark" ? anpgLogoWhite : anpgLogoColor;
+
+  const Watermark = () => (
+    <div
+      data-watermark="true"
+      className="absolute bottom-3 right-3 items-center gap-1.5 pointer-events-none"
+      style={{ display: "none", opacity: 0.35 }}
+    >
+      <img src={logoSrc} alt="ANPG" className="h-6" />
+    </div>
+  );
+
   return (
     <>
       <Card className={`glass-card group/chart relative ${className}`}>
-        <div ref={chartRef}>
+        <div ref={chartRef} className="relative">
           <CardHeader className="p-4 pb-2">
             <div className="flex items-center justify-between gap-2">
               <CardTitle className="text-sm 2xl:text-base flex items-center gap-2">
@@ -111,13 +125,13 @@ export const ChartWrapper = ({
           <CardContent className="p-4 pt-0">
             <div style={{ height }}>{children}</div>
           </CardContent>
+          <Watermark />
         </div>
       </Card>
 
-      {/* Fullscreen Dialog */}
       <Dialog open={isFullscreen} onOpenChange={setIsFullscreen}>
         <DialogContent className="max-w-[95vw] w-[95vw] max-h-[95vh] h-auto bg-card border-border p-0 gap-0">
-          <div ref={fullscreenChartRef} className="p-6">
+          <div ref={fullscreenChartRef} className="p-6 relative">
             <DialogHeader className="pb-4">
               <div className="flex items-center justify-between">
                 <DialogTitle className="text-lg flex items-center gap-2">
@@ -147,6 +161,7 @@ export const ChartWrapper = ({
               </div>
             </DialogHeader>
             <div style={{ height: fullscreenHeight }}>{children}</div>
+            <Watermark />
           </div>
         </DialogContent>
       </Dialog>
