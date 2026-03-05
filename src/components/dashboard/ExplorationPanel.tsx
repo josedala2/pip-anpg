@@ -3,7 +3,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { oilBlocks } from "@/data/angolaBlocks";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend, Brush } from "recharts";
-import { AlertTriangle, Target, Layers, Droplets, Filter, ChevronDown } from "lucide-react";
+import { AlertTriangle, Target, Layers, Droplets, Filter, ChevronDown, AlignVerticalJustifyStart, AlignHorizontalJustifyStart } from "lucide-react";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { ExplorationSummaryTable } from "./ExplorationSummaryTable";
 import { ProspectsTable } from "./ProspectsTable";
 import { ProspectsSummary } from "./ProspectsSummary";
@@ -51,6 +52,7 @@ export const ExplorationPanel = () => {
   const [filterBasin, setFilterBasin] = useState("all");
   const [filterPhase, setFilterPhase] = useState("all");
   const [filterBlock, setFilterBlock] = useState("all");
+  const [barMode, setBarMode] = useState<"grouped" | "stacked">("grouped");
 
   const filteredBlocks = useMemo(() => {
     return oilBlocks.filter(b => {
@@ -321,6 +323,20 @@ export const ExplorationPanel = () => {
         )}
       </div>
 
+      {/* Bar mode toggle */}
+      {(seismicChartData.length > 0 || wellsChartData.length > 0) && (
+        <div className="flex items-center justify-end">
+          <ToggleGroup type="single" value={barMode} onValueChange={v => v && setBarMode(v as "grouped" | "stacked")} size="sm" className="glass-card border border-border/50 p-0.5 rounded-lg">
+            <ToggleGroupItem value="grouped" aria-label="Barras agrupadas" className="text-xs gap-1.5 px-3 data-[state=on]:bg-primary/15 data-[state=on]:text-primary">
+              <AlignHorizontalJustifyStart className="w-3.5 h-3.5" />Agrupadas
+            </ToggleGroupItem>
+            <ToggleGroupItem value="stacked" aria-label="Barras empilhadas" className="text-xs gap-1.5 px-3 data-[state=on]:bg-primary/15 data-[state=on]:text-primary">
+              <AlignVerticalJustifyStart className="w-3.5 h-3.5" />Empilhadas
+            </ToggleGroupItem>
+          </ToggleGroup>
+        </div>
+      )}
+
       {/* Seismic Chart */}
       {seismicChartData.length > 0 && (
         <Card className="glass-card">
@@ -335,9 +351,9 @@ export const ExplorationPanel = () => {
                 <YAxis tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} stroke="hsl(var(--border))" width={50} tickFormatter={v => v.toLocaleString()} />
                 <Tooltip contentStyle={tooltipStyle} formatter={(val: number, name: string) => [`${val.toLocaleString(undefined, { maximumFractionDigits: 2 })} ${name.includes("2D") ? "km" : "km²"}`, name]} />
                 <Legend wrapperStyle={{ fontSize: 11, paddingTop: 8 }} />
-                <Bar dataKey="2D" fill="hsl(var(--warning))" radius={[2, 2, 0, 0]} name="2D (km)" animationDuration={800} animationEasing="ease-out" />
-                <Bar dataKey="3D" fill="hsl(var(--success))" radius={[2, 2, 0, 0]} name="3D (km²)" animationDuration={800} animationEasing="ease-out" animationBegin={200} />
-                <Bar dataKey="4D" fill="hsl(var(--primary))" radius={[2, 2, 0, 0]} name="4D (km²)" animationDuration={800} animationEasing="ease-out" animationBegin={400} />
+                <Bar dataKey="2D" fill="hsl(var(--warning))" radius={[2, 2, 0, 0]} name="2D (km)" stackId={barMode === "stacked" ? "a" : undefined} animationDuration={800} animationEasing="ease-out" />
+                <Bar dataKey="3D" fill="hsl(var(--success))" radius={[2, 2, 0, 0]} name="3D (km²)" stackId={barMode === "stacked" ? "a" : undefined} animationDuration={800} animationEasing="ease-out" animationBegin={200} />
+                <Bar dataKey="4D" fill="hsl(var(--primary))" radius={[2, 2, 0, 0]} name="4D (km²)" stackId={barMode === "stacked" ? "a" : undefined} animationDuration={800} animationEasing="ease-out" animationBegin={400} />
                 {seismicChartData.length > 15 && <Brush dataKey="year" height={25} stroke="hsl(var(--primary))" fill="hsl(var(--muted))" travellerWidth={8} />}
               </BarChart>
             </ResponsiveContainer>
@@ -359,11 +375,11 @@ export const ExplorationPanel = () => {
                 <YAxis tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} stroke="hsl(var(--border))" width={30} allowDecimals={false} />
                 <Tooltip contentStyle={tooltipStyle} formatter={(val: number, name: string) => [`${val} poços`, name]} />
                 <Legend wrapperStyle={{ fontSize: 11, paddingTop: 8 }} />
-                <Bar dataKey="Pesquisa" fill="hsl(var(--primary))" radius={[2, 2, 0, 0]} animationDuration={800} animationEasing="ease-out" />
-                <Bar dataKey="Avaliação" fill="hsl(280, 65%, 60%)" radius={[2, 2, 0, 0]} animationDuration={800} animationEasing="ease-out" animationBegin={150} />
-                <Bar dataKey="Desc. Comercial" fill="hsl(var(--success))" radius={[2, 2, 0, 0]} animationDuration={800} animationEasing="ease-out" animationBegin={300} />
-                <Bar dataKey="Desc. N. Comercial" fill="hsl(var(--warning))" radius={[2, 2, 0, 0]} animationDuration={800} animationEasing="ease-out" animationBegin={450} />
-                <Bar dataKey="Seco" fill="hsl(var(--danger))" radius={[2, 2, 0, 0]} animationDuration={800} animationEasing="ease-out" animationBegin={600} />
+                <Bar dataKey="Pesquisa" fill="hsl(var(--primary))" radius={[2, 2, 0, 0]} stackId={barMode === "stacked" ? "b" : undefined} animationDuration={800} animationEasing="ease-out" />
+                <Bar dataKey="Avaliação" fill="hsl(280, 65%, 60%)" radius={[2, 2, 0, 0]} stackId={barMode === "stacked" ? "b" : undefined} animationDuration={800} animationEasing="ease-out" animationBegin={150} />
+                <Bar dataKey="Desc. Comercial" fill="hsl(var(--success))" radius={[2, 2, 0, 0]} stackId={barMode === "stacked" ? "b" : undefined} animationDuration={800} animationEasing="ease-out" animationBegin={300} />
+                <Bar dataKey="Desc. N. Comercial" fill="hsl(var(--warning))" radius={[2, 2, 0, 0]} stackId={barMode === "stacked" ? "b" : undefined} animationDuration={800} animationEasing="ease-out" animationBegin={450} />
+                <Bar dataKey="Seco" fill="hsl(var(--danger))" radius={[2, 2, 0, 0]} stackId={barMode === "stacked" ? "b" : undefined} animationDuration={800} animationEasing="ease-out" animationBegin={600} />
                 {wellsChartData.length > 20 && <Brush dataKey="year" height={25} stroke="hsl(var(--primary))" fill="hsl(var(--muted))" travellerWidth={8} />}
               </BarChart>
             </ResponsiveContainer>
