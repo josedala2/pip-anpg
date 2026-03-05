@@ -1,36 +1,49 @@
 
 
-## Plan: Actualizar Dados de Exploração do Bloco 0
+## Plan: Melhorar Visualização dos Dados Gráficos
 
-### Objectivo
-Actualizar os dados do Bloco 0 em `src/data/angolaBlocks.ts` com os valores precisos do ficheiro Excel fornecido.
+### Problemas Actuais Identificados
+1. **Tooltips genéricos** — Sem formatação rica, sem ícones de cor, sem unidades consistentes
+2. **Sem interactividade avançada** — Não há brush/zoom nos gráficos com muitos pontos (ex: poços 1966-2025)
+3. **Legendas básicas** — Sem destaque visual, difíceis de ler em mobile
+4. **Gráficos de barras empilhados com 5 séries** — Difíceis de ler quando há muitos anos; labels do eixo X sobrepostos
+5. **Sem animações de entrada** — Os gráficos aparecem sem transição
+6. **Gráficos de área sem referência** — Faltam linhas de média/tendência
+7. **Cores repetidas entre abas** — Gradientes e IDs duplicados (ex: `prodGrad` usado em múltiplos gráficos)
 
-### Alterações Identificadas (comparação Excel vs dados actuais)
+### Melhorias Propostas
 
-**1. Dados Sísmicos (`seismicData`)** — Actualizar valores decimais precisos:
-- 2010: 4D 690.65 (actual: 691)
-- 2011: 3D 939.45, 4D 1092.44 (actual: 939, 1092)
-- 2012: 3D 1110.85, 4D 897.84 (actual: 1111, 898)
-- 2013: 4D 598.04 (actual: 598)
-- 2014: 4D 170.75 (actual: 171)
-- 2015: 4D 480.88 (actual: 481)
-- 2017: 4D 1232.11 (actual: 1232)
-- 2018: 4D 286.58 (actual: 287)
-- 2021: 4D 735.8 (actual: 736)
-- 2022: 4D 742.88 (actual: 743)
+**1. Custom Tooltips com ChartTooltipContent**
+- Substituir os `Tooltip` inline do Recharts por tooltips customizados usando o componente `ChartTooltipContent` do shadcn/ui (já existe em `chart.tsx`)
+- Adicionar formatação por tipo: BOPD com separadores, $M com símbolo, km² com unidade
+- Ícones de cor alinhados com a série
 
-**2. Dados de Poços (`wellsData`)** — Actualizar contagens com dados corrigidos do Excel (página 3, tabela resumo):
-- Vários anos com contagens ligeiramente diferentes (ex: 1970: pesquisa 4→0, avaliação 7→11; vários anos com avaliação corrigida incluindo poços de desenvolvimento classificados como avaliação)
-- Adicionar anos em falta e corrigir contagens existentes com base na tabela resumo do Excel
+**2. Brush/Zoom nos Gráficos Temporais Longos**
+- Adicionar `<Brush>` do Recharts no gráfico de Poços Perfurados (aba Exploração) e Sísmica, que cobrem 60+ anos
+- Permite ao utilizador focar num intervalo temporal específico
 
-**3. Sumário de Exploração (`explorationSummary`)** — Actualizar totais:
-- `totalWellsPesquisa`: 143 → 144
-- `totalWellsAvaliacao`: 71 → 84
-- `commercialDiscoveries`: 58 → 57
-- `nonCommercialDiscoveries`: 44 → 32
-- `dryWells`: 41 → 55
-- Recalcular `totalSeismic4DKm2` com soma precisa: ~8082 km² (actual: 340)
+**3. Animações de Entrada**
+- Activar `isAnimationActive` com `animationDuration={800}` e `animationEasing="ease-out"` nos gráficos principais
+- Adicionar `animationBegin` escalonado para séries múltiplas (barras aparecem sequencialmente)
 
-### Ficheiro a Modificar
-- `src/data/angolaBlocks.ts` — Bloco 0: actualizar `seismicData`, `wellsData`, e `explorationSummary`
+**4. Labels do Eixo X Melhorados**
+- Rodar labels a 45° nos gráficos com muitos anos (`angle={-45}`, `textAnchor="end"`)
+- Usar `interval="preserveStartEnd"` para evitar sobreposição
+
+**5. Linhas de Referência e Anotações**
+- Adicionar `<ReferenceLine>` para média de produção no gráfico de tendência
+- Adicionar `<ReferenceLine>` para meta de investimento no CAPEX
+
+**6. IDs de Gradiente Únicos**
+- Corrigir IDs duplicados (`prodGrad`) gerando IDs únicos por gráfico para evitar conflitos de renderização
+
+**7. Responsividade das Legendas**
+- Usar `Legend` com `wrapperStyle` melhorado: padding, font-size adaptativo, layout vertical em mobile
+
+### Ficheiros a Modificar
+- `src/pages/BlockPage.tsx` — Todos os gráficos da página de detalhe (produção, CAPEX, poços, sísmica, projecções, descobertas)
+- `src/components/dashboard/ExplorationPanel.tsx` — Gráficos agregados de sísmica e poços no dashboard
+
+### Impacto
+Sem novos ficheiros. Sem alteração de dados. Apenas melhorias visuais e de interacção nos gráficos Recharts existentes.
 
