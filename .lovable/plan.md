@@ -1,65 +1,49 @@
 
 
-## Plan: Adicionar dados contratuais e legislativos aos Blocos 2/05, 3/05 e 4
+## Plan: Módulo de Relatórios Automáticos
 
 ### Objectivo
-Popular os blocos existentes (block-2-05, block-3, block-4-05) com dados reais extraídos dos anexos, incluindo contractInfo, legislationDocs, e actualização do consórcio/concession.
+Criar uma nova página `/reports` com um sistema de geração de relatórios personalizados, onde o utilizador selecciona blocos, tipo de relatório e período, e obtém um relatório formatado com os dados existentes, pronto para exportar.
 
-### Dados Extraídos dos Anexos
+### Estrutura
 
-**Bloco 2/05:**
-- Decreto 69/05, 26 de Setembro | CPP | Assinatura: 04/10/2005 | Efectiva: 01/11/2005
-- Área: 3.437,81 km² | Offshore Bacia do Baixo Congo
-- GE Inicial: SOMOIL (Op.) 30%, SNL 50%, KOTOIL 10%, POLIEDRO OIL 10%
-- GE Actual: SOMOIL (Op.) 30%, FALCON 20%, KOTOIL 12.5%, POLIEDRO 12.5%, PRODOIL 12.5%, ACREP S 12.5%
-- Pesquisa: F. Inicial 3 anos (1 poço), F. Subs. 2 anos (1 poço)
-- Produção: 20 anos a partir da DDC | 1ª Produção: 3 anos a partir da DDC
-- Fiscal: Amortização C.Desenv. 25%/ano, IRP 50%, Cost Oil 80%/85%, Uplift 1.40
-- Bónus Proj. Sociais: US$ 500.000
-- Situação: Em fase de produção
+**1. Nova página `src/pages/ReportsPage.tsx`**
+- Formulário de configuração do relatório com:
+  - **Tipo de relatório**: Resumo Executivo, Contractual & Fiscal, Exploração & Produção, Consórcio & Participações, Legislação & Documentos
+  - **Selecção de blocos**: Multi-select com todos os blocos disponíveis (ou "Todos")
+  - **Opções adicionais**: Incluir gráficos, incluir tabelas comparativas
+- Área de pré-visualização do relatório gerado
+- Botão "Exportar PDF" (via `window.print()` com CSS `@media print`)
+- Botão "Copiar para Clipboard"
 
-**Bloco 3/05:**
-- Decreto-Lei 73/05, 28 de Setembro | CPP | Assinatura: 04/10/2005 | Efectiva: 01/11/2005
-- Área: 162,14 km² | Offshore Bacia do Baixo Congo
-- GE Inicial: SNLP&P (Op.) 25%, CHINA SONANGOL 25%, AJOCO 20%, ENI 12%, SOMOIL 10%, NIS-NAFTASGAS 5%, INA 4%
-- GE Actual: SNL P&P (Op.) 50%, AJOCO 20%, ENI 12%, SOMOIL 10%, NIS-NAFTASGAS 5%, INA 4%
-- Produção: 20 anos | Fiscal: C.Desenv. 25%/ano, IRP 50%, Cost Oil 50%/65%, Uplift 1.33
-- Estado/GE: 70% / 30% | Bónus Assinatura: US$ 17.5M | Contr. Proj. Sociais: US$ 12.5M (faseado)
-- Situação: Operador solicitou unificação dos CPP do Bloco 3/05 e 3/05A
+**2. Componente `src/components/reports/ReportPreview.tsx`**
+- Renderiza o relatório com base nas selecções do utilizador
+- Secções dinâmicas conforme o tipo escolhido:
+  - **Resumo Executivo**: KPIs agregados (produção total, investimento, reserves), tabela comparativa dos blocos seleccionados
+  - **Contractual & Fiscal**: Decreto-lei, condições fiscais, bónus, períodos de pesquisa por bloco
+  - **Exploração & Produção**: Sísmica, poços, descobertas, taxas de sucesso
+  - **Consórcio**: Evolução GE Inicial → Actual por bloco
+  - **Legislação**: Lista consolidada de todos os documentos dos blocos seleccionados
+- Cabeçalho com logo ANPG, data de geração, título do relatório
+- Estilos `print:` para formatação limpa na exportação
 
-**Bloco 4 (actualizar block-4-05):**
-- Decreto 75/91, 13 de Dezembro | CPP | Assinatura: 10/09/91 | Efectiva: 01/07/92
-- Área: 4.999,65 km² | Offshore Bacia do Kwanza
-- GE Inicial: RANGER 80%, SONANGOL UEE 20%
-- GE Actual (Último): RANGER 35%, SONANGOL UEE 35%, BHP PETROLEUM PTY LDA 20%
-- Pesquisa: F. Inicial 3 anos (3 poços + sísmica 2D 1500km), 1ª F. Subs 1 ano (1 poço), 2ª F. Subs 1 ano (1 poço)
-- Produção: 20 anos a partir da DDC | Fiscal: Amort. C.Desenv. 25%/ano, IRP 50%, Uplift 1.45*
-- Descobertas: Poço 4/23-1 (DDC 20/09/93, suspenso), Campo Kiame (DDC 08/12/94, marginal), Poço 4/31-1-1-3 (18/07/96, não comercial)
-- Situação: Concessão caducada
-- Notas históricas: Ranger cedeu 20% à Sonangol (10/09/91), contrato assistência técnica, Sonangol EP abandonou Kiame (14/09/97)
+**3. Componente `src/components/reports/ReportConfigurator.tsx`**
+- UI do formulário de configuração com checkboxes, selects, e radio groups
+- Validação: pelo menos 1 bloco e 1 tipo seleccionado
 
-### Passos de Implementação
+**4. Integração no App**
+- Nova rota `/reports` no `App.tsx`
+- Link de navegação no dashboard principal (ícone FileText na barra superior)
 
-1. **Actualizar Block 2/05** (id: block-2-05, ~linha 2636):
-   - Actualizar `operator` para "SOMOIL", `areaKm2` para 3437.81
-   - Actualizar `concession` com GE Actual real
-   - Adicionar `contractInfo` completo (decreto, fiscal, pesquisa, bónus)
-   - Adicionar `legislationDocs` (Decreto 69/05, DDC, notas fiscais)
+### Ficheiros a Criar/Modificar
+- **Criar**: `src/pages/ReportsPage.tsx`
+- **Criar**: `src/components/reports/ReportConfigurator.tsx`
+- **Criar**: `src/components/reports/ReportPreview.tsx`
+- **Modificar**: `src/App.tsx` (adicionar rota)
+- **Modificar**: `src/pages/Index.tsx` (adicionar link na navegação)
 
-2. **Actualizar Block 3/05** (id: block-3, ~linha 1176):
-   - Actualizar `operator` para "SNL P&P", `areaKm2` para 162.14
-   - Actualizar `concession` com GE Actual real
-   - Adicionar `contractInfo` completo
-   - Adicionar `legislationDocs` (Decreto-Lei 73/05, bónus assinatura, notas unificação 3/05A)
-
-3. **Actualizar Block 4/05** (id: block-4-05, ~linha 1338):
-   - Renomear para "Block 4" (Bacia do Kwanza), actualizar operador para "Ranger"
-   - Actualizar `concession` com GE Actual, `phase` manter "Suspended" (concessão caducada)
-   - Adicionar `contractInfo` completo (decreto, períodos de pesquisa detalhados, fiscal)
-   - Adicionar `fields` com descobertas (Poço 4/23-1, Kiame)
-   - Adicionar `legislationDocs` (Decreto 75/91, contratos assistência técnica, notas históricas)
-   - Adicionar `historicalNotes` extensas com timeline de eventos
-
-### Ficheiro a Modificar
-- `src/data/angolaBlocks.ts` — 3 entradas de blocos existentes a actualizar com dados reais
+### Tecnologia
+- Dados locais do `angolaBlocks.ts` (sem backend necessário)
+- `window.print()` com CSS `@media print` para exportação PDF
+- Clipboard API para copiar conteúdo
 
