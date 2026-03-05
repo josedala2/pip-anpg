@@ -7,7 +7,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft, Droplets, DollarSign, ShieldCheck, TrendingUp, Users, Activity, Target, Layers, BarChart3, MapPin, Brain, FileText, Landmark, Building2, Clock, Scale, ArrowRight, History, BookOpen, ExternalLink, AlertTriangle, Crosshair, Search, Filter } from "lucide-react";
+import { ArrowLeft, Droplets, DollarSign, ShieldCheck, TrendingUp, Users, Activity, Target, Layers, BarChart3, MapPin, Brain, FileText, Landmark, Building2, Clock, Scale, ArrowRight, History, BookOpen, ExternalLink, AlertTriangle, Crosshair, Search, Filter, AlignVerticalJustifyStart, AlignHorizontalJustifyStart } from "lucide-react";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { SwotAnalysis } from "@/components/dashboard/SwotAnalysis";
@@ -214,6 +215,7 @@ const BlockPage = () => {
   const uid = useId().replace(/:/g, "");
   const prodGradId = `prodGrad-${uid}`;
   const discGradId = `discGrad-${uid}`;
+  const [explorationBarMode, setExplorationBarMode] = useState<"grouped" | "stacked">("grouped");
 
   // Calculate averages for reference lines
   const avgProduction = useMemo(() => {
@@ -848,7 +850,18 @@ const BlockPage = () => {
           {/* Tab 3: Exploração */}
           <TabsContent value="exploration" className="space-y-4 2xl:space-y-6">
             {block.seismicData && block.seismicData.length > 0 ? (
-               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 2xl:gap-6">
+              <>
+                <div className="flex items-center justify-end">
+                  <ToggleGroup type="single" value={explorationBarMode} onValueChange={v => v && setExplorationBarMode(v as "grouped" | "stacked")} size="sm" className="glass-card border border-border/50 p-0.5 rounded-lg">
+                    <ToggleGroupItem value="grouped" aria-label="Barras agrupadas" className="text-xs gap-1.5 px-3 data-[state=on]:bg-primary/15 data-[state=on]:text-primary">
+                      <AlignHorizontalJustifyStart className="w-3.5 h-3.5" />Agrupadas
+                    </ToggleGroupItem>
+                    <ToggleGroupItem value="stacked" aria-label="Barras empilhadas" className="text-xs gap-1.5 px-3 data-[state=on]:bg-primary/15 data-[state=on]:text-primary">
+                      <AlignVerticalJustifyStart className="w-3.5 h-3.5" />Empilhadas
+                    </ToggleGroupItem>
+                  </ToggleGroup>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 2xl:gap-6">
                 <Card className="glass-card">
                   <CardHeader className="p-4 pb-2">
                     <CardTitle className="text-sm 2xl:text-base">Dados Sísmicos (km)</CardTitle>
@@ -861,9 +874,9 @@ const BlockPage = () => {
                         <YAxis tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} tickFormatter={v => `${v.toLocaleString()}`} />
                         <Tooltip contentStyle={tooltipStyle} formatter={(val: number, name: string) => [`${val.toLocaleString(undefined, { maximumFractionDigits: 2 })} ${name === "2D" ? "km" : "km²"}`, name]} />
                         <Legend wrapperStyle={legendStyle} />
-                        <Bar dataKey="seismic2D" name="2D" fill="hsl(199, 89%, 48%)" radius={[4, 4, 0, 0]} animationDuration={800} animationEasing="ease-out" />
-                        <Bar dataKey="seismic3D" name="3D" fill="hsl(152, 69%, 40%)" radius={[4, 4, 0, 0]} animationDuration={800} animationEasing="ease-out" animationBegin={200} />
-                        <Bar dataKey="seismic4D" name="4D" fill="hsl(38, 92%, 50%)" radius={[4, 4, 0, 0]} animationDuration={800} animationEasing="ease-out" animationBegin={400} />
+                        <Bar dataKey="seismic2D" name="2D" fill="hsl(199, 89%, 48%)" radius={[4, 4, 0, 0]} stackId={explorationBarMode === "stacked" ? "a" : undefined} animationDuration={800} animationEasing="ease-out" />
+                        <Bar dataKey="seismic3D" name="3D" fill="hsl(152, 69%, 40%)" radius={[4, 4, 0, 0]} stackId={explorationBarMode === "stacked" ? "a" : undefined} animationDuration={800} animationEasing="ease-out" animationBegin={200} />
+                        <Bar dataKey="seismic4D" name="4D" fill="hsl(38, 92%, 50%)" radius={[4, 4, 0, 0]} stackId={explorationBarMode === "stacked" ? "a" : undefined} animationDuration={800} animationEasing="ease-out" animationBegin={400} />
                         {block.seismicData.length > 15 && <Brush dataKey="year" height={25} stroke="hsl(var(--primary))" fill="hsl(var(--muted))" travellerWidth={8} />}
                       </BarChart>
                     </ResponsiveContainer>
@@ -883,11 +896,11 @@ const BlockPage = () => {
                           <YAxis tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} allowDecimals={false} />
                           <Tooltip contentStyle={tooltipStyle} formatter={(val: number, name: string) => [`${val} poços`, name]} />
                           <Legend wrapperStyle={legendStyle} />
-                          <Bar dataKey="pesquisa" name="Pesquisa" fill="hsl(199, 89%, 48%)" radius={[4, 4, 0, 0]} animationDuration={800} animationEasing="ease-out" />
-                          <Bar dataKey="avaliacao" name="Avaliação" fill="hsl(280, 65%, 60%)" radius={[4, 4, 0, 0]} animationDuration={800} animationEasing="ease-out" animationBegin={150} />
-                          <Bar dataKey="descobertaComercial" name="Desc. Comercial" fill="hsl(var(--success))" radius={[4, 4, 0, 0]} animationDuration={800} animationEasing="ease-out" animationBegin={300} />
-                          <Bar dataKey="descobertaNaoComercial" name="Desc. N. Comercial" fill="hsl(var(--warning))" radius={[4, 4, 0, 0]} animationDuration={800} animationEasing="ease-out" animationBegin={450} />
-                          <Bar dataKey="seco" name="Seco" fill="hsl(var(--danger))" radius={[4, 4, 0, 0]} animationDuration={800} animationEasing="ease-out" animationBegin={600} />
+                          <Bar dataKey="pesquisa" name="Pesquisa" fill="hsl(199, 89%, 48%)" radius={[4, 4, 0, 0]} stackId={explorationBarMode === "stacked" ? "b" : undefined} animationDuration={800} animationEasing="ease-out" />
+                          <Bar dataKey="avaliacao" name="Avaliação" fill="hsl(280, 65%, 60%)" radius={[4, 4, 0, 0]} stackId={explorationBarMode === "stacked" ? "b" : undefined} animationDuration={800} animationEasing="ease-out" animationBegin={150} />
+                          <Bar dataKey="descobertaComercial" name="Desc. Comercial" fill="hsl(var(--success))" radius={[4, 4, 0, 0]} stackId={explorationBarMode === "stacked" ? "b" : undefined} animationDuration={800} animationEasing="ease-out" animationBegin={300} />
+                          <Bar dataKey="descobertaNaoComercial" name="Desc. N. Comercial" fill="hsl(var(--warning))" radius={[4, 4, 0, 0]} stackId={explorationBarMode === "stacked" ? "b" : undefined} animationDuration={800} animationEasing="ease-out" animationBegin={450} />
+                          <Bar dataKey="seco" name="Seco" fill="hsl(var(--danger))" radius={[4, 4, 0, 0]} stackId={explorationBarMode === "stacked" ? "b" : undefined} animationDuration={800} animationEasing="ease-out" animationBegin={600} />
                           {block.wellsData.length > 20 && <Brush dataKey="year" height={25} stroke="hsl(var(--primary))" fill="hsl(var(--muted))" travellerWidth={8} />}
                         </BarChart>
                       </ResponsiveContainer>
@@ -895,6 +908,7 @@ const BlockPage = () => {
                   </Card>
                 )}
               </div>
+              </>
             ) : (
               <Card className="glass-card">
                 <CardContent className="p-8 text-center">
