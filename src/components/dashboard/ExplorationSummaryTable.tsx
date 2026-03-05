@@ -14,7 +14,7 @@ interface BlockData {
   basin: string;
   phase: string;
   seismicData?: { seismic2D: number; seismic3D: number; seismic4D: number }[];
-  wellsData?: { pesquisa: number; avaliacao: number }[];
+  wellsData?: { pesquisa: number; avaliacao: number; descobertaComercial?: number; descobertaNaoComercial?: number; seco?: number }[];
   fields?: { name: string }[];
 }
 
@@ -29,7 +29,7 @@ const phaseColor = (phase: string) => {
   }
 };
 
-type SortKey = "name" | "operator" | "phase" | "s2D" | "s3D" | "s4D" | "pesquisa" | "avaliacao" | "totalWells" | "discoveries" | "successRate";
+type SortKey = "name" | "operator" | "phase" | "s2D" | "s3D" | "s4D" | "pesquisa" | "avaliacao" | "totalWells" | "discoveries" | "successRate" | "descComercial" | "descNaoComercial" | "seco";
 type SortDir = "asc" | "desc";
 
 interface Props {
@@ -65,12 +65,16 @@ export const ExplorationSummaryTable = ({ blocks, scopeLabel }: Props) => {
         const pesquisa = (b.wellsData || []).reduce((s, d) => s + d.pesquisa, 0);
         const avaliacao = (b.wellsData || []).reduce((s, d) => s + d.avaliacao, 0);
         const totalWells = pesquisa + avaliacao;
+        const descComercial = (b.wellsData || []).reduce((s, d) => s + (d.descobertaComercial || 0), 0);
+        const descNaoComercial = (b.wellsData || []).reduce((s, d) => s + (d.descobertaNaoComercial || 0), 0);
+        const seco = (b.wellsData || []).reduce((s, d) => s + (d.seco || 0), 0);
         const discoveries = b.fields?.length || 0;
         const successRate = totalWells > 0 ? Math.min(Math.round((discoveries / totalWells) * 100), 100) : null;
 
         return {
           name: b.name, operator: b.operator, phase: b.phase,
           s2D, s3D, s4D, pesquisa, avaliacao, totalWells,
+          descComercial, descNaoComercial, seco,
           discoveries, successRate, hasData: s2D > 0 || s3D > 0 || totalWells > 0,
         };
       })
@@ -108,7 +112,10 @@ export const ExplorationSummaryTable = ({ blocks, scopeLabel }: Props) => {
     { key: "pesquisa", label: "Pesquisa", align: "text-right" },
     { key: "avaliacao", label: "Avaliação", align: "text-right" },
     { key: "totalWells", label: "Total Poços", align: "text-right" },
-    { key: "discoveries", label: "Descobertas", align: "text-right" },
+    { key: "descComercial", label: "Desc. Comercial", align: "text-right" },
+    { key: "descNaoComercial", label: "Desc. N. Comercial", align: "text-right" },
+    { key: "seco", label: "Seco", align: "text-right" },
+    { key: "discoveries", label: "Campos", align: "text-right" },
     { key: "successRate", label: "Taxa Sucesso", align: "text-right" },
   ];
 
@@ -164,6 +171,9 @@ export const ExplorationSummaryTable = ({ blocks, scopeLabel }: Props) => {
                   <TableCell className="py-2 px-4 text-xs font-mono text-right text-primary">{row.pesquisa > 0 ? row.pesquisa : "—"}</TableCell>
                   <TableCell className="py-2 px-4 text-xs font-mono text-right text-warning">{row.avaliacao > 0 ? row.avaliacao : "—"}</TableCell>
                   <TableCell className="py-2 px-4 text-xs font-mono text-right font-semibold">{row.totalWells > 0 ? row.totalWells : "—"}</TableCell>
+                  <TableCell className="py-2 px-4 text-xs font-mono text-right text-success">{row.descComercial > 0 ? row.descComercial : "—"}</TableCell>
+                  <TableCell className="py-2 px-4 text-xs font-mono text-right text-warning">{row.descNaoComercial > 0 ? row.descNaoComercial : "—"}</TableCell>
+                  <TableCell className="py-2 px-4 text-xs font-mono text-right text-danger">{row.seco > 0 ? row.seco : "—"}</TableCell>
                   <TableCell className="py-2 px-4 text-xs font-mono text-right text-success">{row.discoveries > 0 ? row.discoveries : "—"}</TableCell>
                   <TableCell className="py-2 px-4 text-xs font-mono text-right">
                     {row.successRate !== null ? (
