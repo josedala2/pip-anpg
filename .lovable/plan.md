@@ -1,49 +1,48 @@
 
 
-## Plan: Módulo de Relatórios Automáticos
+## Plan: Aba Financeira & Contratual nos Blocos
 
 ### Objectivo
-Criar uma nova página `/reports` com um sistema de geração de relatórios personalizados, onde o utilizador selecciona blocos, tipo de relatório e período, e obtém um relatório formatado com os dados existentes, pronto para exportar.
+Adicionar uma nova aba **"Financeiro & Contratual"** (com ícone `DollarSign`) na página de detalhes de cada bloco, consolidando e expandindo a informação financeira e contratual que actualmente está dispersa na aba "Visão Geral".
 
-### Estrutura
+### O que já existe
+A aba "Visão Geral" já mostra parcialmente: bónus (assinatura, social, produção), condições fiscais (IRP/IPP/ITP), períodos de pesquisa, GE Inicial, e investimento acumulado. Estes dados vêm da interface `ContractInfo` e `FiscalConditions` no `angolaBlocks.ts`.
 
-**1. Nova página `src/pages/ReportsPage.tsx`**
-- Formulário de configuração do relatório com:
-  - **Tipo de relatório**: Resumo Executivo, Contractual & Fiscal, Exploração & Produção, Consórcio & Participações, Legislação & Documentos
-  - **Selecção de blocos**: Multi-select com todos os blocos disponíveis (ou "Todos")
-  - **Opções adicionais**: Incluir gráficos, incluir tabelas comparativas
-- Área de pré-visualização do relatório gerado
-- Botão "Exportar PDF" (via `window.print()` com CSS `@media print`)
-- Botão "Copiar para Clipboard"
+### Nova Aba — Secções
 
-**2. Componente `src/components/reports/ReportPreview.tsx`**
-- Renderiza o relatório com base nas selecções do utilizador
-- Secções dinâmicas conforme o tipo escolhido:
-  - **Resumo Executivo**: KPIs agregados (produção total, investimento, reserves), tabela comparativa dos blocos seleccionados
-  - **Contractual & Fiscal**: Decreto-lei, condições fiscais, bónus, períodos de pesquisa por bloco
-  - **Exploração & Produção**: Sísmica, poços, descobertas, taxas de sucesso
-  - **Consórcio**: Evolução GE Inicial → Actual por bloco
-  - **Legislação**: Lista consolidada de todos os documentos dos blocos seleccionados
-- Cabeçalho com logo ANPG, data de geração, título do relatório
-- Estilos `print:` para formatação limpa na exportação
+1. **Resumo Financeiro** — Cards de destaque:
+   - Investimento Acumulado vs Planeado (com barra de progresso)
+   - Taxa de Execução
+   - Bónus Total (soma de assinatura + social + produção)
+   - Contribuições Regulatórias e Projectos Sociais
 
-**3. Componente `src/components/reports/ReportConfigurator.tsx`**
-- UI do formulário de configuração com checkboxes, selects, e radio groups
-- Validação: pelo menos 1 bloco e 1 tipo seleccionado
+2. **Evolução CAPEX** — Gráfico de barras (já existe `capexHistory` nos dados) mostrando Planeado vs Actual por ano, com totais
 
-**4. Integração no App**
-- Nova rota `/reports` no `App.tsx`
-- Link de navegação no dashboard principal (ícone FileText na barra superior)
+3. **Estrutura Contratual** — Informação legal e contratual:
+   - Decreto-Lei, tipo de contrato, datas (assinatura, efectiva, período de produção)
+   - GE Inicial (consórcio inicial com percentagens)
+   - Períodos de pesquisa (fases inicial e subsequente, obrigações de poços e sísmica)
 
-### Ficheiros a Criar/Modificar
-- **Criar**: `src/pages/ReportsPage.tsx`
-- **Criar**: `src/components/reports/ReportConfigurator.tsx`
-- **Criar**: `src/components/reports/ReportPreview.tsx`
-- **Modificar**: `src/App.tsx` (adicionar rota)
-- **Modificar**: `src/pages/Index.tsx` (adicionar link na navegação)
+4. **Condições Fiscais** — Grelha detalhada:
+   - Cost Recovery (pré e pós-produção)
+   - IRP, IPP, ITP com visualização destacada
+   - Prémios de produção e investimento
+   - Notas especiais (taxa para empresas angolanas, reduções)
 
-### Tecnologia
-- Dados locais do `angolaBlocks.ts` (sem backend necessário)
-- `window.print()` com CSS `@media print` para exportação PDF
-- Clipboard API para copiar conteúdo
+5. **Bónus & Obrigações** — Timeline/cards visuais:
+   - Bónus de Assinatura, Social, Produção
+   - Projectos Sociais (valor + período)
+   - Contribuição Regulatória (valor + período)
+
+6. **Notas Históricas** — Timeline com as notas contratuais históricas
+
+### Alterações Técnicas
+
+**Ficheiro: `src/pages/BlockPage.tsx`**
+- Adicionar nova `TabsTrigger` com value `"financial"` e ícone `DollarSign`, posicionada após "Visão Geral"
+- Adicionar novo `TabsContent` com value `"financial"` contendo as 6 secções acima
+- Usar Recharts `BarChart` para visualização CAPEX (reutilizando padrão existente)
+- Simplificar a aba "Visão Geral" removendo os cards financeiros/contratuais detalhados (mantendo apenas KPIs resumidos)
+
+Nenhum ficheiro novo necessário — toda a informação já está no modelo de dados `OilBlock`.
 
