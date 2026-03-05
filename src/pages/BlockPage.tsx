@@ -254,8 +254,9 @@ const BlockPage = () => {
       <main className="max-w-[1920px] mx-auto p-4 2xl:p-8 space-y-4 2xl:space-y-6">
          <Tabs defaultValue="overview" className="space-y-4 2xl:space-y-6">
            <TabsList className="glass-card p-1 2xl:p-1.5 h-auto flex-wrap">
-             <TabsTrigger value="overview" className="gap-1.5 text-xs 2xl:text-sm"><Activity className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Visão Geral</TabsTrigger>
-             <TabsTrigger value="consortium" className="gap-1.5 text-xs 2xl:text-sm"><Users className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Consórcio</TabsTrigger>
+              <TabsTrigger value="overview" className="gap-1.5 text-xs 2xl:text-sm"><Activity className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Visão Geral</TabsTrigger>
+              <TabsTrigger value="financial" className="gap-1.5 text-xs 2xl:text-sm"><DollarSign className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Financeiro & Contratual</TabsTrigger>
+              <TabsTrigger value="consortium" className="gap-1.5 text-xs 2xl:text-sm"><Users className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Consórcio</TabsTrigger>
              <TabsTrigger value="exploration" className="gap-1.5 text-xs 2xl:text-sm"><Target className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Exploração</TabsTrigger>
              <TabsTrigger value="production" className="gap-1.5 text-xs 2xl:text-sm"><BarChart3 className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Produção</TabsTrigger>
              <TabsTrigger value="projections" className="gap-1.5 text-xs 2xl:text-sm"><TrendingUp className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Projecções</TabsTrigger>
@@ -1059,6 +1060,358 @@ const BlockPage = () => {
           {/* Tab 7: Documentos & Legislação */}
           <TabsContent value="legislation" className="space-y-4 2xl:space-y-6">
             <LegislationSearch docs={block.legislationDocs || []} contractInfo={block.contractInfo} />
+          </TabsContent>
+
+          {/* Tab 8: Financeiro & Contratual */}
+          <TabsContent value="financial" className="space-y-6 2xl:space-y-8">
+            {(() => {
+              const ci = block.contractInfo;
+              const fc = ci?.fiscalConditions;
+              const rp = ci?.researchPeriod;
+              const totalBonus = (ci?.signatureBonus || 0) + (ci?.socialBonus || 0) + (ci?.productionBonus || 0);
+              const investProgress = block.plannedInvestment > 0 ? Math.min((block.accumulatedInvestment / block.plannedInvestment) * 100, 100) : 0;
+              const capexTotalPlanned = block.capexHistory.reduce((s, c) => s + c.planned, 0);
+              const capexTotalActual = block.capexHistory.reduce((s, c) => s + c.actual, 0);
+
+              return (
+                <>
+                  {/* Section 1: Resumo Financeiro */}
+                  <div>
+                    <h3 className="text-sm 2xl:text-base font-semibold mb-3 flex items-center gap-2">
+                      <DollarSign className="w-4 h-4 text-warning" />Resumo Financeiro
+                    </h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 2xl:gap-5">
+                      <Card className="glass-card">
+                        <CardContent className="p-4 2xl:p-6">
+                          <div className="text-xs 2xl:text-sm text-muted-foreground mb-2">Investimento Acum. vs Planeado</div>
+                          <div className="text-2xl 2xl:text-3xl font-bold font-mono">${(block.accumulatedInvestment / 1000).toFixed(1)}B</div>
+                          <div className="text-xs text-muted-foreground mb-2">de ${(block.plannedInvestment / 1000).toFixed(1)}B planeado</div>
+                          <div className="relative h-2 w-full overflow-hidden rounded-full bg-secondary">
+                            <div className="h-full bg-primary rounded-full transition-all" style={{ width: `${investProgress}%` }} />
+                          </div>
+                          <div className="text-[10px] text-muted-foreground mt-1 text-right font-mono">{investProgress.toFixed(0)}%</div>
+                        </CardContent>
+                      </Card>
+                      <Card className="glass-card">
+                        <CardContent className="p-4 2xl:p-6">
+                          <div className="text-xs 2xl:text-sm text-muted-foreground mb-2">Taxa de Execução</div>
+                          <div className="text-2xl 2xl:text-3xl font-bold font-mono">{block.executionRate}%</div>
+                          <div className={`text-xs mt-1 ${block.executionRate >= 85 ? "text-success" : block.executionRate >= 70 ? "text-warning" : "text-danger"}`}>
+                            {block.executionRate >= 85 ? "Excelente" : block.executionRate >= 70 ? "Moderado" : "Baixo"}
+                          </div>
+                        </CardContent>
+                      </Card>
+                      <Card className="glass-card">
+                        <CardContent className="p-4 2xl:p-6">
+                          <div className="text-xs 2xl:text-sm text-muted-foreground mb-2">Bónus Total</div>
+                          <div className="text-2xl 2xl:text-3xl font-bold font-mono text-warning">
+                            {totalBonus > 0 ? `$${(totalBonus / 1e6).toFixed(0)}M` : "—"}
+                          </div>
+                          <div className="text-[10px] text-muted-foreground mt-1">Assinatura + Social + Produção</div>
+                        </CardContent>
+                      </Card>
+                      <Card className="glass-card">
+                        <CardContent className="p-4 2xl:p-6">
+                          <div className="text-xs 2xl:text-sm text-muted-foreground mb-2">Contribuições & P. Sociais</div>
+                          <div className="space-y-1">
+                            {ci?.socialProjects ? (
+                              <div className="flex justify-between text-xs">
+                                <span className="text-muted-foreground">P. Sociais</span>
+                                <span className="font-mono font-semibold">${(ci.socialProjects / 1e6).toFixed(2)}M</span>
+                              </div>
+                            ) : null}
+                            {ci?.regulatoryContribution ? (
+                              <div className="flex justify-between text-xs">
+                                <span className="text-muted-foreground">C. Regulatória</span>
+                                <span className="font-mono font-semibold">${(ci.regulatoryContribution / 1e6).toFixed(2)}M</span>
+                              </div>
+                            ) : null}
+                            {!ci?.socialProjects && !ci?.regulatoryContribution && (
+                              <div className="text-xs text-muted-foreground">Sem dados</div>
+                            )}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </div>
+                  </div>
+
+                  {/* Section 2: Evolução CAPEX */}
+                  <Card className="glass-card">
+                    <CardHeader className="p-4 pb-2">
+                      <div className="flex items-center justify-between">
+                        <CardTitle className="text-sm 2xl:text-base flex items-center gap-2">
+                          <BarChart3 className="w-4 h-4 text-primary" />Evolução CAPEX — Planeado vs Real ($M)
+                        </CardTitle>
+                        <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                          <span>Total Planeado: <span className="font-mono font-semibold text-foreground">${capexTotalPlanned.toLocaleString()}M</span></span>
+                          <span>Total Real: <span className="font-mono font-semibold text-primary">${capexTotalActual.toLocaleString()}M</span></span>
+                        </div>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="p-4 pt-0">
+                      <ResponsiveContainer width="100%" height={320}>
+                        <BarChart data={block.capexHistory}>
+                          <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                          <XAxis dataKey="year" tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} />
+                          <YAxis tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} />
+                          <Tooltip contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: "8px", fontSize: 12 }}
+                            formatter={(val: number) => [`$${val}M`]} />
+                          <Legend wrapperStyle={{ fontSize: 11 }} />
+                          <Bar dataKey="planned" name="Planeado" fill="hsl(var(--muted-foreground))" opacity={0.4} radius={[4, 4, 0, 0]} />
+                          <Bar dataKey="actual" name="Real" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </CardContent>
+                  </Card>
+
+                  {/* Section 3 & 4: Estrutura Contratual + Condições Fiscais */}
+                  <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 2xl:gap-6">
+                    {/* Estrutura Contratual */}
+                    <Card className="glass-card">
+                      <CardHeader className="p-4 pb-2">
+                        <CardTitle className="text-sm 2xl:text-base flex items-center gap-2">
+                          <Landmark className="w-4 h-4 text-warning" />Estrutura Contratual
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="p-4 pt-0 space-y-4">
+                        <div className="space-y-2">
+                          {[
+                            ci?.decretoLei && { label: "Decreto-Lei", value: ci.decretoLei },
+                            ci?.contractType && { label: "Tipo de Contrato", value: ci.contractType },
+                            ci?.signingDate && { label: "Data de Assinatura", value: new Date(ci.signingDate).toLocaleDateString("pt-AO", { year: "numeric", month: "long", day: "numeric" }) },
+                            ci?.effectiveDate && { label: "Data Efectiva", value: new Date(ci.effectiveDate).toLocaleDateString("pt-AO", { year: "numeric", month: "long", day: "numeric" }) },
+                            ci?.location && { label: "Localização", value: ci.location },
+                            ci?.productionPeriodStart && ci?.productionPeriodEnd && {
+                              label: "Período de Produção",
+                              value: `${new Date(ci.productionPeriodStart).getFullYear()} — ${new Date(ci.productionPeriodEnd).getFullYear()}`
+                            },
+                          ].filter(Boolean).map((item: any) => (
+                            <div key={item.label} className="flex justify-between items-center py-1.5 border-b border-border/30 last:border-0">
+                              <span className="text-xs 2xl:text-sm text-muted-foreground">{item.label}</span>
+                              <span className="text-sm font-medium text-right max-w-[60%]">{item.value}</span>
+                            </div>
+                          ))}
+                          {!ci && <div className="text-xs text-muted-foreground">Dados contratuais não disponíveis.</div>}
+                        </div>
+
+                        {/* GE Inicial */}
+                        {ci?.initialConsortium && ci.initialConsortium.length > 0 && (
+                          <div>
+                            <div className="text-[10px] 2xl:text-xs uppercase tracking-wider text-muted-foreground mb-2 font-medium flex items-center gap-1.5">
+                              <Building2 className="w-3 h-3" /> GE Inicial (Consórcio Original)
+                            </div>
+                            <div className="space-y-1">
+                              {ci.initialConsortium.map(p => (
+                                <div key={p.name} className="flex justify-between items-center py-1 text-xs 2xl:text-sm">
+                                  <span className="text-muted-foreground">{p.name} {p.isOperator && <Badge variant="outline" className="text-[8px] ml-1 py-0 px-1">Op.</Badge>}</span>
+                                  <span className="font-mono font-semibold">{p.share.toFixed(2)}%</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Períodos de Pesquisa */}
+                        {rp && (
+                          <div>
+                            <div className="text-[10px] 2xl:text-xs uppercase tracking-wider text-muted-foreground mb-2 font-medium">Períodos de Pesquisa</div>
+                            <div className="grid grid-cols-2 gap-2">
+                              <div className="glass-card rounded-lg p-3">
+                                <div className="text-[9px] uppercase text-muted-foreground">Fase Inicial</div>
+                                <div className="font-bold font-mono text-lg">{rp.initialPhaseYears} <span className="text-xs font-normal text-muted-foreground">anos</span></div>
+                                <div className="text-[10px] text-muted-foreground">{rp.initialPhaseWells} poços obrigatórios</div>
+                              </div>
+                              <div className="glass-card rounded-lg p-3">
+                                <div className="text-[9px] uppercase text-muted-foreground">Fase Subsequente</div>
+                                <div className="font-bold font-mono text-lg">{rp.subsequentPhaseYears} <span className="text-xs font-normal text-muted-foreground">anos</span></div>
+                                <div className="text-[10px] text-muted-foreground">{rp.subsequentPhaseWells} poços obrigatórios</div>
+                              </div>
+                            </div>
+                            {rp.seismic3dKm2 && (
+                              <div className="text-xs text-muted-foreground mt-2">
+                                Obrigação Sísmica 3D: <span className="font-mono font-medium text-foreground">{rp.seismic3dKm2.toLocaleString()} km²</span>
+                                {rp.seismic3dReprocKm2 && <span> | Reproc.: <span className="font-mono font-medium text-foreground">{rp.seismic3dReprocKm2.toLocaleString()} km²</span></span>}
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+
+                    {/* Condições Fiscais */}
+                    <Card className="glass-card">
+                      <CardHeader className="p-4 pb-2">
+                        <CardTitle className="text-sm 2xl:text-base flex items-center gap-2">
+                          <Scale className="w-4 h-4 text-primary" />Condições Fiscais
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="p-4 pt-0 space-y-4">
+                        {fc ? (
+                          <>
+                            {/* Cost Recovery */}
+                            {(fc.costRecoveryPreProd != null || fc.costRecoveryPostProd != null) && (
+                              <div>
+                                <div className="text-[10px] 2xl:text-xs uppercase tracking-wider text-muted-foreground mb-2 font-medium">Cost Recovery</div>
+                                <div className="grid grid-cols-2 gap-2">
+                                  {fc.costRecoveryPreProd != null && (
+                                    <div className="glass-card rounded-lg p-3 text-center">
+                                      <div className="text-[9px] uppercase text-muted-foreground">Pré-Produção</div>
+                                      <div className="font-bold font-mono text-xl text-warning">{fc.costRecoveryPreProd}%</div>
+                                    </div>
+                                  )}
+                                  {fc.costRecoveryPostProd != null && (
+                                    <div className="glass-card rounded-lg p-3 text-center">
+                                      <div className="text-[9px] uppercase text-muted-foreground">Pós-Produção</div>
+                                      <div className="font-bold font-mono text-xl text-warning">{fc.costRecoveryPostProd}%</div>
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            )}
+
+                            {/* IRP / IPP / ITP */}
+                            <div>
+                              <div className="text-[10px] 2xl:text-xs uppercase tracking-wider text-muted-foreground mb-2 font-medium">Impostos</div>
+                              <div className="grid grid-cols-3 gap-2">
+                                {fc.irp != null && (
+                                  <div className="glass-card rounded-lg p-3 text-center border border-primary/20">
+                                    <div className="text-[9px] uppercase text-muted-foreground">IRP</div>
+                                    <div className="font-bold font-mono text-2xl text-primary">{fc.irp}%</div>
+                                    <div className="text-[8px] text-muted-foreground">Rend. Petróleo</div>
+                                  </div>
+                                )}
+                                {fc.ipp != null && (
+                                  <div className="glass-card rounded-lg p-3 text-center">
+                                    <div className="text-[9px] uppercase text-muted-foreground">IPP</div>
+                                    <div className="font-bold font-mono text-2xl">{fc.ipp}%</div>
+                                    <div className="text-[8px] text-muted-foreground">Prod. Petróleo</div>
+                                  </div>
+                                )}
+                                {fc.itp != null && (
+                                  <div className="glass-card rounded-lg p-3 text-center">
+                                    <div className="text-[9px] uppercase text-muted-foreground">ITP</div>
+                                    <div className="font-bold font-mono text-2xl">{fc.itp}%</div>
+                                    <div className="text-[8px] text-muted-foreground">Trans. Petróleo</div>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+
+                            {/* Prémios */}
+                            {(fc.productionPremium != null || fc.investmentPremiumAreaA != null) && (
+                              <div className="space-y-1.5">
+                                <div className="text-[10px] 2xl:text-xs uppercase tracking-wider text-muted-foreground font-medium">Prémios</div>
+                                {fc.productionPremium != null && (
+                                  <div className="flex justify-between py-1 border-b border-border/30 text-xs">
+                                    <span className="text-muted-foreground">Prémio de Produção</span>
+                                    <span className="font-mono font-semibold">{fc.productionPremium} USD/bbl</span>
+                                  </div>
+                                )}
+                                {fc.investmentPremiumAreaA != null && (
+                                  <div className="flex justify-between py-1 border-b border-border/30 text-xs">
+                                    <span className="text-muted-foreground">Prémio Invest. (Área A / B)</span>
+                                    <span className="font-mono font-semibold">{fc.investmentPremiumAreaA}% / {fc.investmentPremiumAreaB}%</span>
+                                  </div>
+                                )}
+                                {fc.investmentPremiumReduction && (
+                                  <div className="text-[10px] text-muted-foreground italic">{fc.investmentPremiumReduction}</div>
+                                )}
+                              </div>
+                            )}
+
+                            {/* Notes */}
+                            {fc.irpNoteAngolan && (
+                              <div className="glass-card rounded-lg p-3 border-l-2 border-warning">
+                                <div className="text-[10px] uppercase text-muted-foreground mb-1 font-medium">Nota Especial</div>
+                                <p className="text-xs text-muted-foreground leading-relaxed">{fc.irpNoteAngolan}</p>
+                              </div>
+                            )}
+                          </>
+                        ) : (
+                          <div className="text-xs text-muted-foreground">Condições fiscais não disponíveis para este bloco.</div>
+                        )}
+                      </CardContent>
+                    </Card>
+                  </div>
+
+                  {/* Section 5: Bónus & Obrigações */}
+                  {ci && (ci.signatureBonus || ci.socialBonus || ci.productionBonus || ci.socialProjects || ci.regulatoryContribution) && (
+                    <div>
+                      <h3 className="text-sm 2xl:text-base font-semibold mb-3 flex items-center gap-2">
+                        <Landmark className="w-4 h-4 text-warning" />Bónus & Obrigações
+                      </h3>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 2xl:gap-5">
+                        {ci.signatureBonus && (
+                          <Card className="glass-card border-l-2 border-warning">
+                            <CardContent className="p-4">
+                              <div className="text-[10px] 2xl:text-xs uppercase tracking-wider text-muted-foreground mb-1">Bónus de Assinatura</div>
+                              <div className="text-xl 2xl:text-2xl font-bold font-mono text-warning">US$ {(ci.signatureBonus / 1e6).toFixed(0)}M</div>
+                              {ci.signingDate && <div className="text-[10px] text-muted-foreground mt-1">Pago em {new Date(ci.signingDate).getFullYear()}</div>}
+                            </CardContent>
+                          </Card>
+                        )}
+                        {ci.socialBonus && (
+                          <Card className="glass-card border-l-2 border-success">
+                            <CardContent className="p-4">
+                              <div className="text-[10px] 2xl:text-xs uppercase tracking-wider text-muted-foreground mb-1">Bónus Social</div>
+                              <div className="text-xl 2xl:text-2xl font-bold font-mono text-success">US$ {(ci.socialBonus / 1e6).toFixed(0)}M</div>
+                            </CardContent>
+                          </Card>
+                        )}
+                        {ci.productionBonus && (
+                          <Card className="glass-card border-l-2 border-primary">
+                            <CardContent className="p-4">
+                              <div className="text-[10px] 2xl:text-xs uppercase tracking-wider text-muted-foreground mb-1">Bónus de Produção</div>
+                              <div className="text-xl 2xl:text-2xl font-bold font-mono text-primary">US$ {(ci.productionBonus / 1e6).toFixed(0)}M</div>
+                            </CardContent>
+                          </Card>
+                        )}
+                        {ci.socialProjects && (
+                          <Card className="glass-card">
+                            <CardContent className="p-4">
+                              <div className="text-[10px] 2xl:text-xs uppercase tracking-wider text-muted-foreground mb-1">Projectos Sociais</div>
+                              <div className="text-lg font-bold font-mono">US$ {(ci.socialProjects / 1e6).toFixed(2)}M</div>
+                              {ci.socialProjectsPeriod && <div className="text-[10px] text-muted-foreground mt-1">Período: {ci.socialProjectsPeriod}</div>}
+                            </CardContent>
+                          </Card>
+                        )}
+                        {ci.regulatoryContribution && (
+                          <Card className="glass-card">
+                            <CardContent className="p-4">
+                              <div className="text-[10px] 2xl:text-xs uppercase tracking-wider text-muted-foreground mb-1">Contribuição Regulatória</div>
+                              <div className="text-lg font-bold font-mono">US$ {(ci.regulatoryContribution / 1e6).toFixed(2)}M</div>
+                              {ci.regulatoryContributionPeriod && <div className="text-[10px] text-muted-foreground mt-1">Período: {ci.regulatoryContributionPeriod}</div>}
+                            </CardContent>
+                          </Card>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Section 6: Notas Históricas */}
+                  {ci?.historicalNotes && ci.historicalNotes.length > 0 && (
+                    <Card className="glass-card">
+                      <CardHeader className="p-4 pb-2">
+                        <CardTitle className="text-sm 2xl:text-base flex items-center gap-2">
+                          <History className="w-4 h-4 text-muted-foreground" />Notas Históricas
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="p-4 pt-0">
+                        <div className="relative pl-6 space-y-4">
+                          <div className="absolute left-2 top-1 bottom-1 w-px bg-border" />
+                          {ci.historicalNotes.map((note, i) => (
+                            <div key={i} className="relative">
+                              <div className="absolute -left-[18px] top-1 w-2.5 h-2.5 rounded-full bg-primary border-2 border-card" />
+                              <p className="text-sm text-muted-foreground leading-relaxed">{note}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )}
+                </>
+              );
+            })()}
           </TabsContent>
         </Tabs>
       </main>
