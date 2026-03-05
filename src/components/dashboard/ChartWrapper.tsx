@@ -1,5 +1,6 @@
 import { useRef, useState, type ReactNode } from "react";
 import { toPng } from "html-to-image";
+import { useTheme } from "@/components/ThemeProvider";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -34,6 +35,7 @@ export const ChartWrapper = ({
   const fullscreenChartRef = useRef<HTMLDivElement>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
+  const { theme } = useTheme();
 
   const handleExport = async (ref: React.RefObject<HTMLDivElement | null>) => {
     const node = ref.current;
@@ -44,8 +46,10 @@ export const ChartWrapper = ({
       // Wait a frame for any animations to settle
       await new Promise(r => setTimeout(r, 100));
 
+      const bgColor = getComputedStyle(document.documentElement)
+        .getPropertyValue("--background").trim();
       const dataUrl = await toPng(node, {
-        backgroundColor: "hsl(222, 47%, 11%)", // match dark card bg
+        backgroundColor: `hsl(${bgColor})`,
         pixelRatio: 2,
         quality: 1,
         filter: (domNode) => {
