@@ -2,7 +2,7 @@ import { useState, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { oilBlocks } from "@/data/angolaBlocks";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend, Brush } from "recharts";
 import { AlertTriangle, Target, Layers, Droplets, Filter, ChevronDown } from "lucide-react";
 import { ExplorationSummaryTable } from "./ExplorationSummaryTable";
 import { ProspectsTable } from "./ProspectsTable";
@@ -328,16 +328,17 @@ export const ExplorationPanel = () => {
             <CardTitle className="text-sm 3xl:text-lg">Sísmica Adquirida — {scopeLabel}</CardTitle>
           </CardHeader>
           <CardContent className="p-4 3xl:p-6 pt-0">
-             <ResponsiveContainer width="100%" height={360}>
+             <ResponsiveContainer width="100%" height={400}>
               <BarChart data={seismicChartData} barGap={1}>
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                <XAxis dataKey="year" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 9 }} stroke="hsl(var(--border))" interval={2} angle={-45} textAnchor="end" height={50} />
-                <YAxis tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} stroke="hsl(var(--border))" width={50} />
-                <Tooltip contentStyle={tooltipStyle} />
-                <Legend wrapperStyle={{ fontSize: 11 }} />
-                <Bar dataKey="2D" fill="hsl(var(--warning))" radius={[2, 2, 0, 0]} name="2D (km)" />
-                <Bar dataKey="3D" fill="hsl(var(--success))" radius={[2, 2, 0, 0]} name="3D (km²)" />
-                <Bar dataKey="4D" fill="hsl(var(--primary))" radius={[2, 2, 0, 0]} name="4D (km²)" />
+                <XAxis dataKey="year" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 9 }} stroke="hsl(var(--border))" interval="preserveStartEnd" angle={-45} textAnchor="end" height={50} />
+                <YAxis tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} stroke="hsl(var(--border))" width={50} tickFormatter={v => v.toLocaleString()} />
+                <Tooltip contentStyle={tooltipStyle} formatter={(val: number, name: string) => [`${val.toLocaleString(undefined, { maximumFractionDigits: 2 })} ${name.includes("2D") ? "km" : "km²"}`, name]} />
+                <Legend wrapperStyle={{ fontSize: 11, paddingTop: 8 }} />
+                <Bar dataKey="2D" fill="hsl(var(--warning))" radius={[2, 2, 0, 0]} name="2D (km)" animationDuration={800} animationEasing="ease-out" />
+                <Bar dataKey="3D" fill="hsl(var(--success))" radius={[2, 2, 0, 0]} name="3D (km²)" animationDuration={800} animationEasing="ease-out" animationBegin={200} />
+                <Bar dataKey="4D" fill="hsl(var(--primary))" radius={[2, 2, 0, 0]} name="4D (km²)" animationDuration={800} animationEasing="ease-out" animationBegin={400} />
+                {seismicChartData.length > 15 && <Brush dataKey="year" height={25} stroke="hsl(var(--primary))" fill="hsl(var(--muted))" travellerWidth={8} />}
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
@@ -351,18 +352,19 @@ export const ExplorationPanel = () => {
             <CardTitle className="text-sm 3xl:text-lg">Poços de Avaliação vs Pesquisa — {scopeLabel}</CardTitle>
           </CardHeader>
           <CardContent className="p-4 pt-0">
-            <ResponsiveContainer width="100%" height={360}>
+            <ResponsiveContainer width="100%" height={400}>
               <BarChart data={wellsChartData} barGap={1}>
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                <XAxis dataKey="year" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 9 }} stroke="hsl(var(--border))" interval={2} angle={-45} textAnchor="end" height={50} />
-                <YAxis tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} stroke="hsl(var(--border))" width={30} />
-                <Tooltip contentStyle={tooltipStyle} />
-                <Legend wrapperStyle={{ fontSize: 11 }} />
-                <Bar dataKey="Pesquisa" fill="hsl(var(--primary))" radius={[2, 2, 0, 0]} />
-                <Bar dataKey="Avaliação" fill="hsl(280, 65%, 60%)" radius={[2, 2, 0, 0]} />
-                <Bar dataKey="Desc. Comercial" fill="hsl(var(--success))" radius={[2, 2, 0, 0]} />
-                <Bar dataKey="Desc. N. Comercial" fill="hsl(var(--warning))" radius={[2, 2, 0, 0]} />
-                <Bar dataKey="Seco" fill="hsl(var(--danger))" radius={[2, 2, 0, 0]} />
+                <XAxis dataKey="year" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 9 }} stroke="hsl(var(--border))" interval="preserveStartEnd" angle={-45} textAnchor="end" height={50} />
+                <YAxis tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} stroke="hsl(var(--border))" width={30} allowDecimals={false} />
+                <Tooltip contentStyle={tooltipStyle} formatter={(val: number, name: string) => [`${val} poços`, name]} />
+                <Legend wrapperStyle={{ fontSize: 11, paddingTop: 8 }} />
+                <Bar dataKey="Pesquisa" fill="hsl(var(--primary))" radius={[2, 2, 0, 0]} animationDuration={800} animationEasing="ease-out" />
+                <Bar dataKey="Avaliação" fill="hsl(280, 65%, 60%)" radius={[2, 2, 0, 0]} animationDuration={800} animationEasing="ease-out" animationBegin={150} />
+                <Bar dataKey="Desc. Comercial" fill="hsl(var(--success))" radius={[2, 2, 0, 0]} animationDuration={800} animationEasing="ease-out" animationBegin={300} />
+                <Bar dataKey="Desc. N. Comercial" fill="hsl(var(--warning))" radius={[2, 2, 0, 0]} animationDuration={800} animationEasing="ease-out" animationBegin={450} />
+                <Bar dataKey="Seco" fill="hsl(var(--danger))" radius={[2, 2, 0, 0]} animationDuration={800} animationEasing="ease-out" animationBegin={600} />
+                {wellsChartData.length > 20 && <Brush dataKey="year" height={25} stroke="hsl(var(--primary))" fill="hsl(var(--muted))" travellerWidth={8} />}
               </BarChart>
             </ResponsiveContainer>
           </CardContent>

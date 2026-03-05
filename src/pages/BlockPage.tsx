@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useId, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { oilBlocks } from "@/data/angolaBlocks";
 import { ProspectsTable } from "@/components/dashboard/ProspectsTable";
@@ -15,7 +15,9 @@ import type { LegislationDocument, ContractInfo } from "@/data/angolaBlocks";
 import {
   PieChart, Pie, Cell, AreaChart, Area, BarChart, Bar, LineChart, Line,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend,
+  Brush, ReferenceLine,
 } from "recharts";
+
 
 const phaseColor = (phase: string) => {
   switch (phase) {
@@ -208,6 +210,22 @@ const BlockPage = () => {
   const navigate = useNavigate();
   const block = oilBlocks.find(b => b.id === blockId);
 
+  // Unique gradient IDs to avoid SVG conflicts — must be before early return
+  const uid = useId().replace(/:/g, "");
+  const prodGradId = `prodGrad-${uid}`;
+  const discGradId = `discGrad-${uid}`;
+
+  // Calculate averages for reference lines
+  const avgProduction = useMemo(() => {
+    if (!block?.productionHistory?.length) return 0;
+    return Math.round(block.productionHistory.reduce((s, d) => s + d.value, 0) / block.productionHistory.length);
+  }, [block]);
+
+  const avgCapexPlanned = useMemo(() => {
+    if (!block?.capexHistory?.length) return 0;
+    return Math.round(block.capexHistory.reduce((s, d) => s + d.planned, 0) / block.capexHistory.length);
+  }, [block]);
+
   if (!block) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -226,6 +244,17 @@ const BlockPage = () => {
     base: block.projections.base[i],
     expansion: block.projections.expansion[i],
   }));
+
+  // Tooltip & legend styles
+  const tooltipStyle = {
+    background: "hsl(var(--card))",
+    border: "1px solid hsl(var(--border))",
+    borderRadius: 8,
+    fontSize: 12,
+    color: "hsl(var(--foreground))",
+  };
+
+  const legendStyle = { fontSize: 11, paddingTop: 8 };
 
   return (
     <div className="min-h-screen bg-background">
@@ -593,10 +622,10 @@ const BlockPage = () => {
                     {timelineData.length > 1 && (
                       <div className="glass-card rounded-lg p-3 2xl:p-4">
                         <div className="text-[10px] 2xl:text-xs uppercase tracking-wider text-muted-foreground mb-2 font-medium">Timeline de Descobertas</div>
-                        <ResponsiveContainer width="100%" height={140}>
+                       <ResponsiveContainer width="100%" height={140}>
                           <AreaChart data={timelineData} margin={{ top: 5, right: 10, left: 0, bottom: 0 }}>
                             <defs>
-                              <linearGradient id="discGrad" x1="0" y1="0" x2="0" y2="1">
+                              <linearGradient id={discGradId} x1="0" y1="0" x2="0" y2="1">
                                 <stop offset="5%" stopColor="hsl(152, 69%, 40%)" stopOpacity={0.3} />
                                 <stop offset="95%" stopColor="hsl(152, 69%, 40%)" stopOpacity={0} />
                               </linearGradient>
@@ -606,12 +635,12 @@ const BlockPage = () => {
                             <YAxis yAxisId="left" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} stroke="hsl(var(--border))" width={30} allowDecimals={false} />
                             <YAxis yAxisId="right" orientation="right" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} stroke="hsl(var(--border))" width={30} allowDecimals={false} />
                             <Tooltip
-                              contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 11, color: "hsl(var(--foreground))" }}
+                              contentStyle={tooltipStyle}
                               formatter={(val: number, name: string) => [val, name === "discoveries" ? "Descobertas" : "Acumulado"]}
                               labelFormatter={(label) => `Ano ${label}`}
                             />
-                            <Bar yAxisId="left" dataKey="discoveries" fill="hsl(199, 89%, 48%)" radius={[3, 3, 0, 0]} name="discoveries" barSize={12} />
-                            <Area yAxisId="right" type="monotone" dataKey="cumulative" stroke="hsl(152, 69%, 40%)" fill="url(#discGrad)" strokeWidth={2} name="cumulative" />
+                            <Bar yAxisId="left" dataKey="discoveries" fill="hsl(199, 89%, 48%)" radius={[3, 3, 0, 0]} name="discoveries" barSize={12} animationDuration={800} />
+                            <Area yAxisId="right" type="monotone" dataKey="cumulative" stroke="hsl(152, 69%, 40%)" fill={`url(#${discGradId})`} strokeWidth={2} name="cumulative" animationDuration={1000} />
                           </AreaChart>
                         </ResponsiveContainer>
                       </div>
@@ -825,16 +854,17 @@ const BlockPage = () => {
                     <CardTitle className="text-sm 2xl:text-base">Dados Sísmicos (km)</CardTitle>
                   </CardHeader>
                   <CardContent className="p-4 pt-0">
-                     <ResponsiveContainer width="100%" height={360}>
+                   <ResponsiveContainer width="100%" height={400}>
                       <BarChart data={block.seismicData}>
                         <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                        <XAxis dataKey="year" tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} />
-                        <YAxis tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} />
-                        <Tooltip contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: "8px", fontSize: 12 }} />
-                        <Legend wrapperStyle={{ fontSize: 11 }} />
-                        <Bar dataKey="seismic2D" name="2D" fill="hsl(199, 89%, 48%)" radius={[4, 4, 0, 0]} />
-                        <Bar dataKey="seismic3D" name="3D" fill="hsl(152, 69%, 40%)" radius={[4, 4, 0, 0]} />
-                        <Bar dataKey="seismic4D" name="4D" fill="hsl(38, 92%, 50%)" radius={[4, 4, 0, 0]} />
+                        <XAxis dataKey="year" tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} angle={-45} textAnchor="end" height={50} interval="preserveStartEnd" />
+                        <YAxis tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} tickFormatter={v => `${v.toLocaleString()}`} />
+                        <Tooltip contentStyle={tooltipStyle} formatter={(val: number, name: string) => [`${val.toLocaleString(undefined, { maximumFractionDigits: 2 })} ${name === "2D" ? "km" : "km²"}`, name]} />
+                        <Legend wrapperStyle={legendStyle} />
+                        <Bar dataKey="seismic2D" name="2D" fill="hsl(199, 89%, 48%)" radius={[4, 4, 0, 0]} animationDuration={800} animationEasing="ease-out" />
+                        <Bar dataKey="seismic3D" name="3D" fill="hsl(152, 69%, 40%)" radius={[4, 4, 0, 0]} animationDuration={800} animationEasing="ease-out" animationBegin={200} />
+                        <Bar dataKey="seismic4D" name="4D" fill="hsl(38, 92%, 50%)" radius={[4, 4, 0, 0]} animationDuration={800} animationEasing="ease-out" animationBegin={400} />
+                        {block.seismicData.length > 15 && <Brush dataKey="year" height={25} stroke="hsl(var(--primary))" fill="hsl(var(--muted))" travellerWidth={8} />}
                       </BarChart>
                     </ResponsiveContainer>
                   </CardContent>
@@ -846,18 +876,19 @@ const BlockPage = () => {
                       <CardTitle className="text-sm 2xl:text-base">Poços Perfurados</CardTitle>
                     </CardHeader>
                     <CardContent className="p-4 pt-0">
-                       <ResponsiveContainer width="100%" height={360}>
+                   <ResponsiveContainer width="100%" height={400}>
                         <BarChart data={block.wellsData}>
                           <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                          <XAxis dataKey="year" tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} />
-                          <YAxis tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} />
-                          <Tooltip contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: "8px", fontSize: 12 }} />
-                          <Legend wrapperStyle={{ fontSize: 11 }} />
-                          <Bar dataKey="pesquisa" name="Pesquisa" fill="hsl(199, 89%, 48%)" radius={[4, 4, 0, 0]} />
-                          <Bar dataKey="avaliacao" name="Avaliação" fill="hsl(280, 65%, 60%)" radius={[4, 4, 0, 0]} />
-                          <Bar dataKey="descobertaComercial" name="Desc. Comercial" fill="hsl(var(--success))" radius={[4, 4, 0, 0]} />
-                          <Bar dataKey="descobertaNaoComercial" name="Desc. N. Comercial" fill="hsl(var(--warning))" radius={[4, 4, 0, 0]} />
-                          <Bar dataKey="seco" name="Seco" fill="hsl(var(--danger))" radius={[4, 4, 0, 0]} />
+                          <XAxis dataKey="year" tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} angle={-45} textAnchor="end" height={50} interval="preserveStartEnd" />
+                          <YAxis tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} allowDecimals={false} />
+                          <Tooltip contentStyle={tooltipStyle} formatter={(val: number, name: string) => [`${val} poços`, name]} />
+                          <Legend wrapperStyle={legendStyle} />
+                          <Bar dataKey="pesquisa" name="Pesquisa" fill="hsl(199, 89%, 48%)" radius={[4, 4, 0, 0]} animationDuration={800} animationEasing="ease-out" />
+                          <Bar dataKey="avaliacao" name="Avaliação" fill="hsl(280, 65%, 60%)" radius={[4, 4, 0, 0]} animationDuration={800} animationEasing="ease-out" animationBegin={150} />
+                          <Bar dataKey="descobertaComercial" name="Desc. Comercial" fill="hsl(var(--success))" radius={[4, 4, 0, 0]} animationDuration={800} animationEasing="ease-out" animationBegin={300} />
+                          <Bar dataKey="descobertaNaoComercial" name="Desc. N. Comercial" fill="hsl(var(--warning))" radius={[4, 4, 0, 0]} animationDuration={800} animationEasing="ease-out" animationBegin={450} />
+                          <Bar dataKey="seco" name="Seco" fill="hsl(var(--danger))" radius={[4, 4, 0, 0]} animationDuration={800} animationEasing="ease-out" animationBegin={600} />
+                          {block.wellsData.length > 20 && <Brush dataKey="year" height={25} stroke="hsl(var(--primary))" fill="hsl(var(--muted))" travellerWidth={8} />}
                         </BarChart>
                       </ResponsiveContainer>
                     </CardContent>
@@ -993,7 +1024,7 @@ const BlockPage = () => {
                    <ResponsiveContainer width="100%" height={360}>
                     <AreaChart data={block.productionHistory}>
                       <defs>
-                        <linearGradient id="prodGrad" x1="0" y1="0" x2="0" y2="1">
+                        <linearGradient id={prodGradId} x1="0" y1="0" x2="0" y2="1">
                           <stop offset="0%" stopColor="hsl(152, 69%, 40%)" stopOpacity={0.3} />
                           <stop offset="100%" stopColor="hsl(152, 69%, 40%)" stopOpacity={0} />
                         </linearGradient>
@@ -1001,9 +1032,13 @@ const BlockPage = () => {
                       <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                       <XAxis dataKey="month" tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} />
                       <YAxis tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} tickFormatter={v => `${(v / 1000).toFixed(0)}k`} />
-                      <Tooltip contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: "8px", fontSize: 12 }}
-                        formatter={(val: number) => [`${(val / 1000).toFixed(1)}k BOPD`, "Produção"]} />
-                      <Area type="monotone" dataKey="value" stroke="hsl(152, 69%, 40%)" fill="url(#prodGrad)" strokeWidth={2} />
+                      <Tooltip contentStyle={tooltipStyle}
+                        formatter={(val: number) => [`${val.toLocaleString()} BOPD`, "Produção"]} />
+                      {avgProduction > 0 && (
+                        <ReferenceLine y={avgProduction} stroke="hsl(var(--warning))" strokeDasharray="6 4" strokeWidth={1.5}
+                          label={{ value: `Média: ${(avgProduction / 1000).toFixed(1)}k`, position: "insideTopRight", fill: "hsl(var(--warning))", fontSize: 10 }} />
+                      )}
+                      <Area type="monotone" dataKey="value" stroke="hsl(152, 69%, 40%)" fill={`url(#${prodGradId})`} strokeWidth={2} animationDuration={1000} animationEasing="ease-out" />
                     </AreaChart>
                   </ResponsiveContainer>
                 </CardContent>
@@ -1018,12 +1053,16 @@ const BlockPage = () => {
                     <BarChart data={block.capexHistory}>
                       <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                       <XAxis dataKey="year" tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} />
-                      <YAxis tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} />
-                      <Tooltip contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: "8px", fontSize: 12 }}
-                        formatter={(val: number) => [`$${val}M`]} />
-                      <Legend wrapperStyle={{ fontSize: 11 }} />
-                      <Bar dataKey="planned" name="Planeado" fill="hsl(var(--muted-foreground))" opacity={0.4} radius={[4, 4, 0, 0]} />
-                      <Bar dataKey="actual" name="Real" fill="hsl(199, 89%, 48%)" radius={[4, 4, 0, 0]} />
+                      <YAxis tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} tickFormatter={v => `$${v}M`} />
+                      <Tooltip contentStyle={tooltipStyle}
+                        formatter={(val: number, name: string) => [`$${val.toLocaleString()}M`, name]} />
+                      <Legend wrapperStyle={legendStyle} />
+                      {avgCapexPlanned > 0 && (
+                        <ReferenceLine y={avgCapexPlanned} stroke="hsl(var(--primary))" strokeDasharray="6 4" strokeWidth={1.5}
+                          label={{ value: `Média: $${avgCapexPlanned}M`, position: "insideTopRight", fill: "hsl(var(--primary))", fontSize: 10 }} />
+                      )}
+                      <Bar dataKey="planned" name="Planeado" fill="hsl(var(--muted-foreground))" opacity={0.4} radius={[4, 4, 0, 0]} animationDuration={800} animationEasing="ease-out" />
+                      <Bar dataKey="actual" name="Real" fill="hsl(199, 89%, 48%)" radius={[4, 4, 0, 0]} animationDuration={800} animationEasing="ease-out" animationBegin={200} />
                     </BarChart>
                   </ResponsiveContainer>
                 </CardContent>
@@ -1043,12 +1082,12 @@ const BlockPage = () => {
                     <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                     <XAxis dataKey="year" tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} />
                     <YAxis tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} tickFormatter={v => `${(v / 1000).toFixed(0)}k`} />
-                    <Tooltip contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: "8px", fontSize: 12 }}
-                      formatter={(val: number) => [`${(val / 1000).toFixed(1)}k BOPD`]} />
-                    <Legend wrapperStyle={{ fontSize: 11 }} />
-                    <Line type="monotone" dataKey="conservative" name="Conservador" stroke="hsl(0, 72%, 51%)" strokeWidth={2} strokeDasharray="5 5" dot={false} />
-                    <Line type="monotone" dataKey="base" name="Base" stroke="hsl(199, 89%, 48%)" strokeWidth={2.5} dot={false} />
-                    <Line type="monotone" dataKey="expansion" name="Expansão" stroke="hsl(152, 69%, 40%)" strokeWidth={2} strokeDasharray="5 5" dot={false} />
+                    <Tooltip contentStyle={tooltipStyle}
+                      formatter={(val: number, name: string) => [`${val.toLocaleString()} BOPD`, name]} />
+                    <Legend wrapperStyle={legendStyle} />
+                    <Line type="monotone" dataKey="conservative" name="Conservador" stroke="hsl(0, 72%, 51%)" strokeWidth={2} strokeDasharray="5 5" dot={false} animationDuration={1000} />
+                    <Line type="monotone" dataKey="base" name="Base" stroke="hsl(199, 89%, 48%)" strokeWidth={2.5} dot={false} animationDuration={1000} animationBegin={200} />
+                    <Line type="monotone" dataKey="expansion" name="Expansão" stroke="hsl(152, 69%, 40%)" strokeWidth={2} strokeDasharray="5 5" dot={false} animationDuration={1000} animationBegin={400} />
                   </LineChart>
                 </ResponsiveContainer>
               </CardContent>

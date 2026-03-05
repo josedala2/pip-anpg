@@ -1,8 +1,9 @@
+import { useId } from "react";
 import { type OilBlock } from "@/data/angolaBlocks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { X } from "lucide-react";
-import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
+import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, ReferenceLine } from "recharts";
 
 interface BlockDetailProps {
   block: OilBlock;
@@ -19,6 +20,10 @@ const PhaseColors: Record<string, string> = {
 
 export const BlockDetail = ({ block, onClose }: BlockDetailProps) => {
   const riskColor = block.riskScore <= 3 ? "text-success" : block.riskScore <= 6 ? "text-warning" : "text-danger";
+  const uid = useId().replace(/:/g, "");
+  const detailProdGradId = `detailProdGrad-${uid}`;
+  const avgProd = block.productionHistory.length > 0 ? Math.round(block.productionHistory.reduce((s, d) => s + d.value, 0) / block.productionHistory.length) : 0;
+  const tooltipStyle = { background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12, color: "hsl(var(--foreground))" };
 
   return (
     <div className="fixed inset-0 z-50 flex justify-end">
@@ -98,7 +103,7 @@ export const BlockDetail = ({ block, onClose }: BlockDetailProps) => {
               <ResponsiveContainer width="100%" height={180}>
                 <AreaChart data={block.productionHistory}>
                   <defs>
-                    <linearGradient id="prodGrad" x1="0" y1="0" x2="0" y2="1">
+                    <linearGradient id={detailProdGradId} x1="0" y1="0" x2="0" y2="1">
                       <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3} />
                       <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0} />
                     </linearGradient>
@@ -106,8 +111,9 @@ export const BlockDetail = ({ block, onClose }: BlockDetailProps) => {
                   <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                   <XAxis dataKey="month" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} stroke="hsl(var(--border))" />
                   <YAxis tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} width={50} tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} stroke="hsl(var(--border))" />
-                  <Tooltip contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12, color: "hsl(var(--foreground))" }} />
-                  <Area type="monotone" dataKey="value" stroke="hsl(var(--primary))" fill="url(#prodGrad)" strokeWidth={2} />
+                  <Tooltip contentStyle={tooltipStyle} formatter={(val: number) => [`${val.toLocaleString()} BOPD`, "Produção"]} />
+                  {avgProd > 0 && <ReferenceLine y={avgProd} stroke="hsl(var(--warning))" strokeDasharray="6 4" strokeWidth={1} />}
+                  <Area type="monotone" dataKey="value" stroke="hsl(var(--primary))" fill={`url(#${detailProdGradId})`} strokeWidth={2} animationDuration={800} />
                 </AreaChart>
               </ResponsiveContainer>
             </CardContent>
@@ -123,10 +129,10 @@ export const BlockDetail = ({ block, onClose }: BlockDetailProps) => {
                 <BarChart data={block.capexHistory}>
                   <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                   <XAxis dataKey="year" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} stroke="hsl(var(--border))" />
-                  <YAxis tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} width={40} stroke="hsl(var(--border))" />
-                  <Tooltip contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12, color: "hsl(var(--foreground))" }} />
-                  <Bar dataKey="planned" fill="hsl(var(--muted-foreground))" radius={[4, 4, 0, 0]} name="Planned" />
-                  <Bar dataKey="actual" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} name="Actual" />
+                  <YAxis tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} width={40} stroke="hsl(var(--border))" tickFormatter={v => `$${v}M`} />
+                  <Tooltip contentStyle={tooltipStyle} formatter={(val: number, name: string) => [`$${val}M`, name]} />
+                  <Bar dataKey="planned" fill="hsl(var(--muted-foreground))" radius={[4, 4, 0, 0]} name="Planeado" animationDuration={800} />
+                  <Bar dataKey="actual" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} name="Real" animationDuration={800} animationBegin={200} />
                 </BarChart>
               </ResponsiveContainer>
             </CardContent>
