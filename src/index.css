@@ -227,3 +227,20 @@
   background-size: 200% 100%;
   animation: shimmer 3s infinite;
 }
+
+/* Print styles for reports */
+@media print {
+  body { background: white !important; color: black !important; }
+  header, aside, .print\\:hidden { display: none !important; }
+  main { padding: 0 !important; }
+  #report-content {
+    background: white !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    color: black !important;
+  }
+  #report-content * { color: black !important; border-color: #ddd !important; }
+  #report-content .bg-card { background: #f9f9f9 !important; }
+  @page { margin: 1.5cm; }
+}
