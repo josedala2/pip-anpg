@@ -1,49 +1,46 @@
 
 
-## Plan: Melhorar Visualização dos Dados Gráficos
+## Plano: Actualizar dados de poços do Block 15 com dados reais do ficheiro Excel
 
-### Problemas Actuais Identificados
-1. **Tooltips genéricos** — Sem formatação rica, sem ícones de cor, sem unidades consistentes
-2. **Sem interactividade avançada** — Não há brush/zoom nos gráficos com muitos pontos (ex: poços 1966-2025)
-3. **Legendas básicas** — Sem destaque visual, difíceis de ler em mobile
-4. **Gráficos de barras empilhados com 5 séries** — Difíceis de ler quando há muitos anos; labels do eixo X sobrepostos
-5. **Sem animações de entrada** — Os gráficos aparecem sem transição
-6. **Gráficos de área sem referência** — Faltam linhas de média/tendência
-7. **Cores repetidas entre abas** — Gradientes e IDs duplicados (ex: `prodGrad` usado em múltiplos gráficos)
+### Dados Actuais vs Dados Reais (Excel)
 
-### Melhorias Propostas
+Os dados actuais do Block 15 em `wellsData` estão incompletos — faltam os campos de resultados (`descobertaComercial`, `descobertaNaoComercial`, `seco`) e há discrepâncias nos valores de pesquisa/avaliação. Exemplo:
 
-**1. Custom Tooltips com ChartTooltipContent**
-- Substituir os `Tooltip` inline do Recharts por tooltips customizados usando o componente `ChartTooltipContent` do shadcn/ui (já existe em `chart.tsx`)
-- Adicionar formatação por tipo: BOPD com separadores, $M com símbolo, km² com unidade
-- Ícones de cor alinhados com a série
+| Ano  | Actual (pesq/aval) | Excel (pesq/aval/com/ncom/seco) |
+|------|--------------------|---------------------------------|
+| 1998 | —                  | 5/1/4/0/1                       |
+| 1999 | 4/4               | 2/3/2/0/0                       |
+| 2000 | 2/0               | 6/1/5/1/0                       |
+| 2003 | 7/4               | 4/3/4/0/0                       |
+| 2006 | 3/3               | 0/3/0/0/0                       |
+| 2022 | 1/0               | 1/0/1/0/0                       |
+| 2024 | 0/1               | 1/0/1/0/0                       |
 
-**2. Brush/Zoom nos Gráficos Temporais Longos**
-- Adicionar `<Brush>` do Recharts no gráfico de Poços Perfurados (aba Exploração) e Sísmica, que cobrem 60+ anos
-- Permite ao utilizador focar num intervalo temporal específico
+### Alteração
 
-**3. Animações de Entrada**
-- Activar `isAnimationActive` com `animationDuration={800}` e `animationEasing="ease-out"` nos gráficos principais
-- Adicionar `animationBegin` escalonado para séries múltiplas (barras aparecem sequencialmente)
+**Ficheiro**: `src/data/angolaBlocks.ts` (linhas 628-641)
 
-**4. Labels do Eixo X Melhorados**
-- Rodar labels a 45° nos gráficos com muitos anos (`angle={-45}`, `textAnchor="end"`)
-- Usar `interval="preserveStartEnd"` para evitar sobreposição
+Substituir o array `wellsData` do Block 15 pelos dados correctos do Excel, incluindo todos os campos de resultado:
 
-**5. Linhas de Referência e Anotações**
-- Adicionar `<ReferenceLine>` para média de produção no gráfico de tendência
-- Adicionar `<ReferenceLine>` para meta de investimento no CAPEX
+```typescript
+wellsData: [
+  { year: 1998, pesquisa: 5, avaliacao: 1, descobertaComercial: 4, descobertaNaoComercial: 0, seco: 1 },
+  { year: 1999, pesquisa: 2, avaliacao: 3, descobertaComercial: 2, descobertaNaoComercial: 0, seco: 0 },
+  { year: 2000, pesquisa: 6, avaliacao: 1, descobertaComercial: 5, descobertaNaoComercial: 1, seco: 0 },
+  { year: 2001, pesquisa: 1, avaliacao: 1, descobertaComercial: 1, descobertaNaoComercial: 0, seco: 0 },
+  { year: 2002, pesquisa: 1, avaliacao: 2, descobertaComercial: 1, descobertaNaoComercial: 0, seco: 0 },
+  { year: 2003, pesquisa: 4, avaliacao: 3, descobertaComercial: 4, descobertaNaoComercial: 0, seco: 0 },
+  { year: 2006, pesquisa: 0, avaliacao: 3, descobertaComercial: 0, descobertaNaoComercial: 0, seco: 0 },
+  { year: 2008, pesquisa: 0, avaliacao: 2, descobertaComercial: 0, descobertaNaoComercial: 0, seco: 0 },
+  { year: 2009, pesquisa: 0, avaliacao: 2, descobertaComercial: 0, descobertaNaoComercial: 0, seco: 0 },
+  { year: 2022, pesquisa: 1, avaliacao: 0, descobertaComercial: 1, descobertaNaoComercial: 0, seco: 0 },
+  { year: 2024, pesquisa: 1, avaliacao: 0, descobertaComercial: 1, descobertaNaoComercial: 0, seco: 0 },
+],
+```
 
-**6. IDs de Gradiente Únicos**
-- Corrigir IDs duplicados (`prodGrad`) gerando IDs únicos por gráfico para evitar conflitos de renderização
-
-**7. Responsividade das Legendas**
-- Usar `Legend` com `wrapperStyle` melhorado: padding, font-size adaptativo, layout vertical em mobile
-
-### Ficheiros a Modificar
-- `src/pages/BlockPage.tsx` — Todos os gráficos da página de detalhe (produção, CAPEX, poços, sísmica, projecções, descobertas)
-- `src/components/dashboard/ExplorationPanel.tsx` — Gráficos agregados de sísmica e poços no dashboard
+Os anos sem actividade (2004-2005, 2007, 2010-2021, 2023) são omitidos, mantendo o padrão dos outros blocos. O antigo entry de 1997 é removido pois não consta no ficheiro Excel oficial.
 
 ### Impacto
-Sem novos ficheiros. Sem alteração de dados. Apenas melhorias visuais e de interacção nos gráficos Recharts existentes.
+- Correcção de dados apenas — sem alteração de UI
+- Os gráficos de poços na aba Exploração do Block 15 e no painel agregado reflectirão automaticamente os dados correctos
 
