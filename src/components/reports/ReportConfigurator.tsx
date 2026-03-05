@@ -1,0 +1,186 @@
+import { useState } from "react";
+import { oilBlocks } from "@/data/angolaBlocks";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Badge } from "@/components/ui/badge";
+import { FileText, CheckSquare, X } from "lucide-react";
+
+export type ReportType =
+  | "executive"
+  | "contractual"
+  | "exploration"
+  | "consortium"
+  | "legislation";
+
+export interface ReportConfig {
+  reportTypes: ReportType[];
+  selectedBlockIds: string[];
+  includeCharts: boolean;
+  includeTables: boolean;
+}
+
+const reportTypeLabels: Record<ReportType, { label: string; description: string }> = {
+  executive: { label: "Resumo Executivo", description: "KPIs agregados, produção, investimento e reservas" },
+  contractual: { label: "Contractual & Fiscal", description: "Decreto-lei, condições fiscais, bónus e períodos de pesquisa" },
+  exploration: { label: "Exploração & Produção", description: "Sísmica, poços, descobertas e taxas de sucesso" },
+  consortium: { label: "Consórcio & Participações", description: "Evolução GE Inicial → Actual por bloco" },
+  legislation: { label: "Legislação & Documentos", description: "Lista consolidada de todos os documentos" },
+};
+
+interface Props {
+  config: ReportConfig;
+  onChange: (config: ReportConfig) => void;
+  onGenerate: () => void;
+}
+
+export const ReportConfigurator = ({ config, onChange, onGenerate }: Props) => {
+  const [blockSearch, setBlockSearch] = useState("");
+
+  const filteredBlocks = oilBlocks.filter(b =>
+    b.name.toLowerCase().includes(blockSearch.toLowerCase()) ||
+    b.operator.toLowerCase().includes(blockSearch.toLowerCase())
+  );
+
+  const allSelected = config.selectedBlockIds.length === oilBlocks.length;
+
+  const toggleAllBlocks = () => {
+    onChange({
+      ...config,
+      selectedBlockIds: allSelected ? [] : oilBlocks.map(b => b.id),
+    });
+  };
+
+  const toggleBlock = (id: string) => {
+    const ids = config.selectedBlockIds.includes(id)
+      ? config.selectedBlockIds.filter(x => x !== id)
+      : [...config.selectedBlockIds, id];
+    onChange({ ...config, selectedBlockIds: ids });
+  };
+
+  const toggleReportType = (type: ReportType) => {
+    const types = config.reportTypes.includes(type)
+      ? config.reportTypes.filter(t => t !== type)
+      : [...config.reportTypes, type];
+    onChange({ ...config, reportTypes: types });
+  };
+
+  const isValid = config.reportTypes.length > 0 && config.selectedBlockIds.length > 0;
+
+  return (
+    <div className="space-y-6">
+      {/* Report Types */}
+      <div>
+        <h3 className="text-sm font-semibold text-foreground mb-3">Tipo de Relatório</h3>
+        <div className="grid gap-2">
+          {(Object.entries(reportTypeLabels) as [ReportType, typeof reportTypeLabels.executive][]).map(([key, val]) => (
+            <label
+              key={key}
+              className={`flex items-start gap-3 p-3 rounded-lg border cursor-pointer transition-all ${
+                config.reportTypes.includes(key)
+                  ? "border-primary bg-primary/5"
+                  : "border-border hover:border-primary/30"
+              }`}
+            >
+              <Checkbox
+                checked={config.reportTypes.includes(key)}
+                onCheckedChange={() => toggleReportType(key)}
+                className="mt-0.5"
+              />
+              <div>
+                <span className="text-sm font-medium text-foreground">{val.label}</span>
+                <p className="text-xs text-muted-foreground mt-0.5">{val.description}</p>
+              </div>
+            </label>
+          ))}
+        </div>
+      </div>
+
+      {/* Block Selection */}
+      <div>
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-sm font-semibold text-foreground">Blocos</h3>
+          <button onClick={toggleAllBlocks} className="text-xs text-primary hover:underline">
+            {allSelected ? "Desseleccionar Todos" : "Seleccionar Todos"}
+          </button>
+        </div>
+
+        {config.selectedBlockIds.length > 0 && (
+          <div className="flex flex-wrap gap-1.5 mb-3">
+            {config.selectedBlockIds.slice(0, 8).map(id => {
+              const block = oilBlocks.find(b => b.id === id);
+              return (
+                <Badge key={id} variant="secondary" className="text-xs gap-1 pr-1">
+                  {block?.name}
+                  <button onClick={() => toggleBlock(id)} className="hover:text-destructive">
+                    <X className="w-3 h-3" />
+                  </button>
+                </Badge>
+              );
+            })}
+            {config.selectedBlockIds.length > 8 && (
+              <Badge variant="outline" className="text-xs">
+                +{config.selectedBlockIds.length - 8} mais
+              </Badge>
+            )}
+          </div>
+        )}
+
+        <input
+          type="text"
+          placeholder="Pesquisar blocos..."
+          value={blockSearch}
+          onChange={e => setBlockSearch(e.target.value)}
+          className="w-full px-3 py-2 mb-2 text-sm rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+        />
+
+        <div className="max-h-48 overflow-y-auto space-y-1 rounded-lg border border-border p-2">
+          {filteredBlocks.map(block => (
+            <label
+              key={block.id}
+              className={`flex items-center gap-2 px-2 py-1.5 rounded cursor-pointer text-sm transition-colors ${
+                config.selectedBlockIds.includes(block.id)
+                  ? "bg-primary/10 text-foreground"
+                  : "hover:bg-secondary text-muted-foreground"
+              }`}
+            >
+              <Checkbox
+                checked={config.selectedBlockIds.includes(block.id)}
+                onCheckedChange={() => toggleBlock(block.id)}
+              />
+              <span className="truncate">{block.name}</span>
+              <span className="ml-auto text-xs text-muted-foreground">{block.operator}</span>
+            </label>
+          ))}
+        </div>
+      </div>
+
+      {/* Options */}
+      <div>
+        <h3 className="text-sm font-semibold text-foreground mb-3">Opções</h3>
+        <div className="space-y-2">
+          <label className="flex items-center gap-2 text-sm text-foreground cursor-pointer">
+            <Checkbox
+              checked={config.includeTables}
+              onCheckedChange={(checked) => onChange({ ...config, includeTables: !!checked })}
+            />
+            Incluir tabelas comparativas
+          </label>
+          <label className="flex items-center gap-2 text-sm text-foreground cursor-pointer">
+            <Checkbox
+              checked={config.includeCharts}
+              onCheckedChange={(checked) => onChange({ ...config, includeCharts: !!checked })}
+            />
+            Incluir gráficos
+          </label>
+        </div>
+      </div>
+
+      {/* Generate Button */}
+      <Button onClick={onGenerate} disabled={!isValid} className="w-full gap-2">
+        <FileText className="w-4 h-4" />
+        Gerar Relatório
+        {!isValid && <span className="text-xs opacity-70">(seleccione tipo e blocos)</span>}
+      </Button>
+    </div>
+  );
+};

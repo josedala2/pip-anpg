@@ -10,7 +10,8 @@ import { StrategicForecast } from "@/components/dashboard/StrategicForecast";
 import { BlocksPanel } from "@/components/dashboard/BlocksPanel";
 import { ExplorationPanel } from "@/components/dashboard/ExplorationPanel";
 import { type OilBlock, oilBlocks } from "@/data/angolaBlocks";
-import { Maximize2, Minimize2, ChevronLeft, ChevronRight, Sun, Moon } from "lucide-react";
+import { Maximize2, Minimize2, ChevronLeft, ChevronRight, Sun, Moon, FileText } from "lucide-react";
+import { Link } from "react-router-dom";
 import { useTheme } from "@/components/ThemeProvider";
 import anpgLogoColor from "@/assets/anpg-logo-color.svg";
 import anpgLogoWhite from "@/assets/anpg-logo-white.svg";
@@ -97,6 +98,13 @@ const Index = () => {
             </div>
           </div>
           <div className="flex items-center gap-2 3xl:gap-3">
+            <Link
+              to="/reports"
+              className="p-2 3xl:p-2.5 rounded-lg hover:bg-secondary transition-colors"
+              title="Relatórios"
+            >
+              <FileText className="w-4 h-4 3xl:w-5 3xl:h-5" />
+            </Link>
             <button
               onClick={toggleTheme}
               className="p-2 3xl:p-2.5 rounded-lg hover:bg-secondary transition-colors"
