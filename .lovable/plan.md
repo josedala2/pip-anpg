@@ -1,48 +1,36 @@
 
 
-## Plan: Aba Financeira & Contratual nos Blocos
+## Plan: Actualizar Dados de Exploração do Bloco 0
 
 ### Objectivo
-Adicionar uma nova aba **"Financeiro & Contratual"** (com ícone `DollarSign`) na página de detalhes de cada bloco, consolidando e expandindo a informação financeira e contratual que actualmente está dispersa na aba "Visão Geral".
+Actualizar os dados do Bloco 0 em `src/data/angolaBlocks.ts` com os valores precisos do ficheiro Excel fornecido.
 
-### O que já existe
-A aba "Visão Geral" já mostra parcialmente: bónus (assinatura, social, produção), condições fiscais (IRP/IPP/ITP), períodos de pesquisa, GE Inicial, e investimento acumulado. Estes dados vêm da interface `ContractInfo` e `FiscalConditions` no `angolaBlocks.ts`.
+### Alterações Identificadas (comparação Excel vs dados actuais)
 
-### Nova Aba — Secções
+**1. Dados Sísmicos (`seismicData`)** — Actualizar valores decimais precisos:
+- 2010: 4D 690.65 (actual: 691)
+- 2011: 3D 939.45, 4D 1092.44 (actual: 939, 1092)
+- 2012: 3D 1110.85, 4D 897.84 (actual: 1111, 898)
+- 2013: 4D 598.04 (actual: 598)
+- 2014: 4D 170.75 (actual: 171)
+- 2015: 4D 480.88 (actual: 481)
+- 2017: 4D 1232.11 (actual: 1232)
+- 2018: 4D 286.58 (actual: 287)
+- 2021: 4D 735.8 (actual: 736)
+- 2022: 4D 742.88 (actual: 743)
 
-1. **Resumo Financeiro** — Cards de destaque:
-   - Investimento Acumulado vs Planeado (com barra de progresso)
-   - Taxa de Execução
-   - Bónus Total (soma de assinatura + social + produção)
-   - Contribuições Regulatórias e Projectos Sociais
+**2. Dados de Poços (`wellsData`)** — Actualizar contagens com dados corrigidos do Excel (página 3, tabela resumo):
+- Vários anos com contagens ligeiramente diferentes (ex: 1970: pesquisa 4→0, avaliação 7→11; vários anos com avaliação corrigida incluindo poços de desenvolvimento classificados como avaliação)
+- Adicionar anos em falta e corrigir contagens existentes com base na tabela resumo do Excel
 
-2. **Evolução CAPEX** — Gráfico de barras (já existe `capexHistory` nos dados) mostrando Planeado vs Actual por ano, com totais
+**3. Sumário de Exploração (`explorationSummary`)** — Actualizar totais:
+- `totalWellsPesquisa`: 143 → 144
+- `totalWellsAvaliacao`: 71 → 84
+- `commercialDiscoveries`: 58 → 57
+- `nonCommercialDiscoveries`: 44 → 32
+- `dryWells`: 41 → 55
+- Recalcular `totalSeismic4DKm2` com soma precisa: ~8082 km² (actual: 340)
 
-3. **Estrutura Contratual** — Informação legal e contratual:
-   - Decreto-Lei, tipo de contrato, datas (assinatura, efectiva, período de produção)
-   - GE Inicial (consórcio inicial com percentagens)
-   - Períodos de pesquisa (fases inicial e subsequente, obrigações de poços e sísmica)
-
-4. **Condições Fiscais** — Grelha detalhada:
-   - Cost Recovery (pré e pós-produção)
-   - IRP, IPP, ITP com visualização destacada
-   - Prémios de produção e investimento
-   - Notas especiais (taxa para empresas angolanas, reduções)
-
-5. **Bónus & Obrigações** — Timeline/cards visuais:
-   - Bónus de Assinatura, Social, Produção
-   - Projectos Sociais (valor + período)
-   - Contribuição Regulatória (valor + período)
-
-6. **Notas Históricas** — Timeline com as notas contratuais históricas
-
-### Alterações Técnicas
-
-**Ficheiro: `src/pages/BlockPage.tsx`**
-- Adicionar nova `TabsTrigger` com value `"financial"` e ícone `DollarSign`, posicionada após "Visão Geral"
-- Adicionar novo `TabsContent` com value `"financial"` contendo as 6 secções acima
-- Usar Recharts `BarChart` para visualização CAPEX (reutilizando padrão existente)
-- Simplificar a aba "Visão Geral" removendo os cards financeiros/contratuais detalhados (mantendo apenas KPIs resumidos)
-
-Nenhum ficheiro novo necessário — toda a informação já está no modelo de dados `OilBlock`.
+### Ficheiro a Modificar
+- `src/data/angolaBlocks.ts` — Bloco 0: actualizar `seismicData`, `wellsData`, e `explorationSummary`
 
