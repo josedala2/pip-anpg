@@ -1,11 +1,13 @@
 import { useState, useRef } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Printer, Copy, Check } from "lucide-react";
+import { ArrowLeft, Printer, Copy, Check, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "@/components/ThemeProvider";
 import { ReportConfigurator, type ReportConfig } from "@/components/reports/ReportConfigurator";
 import { ReportPreview } from "@/components/reports/ReportPreview";
 import { toast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import { oilBlocks } from "@/data/angolaBlocks";
 import anpgLogoColor from "@/assets/anpg-logo-color.svg";
 import anpgLogoWhite from "@/assets/anpg-logo-white.svg";
 
@@ -13,14 +15,49 @@ const ReportsPage = () => {
   const { theme } = useTheme();
   const [generated, setGenerated] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [aiNarrative, setAiNarrative] = useState<string | null>(null);
+  const [aiLoading, setAiLoading] = useState(false);
   const [config, setConfig] = useState<ReportConfig>({
     reportTypes: [],
     selectedBlockIds: [],
     includeCharts: false,
     includeTables: true,
+    includeAiNarrative: false,
   });
 
-  const handleGenerate = () => setGenerated(true);
+  const handleGenerate = async () => {
+    setGenerated(true);
+    setAiNarrative(null);
+
+    if (config.includeAiNarrative) {
+      setAiLoading(true);
+      try {
+        const selectedBlocks = oilBlocks.filter(b => config.selectedBlockIds.includes(b.id));
+        const { data, error } = await supabase.functions.invoke("report-narrative", {
+          body: {
+            blocks: selectedBlocks,
+            reportTypes: config.reportTypes,
+          },
+        });
+
+        if (error) throw error;
+        if (data?.error) {
+          toast({ title: "Erro IA", description: data.error, variant: "destructive" });
+        } else {
+          setAiNarrative(data.narrative);
+        }
+      } catch (e: any) {
+        console.error("AI narrative error:", e);
+        toast({
+          title: "Erro ao gerar sumário IA",
+          description: e.message || "Tente novamente mais tarde.",
+          variant: "destructive",
+        });
+      } finally {
+        setAiLoading(false);
+      }
+    }
+  };
 
   const handlePrint = () => window.print();
 
@@ -95,7 +132,7 @@ const ReportsPage = () => {
               </p>
             </div>
           ) : (
-            <ReportPreview config={config} />
+            <ReportPreview config={config} aiNarrative={aiNarrative} aiLoading={aiLoading} />
           )}
         </main>
       </div>
