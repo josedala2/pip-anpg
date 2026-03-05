@@ -2,6 +2,7 @@ import { useState, useId, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { oilBlocks } from "@/data/angolaBlocks";
 import { ProspectsTable } from "@/components/dashboard/ProspectsTable";
+import { ChartWrapper } from "@/components/dashboard/ChartWrapper";
 import { ProspectsSummary } from "@/components/dashboard/ProspectsSummary";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -862,12 +863,8 @@ const BlockPage = () => {
                   </ToggleGroup>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 2xl:gap-6">
-                <Card className="glass-card">
-                  <CardHeader className="p-4 pb-2">
-                    <CardTitle className="text-sm 2xl:text-base">Dados Sísmicos (km)</CardTitle>
-                  </CardHeader>
-                  <CardContent className="p-4 pt-0">
-                   <ResponsiveContainer width="100%" height={400}>
+                <ChartWrapper title="Dados Sísmicos (km)" height={400} fullscreenHeight={650}>
+                    <ResponsiveContainer width="100%" height="100%">
                       <BarChart data={block.seismicData}>
                         <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                         <XAxis dataKey="year" tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} angle={-45} textAnchor="end" height={50} interval="preserveStartEnd" />
@@ -880,16 +877,11 @@ const BlockPage = () => {
                         {block.seismicData.length > 15 && <Brush dataKey="year" height={25} stroke="hsl(var(--primary))" fill="hsl(var(--muted))" travellerWidth={8} />}
                       </BarChart>
                     </ResponsiveContainer>
-                  </CardContent>
-                </Card>
+                </ChartWrapper>
 
                 {block.wellsData && block.wellsData.length > 0 && (
-                  <Card className="glass-card">
-                    <CardHeader className="p-4 pb-2">
-                      <CardTitle className="text-sm 2xl:text-base">Poços Perfurados</CardTitle>
-                    </CardHeader>
-                    <CardContent className="p-4 pt-0">
-                   <ResponsiveContainer width="100%" height={400}>
+                  <ChartWrapper title="Poços Perfurados" height={400} fullscreenHeight={650}>
+                    <ResponsiveContainer width="100%" height="100%">
                         <BarChart data={block.wellsData}>
                           <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                           <XAxis dataKey="year" tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} angle={-45} textAnchor="end" height={50} interval="preserveStartEnd" />
@@ -904,8 +896,7 @@ const BlockPage = () => {
                           {block.wellsData.length > 20 && <Brush dataKey="year" height={25} stroke="hsl(var(--primary))" fill="hsl(var(--muted))" travellerWidth={8} />}
                         </BarChart>
                       </ResponsiveContainer>
-                    </CardContent>
-                  </Card>
+                  </ChartWrapper>
                 )}
               </div>
               </>
@@ -1030,12 +1021,8 @@ const BlockPage = () => {
           {/* Tab 4: Produção */}
            <TabsContent value="production" className="space-y-4 2xl:space-y-6">
              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 2xl:gap-6">
-              <Card className="glass-card">
-                <CardHeader className="p-4 pb-2">
-                  <CardTitle className="text-sm 2xl:text-base">Tendência de Produção (12 meses)</CardTitle>
-                </CardHeader>
-                <CardContent className="p-4 pt-0">
-                   <ResponsiveContainer width="100%" height={360}>
+              <ChartWrapper title="Tendência de Produção (12 meses)" height={360} fullscreenHeight={600}>
+                   <ResponsiveContainer width="100%" height="100%">
                     <AreaChart data={block.productionHistory}>
                       <defs>
                         <linearGradient id={prodGradId} x1="0" y1="0" x2="0" y2="1">
@@ -1055,15 +1042,10 @@ const BlockPage = () => {
                       <Area type="monotone" dataKey="value" stroke="hsl(152, 69%, 40%)" fill={`url(#${prodGradId})`} strokeWidth={2} animationDuration={1000} animationEasing="ease-out" />
                     </AreaChart>
                   </ResponsiveContainer>
-                </CardContent>
-              </Card>
+              </ChartWrapper>
 
-              <Card className="glass-card">
-                <CardHeader className="p-4 pb-2">
-                  <CardTitle className="text-sm 2xl:text-base">CAPEX: Planeado vs Real ($M)</CardTitle>
-                </CardHeader>
-                <CardContent className="p-4 pt-0">
-                  <ResponsiveContainer width="100%" height={360}>
+              <ChartWrapper title="CAPEX: Planeado vs Real ($M)" height={360} fullscreenHeight={600}>
+                  <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={block.capexHistory}>
                       <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                       <XAxis dataKey="year" tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} />
@@ -1079,19 +1061,13 @@ const BlockPage = () => {
                       <Bar dataKey="actual" name="Real" fill="hsl(199, 89%, 48%)" radius={[4, 4, 0, 0]} animationDuration={800} animationEasing="ease-out" animationBegin={200} />
                     </BarChart>
                   </ResponsiveContainer>
-                </CardContent>
-              </Card>
+              </ChartWrapper>
             </div>
           </TabsContent>
 
-          {/* Tab 5: Projecções */}
           <TabsContent value="projections">
-            <Card className="glass-card">
-              <CardHeader className="p-4 pb-2">
-                <CardTitle className="text-sm 2xl:text-base">Projecções de Produção (2025–2034)</CardTitle>
-              </CardHeader>
-              <CardContent className="p-4 pt-0">
-                <ResponsiveContainer width="100%" height={450}>
+            <ChartWrapper title="Projecções de Produção (2025–2034)" height={450} fullscreenHeight={700}>
+                <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={projectionYears}>
                     <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                     <XAxis dataKey="year" tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} />
@@ -1104,8 +1080,7 @@ const BlockPage = () => {
                     <Line type="monotone" dataKey="expansion" name="Expansão" stroke="hsl(152, 69%, 40%)" strokeWidth={2} strokeDasharray="5 5" dot={false} animationDuration={1000} animationBegin={400} />
                   </LineChart>
                 </ResponsiveContainer>
-              </CardContent>
-            </Card>
+            </ChartWrapper>
           </TabsContent>
 
           {/* Tab 6: Análise SWOT */}
