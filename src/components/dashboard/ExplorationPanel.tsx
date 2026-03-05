@@ -6,6 +6,7 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGri
 import { AlertTriangle, Target, Layers, Droplets, Filter, ChevronDown, AlignVerticalJustifyStart, AlignHorizontalJustifyStart } from "lucide-react";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { ExplorationSummaryTable } from "./ExplorationSummaryTable";
+import { ChartWrapper } from "./ChartWrapper";
 import { ProspectsTable } from "./ProspectsTable";
 import { ProspectsSummary } from "./ProspectsSummary";
 import { Badge } from "@/components/ui/badge";
@@ -339,12 +340,8 @@ export const ExplorationPanel = () => {
 
       {/* Seismic Chart */}
       {seismicChartData.length > 0 && (
-        <Card className="glass-card">
-          <CardHeader className="p-4 3xl:p-6 pb-2">
-            <CardTitle className="text-sm 3xl:text-lg">Sísmica Adquirida — {scopeLabel}</CardTitle>
-          </CardHeader>
-          <CardContent className="p-4 3xl:p-6 pt-0">
-             <ResponsiveContainer width="100%" height={400}>
+        <ChartWrapper title={`Sísmica Adquirida — ${scopeLabel}`} height={400} fullscreenHeight={650}>
+             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={seismicChartData} barGap={1}>
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                 <XAxis dataKey="year" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 9 }} stroke="hsl(var(--border))" interval="preserveStartEnd" angle={-45} textAnchor="end" height={50} />
@@ -357,18 +354,13 @@ export const ExplorationPanel = () => {
                 {seismicChartData.length > 15 && <Brush dataKey="year" height={25} stroke="hsl(var(--primary))" fill="hsl(var(--muted))" travellerWidth={8} />}
               </BarChart>
             </ResponsiveContainer>
-          </CardContent>
-        </Card>
+        </ChartWrapper>
       )}
 
       {/* Wells Chart */}
       {wellsChartData.length > 0 && (
-        <Card className="glass-card">
-          <CardHeader className="p-4 3xl:p-6 pb-2">
-            <CardTitle className="text-sm 3xl:text-lg">Poços de Avaliação vs Pesquisa — {scopeLabel}</CardTitle>
-          </CardHeader>
-          <CardContent className="p-4 pt-0">
-            <ResponsiveContainer width="100%" height={400}>
+        <ChartWrapper title={`Poços de Avaliação vs Pesquisa — ${scopeLabel}`} height={400} fullscreenHeight={650}>
+            <ResponsiveContainer width="100%" height="100%">
               <BarChart data={wellsChartData} barGap={1}>
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                 <XAxis dataKey="year" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 9 }} stroke="hsl(var(--border))" interval="preserveStartEnd" angle={-45} textAnchor="end" height={50} />
@@ -383,8 +375,7 @@ export const ExplorationPanel = () => {
                 {wellsChartData.length > 20 && <Brush dataKey="year" height={25} stroke="hsl(var(--primary))" fill="hsl(var(--muted))" travellerWidth={8} />}
               </BarChart>
             </ResponsiveContainer>
-          </CardContent>
-        </Card>
+        </ChartWrapper>
       )}
 
       {/* Summary Table */}
