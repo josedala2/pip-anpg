@@ -88,16 +88,19 @@ export const ExplorationPanel = () => {
 
   // Aggregate wells data from all filtered blocks
   const wellsChartData = useMemo(() => {
-    const yearMap: Record<number, { pesquisa: number; avaliacao: number }> = {};
+    const yearMap: Record<number, { pesquisa: number; avaliacao: number; descComercial: number; descNaoComercial: number; seco: number }> = {};
     filteredBlocks.forEach(b => {
       (b.wellsData || []).forEach(d => {
-        if (!yearMap[d.year]) yearMap[d.year] = { pesquisa: 0, avaliacao: 0 };
+        if (!yearMap[d.year]) yearMap[d.year] = { pesquisa: 0, avaliacao: 0, descComercial: 0, descNaoComercial: 0, seco: 0 };
         yearMap[d.year].pesquisa += d.pesquisa;
         yearMap[d.year].avaliacao += d.avaliacao;
+        yearMap[d.year].descComercial += d.descobertaComercial || 0;
+        yearMap[d.year].descNaoComercial += d.descobertaNaoComercial || 0;
+        yearMap[d.year].seco += d.seco || 0;
       });
     });
     return Object.entries(yearMap)
-      .map(([year, v]) => ({ year, Pesquisa: v.pesquisa, Avaliação: v.avaliacao }))
+      .map(([year, v]) => ({ year, Pesquisa: v.pesquisa, Avaliação: v.avaliacao, "Desc. Comercial": v.descComercial, "Desc. N. Comercial": v.descNaoComercial, Seco: v.seco }))
       .filter(d => d.Pesquisa > 0 || d.Avaliação > 0)
       .sort((a, b) => Number(a.year) - Number(b.year));
   }, [filteredBlocks]);
@@ -356,7 +359,10 @@ export const ExplorationPanel = () => {
                 <Tooltip contentStyle={tooltipStyle} />
                 <Legend wrapperStyle={{ fontSize: 11 }} />
                 <Bar dataKey="Pesquisa" fill="hsl(var(--primary))" radius={[2, 2, 0, 0]} />
-                <Bar dataKey="Avaliação" fill="hsl(var(--warning))" radius={[2, 2, 0, 0]} />
+                <Bar dataKey="Avaliação" fill="hsl(280, 65%, 60%)" radius={[2, 2, 0, 0]} />
+                <Bar dataKey="Desc. Comercial" fill="hsl(var(--success))" radius={[2, 2, 0, 0]} />
+                <Bar dataKey="Desc. N. Comercial" fill="hsl(var(--warning))" radius={[2, 2, 0, 0]} />
+                <Bar dataKey="Seco" fill="hsl(var(--danger))" radius={[2, 2, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
