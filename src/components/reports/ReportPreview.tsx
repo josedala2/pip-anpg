@@ -4,7 +4,16 @@ import type { ReportConfig, ReportType } from "./ReportConfigurator";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
+import {
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
+  ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line,
+} from "recharts";
 import anpgLogoColor from "@/assets/anpg-logo-color.svg";
+
+const CHART_COLORS = [
+  "hsl(var(--chart-1))", "hsl(var(--chart-2))", "hsl(var(--chart-3))",
+  "hsl(var(--chart-4))", "hsl(var(--chart-5))",
+];
 
 interface Props {
   config: ReportConfig;
@@ -33,14 +42,45 @@ const SectionTitle = ({ children }: { children: React.ReactNode }) => (
   </h2>
 );
 
+// ─── CHART WRAPPER ────────────────────────────────────────
+const ChartCard = ({ title, children }: { title: string; children: React.ReactNode }) => (
+  <div className="p-4 rounded-lg border border-border bg-card mb-4 print:break-inside-avoid">
+    <p className="text-xs font-medium text-muted-foreground mb-3">{title}</p>
+    {children}
+  </div>
+);
+
+const axisStyle = { fontSize: 11, fill: "hsl(var(--muted-foreground))" };
+const gridStroke = "hsl(var(--border))";
+
 // ─── EXECUTIVE SUMMARY ────────────────────────────────────
-const ExecutiveSection = ({ blocks, showTables }: { blocks: OilBlock[]; showTables: boolean }) => {
+const ExecutiveSection = ({ blocks, showTables, showCharts }: { blocks: OilBlock[]; showTables: boolean; showCharts: boolean }) => {
   const totals = useMemo(() => ({
     production: blocks.reduce((s, b) => s + b.dailyProduction, 0),
     reserves: blocks.reduce((s, b) => s + b.estimatedReserves, 0),
     investment: blocks.reduce((s, b) => s + b.accumulatedInvestment, 0),
     planned: blocks.reduce((s, b) => s + b.plannedInvestment, 0),
   }), [blocks]);
+
+  const productionData = useMemo(() =>
+    blocks.filter(b => b.dailyProduction > 0).map(b => ({ name: b.name, value: b.dailyProduction })),
+    [blocks]
+  );
+
+  const investmentData = useMemo(() =>
+    blocks.map(b => ({ name: b.name, acumulado: b.accumulatedInvestment, planeado: b.plannedInvestment })),
+    [blocks]
+  );
+
+  const capexData = useMemo(() => {
+    const yearMap: Record<string, { year: string; planned: number; actual: number }> = {};
+    blocks.forEach(b => b.capexHistory.forEach(c => {
+      if (!yearMap[c.year]) yearMap[c.year] = { year: c.year, planned: 0, actual: 0 };
+      yearMap[c.year].planned += c.planned;
+      yearMap[c.year].actual += c.actual;
+    }));
+    return Object.values(yearMap).sort((a, b) => a.year.localeCompare(b.year));
+  }, [blocks]);
 
   return (
     <>
@@ -58,6 +98,55 @@ const ExecutiveSection = ({ blocks, showTables }: { blocks: OilBlock[]; showTabl
           </div>
         ))}
       </div>
+
+      {showCharts && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+          {productionData.length > 0 && (
+            <ChartCard title="Produção por Bloco (BOPD)">
+              <ResponsiveContainer width="100%" height={250}>
+                <PieChart>
+                  <Pie data={productionData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={90} label={({ name, percent }) => `${name} (${(percent * 100).toFixed(0)}%)`} labelLine={false} style={{ fontSize: 10 }}>
+                    {productionData.map((_, i) => <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />)}
+                  </Pie>
+                  <Tooltip formatter={(v: number) => formatNumber(v)} contentStyle={{ background: "hsl(var(--popover))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }} />
+                </PieChart>
+              </ResponsiveContainer>
+            </ChartCard>
+          )}
+
+          {investmentData.length > 0 && (
+            <ChartCard title="Investimento por Bloco (M USD)">
+              <ResponsiveContainer width="100%" height={250}>
+                <BarChart data={investmentData} margin={{ left: 10, right: 10 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} />
+                  <XAxis dataKey="name" tick={axisStyle} angle={-30} textAnchor="end" height={60} />
+                  <YAxis tick={axisStyle} />
+                  <Tooltip contentStyle={{ background: "hsl(var(--popover))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }} />
+                  <Legend wrapperStyle={{ fontSize: 11 }} />
+                  <Bar dataKey="acumulado" name="Acumulado" fill={CHART_COLORS[0]} radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="planeado" name="Planeado" fill={CHART_COLORS[1]} radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </ChartCard>
+          )}
+
+          {capexData.length > 0 && (
+            <ChartCard title="CAPEX Agregado — Planeado vs Real (M USD)">
+              <ResponsiveContainer width="100%" height={250}>
+                <LineChart data={capexData} margin={{ left: 10, right: 10 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} />
+                  <XAxis dataKey="year" tick={axisStyle} />
+                  <YAxis tick={axisStyle} />
+                  <Tooltip contentStyle={{ background: "hsl(var(--popover))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }} />
+                  <Legend wrapperStyle={{ fontSize: 11 }} />
+                  <Line type="monotone" dataKey="planned" name="Planeado" stroke={CHART_COLORS[2]} strokeWidth={2} dot={{ r: 3 }} />
+                  <Line type="monotone" dataKey="actual" name="Real" stroke={CHART_COLORS[0]} strokeWidth={2} dot={{ r: 3 }} />
+                </LineChart>
+              </ResponsiveContainer>
+            </ChartCard>
+          )}
+        </div>
+      )}
 
       {showTables && (
         <Table>
@@ -128,9 +217,42 @@ const ContractualSection = ({ blocks, showTables }: { blocks: OilBlock[]; showTa
 );
 
 // ─── EXPLORATION ──────────────────────────────────────────
-const ExplorationSection = ({ blocks, showTables }: { blocks: OilBlock[]; showTables: boolean }) => (
+const ExplorationSection = ({ blocks, showTables, showCharts }: { blocks: OilBlock[]; showTables: boolean; showCharts: boolean }) => {
+  const prodHistoryData = useMemo(() => {
+    if (!showCharts) return [];
+    const monthMap: Record<string, Record<string, number>> = {};
+    blocks.forEach(b => {
+      b.productionHistory.slice(-12).forEach(p => {
+        if (!monthMap[p.month]) monthMap[p.month] = {};
+        monthMap[p.month][b.name] = p.value;
+      });
+    });
+    return Object.entries(monthMap).map(([month, vals]) => ({ month, ...vals })).sort((a, b) => a.month.localeCompare(b.month));
+  }, [blocks, showCharts]);
+
+  const blockNames = blocks.map(b => b.name);
+
+  return (
   <>
     <SectionTitle>Exploração & Produção</SectionTitle>
+
+    {showCharts && prodHistoryData.length > 0 && (
+      <ChartCard title="Histórico de Produção — Últimos 12 Meses (BOPD)">
+        <ResponsiveContainer width="100%" height={280}>
+          <LineChart data={prodHistoryData} margin={{ left: 10, right: 10 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} />
+            <XAxis dataKey="month" tick={axisStyle} />
+            <YAxis tick={axisStyle} />
+            <Tooltip contentStyle={{ background: "hsl(var(--popover))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }} />
+            <Legend wrapperStyle={{ fontSize: 11 }} />
+            {blockNames.map((name, i) => (
+              <Line key={name} type="monotone" dataKey={name} stroke={CHART_COLORS[i % CHART_COLORS.length]} strokeWidth={2} dot={{ r: 2 }} />
+            ))}
+          </LineChart>
+        </ResponsiveContainer>
+      </ChartCard>
+    )}
+
     {showTables && (
       <Table>
         <TableHeader>
@@ -180,7 +302,8 @@ const ExplorationSection = ({ blocks, showTables }: { blocks: OilBlock[]; showTa
       </div>
     ))}
   </>
-);
+  );
+};
 
 // ─── CONSORTIUM ───────────────────────────────────────────
 const ConsortiumSection = ({ blocks, showTables }: { blocks: OilBlock[]; showTables: boolean }) => (
@@ -291,13 +414,13 @@ export const ReportPreview = ({ config }: Props) => {
       </p>
 
       {config.reportTypes.includes("executive") && (
-        <ExecutiveSection blocks={blocks} showTables={config.includeTables} />
+        <ExecutiveSection blocks={blocks} showTables={config.includeTables} showCharts={config.includeCharts} />
       )}
       {config.reportTypes.includes("contractual") && (
         <ContractualSection blocks={blocks} showTables={config.includeTables} />
       )}
       {config.reportTypes.includes("exploration") && (
-        <ExplorationSection blocks={blocks} showTables={config.includeTables} />
+        <ExplorationSection blocks={blocks} showTables={config.includeTables} showCharts={config.includeCharts} />
       )}
       {config.reportTypes.includes("consortium") && (
         <ConsortiumSection blocks={blocks} showTables={config.includeTables} />
