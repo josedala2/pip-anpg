@@ -130,7 +130,7 @@ export const ChartWrapper = ({
       </Card>
 
       <Dialog open={isFullscreen} onOpenChange={setIsFullscreen}>
-        <DialogContent className="max-w-[95vw] w-[95vw] max-h-[95vh] h-auto bg-card border-border p-0 gap-0">
+        <DialogContent className="max-w-[95vw] w-[95vw] max-h-[95vh] h-auto bg-card border-border p-0 gap-0 [&>button[class*='absolute']]:hidden">
           <div ref={fullscreenChartRef} className="p-6 relative">
             <DialogHeader className="pb-4">
               <div className="flex items-center justify-between">
