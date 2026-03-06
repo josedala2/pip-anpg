@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft, Droplets, DollarSign, ShieldCheck, TrendingUp, Users, Activity, Target, Layers, BarChart3, MapPin, Brain, FileText, Landmark, Building2, Clock, Scale, ArrowRight, History, BookOpen, ExternalLink, AlertTriangle, Crosshair, Search, Filter, AlignVerticalJustifyStart, AlignHorizontalJustifyStart, Download, FileSpreadsheet, FileDown } from "lucide-react";
+import { ArrowLeft, Droplets, DollarSign, ShieldCheck, TrendingUp, Users, Activity, Target, Layers, BarChart3, MapPin, Brain, FileText, Landmark, Building2, Clock, Scale, ArrowRight, History, BookOpen, ExternalLink, AlertTriangle, Crosshair, Search, Filter, AlignVerticalJustifyStart, AlignHorizontalJustifyStart, Download, FileSpreadsheet, FileDown, Leaf } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { exportToCsv, exportToExcel, exportToPdf } from "@/lib/exportFinancial";
 import { toast } from "@/hooks/use-toast";
@@ -16,6 +16,7 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { SwotAnalysis } from "@/components/dashboard/SwotAnalysis";
+import { HSEEnvironmentTab } from "@/components/dashboard/HSEEnvironmentTab";
 import type { LegislationDocument, ContractInfo } from "@/data/angolaBlocks";
 import {
   PieChart, Pie, Cell, AreaChart, Area, BarChart, Bar, LineChart, Line,
@@ -294,9 +295,10 @@ const BlockPage = () => {
               <TabsTrigger value="consortium" className="gap-1.5 text-xs 2xl:text-sm"><Users className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Consórcio</TabsTrigger>
              <TabsTrigger value="exploration" className="gap-1.5 text-xs 2xl:text-sm"><Target className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Exploração</TabsTrigger>
              <TabsTrigger value="production" className="gap-1.5 text-xs 2xl:text-sm"><BarChart3 className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Produção</TabsTrigger>
-             <TabsTrigger value="projections" className="gap-1.5 text-xs 2xl:text-sm"><TrendingUp className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Projecções</TabsTrigger>
-              <TabsTrigger value="swot" className="gap-1.5 text-xs 2xl:text-sm"><Brain className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Análise SWOT</TabsTrigger>
-              <TabsTrigger value="legislation" className="gap-1.5 text-xs 2xl:text-sm"><BookOpen className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Documentos & Legislação</TabsTrigger>
+              <TabsTrigger value="projections" className="gap-1.5 text-xs 2xl:text-sm"><TrendingUp className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Projecções</TabsTrigger>
+               <TabsTrigger value="hse" className="gap-1.5 text-xs 2xl:text-sm"><Leaf className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />HSE & Ambiente</TabsTrigger>
+               <TabsTrigger value="swot" className="gap-1.5 text-xs 2xl:text-sm"><Brain className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Análise SWOT</TabsTrigger>
+               <TabsTrigger value="legislation" className="gap-1.5 text-xs 2xl:text-sm"><BookOpen className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Documentos & Legislação</TabsTrigger>
            </TabsList>
 
           {/* Tab 1: Visão Geral */}
@@ -1086,7 +1088,18 @@ const BlockPage = () => {
             </ChartWrapper>
           </TabsContent>
 
-          {/* Tab 6: Análise SWOT */}
+          {/* Tab: HSE & Ambiente */}
+          <TabsContent value="hse" className="space-y-4 2xl:space-y-6">
+            <HSEEnvironmentTab
+              hseData={block.hseData}
+              environmentalData={block.environmentalData}
+              facilityData={block.facilityData}
+              economicVision={block.economicVision}
+              revitalizationScenarios={block.revitalizationScenarios}
+            />
+          </TabsContent>
+
+          {/* Tab: Análise SWOT */}
           <TabsContent value="swot" className="space-y-4">
             <SwotAnalysis block={block} />
           </TabsContent>

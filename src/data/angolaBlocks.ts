@@ -114,7 +114,76 @@ export interface InvestmentPlanYear {
   exploracao: number;    // MMUSD
   desenvolvimento: number;
   operacao: number;
+  adminServicos?: number;
+  cashCallSonangol?: number;
   total: number;
+}
+
+// HSE & Environmental data
+export interface HSEIndicators {
+  year: number;
+  fat: number;   // Fatalities
+  lti: number;   // Lost Time Incidents
+  rwc: number;   // Restricted Work Cases
+  mtc: number;   // Medical Treatment Cases
+  fac: number;   // First Aid Cases
+  nmi: number;   // Near Miss Incidents
+  hhr: number;   // Hours worked (millions)
+  trir: number;  // Total Recordable Incident Rate
+  ltir: number;  // Lost Time Incident Rate
+}
+
+export interface EnvironmentalYearData {
+  year: number;
+  oilSpillCount?: number;
+  oilSpillVolumeBbl?: number;
+  oilInWaterPPM?: number;
+  co2EmissionsTonCO2eq?: number;
+  gasFlaredMMSCFD?: number;
+  gasFlaredTarget?: number;
+}
+
+export interface FacilityArea {
+  name: string;
+  efficiency: number; // percentage
+  platforms: string[];
+  issues?: string[];
+}
+
+export interface FacilityData {
+  areas: FacilityArea[];
+  activeWells: { op: number; wi: number; gi: number };
+  production2025Bbls?: number;
+  productionLossesBbls?: number;
+  overallEfficiency?: number; // percentage
+  capacityBOPD?: number;
+  terminalName?: string;
+  productionStartYear?: number;
+  endOfLifeYear?: number;
+  endOfLifeField?: string;
+  cumulativeProductionBO?: number;
+}
+
+export interface NPVBreakdown {
+  label: string;
+  valueMM: number;
+  percentage: number;
+}
+
+export interface EconomicVision {
+  npvFullcycle?: NPVBreakdown[];
+  npvPointForward?: NPVBreakdown[];
+  cashFlowNotes?: string[];
+  strategicObservations?: string[];
+}
+
+export interface RevitalizationScenario {
+  id: number;
+  title: string;
+  description: string;
+  proposals: string[];
+  incentives?: string[];
+  commitments?: string[];
 }
 
 export interface EconomicData {
@@ -174,6 +243,11 @@ export interface OilBlock {
   explorationSummary?: ExplorationSummary;
   legislationDocs?: LegislationDocument[];
   economicData?: EconomicData;
+  hseData?: HSEIndicators[];
+  environmentalData?: EnvironmentalYearData[];
+  facilityData?: FacilityData;
+  economicVision?: EconomicVision;
+  revitalizationScenarios?: RevitalizationScenario[];
 }
 
 export const oilBlocks: OilBlock[] = [
@@ -186,8 +260,8 @@ export const oilBlocks: OilBlock[] = [
     phase: "Production",
     waterDepth: "Shallow Water",
     contractDate: "1995-06-15",
-    dailyProduction: 142000,
-    estimatedReserves: 890,
+    dailyProduction: 119285,
+    estimatedReserves: 421,
     accumulatedInvestment: 4200,
     plannedInvestment: 4500,
     executionRate: 93,
@@ -201,10 +275,10 @@ export const oilBlocks: OilBlock[] = [
     ],
     mapPosition: { x: 18, y: 62 },
     productionHistory: [
-      { month: "Jan", value: 138000 }, { month: "Feb", value: 140000 }, { month: "Mar", value: 141000 },
-      { month: "Apr", value: 139500 }, { month: "May", value: 142000 }, { month: "Jun", value: 143000 },
-      { month: "Jul", value: 141500 }, { month: "Aug", value: 142000 }, { month: "Sep", value: 140000 },
-      { month: "Oct", value: 141000 }, { month: "Nov", value: 142500 }, { month: "Dec", value: 142000 },
+      { month: "Jan", value: 121000 }, { month: "Feb", value: 120500 }, { month: "Mar", value: 119800 },
+      { month: "Apr", value: 118500 }, { month: "May", value: 119000 }, { month: "Jun", value: 120200 },
+      { month: "Jul", value: 119500 }, { month: "Aug", value: 118800 }, { month: "Sep", value: 119100 },
+      { month: "Oct", value: 119500 }, { month: "Nov", value: 119200 }, { month: "Dec", value: 119285 },
     ],
     capexHistory: [
       { year: "2020", planned: 800, actual: 780 }, { year: "2021", planned: 850, actual: 830 },
@@ -406,16 +480,16 @@ export const oilBlocks: OilBlock[] = [
       { title: "Consolidação Áreas B e C", type: "nota", date: "2002-06-01", description: "Com efeito a partir de 1 de Junho de 2002, as Áreas B e C são consolidadas numa só Área designada B" },
     ],
     prospects: [
-      { discoveryArea: "Takula", name: "Takula Deep", reservoir: "Pinda", resourcesMMBO: 180, resourcesBCF: 45, pos: 62 },
-      { discoveryArea: "Takula", name: "Takula South Extension", reservoir: "Pinda", resourcesMMBO: 95, resourcesBCF: 22, pos: 48 },
-      { discoveryArea: "Malongo", name: "Malongo West Flank", reservoir: "Vermelha", resourcesMMBO: 120, resourcesBCF: 30, pos: 55 },
-      { discoveryArea: "Malongo", name: "Malongo Deep Pinda", reservoir: "Pinda", resourcesMMBO: 250, resourcesBCF: 180, pos: 35 },
-      { discoveryArea: "Limba", name: "Limba Norte Extension", reservoir: "Albian Carbonates", resourcesMMBO: 65, pos: 42 },
-      { discoveryArea: "Wamba", name: "Wamba-NE", reservoir: "Pinda", resourcesMMBO: 45, resourcesBCF: 12, pos: 38 },
-      { discoveryArea: "Nemba", name: "Nemba Pre-Salt", reservoir: "Pre-Salt", resourcesMMBO: 320, resourcesBCF: 250, pos: 22 },
-      { discoveryArea: "Nemba", name: "Nemba Albian", reservoir: "Albian Carbonates", resourcesMMBO: 140, resourcesBCF: 55, pos: 30 },
-      { discoveryArea: "Sanha", name: "Sanha Condensate South", reservoir: "Pinda", resourcesMMBO: 85, resourcesBCF: 420, pos: 45 },
-      { discoveryArea: "Sanha", name: "Sanha Deep Pinda", reservoir: "Pinda", resourcesMMBO: 195, resourcesBCF: 310, pos: 28 },
+      { discoveryArea: "Mafumeira", name: "105-B", reservoir: "Pinda", resourcesMMBO: 45, pos: 35 },
+      { discoveryArea: "Sanha", name: "131-A", reservoir: "Pinda", resourcesMMBO: 38, pos: 40 },
+      { discoveryArea: "Kungulo", name: "107-C", reservoir: "Pinda", resourcesMMBO: 52, pos: 30 },
+      { discoveryArea: "Takula", name: "83-N", reservoir: "Pinda", resourcesMMBO: 28, pos: 45 },
+      { discoveryArea: "Vuco", name: "71-T", reservoir: "Pinda", resourcesMMBO: 33, pos: 38 },
+      { discoveryArea: "Malongo", name: "70-G", reservoir: "Vermelha", resourcesMMBO: 41, pos: 32 },
+      { discoveryArea: "Nemba", name: "95-I", reservoir: "Pre-Salt", resourcesMMBO: 65, pos: 25 },
+      { discoveryArea: "Wamba", name: "79-F", reservoir: "Pinda", resourcesMMBO: 22, pos: 42 },
+      { discoveryArea: "Banzala", name: "68-D", reservoir: "Pinda", resourcesMMBO: 18, pos: 48 },
+      { discoveryArea: "Sanha", name: "80-J", reservoir: "Pinda", resourcesMMBO: 30, pos: 36 },
     ],
     economicData: {
       costHistory: [
@@ -424,11 +498,11 @@ export const oilBlocks: OilBlock[] = [
         { period: "2026-2050", capex: 3873, opex: 22855 },
       ],
       investmentPlan: [
-        { year: 2026, exploracao: 168, desenvolvimento: 825, operacao: 1160, total: 2011 },
-        { year: 2027, exploracao: 175, desenvolvimento: 759, operacao: 1217, total: 1851 },
-        { year: 2028, exploracao: 169, desenvolvimento: 654, operacao: 1161, total: 1595 },
-        { year: 2029, exploracao: 228, desenvolvimento: 684, operacao: 1200, total: 1669 },
-        { year: 2030, exploracao: 228, desenvolvimento: 656, operacao: 1195, total: 1600 },
+        { year: 2026, exploracao: 168, desenvolvimento: 825, operacao: 1160, adminServicos: 58, cashCallSonangol: -200, total: 2011 },
+        { year: 2027, exploracao: 175, desenvolvimento: 759, operacao: 1217, adminServicos: 62, cashCallSonangol: -180, total: 1851 },
+        { year: 2028, exploracao: 169, desenvolvimento: 654, operacao: 1161, adminServicos: 55, cashCallSonangol: -160, total: 1595 },
+        { year: 2029, exploracao: 228, desenvolvimento: 684, operacao: 1200, adminServicos: 60, cashCallSonangol: -150, total: 1669 },
+        { year: 2030, exploracao: 228, desenvolvimento: 656, operacao: 1195, adminServicos: 58, cashCallSonangol: -140, total: 1600 },
       ],
       productionShareGE: [
         { year: 2026, mmbo: 48 },
@@ -457,6 +531,98 @@ export const oilBlocks: OilBlock[] = [
         "Plano quinquenal 2026-2030 totaliza MMUSD 8.726 em investimentos (Exploração + Desenvolvimento + Operação).",
       ],
     },
+    // HSE Safety Indicators (2021-2025)
+    hseData: [
+      { year: 2021, fat: 0, lti: 1, rwc: 2, mtc: 5, fac: 12, nmi: 45, hhr: 28.5, trir: 0.28, ltir: 0.04 },
+      { year: 2022, fat: 0, lti: 0, rwc: 1, mtc: 3, fac: 10, nmi: 52, hhr: 27.8, trir: 0.14, ltir: 0.00 },
+      { year: 2023, fat: 0, lti: 1, rwc: 0, mtc: 4, fac: 8, nmi: 48, hhr: 26.9, trir: 0.19, ltir: 0.04 },
+      { year: 2024, fat: 0, lti: 0, rwc: 1, mtc: 2, fac: 7, nmi: 55, hhr: 26.2, trir: 0.11, ltir: 0.00 },
+      { year: 2025, fat: 0, lti: 0, rwc: 0, mtc: 1, fac: 6, nmi: 60, hhr: 25.8, trir: 0.04, ltir: 0.00 },
+    ],
+    // Environmental data (2021-2025)
+    environmentalData: [
+      { year: 2021, oilSpillCount: 8, oilSpillVolumeBbl: 12, oilInWaterPPM: 5.17, co2EmissionsTonCO2eq: 3700000, gasFlaredMMSCFD: 17.519, gasFlaredTarget: 15 },
+      { year: 2022, oilSpillCount: 6, oilSpillVolumeBbl: 8, oilInWaterPPM: 5.10, co2EmissionsTonCO2eq: 3500000, gasFlaredMMSCFD: 15.2, gasFlaredTarget: 14 },
+      { year: 2023, oilSpillCount: 5, oilSpillVolumeBbl: 5, oilInWaterPPM: 4.75, co2EmissionsTonCO2eq: 3300000, gasFlaredMMSCFD: 13.8, gasFlaredTarget: 13 },
+      { year: 2024, oilSpillCount: 3, oilSpillVolumeBbl: 3, oilInWaterPPM: 4.66, co2EmissionsTonCO2eq: 3200000, gasFlaredMMSCFD: 11.9, gasFlaredTarget: 12 },
+      { year: 2025, oilSpillCount: 2, oilSpillVolumeBbl: 1, oilInWaterPPM: 6.53, co2EmissionsTonCO2eq: 3100000, gasFlaredMMSCFD: 10.54, gasFlaredTarget: 11 },
+    ],
+    // Facility status
+    facilityData: {
+      areas: [
+        {
+          name: "Área A",
+          efficiency: 85,
+          platforms: ["Takula", "GIP-FOX", "Mafumeira"],
+          issues: ["Corrosão avançada nas plataformas antigas", "Obsolescência de equipamentos de controlo", "Integridade estrutural comprometida em Takula"],
+        },
+        {
+          name: "Área B",
+          efficiency: 91,
+          platforms: ["Sanha", "Sanha LPG", "Nembas", "East Kwanza (EK)", "West Kwanza (WK)"],
+          issues: ["Manutenção crescente nos sistemas de compressão"],
+        },
+      ],
+      activeWells: { op: 358, wi: 78, gi: 27 },
+      production2025Bbls: 43539025,
+      productionLossesBbls: 2830691,
+      overallEfficiency: 88,
+      capacityBOPD: 400000,
+      terminalName: "Malongo Terminal",
+      productionStartYear: 1968,
+      endOfLifeYear: 2040,
+      endOfLifeField: "Mafumeira Sul",
+      cumulativeProductionBO: 290043686705,
+    },
+    // Economic Vision (NPV analysis)
+    economicVision: {
+      npvFullcycle: [
+        { label: "GE", valueMM: 54410, percentage: 17 },
+        { label: "Impostos", valueMM: 272177, percentage: 83 },
+      ],
+      npvPointForward: [
+        { label: "GE", valueMM: 1840, percentage: 37 },
+        { label: "Concessionária", valueMM: 3098, percentage: 63 },
+      ],
+      cashFlowNotes: [
+        "Cash flows negativos recorrentes para o GE nos últimos anos",
+        "Receita insuficiente para cobrir OPEX crescente",
+        "Investimentos de manutenção consomem maior parte do orçamento",
+      ],
+      strategicObservations: [
+        "Bloco maduro com mais de 55 anos de produção",
+        "Infraestruturas envelhecidas necessitam de investimento significativo",
+        "Declínio natural da produção acelera custos unitários",
+        "NPV Point Forward do GE reduzido a 37% da partilha total",
+      ],
+    },
+    // Revitalization scenarios
+    revitalizationScenarios: [
+      {
+        id: 1,
+        title: "Continuidade do GE com Incentivos Fiscais",
+        description: "Manutenção do grupo empreiteiro actual com revisão do regime fiscal para incentivar investimento contínuo.",
+        proposals: ["Redução temporária do IRP", "Extensão do período de cost recovery", "Isenção fiscal para projectos de manutenção de integridade"],
+        incentives: ["Redução do IRP de 65,75% para 50% durante 5 anos", "Cost recovery aumentado para 25% pós-produção"],
+        commitments: ["Programa de investimento mínimo de MMUSD 500/ano", "Manutenção de emprego local acima de 80%"],
+      },
+      {
+        id: 2,
+        title: "Investidor Âncora para Exploração",
+        description: "Entrada de um novo investidor estratégico focado na revitalização da exploração nas áreas livres adjacentes.",
+        proposals: ["Farm-in para áreas de exploração não desenvolvidas", "Campanha sísmica 3D em áreas sub-exploradas", "Perfuração de 5 poços exploratórios em 3 anos"],
+        incentives: ["Bónus de assinatura reduzido", "Período de pesquisa de 7 anos com extensão automática"],
+        commitments: ["Investimento mínimo de MMUSD 300 em exploração", "Utilização de infraestrutura existente do Bloco 0"],
+      },
+      {
+        id: 3,
+        title: "Novo Investidor em Áreas Livres (Modelo CPP)",
+        description: "Atribuição de áreas devolvidas a novo operador sob Contrato de Partilha de Produção (CPP).",
+        proposals: ["Licitação internacional para áreas devolvidas", "Modelo CPP com termos competitivos", "Integração com infraestrutura existente"],
+        incentives: ["Termos fiscais adaptados ao risco exploratório", "Acesso à infraestrutura do Malongo Terminal"],
+        commitments: ["Programa de trabalho mínimo definido na licitação", "Conteúdo local obrigatório de 70%"],
+      },
+    ],
   },
   {
     id: "block-14",
