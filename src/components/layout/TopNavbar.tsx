@@ -36,7 +36,7 @@ export const TopNavbar = () => {
       <Link to="/" className="flex items-center gap-3 shrink-0">
         <img src={anpgLogoWhite} alt="ANPG" className="h-8" />
         <div className="hidden md:block">
-          <h1 className="text-sm font-bold leading-tight">Sistema de Gestão de Concessões</h1>
+          <h1 className="text-sm font-bold leading-tight">ANPG Concession Vision</h1>
           <p className="text-[10px] text-white/60 leading-tight">Plataforma de Inteligência Petrolífera</p>
         </div>
       </Link>
