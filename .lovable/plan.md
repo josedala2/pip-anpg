@@ -1,78 +1,75 @@
 
 
-## Plan: Adopt Reference Project Design System
+# Integração de Dados Detalhados do Bloco 0
 
-### Analysis of Reference Design (angola-concessions-insight)
+## Dados Identificados nas Imagens de Referência
 
-From the screenshot, the reference project uses:
-- **Dark top navbar** (dark red/black gradient) with ANPG logo, title "Sistema de Gestão de Concessões", top-level nav links (Início, Concessões, Produção, Relatórios), search bar, notifications bell, and user avatar
-- **Left sidebar** with menu sections (MENU PRINCIPAL: Dashboard, Upstream, Produção, Financeiro, Compliance, Documentos, Mapa GIS, Relatórios; ADMINISTRAÇÃO: Auditoria, Administração), ANPG branding at bottom
-- **Breadcrumbs** below the navbar
-- **Clean white content area** with large heading "Dashboard Executivo", subtitle, and a red "Nova Concessão" button
-- **Quick-action cards** in a row (Dados de Produção, Compliance, Gerar Relatório) with red-tinted circular icons and arrow indicators
-- **KPI stat cards** in a 6-column grid with uppercase labels, large mono numbers, trend indicators
-- **Chart + sidebar alerts layout** (production trend chart alongside compliance alerts list)
-- **Font**: Inter (already in use), clean and professional
-- **Color scheme**: White background, dark navbar, red (#f4323f) accents for buttons and highlights, green for positive trends
+Analisei as 9 imagens da ANPG e identifiquei as seguintes categorias de dados novos que ainda não existem no modelo:
 
-### What Changes
+### 1. Segurança e Ambiente (HSE) — Dados Completamente Novos
+- **Indicadores de segurança** (2021-2025): FAT, LTI, RWC, MTC, FAC, NMI
+- **Taxas**: HHR, TRIR, LTIR por ano
+- **Derrames de óleo**: contagem e volume (bbl)
+- **Concentração de óleo em água** (PPM): 5.17, 5.1, 4.75, 4.66, 6.53
+- **Emissões CO2** (ton CO2eq): ~3.7M (2021) descendo para ~3.1M (2025)
+- **Gás queimado** (MMSCFD): 17.519 → 10.54, com metas
 
-This is a major layout restructure - transforming from a panel/tab presentation-style layout to a traditional **sidebar + navbar + main content** dashboard.
+### 2. Estado das Instalações — Dados Novos
+- **Área A (Eficiência 85%)**: Takula, GIP-FOX, Mafumeira; problemas de corrosão e obsolescência
+- **Área B (Eficiência 91%)**: Sanha, Sanha LPG, Nembas, EK, WK
+- **Poços activos**: 358 OP, 78 WI, 27 GI
+- **Produção 2025**: 43.539.025 bbls, perdas 2.830.691 bbls, eficiência 88%
+- **Capacidade de produção**: 400.000 BOPD (Malongo Terminal)
+- **Produção média 4T2025**: 119.285 BOPD
+- **Reservas actuais**: 421 MMBO
+- **Início de produção**: 1968
+- **Vida útil**: até 2040 (Mafumeira Sul)
 
-#### 1. Create Shared Layout Component (`src/components/layout/DashboardLayout.tsx`)
-- **Dark top navbar**: ANPG logo, "Sistema de Gestão de Concessões" title, nav links, search input, notification bell, user avatar
-- **Left sidebar** (~200px): Collapsible, with grouped menu items matching the reference (Dashboard, Upstream, Produção, Financeiro, Compliance, Documentos, Mapa GIS, Relatórios, plus ADMINISTRAÇÃO section), ANPG branding at bottom
-- **Main content area**: Breadcrumbs at top, scrollable content below
-- Active menu item highlighted with red left border
+### 3. Visão Económica — Dados Novos
+- **NPV Fullcycle**: GE 17% (54.410), Impostos 83% (272.177)
+- **NPV Point Forward**: GE 37% (1.840 MMUSD), Conc 63% (3.098 MMUSD)
+- **Cash flows negativos recorrentes para o GE**
+- **Observações**: bloco maduro, infraestruturas envelhecidas
 
-#### 2. Create Sidebar Component (`src/components/layout/Sidebar.tsx`)
-- Menu items with icons, grouped by section
-- Active state with red accent
-- Collapsible sub-menus (e.g., Upstream > sub-items)
-- Bottom branding block ("ANPG / Sector Petrolífero / República de Angola")
+### 4. Cenários de Revitalização — Dados Novos
+- **Cenário 1**: Continuidade do GE com incentivos fiscais
+- **Cenário 2**: Investidor âncora para exploração
+- **Cenário 3**: Novo investidor em áreas livres (modelo CPP)
 
-#### 3. Create Top Navbar Component (`src/components/layout/TopNavbar.tsx`)
-- Dark background (dark red/charcoal gradient)
-- ANPG white logo + "Sistema de Gestão de Concessões" + "Plataforma de Inteligência Petrolífera"
-- Center nav links: Início, Concessões, Produção, Relatórios
-- Right: Search bar, notification bell with badge, user avatar with name/role dropdown
+### 5. Ajustes aos Dados Existentes
+- **dailyProduction**: atualizar de 142.000 para 119.285 (dado real 4T2025)
+- **estimatedReserves**: atualizar de 890 para 421 MMBO (dado real)
+- **Produção acumulada**: 290.043.686.705 BO (até Dez 2025)
+- **investmentPlan**: adicionar categorias "Administração e Serviços" e linha "Cash Call Sonangol"
+- **Prospects**: atualizar com tabela real (105-B, 131-A, 107-C, 83-N, 71-T, 70-G, 95-I, 79-F, 68-D, 80-J) com distâncias ao FPSO
 
-#### 4. Redesign Index Page (Dashboard Executivo)
-- Remove current panel/tab navigation system
-- Replace with the reference layout:
-  - Page header: "Dashboard Executivo" + subtitle + date badge + red "Nova Concessão" button
-  - 3 quick-action cards row (Dados de Produção, Compliance, Gerar Relatório) with circular red icons
-  - 6 KPI stat cards in a grid (Total Concessões, Activas, Operadores, Petróleo, Gás, Receita Est.)
-  - 2-column layout: Production Trend chart (left ~70%) + Compliance Alerts list (right ~30%)
-  - Bottom row: Produção por Bacia bar chart + Produção por Operador horizontal bars
-- Move existing panels (Blocos, Exploração, Risk, Strategic) to separate sidebar-navigable pages
+## Plano de Implementação
 
-#### 5. Update CSS/Design Tokens
-- Add dark navbar CSS variables
-- Add sidebar styling
-- Ensure the clean white content area styling
-- Keep existing ANPG red tokens
+### Ficheiro 1: `src/data/angolaBlocks.ts` — Novos tipos e dados
 
-#### 6. Update Routing (`src/App.tsx`)
-- Wrap all pages in the new `DashboardLayout`
-- Add routes for the sidebar menu items that currently exist as panels
+**Novas interfaces**:
+- `HSEData` — indicadores de segurança por ano (FAT, LTI, RWC, MTC, FAC, NMI, HHR, TRIR, LTIR)
+- `EnvironmentalData` — derrames, óleo em água, emissões, gás queimado por ano
+- `FacilityData` — eficiência por área, plataformas, poços activos, capacidades
+- `EconomicVision` — NPV fullcycle, point forward, observações estratégicas
+- `RevitalizationScenario` — cenários com propostas, incentivos e compromissos
 
-#### 7. Update BlockPage and ReportsPage
-- Wrap in the shared layout
-- Keep existing content but ensure consistent header/breadcrumb pattern
+**Actualizar `OilBlock`** com campos opcionais: `hseData?`, `environmentalData?`, `facilityData?`, `economicVision?`, `revitalizationScenarios?`
 
-### Technical Details
+**Actualizar Block 0**:
+- Corrigir `dailyProduction` para 119.285
+- Corrigir `estimatedReserves` para 421
+- Adicionar production acumulada
+- Substituir prospects pela tabela real da ANPG
+- Popular todos os novos campos com dados das imagens
 
-**New files:**
-- `src/components/layout/DashboardLayout.tsx` - Main layout wrapper
-- `src/components/layout/TopNavbar.tsx` - Dark top navbar
-- `src/components/layout/Sidebar.tsx` - Left sidebar navigation
+### Ficheiro 2: `src/pages/BlockPage.tsx` — Novas secções de visualização
 
-**Modified files:**
-- `src/pages/Index.tsx` - Complete redesign to dashboard layout
-- `src/App.tsx` - Updated routing with layout wrapper
-- `src/index.css` - New navbar/sidebar CSS tokens
-- `tailwind.config.ts` - Any needed color additions
+Adicionar novas abas ou secções nas abas existentes:
+- **Aba "Visão Geral"**: integrar dados de instalações (eficiência, poços, plataformas)
+- **Aba "Financeiro"**: adicionar NPV charts (pie charts), cash flow projection
+- **Nova aba "HSE & Ambiente"**: tabela de indicadores de segurança, gráficos de derrames/emissões/gás queimado
+- **Aba "Exploração"**: adicionar secção de Desafios e Cenários de Revitalização
 
-**Preserved:** All existing data, charts, and component logic. The panels content moves to routable pages accessible via sidebar.
+### Estimativa: 4 ficheiros, ~500 linhas novas
 
