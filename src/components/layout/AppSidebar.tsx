@@ -42,7 +42,7 @@ export function AppSidebar() {
     path === "/" ? location.pathname === "/" : location.pathname.startsWith(path);
 
   return (
-    <Sidebar collapsible="icon" className="border-r-0 bg-sidebar overflow-hidden h-auto top-0 !sticky">
+    <Sidebar collapsible="icon" className="border-r-0 bg-sidebar overflow-hidden !h-full [&>div]:!h-full [&_[data-sidebar=sidebar]]:!h-full [&_[data-sidebar=sidebar]]:!static">
       <SidebarContent className="px-2 pt-3">
         {/* Main Menu */}
         <SidebarGroup>
