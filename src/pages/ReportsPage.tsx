@@ -25,6 +25,7 @@ const ReportsPage = () => {
     includeCharts: false,
     includeTables: true,
     includeAiNarrative: false,
+    pdfOrientation: "portrait",
   });
 
   const handleGenerate = async () => {
@@ -70,7 +71,7 @@ const ReportsPage = () => {
         .filter(b => config.selectedBlockIds.includes(b.id))
         .map(b => b.id)
         .join("_");
-      await exportReportPdf("report-content", `relatorio_ANPG_${blockNames}.pdf`);
+      await exportReportPdf("report-content", `relatorio_ANPG_${blockNames}.pdf`, config.pdfOrientation);
       toast({ title: "PDF exportado!", description: "Ficheiro PDF gerado com sucesso." });
     } catch (e: any) {
       console.error("PDF export error:", e);
