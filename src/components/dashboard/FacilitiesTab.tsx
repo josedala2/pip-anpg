@@ -11,6 +11,7 @@ import {
   Loader2, CalendarClock, Image as ImageIcon
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { FacilitiesSchematic } from "./FacilitiesSchematic";
 
 interface Props {
   facilityData: FacilityData;
@@ -148,6 +149,9 @@ export const FacilitiesTab = ({ facilityData }: Props) => {
           </Card>
         ))}
       </div>
+
+      {/* Interactive Schematic Diagram */}
+      <FacilitiesSchematic />
 
       {/* Platform Specifications Table */}
       {specs.length > 0 && (
