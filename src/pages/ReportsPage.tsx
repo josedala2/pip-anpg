@@ -110,60 +110,44 @@ const ReportsPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      {/* Header — hidden on print */}
-      <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-border/50 print:hidden">
-        <div className="flex items-center justify-between px-4 md:px-6 py-3">
-          <div className="flex items-center gap-3">
-            <Link to="/" className="p-2 rounded-lg hover:bg-secondary transition-colors">
-              <ArrowLeft className="w-4 h-4" />
-            </Link>
-            <img
-              src={theme === "dark" ? anpgLogoWhite : anpgLogoColor}
-              alt="ANPG Logo"
-              className="h-8 md:h-10"
-            />
-            <div>
-              <h1 className="text-lg md:text-xl font-bold tracking-tight">
-                <span className="text-gradient">Relatórios</span>
-                <span className="text-muted-foreground font-light ml-2">Automáticos</span>
-              </h1>
-              <p className="text-[10px] md:text-xs text-muted-foreground">Geração de relatórios personalizados</p>
-            </div>
+    <div className="min-h-[calc(100vh-56px)] bg-background text-foreground">
+      {/* Action bar — hidden on print */}
+      {generated && (
+        <div className="sticky top-0 z-30 bg-background/80 backdrop-blur-xl border-b border-border/50 print:hidden px-4 md:px-6 py-3 flex items-center justify-between">
+          <h2 className="text-lg font-bold tracking-tight">
+            <span className="text-gradient">Relatórios</span>
+            <span className="text-muted-foreground font-light ml-2">Automáticos</span>
+          </h2>
+          <div className="flex items-center gap-2">
+            {config.reportTypes.includes("financial") && (
+              <>
+                <Button variant="outline" size="sm" onClick={() => {
+                  const selectedBlocks = oilBlocks.filter(b => config.selectedBlockIds.includes(b.id));
+                  exportToExcel(selectedBlocks, "relatorio_financeiro.xlsx");
+                  toast({ title: "Exportado!", description: "Ficheiro Excel gerado com sucesso." });
+                }} className="gap-1.5">
+                  <FileSpreadsheet className="w-3.5 h-3.5" />Excel
+                </Button>
+                <Button variant="outline" size="sm" onClick={() => {
+                  const selectedBlocks = oilBlocks.filter(b => config.selectedBlockIds.includes(b.id));
+                  exportToCsv(selectedBlocks, "relatorio_financeiro.csv");
+                  toast({ title: "Exportado!", description: "Ficheiro CSV gerado com sucesso." });
+                }} className="gap-1.5">
+                  <FileDown className="w-3.5 h-3.5" />CSV
+                </Button>
+              </>
+            )}
+            <Button variant="outline" size="sm" onClick={handleCopy} className="gap-1.5">
+              {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+              {copied ? "Copiado" : "Copiar"}
+            </Button>
+            <Button variant="anpg" size="sm" onClick={handlePrint} className="gap-1.5" disabled={pdfLoading}>
+              {pdfLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Printer className="w-3.5 h-3.5" />}
+              {pdfLoading ? "A gerar…" : "Exportar PDF"}
+            </Button>
           </div>
-
-          {generated && (
-            <div className="flex items-center gap-2">
-              {config.reportTypes.includes("financial") && (
-                <>
-                  <Button variant="outline" size="sm" onClick={() => {
-                    const selectedBlocks = oilBlocks.filter(b => config.selectedBlockIds.includes(b.id));
-                    exportToExcel(selectedBlocks, "relatorio_financeiro.xlsx");
-                    toast({ title: "Exportado!", description: "Ficheiro Excel gerado com sucesso." });
-                  }} className="gap-1.5">
-                    <FileSpreadsheet className="w-3.5 h-3.5" />Excel
-                  </Button>
-                  <Button variant="outline" size="sm" onClick={() => {
-                    const selectedBlocks = oilBlocks.filter(b => config.selectedBlockIds.includes(b.id));
-                    exportToCsv(selectedBlocks, "relatorio_financeiro.csv");
-                    toast({ title: "Exportado!", description: "Ficheiro CSV gerado com sucesso." });
-                  }} className="gap-1.5">
-                    <FileDown className="w-3.5 h-3.5" />CSV
-                  </Button>
-                </>
-              )}
-              <Button variant="outline" size="sm" onClick={handleCopy} className="gap-1.5">
-                {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
-                {copied ? "Copiado" : "Copiar"}
-              </Button>
-              <Button variant="anpg" size="sm" onClick={handlePrint} className="gap-1.5" disabled={pdfLoading}>
-                {pdfLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Printer className="w-3.5 h-3.5" />}
-                {pdfLoading ? "A gerar…" : "Exportar PDF"}
-              </Button>
-            </div>
-          )}
         </div>
-      </header>
+      )}
 
       {/* Layout */}
       <div className="flex flex-col lg:flex-row">
