@@ -205,11 +205,13 @@ export const HSEEnvironmentTab = ({ hseData, environmentalData, facilityData, ec
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {hseData.map(row => (
-                  <TableRow key={row.year}>
+                {hseData.map(row => {
+                  const allZero = row.fat === 0 && row.lti === 0 && row.rwc === 0 && row.mtc === 0 && row.fac === 0;
+                  return (
+                  <TableRow key={row.year} className={allZero ? "bg-success/5" : row.fat > 0 ? "bg-danger/5" : ""}>
                     <TableCell className="font-mono font-bold text-xs">{row.year}</TableCell>
-                    <TableCell className={`text-center font-mono text-xs ${row.fat > 0 ? "text-danger font-bold" : "text-success"}`}>{row.fat}</TableCell>
-                    <TableCell className={`text-center font-mono text-xs ${row.lti > 0 ? "text-warning font-bold" : "text-success"}`}>{row.lti}</TableCell>
+                    <TableCell className={`text-center font-mono text-xs ${row.fat > 0 ? "text-danger font-bold bg-danger/10" : "text-success"}`}>{row.fat}</TableCell>
+                    <TableCell className={`text-center font-mono text-xs ${row.lti > 0 ? "text-warning font-bold bg-warning/10" : "text-success"}`}>{row.lti}</TableCell>
                     <TableCell className="text-center font-mono text-xs">{row.rwc}</TableCell>
                     <TableCell className="text-center font-mono text-xs">{row.mtc}</TableCell>
                     <TableCell className="text-center font-mono text-xs">{row.fac}</TableCell>
@@ -218,9 +220,26 @@ export const HSEEnvironmentTab = ({ hseData, environmentalData, facilityData, ec
                     <TableCell className="text-center font-mono text-xs font-bold">{row.trir.toFixed(2)}</TableCell>
                     <TableCell className="text-center font-mono text-xs">{row.ltir.toFixed(2)}</TableCell>
                   </TableRow>
-                ))}
+                  );
+                })}
               </TableBody>
             </Table>
+            {/* Color Legend */}
+            <div className="flex items-center gap-4 mt-3 pt-3 border-t border-border/30">
+              <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Legenda:</span>
+              <div className="flex items-center gap-1.5">
+                <span className="w-3 h-3 rounded-sm bg-success/20 border border-success/40" />
+                <span className="text-[10px] text-muted-foreground">Zero incidentes</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="w-3 h-3 rounded-sm bg-warning/20 border border-warning/40" />
+                <span className="text-[10px] text-muted-foreground">LTI (tempo perdido)</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="w-3 h-3 rounded-sm bg-danger/20 border border-danger/40" />
+                <span className="text-[10px] text-muted-foreground">FAT (fatalidade)</span>
+              </div>
+            </div>
           </CardContent>
         </Card>
       )}
