@@ -3,7 +3,7 @@ import { oilBlocks } from "@/data/angolaBlocks";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
-import { FileText, X, Sparkles } from "lucide-react";
+import { FileText, X, Sparkles, RectangleHorizontal, RectangleVertical } from "lucide-react";
 
 export type ReportType =
   | "executive"
@@ -19,6 +19,7 @@ export interface ReportConfig {
   includeCharts: boolean;
   includeTables: boolean;
   includeAiNarrative: boolean;
+  pdfOrientation: "portrait" | "landscape";
 }
 
 const reportTypeLabels: Record<ReportType, { label: string; description: string }> = {
@@ -185,6 +186,33 @@ export const ReportConfigurator = ({ config, onChange, onGenerate }: Props) => {
               Sumário narrativo com IA
             </span>
           </label>
+          <div className="pt-2">
+            <p className="text-xs text-muted-foreground mb-2">Orientação PDF</p>
+            <div className="flex gap-2">
+              <button
+                onClick={() => onChange({ ...config, pdfOrientation: "portrait" })}
+                className={`flex items-center gap-1.5 px-3 py-2 rounded-lg border text-xs font-medium transition-all ${
+                  config.pdfOrientation === "portrait"
+                    ? "border-primary bg-primary/10 text-foreground"
+                    : "border-border text-muted-foreground hover:border-primary/30"
+                }`}
+              >
+                <RectangleVertical className="w-3.5 h-3.5" />
+                Retrato
+              </button>
+              <button
+                onClick={() => onChange({ ...config, pdfOrientation: "landscape" })}
+                className={`flex items-center gap-1.5 px-3 py-2 rounded-lg border text-xs font-medium transition-all ${
+                  config.pdfOrientation === "landscape"
+                    ? "border-primary bg-primary/10 text-foreground"
+                    : "border-border text-muted-foreground hover:border-primary/30"
+                }`}
+              >
+                <RectangleHorizontal className="w-3.5 h-3.5" />
+                Paisagem
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 

@@ -8,7 +8,8 @@ import anpgLogoColor from "@/assets/anpg-logo-color.svg";
  */
 export const exportReportPdf = async (
   reportElementId = "report-content",
-  filename = "relatorio_ANPG.pdf"
+  filename = "relatorio_ANPG.pdf",
+  orientation: "portrait" | "landscape" = "portrait"
 ) => {
   const node = document.getElementById(reportElementId);
   if (!node) throw new Error("Report element not found");
@@ -47,9 +48,10 @@ export const exportReportPdf = async (
       img.src = dataUrl;
     });
 
-    // A4 dimensions in mm
-    const pageW = 210;
-    const pageH = 297;
+    // A4 dimensions in mm (swap for landscape)
+    const isLandscape = orientation === "landscape";
+    const pageW = isLandscape ? 297 : 210;
+    const pageH = isLandscape ? 210 : 297;
     const marginX = 12;
     const marginTop = 28; // space for header
     const marginBottom = 18; // space for footer
@@ -61,7 +63,7 @@ export const exportReportPdf = async (
     const scaledImgH = contentW * imgAspect;
     const totalPages = Math.ceil(scaledImgH / contentH);
 
-    const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+    const pdf = new jsPDF({ orientation, unit: "mm", format: "a4" });
 
     // Load ANPG logo as base64 for header
     let logoBase64: string | null = null;
