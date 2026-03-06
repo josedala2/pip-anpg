@@ -150,6 +150,9 @@ export const FacilitiesTab = ({ facilityData }: Props) => {
         ))}
       </div>
 
+      {/* Interactive Schematic Diagram */}
+      <FacilitiesSchematic />
+
       {/* Platform Specifications Table */}
       {specs.length > 0 && (
         <Card className="glass-card">
