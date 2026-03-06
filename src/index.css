@@ -160,6 +160,21 @@
     min-height: 0 !important;
     height: 100% !important;
   }
+  /* Override shadcn fixed sidebar to sit below navbar */
+  .group\/sidebar-wrapper > div > [data-sidebar="sidebar"] {
+    position: relative !important;
+    height: 100% !important;
+    inset: unset !important;
+  }
+  .group\/sidebar-wrapper > div {
+    height: 100% !important;
+  }
+  /* Remove min-h-svh from sidebar wrapper and content */
+  .group\/sidebar-wrapper,
+  .group\/sidebar-wrapper > div,
+  [data-sidebar="sidebar"] {
+    min-height: 0 !important;
+  }
 
   /* Scale base font for ultra-wide / 4K screens */
   @media (min-width: 1920px) {
