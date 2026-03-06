@@ -1,7 +1,9 @@
-import { Link, useLocation } from "react-router-dom";
-import { Search, Bell, User, Sun, Moon } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Search, Bell, User, Sun, Moon, LogOut } from "lucide-react";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useTheme } from "@/components/ThemeProvider";
+import { useAuth } from "@/components/auth/AuthProvider";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import anpgLogoWhite from "@/assets/anpg-logo-white.svg";
 
 const navLinks = [
