@@ -15,7 +15,17 @@ const navLinks = [
 
 export const TopNavbar = () => {
   const { theme, toggleTheme } = useTheme();
+  const { profile, user, signOut } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
+
+  const displayName = profile?.full_name || user?.email?.split("@")[0] || "Utilizador";
+  const displayCargo = profile?.cargo || "ANPG";
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate("/auth");
+  };
 
   return (
     <header className="h-14 flex items-center px-4 gap-4 border-b border-border/30 bg-navbar text-navbar-foreground shrink-0">
