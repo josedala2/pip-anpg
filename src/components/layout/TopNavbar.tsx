@@ -16,7 +16,7 @@ const navLinks = [
 export const TopNavbar = () => {
   const { theme, toggleTheme } = useTheme();
   const { profile, user, signOut } = useAuth();
-  const location = useLocation();
+  
   const navigate = useNavigate();
 
   const displayName = profile?.full_name || user?.email?.split("@")[0] || "Utilizador";
