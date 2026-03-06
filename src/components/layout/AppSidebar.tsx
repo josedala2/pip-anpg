@@ -45,7 +45,7 @@ export function AppSidebar() {
     <Sidebar collapsible="icon" className="border-r border-sidebar-border bg-sidebar">
       <SidebarContent className="pt-2">
         {/* Main Menu */}
-        <SidebarGroup defaultOpen>
+        <SidebarGroup>
           {!collapsed && (
             <SidebarGroupLabel className="text-[10px] uppercase tracking-widest text-sidebar-foreground/50 font-semibold px-3 mb-1">
               Menu Principal
@@ -77,7 +77,7 @@ export function AppSidebar() {
         </SidebarGroup>
 
         {/* Admin Menu */}
-        <SidebarGroup defaultOpen>
+        <SidebarGroup>
           {!collapsed && (
             <SidebarGroupLabel className="text-[10px] uppercase tracking-widest text-sidebar-foreground/50 font-semibold px-3 mb-1 mt-4">
               Administração
