@@ -159,20 +159,24 @@ const Index = () => {
           }`}
         >
           {activePanel === 0 && (
-            <div className="relative" style={{ height: "calc(100vh - 110px)" }}>
-              <ConcessionMap
-                blocks={filteredBlocks}
-                selectedBlockId={selectedBlock?.id ?? null}
-                hoveredBlockId={hoveredBlockId}
-                onBlockClick={() => {}}
-                onBlockHover={setHoveredBlockId}
-              />
-              <OverviewSidebar
-                filteredIds={filteredIds}
-                selectedBlock={selectedBlock}
-                onBlockSelect={setSelectedBlock}
-                onFilterChange={handleFilterChange}
-              />
+            <div className="flex" style={{ height: "calc(100vh - 110px)" }}>
+              <div className="flex-[6] min-w-0 relative">
+                <ConcessionMap
+                  blocks={filteredBlocks}
+                  selectedBlockId={selectedBlock?.id ?? null}
+                  hoveredBlockId={hoveredBlockId}
+                  onBlockClick={() => {}}
+                  onBlockHover={setHoveredBlockId}
+                />
+              </div>
+              <div className="flex-[4] min-w-[340px] max-w-[520px]">
+                <OverviewSidebar
+                  filteredIds={filteredIds}
+                  selectedBlock={selectedBlock}
+                  onBlockSelect={setSelectedBlock}
+                  onFilterChange={handleFilterChange}
+                />
+              </div>
             </div>
           )}
 
