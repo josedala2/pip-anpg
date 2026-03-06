@@ -12,6 +12,7 @@ const navLinks = [
 ];
 
 export const TopNavbar = () => {
+  const { theme, toggleTheme } = useTheme();
   const location = useLocation();
 
   return (
