@@ -151,14 +151,30 @@
   }
 
   /* Sidebar fits below navbar instead of full viewport */
-  [data-sidebar="sidebar"] {
-    height: 100% !important;
-    position: relative !important;
-    top: auto !important;
-  }
   .group\/sidebar-wrapper {
     min-height: 0 !important;
     height: 100% !important;
+  }
+  /* Override shadcn's fixed full-height sidebar to sit below navbar */
+  .group\/sidebar-wrapper > div {
+    height: 100% !important;
+    min-height: 0 !important;
+  }
+  /* The spacer div */
+  .group\/sidebar-wrapper > div > div:first-child {
+    height: 100% !important;
+    min-height: 0 !important;
+  }
+  /* The actual fixed sidebar panel — make it relative and contained */
+  .group\/sidebar-wrapper > div > div.md\:flex {
+    position: relative !important;
+    inset: unset !important;
+    height: 100% !important;
+    min-height: 0 !important;
+  }
+  [data-sidebar="sidebar"] {
+    height: 100% !important;
+    min-height: 0 !important;
   }
 
   /* Scale base font for ultra-wide / 4K screens */
