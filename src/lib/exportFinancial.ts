@@ -169,9 +169,7 @@ export const exportToExcel = async (blocks: OilBlock[], filename?: string) => {
   XLSX.writeFile(wb, filename || `financeiro_${blocks.map(b => b.id).join("_")}.xlsx`);
 };
 
-export const exportToPdf = () => {
-  window.print();
-};
+export { exportReportPdf as exportToPdf } from "@/lib/exportPdf";
 
 // ─── UTIL ─────────────────────────────────────────────────
 const downloadBlob = (blob: Blob, filename: string) => {

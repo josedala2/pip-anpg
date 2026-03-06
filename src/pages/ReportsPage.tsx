@@ -1,7 +1,8 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Printer, Copy, Check, Sparkles, FileSpreadsheet, FileDown } from "lucide-react";
+import { ArrowLeft, Printer, Copy, Check, Sparkles, FileSpreadsheet, FileDown, Loader2 } from "lucide-react";
 import { exportToCsv, exportToExcel } from "@/lib/exportFinancial";
+import { exportReportPdf } from "@/lib/exportPdf";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "@/components/ThemeProvider";
 import { ReportConfigurator, type ReportConfig } from "@/components/reports/ReportConfigurator";
@@ -60,7 +61,24 @@ const ReportsPage = () => {
     }
   };
 
-  const handlePrint = () => window.print();
+  const [pdfLoading, setPdfLoading] = useState(false);
+
+  const handlePrint = async () => {
+    setPdfLoading(true);
+    try {
+      const blockNames = oilBlocks
+        .filter(b => config.selectedBlockIds.includes(b.id))
+        .map(b => b.id)
+        .join("_");
+      await exportReportPdf("report-content", `relatorio_ANPG_${blockNames}.pdf`);
+      toast({ title: "PDF exportado!", description: "Ficheiro PDF gerado com sucesso." });
+    } catch (e: any) {
+      console.error("PDF export error:", e);
+      toast({ title: "Erro", description: "Não foi possível gerar o PDF.", variant: "destructive" });
+    } finally {
+      setPdfLoading(false);
+    }
+  };
 
   const handleCopy = async () => {
     const el = document.getElementById("report-content");
@@ -122,9 +140,9 @@ const ReportsPage = () => {
                 {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
                 {copied ? "Copiado" : "Copiar"}
               </Button>
-              <Button size="sm" onClick={handlePrint} className="gap-1.5">
-                <Printer className="w-3.5 h-3.5" />
-                Exportar PDF
+              <Button size="sm" onClick={handlePrint} className="gap-1.5" disabled={pdfLoading}>
+                {pdfLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Printer className="w-3.5 h-3.5" />}
+                {pdfLoading ? "A gerar…" : "Exportar PDF"}
               </Button>
             </div>
           )}
