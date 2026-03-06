@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { exportToCsv, exportToExcel } from "@/lib/exportFinancial";
 import { oilBlocks, type OilBlock } from "@/data/angolaBlocks";
 import type { ReportConfig, ReportType } from "./ReportConfigurator";
 import {
@@ -505,6 +506,156 @@ const LegislationSection = ({ blocks }: { blocks: OilBlock[] }) => {
   );
 };
 
+// ─── FINANCIAL / ECONOMIC ─────────────────────────────────
+const FinancialSection = ({ blocks, showTables, showCharts }: { blocks: OilBlock[]; showTables: boolean; showCharts: boolean }) => {
+  const blocksWithEco = blocks.filter(b => b.economicData);
+
+  return (
+    <>
+      <SectionTitle>Económico & Financeiro</SectionTitle>
+      <Prose>
+        {blocksWithEco.length > 0
+          ? `${blocksWithEco.length} dos ${blocks.length} blocos seleccionados possuem dados económicos detalhados (custos, plano de investimentos, partilha de produção e abandono).`
+          : `Nenhum dos blocos seleccionados possui dados económicos detalhados. Dados de CAPEX e investimento genéricos são apresentados abaixo.`}
+      </Prose>
+
+      {/* Export buttons */}
+      <div className="flex gap-2 mb-4 print:hidden">
+        <button
+          onClick={() => exportToExcel(blocks, "relatorio_financeiro.xlsx")}
+          className="px-3 py-1.5 text-xs rounded-lg border border-border bg-card hover:bg-secondary transition-colors flex items-center gap-1.5"
+        >
+          📊 Exportar Excel
+        </button>
+        <button
+          onClick={() => exportToCsv(blocks, "relatorio_financeiro.csv")}
+          className="px-3 py-1.5 text-xs rounded-lg border border-border bg-card hover:bg-secondary transition-colors flex items-center gap-1.5"
+        >
+          📋 Exportar CSV
+        </button>
+      </div>
+
+      {blocksWithEco.map(b => {
+        const eco = b.economicData!;
+        return (
+          <div key={b.id} className="mb-6 p-4 rounded-lg border border-border bg-card print:break-inside-avoid">
+            <h3 className="text-sm font-semibold text-foreground mb-3">{b.name}</h3>
+
+            {/* Cost History */}
+            {showTables && eco.costHistory && eco.costHistory.length > 0 && (
+              <div className="mb-4">
+                <p className="text-xs font-medium text-muted-foreground mb-2">Custos Incorridos & Previsão (MMUSD)</p>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Período</TableHead>
+                      <TableHead className="text-right">CAPEX</TableHead>
+                      <TableHead className="text-right">OPEX</TableHead>
+                      <TableHead className="text-right">Total</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {eco.costHistory.map(c => (
+                      <TableRow key={c.period}>
+                        <TableCell className="font-medium">{c.period}</TableCell>
+                        <TableCell className="text-right">{formatNumber(c.capex)}</TableCell>
+                        <TableCell className="text-right">{formatNumber(c.opex)}</TableCell>
+                        <TableCell className="text-right font-semibold">{formatNumber(c.capex + c.opex)}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            )}
+
+            {/* Investment Plan */}
+            {showTables && eco.investmentPlan && eco.investmentPlan.length > 0 && (
+              <div className="mb-4">
+                <p className="text-xs font-medium text-muted-foreground mb-2">Plano de Investimentos Quinquenal (MMUSD)</p>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Ano</TableHead>
+                      <TableHead className="text-right">Exploração</TableHead>
+                      <TableHead className="text-right">Desenvolvimento</TableHead>
+                      <TableHead className="text-right">Operação</TableHead>
+                      <TableHead className="text-right">Total</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {eco.investmentPlan.map(y => (
+                      <TableRow key={y.year}>
+                        <TableCell className="font-medium">{y.year}</TableCell>
+                        <TableCell className="text-right">{formatNumber(y.exploracao)}</TableCell>
+                        <TableCell className="text-right">{formatNumber(y.desenvolvimento)}</TableCell>
+                        <TableCell className="text-right">{formatNumber(y.operacao)}</TableCell>
+                        <TableCell className="text-right font-semibold">{formatNumber(y.total)}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            )}
+
+            {/* Production Share */}
+            {showTables && eco.productionShareGE && eco.productionShareGE.length > 0 && (
+              <div className="mb-4">
+                <p className="text-xs font-medium text-muted-foreground mb-2">Partilha de Produção GE (MMBO)</p>
+                <div className="grid grid-cols-5 gap-2">
+                  {eco.productionShareGE.map(p => (
+                    <div key={p.year} className="text-center p-2 rounded-lg bg-secondary/30">
+                      <div className="text-xs text-muted-foreground">{p.year}</div>
+                      <div className="font-bold font-mono">{p.mmbo}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* KPIs row */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-3">
+              {eco.abandonment && (
+                <>
+                  <div className="p-2 rounded-lg bg-secondary/30 text-center">
+                    <div className="text-[9px] uppercase text-muted-foreground">Abandono Total</div>
+                    <div className="font-bold font-mono text-sm">${formatNumber(eco.abandonment.total)}M</div>
+                  </div>
+                  <div className="p-2 rounded-lg bg-secondary/30 text-center">
+                    <div className="text-[9px] uppercase text-muted-foreground">Fundo Depositado</div>
+                    <div className="font-bold font-mono text-sm">${formatNumber(eco.abandonment.fundingDeposited)}M</div>
+                  </div>
+                </>
+              )}
+              {eco.opexPerBarrel != null && (
+                <div className="p-2 rounded-lg bg-secondary/30 text-center">
+                  <div className="text-[9px] uppercase text-muted-foreground">OPEX/bbl ({eco.opexPerBarrelYear})</div>
+                  <div className="font-bold font-mono text-sm">${eco.opexPerBarrel}</div>
+                </div>
+              )}
+              {eco.sonangolDebt != null && (
+                <div className="p-2 rounded-lg bg-secondary/30 text-center">
+                  <div className="text-[9px] uppercase text-muted-foreground">Dívida Sonangol</div>
+                  <div className="font-bold font-mono text-sm">${formatNumber(eco.sonangolDebt)}M</div>
+                </div>
+              )}
+            </div>
+
+            {/* Observations */}
+            {eco.observations && eco.observations.length > 0 && (
+              <div className="mt-3 pt-2 border-t border-border/50">
+                <p className="text-xs font-medium text-muted-foreground mb-1">Observações Estratégicas:</p>
+                <ul className="text-xs text-muted-foreground space-y-0.5 list-disc pl-4">
+                  {eco.observations.map((obs, i) => <li key={i}>{obs}</li>)}
+                </ul>
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </>
+  );
+};
+
 // ─── DETAIL HELPER ────────────────────────────────────────
 const Detail = ({ label, value }: { label: string; value: string }) => (
   <div className="py-0.5">
@@ -555,6 +706,7 @@ const reportTitles: Record<ReportType, string> = {
   exploration: "Exploração & Produção",
   consortium: "Consórcio & Participações",
   legislation: "Legislação & Documentos",
+  financial: "Económico & Financeiro",
 };
 
 export const ReportPreview = ({ config, aiNarrative, aiLoading }: Props) => {
@@ -592,6 +744,9 @@ export const ReportPreview = ({ config, aiNarrative, aiLoading }: Props) => {
       )}
       {config.reportTypes.includes("legislation") && (
         <LegislationSection blocks={blocks} />
+      )}
+      {config.reportTypes.includes("financial") && (
+        <FinancialSection blocks={blocks} showTables={config.includeTables} showCharts={config.includeCharts} />
       )}
     </div>
   );

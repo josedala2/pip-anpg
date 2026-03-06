@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Printer, Copy, Check, Sparkles } from "lucide-react";
+import { ArrowLeft, Printer, Copy, Check, Sparkles, FileSpreadsheet, FileDown } from "lucide-react";
+import { exportToCsv, exportToExcel } from "@/lib/exportFinancial";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "@/components/ThemeProvider";
 import { ReportConfigurator, type ReportConfig } from "@/components/reports/ReportConfigurator";
@@ -99,6 +100,24 @@ const ReportsPage = () => {
 
           {generated && (
             <div className="flex items-center gap-2">
+              {config.reportTypes.includes("financial") && (
+                <>
+                  <Button variant="outline" size="sm" onClick={() => {
+                    const selectedBlocks = oilBlocks.filter(b => config.selectedBlockIds.includes(b.id));
+                    exportToExcel(selectedBlocks, "relatorio_financeiro.xlsx");
+                    toast({ title: "Exportado!", description: "Ficheiro Excel gerado com sucesso." });
+                  }} className="gap-1.5">
+                    <FileSpreadsheet className="w-3.5 h-3.5" />Excel
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={() => {
+                    const selectedBlocks = oilBlocks.filter(b => config.selectedBlockIds.includes(b.id));
+                    exportToCsv(selectedBlocks, "relatorio_financeiro.csv");
+                    toast({ title: "Exportado!", description: "Ficheiro CSV gerado com sucesso." });
+                  }} className="gap-1.5">
+                    <FileDown className="w-3.5 h-3.5" />CSV
+                  </Button>
+                </>
+              )}
               <Button variant="outline" size="sm" onClick={handleCopy} className="gap-1.5">
                 {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
                 {copied ? "Copiado" : "Copiar"}

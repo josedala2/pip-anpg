@@ -8,7 +8,10 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft, Droplets, DollarSign, ShieldCheck, TrendingUp, Users, Activity, Target, Layers, BarChart3, MapPin, Brain, FileText, Landmark, Building2, Clock, Scale, ArrowRight, History, BookOpen, ExternalLink, AlertTriangle, Crosshair, Search, Filter, AlignVerticalJustifyStart, AlignHorizontalJustifyStart } from "lucide-react";
+import { ArrowLeft, Droplets, DollarSign, ShieldCheck, TrendingUp, Users, Activity, Target, Layers, BarChart3, MapPin, Brain, FileText, Landmark, Building2, Clock, Scale, ArrowRight, History, BookOpen, ExternalLink, AlertTriangle, Crosshair, Search, Filter, AlignVerticalJustifyStart, AlignHorizontalJustifyStart, Download, FileSpreadsheet, FileDown } from "lucide-react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { exportToCsv, exportToExcel, exportToPdf } from "@/lib/exportFinancial";
+import { toast } from "@/hooks/use-toast";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -1106,11 +1109,32 @@ const BlockPage = () => {
 
               return (
                 <>
-                  {/* Section 1: Resumo Financeiro */}
-                  <div>
-                    <h3 className="text-sm 2xl:text-base font-semibold mb-3 flex items-center gap-2">
+                  {/* Export dropdown */}
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-sm 2xl:text-base font-semibold flex items-center gap-2">
                       <DollarSign className="w-4 h-4 text-warning" />Resumo Financeiro
                     </h3>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="outline" size="sm" className="gap-1.5 text-xs">
+                          <Download className="w-3.5 h-3.5" />Exportar
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="bg-card border-border">
+                        <DropdownMenuItem onClick={() => exportToPdf()} className="gap-2 text-xs cursor-pointer">
+                          <FileText className="w-3.5 h-3.5" />PDF (Imprimir)
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={async () => { await exportToExcel([block], `financeiro_${block.id}.xlsx`); toast({ title: "Exportado!", description: "Ficheiro Excel gerado com sucesso." }); }} className="gap-2 text-xs cursor-pointer">
+                          <FileSpreadsheet className="w-3.5 h-3.5" />Excel (.xlsx)
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => { exportToCsv([block], `financeiro_${block.id}.csv`); toast({ title: "Exportado!", description: "Ficheiro CSV gerado com sucesso." }); }} className="gap-2 text-xs cursor-pointer">
+                          <FileDown className="w-3.5 h-3.5" />CSV
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+                  {/* Section 1: Resumo Financeiro */}
+                  <div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 2xl:gap-5">
                       <Card className="glass-card">
                         <CardContent className="p-4 2xl:p-6">
