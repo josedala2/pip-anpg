@@ -109,6 +109,34 @@ export interface ContractInfo {
   historicalNotes?: string[];
 }
 
+export interface InvestmentPlanYear {
+  year: number;
+  exploracao: number;    // MMUSD
+  desenvolvimento: number;
+  operacao: number;
+  total: number;
+}
+
+export interface EconomicData {
+  costHistory?: {
+    period: string;
+    capex: number;   // MMUSD
+    opex: number;
+  }[];
+  investmentPlan?: InvestmentPlanYear[];
+  productionShareGE?: { year: number; mmbo: number }[];
+  abandonment?: {
+    total: number;
+    fundingRequired: number;
+    fundingDeposited: number;
+  };
+  opexPerBarrel?: number;   // USD/BO
+  opexPerBarrelYear?: number;
+  sonangolDebt?: number;
+  stateRevenueShare?: { period: string; percentage: number }[];
+  observations?: string[];
+}
+
 export interface OilBlock {
   id: string;
   name: string;
@@ -145,6 +173,7 @@ export interface OilBlock {
   contractInfo?: ContractInfo;
   explorationSummary?: ExplorationSummary;
   legislationDocs?: LegislationDocument[];
+  economicData?: EconomicData;
 }
 
 export const oilBlocks: OilBlock[] = [
@@ -181,6 +210,9 @@ export const oilBlocks: OilBlock[] = [
       { year: "2020", planned: 800, actual: 780 }, { year: "2021", planned: 850, actual: 830 },
       { year: "2022", planned: 900, actual: 870 }, { year: "2023", planned: 950, actual: 920 },
       { year: "2024", planned: 1000, actual: 980 },
+      { year: "2026", planned: 993, actual: 0 }, { year: "2027", planned: 934, actual: 0 },
+      { year: "2028", planned: 823, actual: 0 }, { year: "2029", planned: 912, actual: 0 },
+      { year: "2030", planned: 884, actual: 0 },
     ],
     projections: {
       conservative: [140000, 136000, 131000, 126000, 120000, 114000, 108000, 102000, 96000, 90000],
@@ -385,6 +417,46 @@ export const oilBlocks: OilBlock[] = [
       { discoveryArea: "Sanha", name: "Sanha Condensate South", reservoir: "Pinda", resourcesMMBO: 85, resourcesBCF: 420, pos: 45 },
       { discoveryArea: "Sanha", name: "Sanha Deep Pinda", reservoir: "Pinda", resourcesMMBO: 195, resourcesBCF: 310, pos: 28 },
     ],
+    economicData: {
+      costHistory: [
+        { period: "2004-2021", capex: 4872, opex: 41361 },
+        { period: "2022-2025", capex: 3431, opex: 8303 },
+        { period: "2026-2050", capex: 3873, opex: 22855 },
+      ],
+      investmentPlan: [
+        { year: 2026, exploracao: 168, desenvolvimento: 825, operacao: 1160, total: 2011 },
+        { year: 2027, exploracao: 175, desenvolvimento: 759, operacao: 1217, total: 1851 },
+        { year: 2028, exploracao: 169, desenvolvimento: 654, operacao: 1161, total: 1595 },
+        { year: 2029, exploracao: 228, desenvolvimento: 684, operacao: 1200, total: 1669 },
+        { year: 2030, exploracao: 228, desenvolvimento: 656, operacao: 1195, total: 1600 },
+      ],
+      productionShareGE: [
+        { year: 2026, mmbo: 48 },
+        { year: 2027, mmbo: 46 },
+        { year: 2028, mmbo: 44 },
+        { year: 2029, mmbo: 39 },
+        { year: 2030, mmbo: 36 },
+      ],
+      abandonment: {
+        total: 3420,
+        fundingRequired: 1300,
+        fundingDeposited: 102,
+      },
+      opexPerBarrel: 26.3,
+      opexPerBarrelYear: 2025,
+      sonangolDebt: 48,
+      stateRevenueShare: [
+        { period: "Até 2021", percentage: 57 },
+        { period: "2026-2050", percentage: 16 },
+      ],
+      observations: [
+        "Receitas do Estado reduzidas de 57% (até 2021) para apenas 16% (2026-2050), limitadas ao royalty de 15%.",
+        "Opex por barril projectado para 2025: USD 26,3/bbl.",
+        "Total de custos de abandono estimado em MMUSD 3.420, com apenas MMUSD 102 depositados no fundo.",
+        "Dívida da Sonangol ao GE: MMUSD 48.",
+        "Plano quinquenal 2026-2030 totaliza MMUSD 8.726 em investimentos (Exploração + Desenvolvimento + Operação).",
+      ],
+    },
   },
   {
     id: "block-14",

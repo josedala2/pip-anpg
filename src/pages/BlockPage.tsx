@@ -1195,6 +1195,205 @@ const BlockPage = () => {
                     </CardContent>
                   </Card>
 
+                  {/* Section 2b: Dados Económicos (from PDF) */}
+                  {block.economicData && (() => {
+                    const eco = block.economicData;
+                    return (
+                      <>
+                        {/* Custos Históricos */}
+                        {eco.costHistory && eco.costHistory.length > 0 && (
+                          <div>
+                            <h3 className="text-sm 2xl:text-base font-semibold mb-3 flex items-center gap-2">
+                              <History className="w-4 h-4 text-muted-foreground" />Custos Incorridos & Previsão (MMUSD)
+                            </h3>
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 2xl:gap-5">
+                              {eco.costHistory.map(c => (
+                                <Card key={c.period} className="glass-card">
+                                  <CardContent className="p-4 2xl:p-6">
+                                    <div className="text-xs 2xl:text-sm text-muted-foreground mb-2 font-medium">{c.period}</div>
+                                    <div className="grid grid-cols-2 gap-3">
+                                      <div>
+                                        <div className="text-[9px] uppercase text-muted-foreground">CAPEX</div>
+                                        <div className="text-lg 2xl:text-xl font-bold font-mono text-primary">${c.capex.toLocaleString()}</div>
+                                      </div>
+                                      <div>
+                                        <div className="text-[9px] uppercase text-muted-foreground">OPEX</div>
+                                        <div className="text-lg 2xl:text-xl font-bold font-mono text-warning">${c.opex.toLocaleString()}</div>
+                                      </div>
+                                    </div>
+                                    <div className="text-[10px] text-muted-foreground mt-2 font-mono">Total: ${(c.capex + c.opex).toLocaleString()}M</div>
+                                  </CardContent>
+                                </Card>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Plano de Investimentos Quinquenal */}
+                        {eco.investmentPlan && eco.investmentPlan.length > 0 && (
+                          <Card className="glass-card">
+                            <CardHeader className="p-4 pb-2">
+                              <div className="flex items-center justify-between">
+                                <CardTitle className="text-sm 2xl:text-base flex items-center gap-2">
+                                  <TrendingUp className="w-4 h-4 text-success" />Plano de Investimentos Quinquenal (MMUSD)
+                                </CardTitle>
+                                <span className="text-xs text-muted-foreground font-mono">
+                                  Total: <span className="font-semibold text-foreground">${eco.investmentPlan.reduce((s, y) => s + y.total, 0).toLocaleString()}M</span>
+                                </span>
+                              </div>
+                            </CardHeader>
+                            <CardContent className="p-4 pt-0">
+                              <ResponsiveContainer width="100%" height={320}>
+                                <BarChart data={eco.investmentPlan}>
+                                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                                  <XAxis dataKey="year" tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} />
+                                  <YAxis tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} tickFormatter={v => `$${v}`} />
+                                  <Tooltip contentStyle={tooltipStyle} formatter={(val: number, name: string) => [`$${val}M`, name]} />
+                                  <Legend wrapperStyle={legendStyle} />
+                                  <Bar dataKey="exploracao" name="Exploração" fill="hsl(199, 89%, 48%)" stackId="invest" radius={[0, 0, 0, 0]} animationDuration={800} />
+                                  <Bar dataKey="desenvolvimento" name="Desenvolvimento" fill="hsl(38, 92%, 50%)" stackId="invest" radius={[0, 0, 0, 0]} animationDuration={800} animationBegin={200} />
+                                  <Bar dataKey="operacao" name="Operação" fill="hsl(152, 69%, 40%)" stackId="invest" radius={[4, 4, 0, 0]} animationDuration={800} animationBegin={400} />
+                                </BarChart>
+                              </ResponsiveContainer>
+                            </CardContent>
+                          </Card>
+                        )}
+
+                        {/* Partilha de Produção GE + Abandono side by side */}
+                        <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 2xl:gap-6">
+                          {/* Partilha de Produção GE */}
+                          {eco.productionShareGE && eco.productionShareGE.length > 0 && (
+                            <Card className="glass-card">
+                              <CardHeader className="p-4 pb-2">
+                                <div className="flex items-center justify-between">
+                                  <CardTitle className="text-sm 2xl:text-base flex items-center gap-2">
+                                    <Droplets className="w-4 h-4 text-primary" />Partilha de Produção GE (MMBO)
+                                  </CardTitle>
+                                  <span className="text-xs text-muted-foreground font-mono">
+                                    Total: <span className="font-semibold text-foreground">{eco.productionShareGE.reduce((s, y) => s + y.mmbo, 0)} MMBO</span>
+                                  </span>
+                                </div>
+                              </CardHeader>
+                              <CardContent className="p-4 pt-0">
+                                <ResponsiveContainer width="100%" height={250}>
+                                  <BarChart data={eco.productionShareGE}>
+                                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                                    <XAxis dataKey="year" tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} />
+                                    <YAxis tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} />
+                                    <Tooltip contentStyle={tooltipStyle} formatter={(val: number) => [`${val} MMBO`]} />
+                                    <Bar dataKey="mmbo" name="Produção GE" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} animationDuration={800} />
+                                  </BarChart>
+                                </ResponsiveContainer>
+                              </CardContent>
+                            </Card>
+                          )}
+
+                          {/* Abandono & Dívida + KPIs operacionais */}
+                          <div className="space-y-4">
+                            {eco.abandonment && (
+                              <Card className="glass-card">
+                                <CardHeader className="p-4 pb-2">
+                                  <CardTitle className="text-sm 2xl:text-base flex items-center gap-2">
+                                    <AlertTriangle className="w-4 h-4 text-danger" />Abandono & Fundo de Descomissionamento
+                                  </CardTitle>
+                                </CardHeader>
+                                <CardContent className="p-4 pt-0">
+                                  <div className="grid grid-cols-3 gap-3">
+                                    <div className="glass-card rounded-lg p-3 text-center border border-danger/20">
+                                      <div className="text-[9px] uppercase text-muted-foreground">Custo Total</div>
+                                      <div className="font-bold font-mono text-xl text-danger">${eco.abandonment.total.toLocaleString()}</div>
+                                      <div className="text-[9px] text-muted-foreground">MMUSD</div>
+                                    </div>
+                                    <div className="glass-card rounded-lg p-3 text-center border border-warning/20">
+                                      <div className="text-[9px] uppercase text-muted-foreground">Fundeamento</div>
+                                      <div className="font-bold font-mono text-xl text-warning">${eco.abandonment.fundingRequired.toLocaleString()}</div>
+                                      <div className="text-[9px] text-muted-foreground">MMUSD necessário</div>
+                                    </div>
+                                    <div className="glass-card rounded-lg p-3 text-center border border-success/20">
+                                      <div className="text-[9px] uppercase text-muted-foreground">Depositado</div>
+                                      <div className="font-bold font-mono text-xl text-success">${eco.abandonment.fundingDeposited.toLocaleString()}</div>
+                                      <div className="text-[9px] text-muted-foreground">MMUSD</div>
+                                    </div>
+                                  </div>
+                                  {/* Progress bar */}
+                                  <div className="mt-3">
+                                    <div className="flex justify-between text-[10px] text-muted-foreground mb-1">
+                                      <span>Progresso do fundo</span>
+                                      <span className="font-mono">{((eco.abandonment.fundingDeposited / eco.abandonment.fundingRequired) * 100).toFixed(1)}%</span>
+                                    </div>
+                                    <div className="h-2 w-full bg-secondary rounded-full overflow-hidden">
+                                      <div className="h-full bg-success rounded-full transition-all" style={{ width: `${Math.min((eco.abandonment.fundingDeposited / eco.abandonment.fundingRequired) * 100, 100)}%` }} />
+                                    </div>
+                                  </div>
+                                </CardContent>
+                              </Card>
+                            )}
+
+                            {/* KPIs operacionais */}
+                            <div className="grid grid-cols-2 gap-3">
+                              {eco.opexPerBarrel != null && (
+                                <Card className="glass-card">
+                                  <CardContent className="p-4 text-center">
+                                    <div className="text-[9px] uppercase text-muted-foreground mb-1">OPEX/Barril ({eco.opexPerBarrelYear})</div>
+                                    <div className="text-2xl font-bold font-mono text-warning">${eco.opexPerBarrel}</div>
+                                    <div className="text-[9px] text-muted-foreground">USD/bbl</div>
+                                  </CardContent>
+                                </Card>
+                              )}
+                              {eco.sonangolDebt != null && (
+                                <Card className="glass-card">
+                                  <CardContent className="p-4 text-center">
+                                    <div className="text-[9px] uppercase text-muted-foreground mb-1">Dívida Sonangol</div>
+                                    <div className="text-2xl font-bold font-mono text-danger">${eco.sonangolDebt}</div>
+                                    <div className="text-[9px] text-muted-foreground">MMUSD</div>
+                                  </CardContent>
+                                </Card>
+                              )}
+                            </div>
+
+                            {/* Receitas do Estado */}
+                            {eco.stateRevenueShare && eco.stateRevenueShare.length > 0 && (
+                              <Card className="glass-card">
+                                <CardContent className="p-4">
+                                  <div className="text-[10px] uppercase tracking-wider text-muted-foreground mb-2 font-medium">Receitas do Estado</div>
+                                  <div className="space-y-2">
+                                    {eco.stateRevenueShare.map(s => (
+                                      <div key={s.period} className="flex justify-between items-center py-1 border-b border-border/30 last:border-0 text-sm">
+                                        <span className="text-muted-foreground">{s.period}</span>
+                                        <span className="font-mono font-bold">{s.percentage}%</span>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </CardContent>
+                              </Card>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Observações Estratégicas */}
+                        {eco.observations && eco.observations.length > 0 && (
+                          <Card className="glass-card border-l-2 border-warning">
+                            <CardHeader className="p-4 pb-2">
+                              <CardTitle className="text-sm 2xl:text-base flex items-center gap-2">
+                                <AlertTriangle className="w-4 h-4 text-warning" />Observações Estratégicas
+                              </CardTitle>
+                            </CardHeader>
+                            <CardContent className="p-4 pt-0">
+                              <ul className="space-y-2">
+                                {eco.observations.map((obs, i) => (
+                                  <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground leading-relaxed">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-warning shrink-0 mt-1.5" />
+                                    {obs}
+                                  </li>
+                                ))}
+                              </ul>
+                            </CardContent>
+                          </Card>
+                        )}
+                      </>
+                    );
+                  })()}
+
                   {/* Section 3 & 4: Estrutura Contratual + Condições Fiscais */}
                   <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 2xl:gap-6">
                     {/* Estrutura Contratual */}
