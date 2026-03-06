@@ -9,7 +9,12 @@ import anpgLogoColor from "@/assets/anpg-logo-color.svg";
 export const exportReportPdf = async (
   reportElementId = "report-content",
   filename = "relatorio_ANPG.pdf",
-  orientation: "portrait" | "landscape" = "portrait"
+  orientation: "portrait" | "landscape" = "portrait",
+  coverInfo?: {
+    title: string;
+    blockNames: string[];
+    reportTypes: string[];
+  }
 ) => {
   const node = document.getElementById(reportElementId);
   if (!node) throw new Error("Report element not found");
@@ -79,6 +84,92 @@ export const exportReportPdf = async (
       // Logo loading failed, continue without it
     }
 
+    // ─── COVER PAGE ─────────────────────────────────────────
+    if (coverInfo) {
+      // Background accent line at top
+      pdf.setDrawColor(0, 153, 204);
+      pdf.setLineWidth(2);
+      pdf.line(0, 0, pageW, 0);
+      pdf.setLineWidth(0.8);
+      pdf.line(marginX, 12, pageW - marginX, 12);
+
+      // Centered logo
+      if (logoBase64) {
+        const logoW = 60;
+        const logoH = 24;
+        const logoX = (pageW - logoW) / 2;
+        try {
+          pdf.addImage(logoBase64, "SVG", logoX, pageH * 0.18, logoW, logoH);
+        } catch {
+          pdf.setFontSize(18);
+          pdf.setTextColor(0, 153, 204);
+          pdf.text("ANPG", pageW / 2, pageH * 0.22, { align: "center" });
+        }
+      }
+
+      // Main title
+      pdf.setFontSize(22);
+      pdf.setTextColor(30, 30, 30);
+      pdf.text(coverInfo.title, pageW / 2, pageH * 0.38, { align: "center" });
+
+      // Subtitle - institution
+      pdf.setFontSize(11);
+      pdf.setTextColor(100, 100, 100);
+      pdf.text("Agência Nacional de Petróleo, Gás e Biocombustíveis", pageW / 2, pageH * 0.38 + 10, { align: "center" });
+      pdf.text("República de Angola", pageW / 2, pageH * 0.38 + 16, { align: "center" });
+
+      // Decorative line
+      pdf.setDrawColor(0, 153, 204);
+      pdf.setLineWidth(0.5);
+      const lineY = pageH * 0.38 + 24;
+      pdf.line(pageW * 0.3, lineY, pageW * 0.7, lineY);
+
+      // Report types section
+      let yPos = pageH * 0.55;
+      pdf.setFontSize(10);
+      pdf.setTextColor(60, 60, 60);
+      pdf.text("SECÇÕES DO RELATÓRIO", pageW / 2, yPos, { align: "center" });
+      yPos += 8;
+      pdf.setFontSize(9);
+      pdf.setTextColor(80, 80, 80);
+      coverInfo.reportTypes.forEach((rt) => {
+        pdf.text(`• ${rt}`, pageW / 2, yPos, { align: "center" });
+        yPos += 5.5;
+      });
+
+      // Blocks section
+      yPos += 6;
+      pdf.setFontSize(10);
+      pdf.setTextColor(60, 60, 60);
+      pdf.text("BLOCOS INCLUÍDOS", pageW / 2, yPos, { align: "center" });
+      yPos += 8;
+      pdf.setFontSize(9);
+      pdf.setTextColor(80, 80, 80);
+      coverInfo.blockNames.forEach((bn) => {
+        pdf.text(`• ${bn}`, pageW / 2, yPos, { align: "center" });
+        yPos += 5.5;
+      });
+
+      // Date at bottom
+      const now = new Date();
+      const dateStr = now.toLocaleDateString("pt-AO", { year: "numeric", month: "long", day: "numeric" });
+      pdf.setFontSize(10);
+      pdf.setTextColor(120, 120, 120);
+      pdf.text(dateStr, pageW / 2, pageH - 30, { align: "center" });
+
+      // Bottom line
+      pdf.setDrawColor(200, 200, 200);
+      pdf.setLineWidth(0.3);
+      pdf.line(marginX, pageH - 20, pageW - marginX, pageH - 20);
+      pdf.setFontSize(7);
+      pdf.setTextColor(160, 160, 160);
+      pdf.text("CONFIDENCIAL — Uso interno ANPG", pageW / 2, pageH - 16, { align: "center" });
+
+      // Start content on next page
+      pdf.addPage();
+    }
+
+    // ─── HEADER / FOOTER HELPERS ─────────────────────────────
     const addHeader = (page: number) => {
       // Top line
       pdf.setDrawColor(0, 153, 204); // primary blue
@@ -90,7 +181,6 @@ export const exportReportPdf = async (
         try {
           pdf.addImage(logoBase64, "SVG", marginX, 10, 28, 10);
         } catch {
-          // SVG might not render, fallback to text
           pdf.setFontSize(10);
           pdf.setTextColor(0, 153, 204);
           pdf.text("ANPG", marginX, 16);
