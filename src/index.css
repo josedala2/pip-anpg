@@ -151,28 +151,29 @@
   }
 
   /* Sidebar fits below navbar instead of full viewport */
-  [data-sidebar="sidebar"] {
-    height: 100% !important;
-    position: relative !important;
-    top: auto !important;
-  }
   .group\/sidebar-wrapper {
     min-height: 0 !important;
     height: 100% !important;
   }
-  /* Override shadcn fixed sidebar to sit below navbar */
-  .group\/sidebar-wrapper > div > [data-sidebar="sidebar"] {
-    position: relative !important;
-    height: 100% !important;
-    inset: unset !important;
-  }
+  /* Override shadcn's fixed full-height sidebar to sit below navbar */
   .group\/sidebar-wrapper > div {
     height: 100% !important;
+    min-height: 0 !important;
   }
-  /* Remove min-h-svh from sidebar wrapper and content */
-  .group\/sidebar-wrapper,
-  .group\/sidebar-wrapper > div,
+  /* The spacer div */
+  .group\/sidebar-wrapper > div > div:first-child {
+    height: 100% !important;
+    min-height: 0 !important;
+  }
+  /* The actual fixed sidebar panel — make it relative and contained */
+  .group\/sidebar-wrapper > div > div.md\:flex {
+    position: relative !important;
+    inset: unset !important;
+    height: 100% !important;
+    min-height: 0 !important;
+  }
   [data-sidebar="sidebar"] {
+    height: 100% !important;
     min-height: 0 !important;
   }
 
