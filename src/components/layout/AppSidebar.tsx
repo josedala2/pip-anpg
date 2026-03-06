@@ -43,7 +43,7 @@ export function AppSidebar() {
 
   return (
     <Sidebar collapsible="icon" className="border-r-0 bg-sidebar overflow-hidden !h-full [&>div]:!h-full [&_[data-sidebar=sidebar]]:!h-full [&_[data-sidebar=sidebar]]:!static">
-      <SidebarContent className="px-2 pt-3">
+      <SidebarContent className="px-2 pt-6">
         {/* Main Menu */}
         <SidebarGroup>
           {!collapsed && (
