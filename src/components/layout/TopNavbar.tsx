@@ -20,7 +20,7 @@ export const TopNavbar = () => {
   };
 
   return (
-    <div className="shrink-0">
+    <div className="shrink-0 relative z-50">
       {/* Red accent line at top */}
       <div className="h-1 bg-gradient-to-r from-anpg via-anpg-dark to-anpg" />
 
