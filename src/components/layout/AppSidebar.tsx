@@ -43,12 +43,12 @@ export function AppSidebar() {
 
   return (
     <Sidebar collapsible="icon" className="border-r-0 bg-sidebar overflow-hidden !h-full [&>div]:!h-full [&_[data-sidebar=sidebar]]:!h-full [&_[data-sidebar=sidebar]]:!static">
-      <SidebarContent className="px-2 pt-6">
+      <SidebarContent className="px-2 pt-10">
         {/* Main Menu */}
         <SidebarGroup>
           {!collapsed && (
             <SidebarGroupLabel className="text-[9px] uppercase tracking-[0.15em] text-sidebar-foreground/35 font-semibold px-3 mb-2">
-              Navegação
+              Menu Principal
             </SidebarGroupLabel>
           )}
           <SidebarGroupContent>
