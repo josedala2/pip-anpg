@@ -156,7 +156,7 @@ const ReportsPage = () => {
                 {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
                 {copied ? "Copiado" : "Copiar"}
               </Button>
-              <Button size="sm" onClick={handlePrint} className="gap-1.5" disabled={pdfLoading}>
+              <Button variant="anpg" size="sm" onClick={handlePrint} className="gap-1.5" disabled={pdfLoading}>
                 {pdfLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Printer className="w-3.5 h-3.5" />}
                 {pdfLoading ? "A gerar…" : "Exportar PDF"}
               </Button>
@@ -176,13 +176,15 @@ const ReportsPage = () => {
         <main className="flex-1 p-4 md:p-6 lg:p-8 min-h-[calc(100vh-57px)]">
           {!generated ? (
             <div className="flex flex-col items-center justify-center h-full text-center py-20">
-              <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-4">
-                <Printer className="w-8 h-8 text-primary" />
+              <div className="instruction-card max-w-md mx-auto text-center">
+                <div className="instruction-icon mx-auto mb-4">
+                  <Printer className="w-5 h-5" />
+                </div>
+                <h2 className="instruction-title text-lg mb-2">Nenhum relatório gerado</h2>
+                <p className="instruction-desc">
+                  Configure o tipo de relatório e seleccione os blocos no painel à esquerda, depois clique em "Gerar Relatório".
+                </p>
               </div>
-              <h2 className="text-lg font-semibold text-foreground mb-2">Nenhum relatório gerado</h2>
-              <p className="text-sm text-muted-foreground max-w-md">
-                Configure o tipo de relatório e seleccione os blocos no painel à esquerda, depois clique em "Gerar Relatório".
-              </p>
             </div>
           ) : (
             <ReportPreview config={config} aiNarrative={aiNarrative} aiLoading={aiLoading} />
