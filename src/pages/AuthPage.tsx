@@ -219,6 +219,34 @@ const AuthPage = () => {
               </span>
             </button>
           </div>
+
+          {/* Test credentials */}
+          {isLogin && (
+            <div className="rounded-lg border border-border bg-muted/50 p-4 space-y-3">
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Acessos de Teste</p>
+              {[
+                { email: "admin@anpg.co.ao", password: "admin123", name: "Carlos Mendes", cargo: "Administrador" },
+                { email: "analista@anpg.co.ao", password: "analista123", name: "Ana Sousa", cargo: "Analista" },
+              ].map((cred) => (
+                <button
+                  key={cred.email}
+                  type="button"
+                  onClick={() => {
+                    setForm({ ...form, email: cred.email, password: cred.password });
+                  }}
+                  className="w-full flex items-center justify-between rounded-md border border-border bg-background px-3 py-2.5 text-left hover:border-[hsl(var(--anpg)/0.5)] hover:bg-accent/50 transition-colors group"
+                >
+                  <div>
+                    <p className="text-sm font-medium text-foreground">{cred.name}</p>
+                    <p className="text-xs text-muted-foreground">{cred.cargo} · {cred.email}</p>
+                  </div>
+                  <span className="text-[10px] font-mono text-muted-foreground group-hover:text-[hsl(var(--anpg))] transition-colors">
+                    Usar →
+                  </span>
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>
