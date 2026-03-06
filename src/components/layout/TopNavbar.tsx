@@ -1,6 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
-import { Search, Bell, User } from "lucide-react";
+import { Search, Bell, User, Sun, Moon } from "lucide-react";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import { useTheme } from "@/components/ThemeProvider";
 import anpgLogoWhite from "@/assets/anpg-logo-white.svg";
 
 const navLinks = [
