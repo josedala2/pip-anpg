@@ -71,7 +71,7 @@ export const OverviewSidebar = ({
   const [filtersOpen, setFiltersOpen] = useState(false);
 
   return (
-    <div className="h-full flex flex-col overview-panel border-l border-border/50">
+    <div className="h-full flex flex-col overview-panel border-t md:border-t-0 md:border-l border-border/50">
       {/* Panel header */}
       <div className="px-4 py-3 border-b border-border/40">
         <h3 className="text-sm font-bold tracking-tight text-foreground">Command Center</h3>
