@@ -212,7 +212,76 @@ const LegislationSearch = ({ docs, contractInfo }: { docs: LegislationDocument[]
   );
 };
 
-const BlockPage = () => {
+const RevitalizationCard = ({ scenario, accent, index }: { scenario: RevitalizationScenario; accent: { border: string; icon: string; bg: string; tag: string }; index: number }) => {
+  const [expanded, setExpanded] = useState(false);
+  return (
+    <Card className={`glass-card border-l-2 ${accent.border} hover:border-l-4 transition-all duration-200 cursor-pointer group`} onClick={() => setExpanded(!expanded)}>
+      <CardHeader className="p-4 pb-2">
+        <div className="flex items-start justify-between gap-2">
+          <div className="flex items-center gap-2">
+            <div className={`w-7 h-7 rounded-lg ${accent.bg} flex items-center justify-center shrink-0`}>
+              <span className={`text-sm font-bold ${accent.icon}`}>{scenario.id}</span>
+            </div>
+            <CardTitle className="text-sm 2xl:text-base leading-tight">{scenario.title}</CardTitle>
+          </div>
+          <ChevronRight className={`w-4 h-4 text-muted-foreground shrink-0 transition-transform duration-200 ${expanded ? "rotate-90" : "group-hover:translate-x-0.5"}`} />
+        </div>
+      </CardHeader>
+      <CardContent className="p-4 pt-0 space-y-3">
+        <p className="text-xs 2xl:text-sm text-muted-foreground leading-relaxed">{scenario.description}</p>
+
+        {expanded && (
+          <div className="space-y-3 animate-in fade-in slide-in-from-top-2 duration-200">
+            {scenario.proposals.length > 0 && (
+              <div>
+                <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold mb-1.5">Propostas</div>
+                <ul className="space-y-1">
+                  {scenario.proposals.map((p, i) => (
+                    <li key={i} className="flex items-start gap-2 text-xs text-muted-foreground">
+                      <CheckCircle2 className={`w-3.5 h-3.5 shrink-0 mt-0.5 ${accent.icon}`} />
+                      <span>{p}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            {scenario.incentives && scenario.incentives.length > 0 && (
+              <div>
+                <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold mb-1.5">Incentivos</div>
+                <div className="flex flex-wrap gap-1.5">
+                  {scenario.incentives.map((inc, i) => (
+                    <Badge key={i} variant="outline" className={`text-[10px] ${accent.tag}`}>{inc}</Badge>
+                  ))}
+                </div>
+              </div>
+            )}
+            {scenario.commitments && scenario.commitments.length > 0 && (
+              <div>
+                <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold mb-1.5">Compromissos</div>
+                <ul className="space-y-1">
+                  {scenario.commitments.map((c, i) => (
+                    <li key={i} className="flex items-start gap-2 text-xs text-muted-foreground">
+                      <ArrowRight className={`w-3 h-3 shrink-0 mt-0.5 ${accent.icon}`} />
+                      <span>{c}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        )}
+
+        {!expanded && (
+          <div className="text-[10px] text-muted-foreground/60 group-hover:text-muted-foreground transition-colors">
+            Clique para ver detalhes →
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+};
+
+
   const { blockId } = useParams<{ blockId: string }>();
   const navigate = useNavigate();
   const block = oilBlocks.find(b => b.id === blockId);
