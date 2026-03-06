@@ -11,6 +11,7 @@ import {
   Loader2, CalendarClock, Image as ImageIcon
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { FacilitiesSchematic } from "./FacilitiesSchematic";
 
 interface Props {
   facilityData: FacilityData;
