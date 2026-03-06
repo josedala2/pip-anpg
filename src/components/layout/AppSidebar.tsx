@@ -11,7 +11,6 @@ import {
   SidebarGroupContent,
   SidebarGroupLabel,
   SidebarMenu,
-  SidebarMenuButton,
   SidebarMenuItem,
   SidebarFooter,
   useSidebar,
@@ -43,7 +42,7 @@ export function AppSidebar() {
 
   return (
     <Sidebar collapsible="icon" className="border-r-0 bg-sidebar overflow-hidden !h-full [&>div]:!h-full [&_[data-sidebar=sidebar]]:!h-full [&_[data-sidebar=sidebar]]:!static">
-      <SidebarContent className="px-2 pt-2">
+      <SidebarContent className="px-2 pt-[4.5rem]">
         {/* Main Menu */}
         <SidebarGroup>
           {!collapsed && (
