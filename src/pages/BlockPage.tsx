@@ -1209,6 +1209,13 @@ const BlockPage = () => {
             </ChartWrapper>
           </TabsContent>
 
+          {/* Tab: Instalações */}
+          {block.facilityData && (
+            <TabsContent value="facilities" className="space-y-4 2xl:space-y-6">
+              <FacilitiesTab facilityData={block.facilityData} />
+            </TabsContent>
+          )}
+
           {/* Tab: HSE & Ambiente */}
           <TabsContent value="hse" className="space-y-4 2xl:space-y-6">
             <HSEEnvironmentTab
