@@ -8,7 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft, Droplets, DollarSign, ShieldCheck, TrendingUp, Users, Activity, Target, Layers, BarChart3, MapPin, Brain, FileText, Landmark, Building2, Clock, Scale, ArrowRight, History, BookOpen, ExternalLink, AlertTriangle, Crosshair, Search, Filter, AlignVerticalJustifyStart, AlignHorizontalJustifyStart, Download, FileSpreadsheet, FileDown, Leaf } from "lucide-react";
+import { ArrowLeft, Droplets, DollarSign, ShieldCheck, TrendingUp, Users, Activity, Target, Layers, BarChart3, MapPin, Brain, FileText, Landmark, Building2, Clock, Scale, ArrowRight, History, BookOpen, ExternalLink, AlertTriangle, Crosshair, Search, Filter, AlignVerticalJustifyStart, AlignHorizontalJustifyStart, Download, FileSpreadsheet, FileDown, Leaf, Lightbulb, CheckCircle2, ChevronRight } from "lucide-react";
+import type { RevitalizationScenario } from "@/data/angolaBlocks";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { exportToCsv, exportToExcel, exportToPdf } from "@/lib/exportFinancial";
 import { toast } from "@/hooks/use-toast";
@@ -208,6 +209,75 @@ const LegislationSearch = ({ docs, contractInfo }: { docs: LegislationDocument[]
         </Card>
       )}
     </>
+  );
+};
+
+const RevitalizationCard = ({ scenario, accent, index }: { scenario: RevitalizationScenario; accent: { border: string; icon: string; bg: string; tag: string }; index: number }) => {
+  const [expanded, setExpanded] = useState(false);
+  return (
+    <Card className={`glass-card border-l-2 ${accent.border} hover:border-l-4 transition-all duration-200 cursor-pointer group`} onClick={() => setExpanded(!expanded)}>
+      <CardHeader className="p-4 pb-2">
+        <div className="flex items-start justify-between gap-2">
+          <div className="flex items-center gap-2">
+            <div className={`w-7 h-7 rounded-lg ${accent.bg} flex items-center justify-center shrink-0`}>
+              <span className={`text-sm font-bold ${accent.icon}`}>{scenario.id}</span>
+            </div>
+            <CardTitle className="text-sm 2xl:text-base leading-tight">{scenario.title}</CardTitle>
+          </div>
+          <ChevronRight className={`w-4 h-4 text-muted-foreground shrink-0 transition-transform duration-200 ${expanded ? "rotate-90" : "group-hover:translate-x-0.5"}`} />
+        </div>
+      </CardHeader>
+      <CardContent className="p-4 pt-0 space-y-3">
+        <p className="text-xs 2xl:text-sm text-muted-foreground leading-relaxed">{scenario.description}</p>
+
+        {expanded && (
+          <div className="space-y-3 animate-in fade-in slide-in-from-top-2 duration-200">
+            {scenario.proposals.length > 0 && (
+              <div>
+                <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold mb-1.5">Propostas</div>
+                <ul className="space-y-1">
+                  {scenario.proposals.map((p, i) => (
+                    <li key={i} className="flex items-start gap-2 text-xs text-muted-foreground">
+                      <CheckCircle2 className={`w-3.5 h-3.5 shrink-0 mt-0.5 ${accent.icon}`} />
+                      <span>{p}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            {scenario.incentives && scenario.incentives.length > 0 && (
+              <div>
+                <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold mb-1.5">Incentivos</div>
+                <div className="flex flex-wrap gap-1.5">
+                  {scenario.incentives.map((inc, i) => (
+                    <Badge key={i} variant="outline" className={`text-[10px] ${accent.tag}`}>{inc}</Badge>
+                  ))}
+                </div>
+              </div>
+            )}
+            {scenario.commitments && scenario.commitments.length > 0 && (
+              <div>
+                <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold mb-1.5">Compromissos</div>
+                <ul className="space-y-1">
+                  {scenario.commitments.map((c, i) => (
+                    <li key={i} className="flex items-start gap-2 text-xs text-muted-foreground">
+                      <ArrowRight className={`w-3 h-3 shrink-0 mt-0.5 ${accent.icon}`} />
+                      <span>{c}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        )}
+
+        {!expanded && (
+          <div className="text-[10px] text-muted-foreground/60 group-hover:text-muted-foreground transition-colors">
+            Clique para ver detalhes →
+          </div>
+        )}
+      </CardContent>
+    </Card>
   );
 };
 
@@ -1089,6 +1159,29 @@ const BlockPage = () => {
 
             {/* Prospects Table */}
             <ProspectsTable blocks={[block]} scopeLabel={block.name} />
+
+            {/* Revitalization Scenarios */}
+            {block.revitalizationScenarios && block.revitalizationScenarios.length > 0 && (
+              <div className="space-y-4">
+                <h3 className="text-sm 2xl:text-base font-semibold flex items-center gap-2">
+                  <Lightbulb className="w-4 h-4 text-warning" />
+                  Cenários de Revitalização
+                </h3>
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 2xl:gap-6">
+                  {block.revitalizationScenarios.map((scenario, idx) => {
+                    const accentColors = [
+                      { border: "border-primary/40", icon: "text-primary", bg: "bg-primary/5", tag: "bg-primary/10 text-primary" },
+                      { border: "border-warning/40", icon: "text-warning", bg: "bg-warning/5", tag: "bg-warning/10 text-warning" },
+                      { border: "border-success/40", icon: "text-success", bg: "bg-success/5", tag: "bg-success/10 text-success" },
+                    ];
+                    const accent = accentColors[idx % 3];
+                    return (
+                      <RevitalizationCard key={scenario.id} scenario={scenario} accent={accent} index={idx} />
+                    );
+                  })}
+                </div>
+              </div>
+            )}
           </TabsContent>
 
           {/* Tab 4: Produção */}
