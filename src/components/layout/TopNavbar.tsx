@@ -1,7 +1,9 @@
-import { Link, useLocation } from "react-router-dom";
-import { Search, Bell, User, Sun, Moon } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Search, Bell, User, Sun, Moon, LogOut } from "lucide-react";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useTheme } from "@/components/ThemeProvider";
+import { useAuth } from "@/components/auth/AuthProvider";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import anpgLogoWhite from "@/assets/anpg-logo-white.svg";
 
 const navLinks = [
@@ -13,7 +15,17 @@ const navLinks = [
 
 export const TopNavbar = () => {
   const { theme, toggleTheme } = useTheme();
+  const { profile, user, signOut } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
+
+  const displayName = profile?.full_name || user?.email?.split("@")[0] || "Utilizador";
+  const displayCargo = profile?.cargo || "ANPG";
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate("/auth");
+  };
 
   return (
     <header className="h-14 flex items-center px-4 gap-4 border-b border-border/30 bg-navbar text-navbar-foreground shrink-0">
@@ -77,16 +89,31 @@ export const TopNavbar = () => {
           <span className="absolute top-1 right-1 w-2 h-2 bg-anpg rounded-full" />
         </button>
 
-        {/* User avatar */}
-        <button className="flex items-center gap-2 p-1.5 rounded-lg hover:bg-white/10 transition-colors">
-          <div className="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center">
-            <User className="w-3.5 h-3.5" />
-          </div>
-          <div className="hidden lg:block text-left">
-            <p className="text-xs font-medium leading-tight">Administrador</p>
-            <p className="text-[10px] text-white/50 leading-tight">ANPG</p>
-          </div>
-        </button>
+        {/* User dropdown */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button className="flex items-center gap-2 p-1.5 rounded-lg hover:bg-white/10 transition-colors">
+              <div className="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center">
+                <User className="w-3.5 h-3.5" />
+              </div>
+              <div className="hidden lg:block text-left">
+                <p className="text-xs font-medium leading-tight">{displayName}</p>
+                <p className="text-[10px] text-white/50 leading-tight">{displayCargo}</p>
+              </div>
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-48">
+            <div className="px-2 py-1.5">
+              <p className="text-sm font-medium">{displayName}</p>
+              <p className="text-xs text-muted-foreground">{user?.email}</p>
+            </div>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={handleSignOut} className="text-destructive cursor-pointer">
+              <LogOut className="w-4 h-4 mr-2" />
+              Terminar Sessão
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </header>
   );
