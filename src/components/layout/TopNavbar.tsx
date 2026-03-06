@@ -62,6 +62,15 @@ export const TopNavbar = () => {
           />
         </div>
 
+        {/* Theme toggle */}
+        <button
+          onClick={toggleTheme}
+          className="p-2 rounded-lg hover:bg-white/10 transition-colors"
+          title={theme === "dark" ? "Modo Claro" : "Modo Escuro"}
+        >
+          {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+        </button>
+
         {/* Notifications */}
         <button className="relative p-2 rounded-lg hover:bg-white/10 transition-colors">
           <Bell className="w-4 h-4" />
