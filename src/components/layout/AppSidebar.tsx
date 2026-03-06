@@ -11,7 +11,6 @@ import {
   SidebarGroupContent,
   SidebarGroupLabel,
   SidebarMenu,
-  SidebarMenuButton,
   SidebarMenuItem,
   SidebarFooter,
   useSidebar,
@@ -43,7 +42,7 @@ export function AppSidebar() {
 
   return (
     <Sidebar collapsible="icon" className="border-r-0 bg-sidebar overflow-hidden !h-full [&>div]:!h-full [&_[data-sidebar=sidebar]]:!h-full [&_[data-sidebar=sidebar]]:!static">
-      <SidebarContent className="px-2 pt-2">
+      <SidebarContent className="px-2 pt-[4.5rem]">
         {/* Main Menu */}
         <SidebarGroup>
           {!collapsed && (
@@ -57,7 +56,6 @@ export function AppSidebar() {
                 const active = isActive(item.url);
                 return (
                   <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild>
                       <NavLink
                         to={item.url}
                         end={item.url === "/"}
@@ -89,7 +87,6 @@ export function AppSidebar() {
                           </>
                         )}
                       </NavLink>
-                    </SidebarMenuButton>
                   </SidebarMenuItem>
                 );
               })}
@@ -115,7 +112,6 @@ export function AppSidebar() {
                 const active = isActive(item.url);
                 return (
                   <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild>
                       <NavLink
                         to={item.url}
                         className={`group relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium transition-all duration-200 ${
@@ -146,7 +142,6 @@ export function AppSidebar() {
                           </>
                         )}
                       </NavLink>
-                    </SidebarMenuButton>
                   </SidebarMenuItem>
                 );
               })}
