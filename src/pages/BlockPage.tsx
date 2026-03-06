@@ -281,7 +281,7 @@ const RevitalizationCard = ({ scenario, accent, index }: { scenario: Revitalizat
   );
 };
 
-
+const BlockPage = () => {
   const { blockId } = useParams<{ blockId: string }>();
   const navigate = useNavigate();
   const block = oilBlocks.find(b => b.id === blockId);
