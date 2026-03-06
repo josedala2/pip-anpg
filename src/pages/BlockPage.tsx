@@ -18,6 +18,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { SwotAnalysis } from "@/components/dashboard/SwotAnalysis";
 import { HSEEnvironmentTab } from "@/components/dashboard/HSEEnvironmentTab";
+import { FacilitiesTab } from "@/components/dashboard/FacilitiesTab";
 import type { LegislationDocument, ContractInfo } from "@/data/angolaBlocks";
 import {
   PieChart, Pie, Cell, AreaChart, Area, BarChart, Bar, LineChart, Line,
