@@ -6,15 +6,32 @@ import { type OilBlock, getTotalProduction, getTotalReserves, getActiveBlocks, g
 import { Activity, BarChart3, Boxes, DollarSign, TrendingUp, Filter, ChevronDown } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
+import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, LineChart, Line } from "recharts";
+
+// Sparkline trend data per KPI (last 6 months)
+const sparkData = {
+  production: [{ v: 1180 }, { v: 1210 }, { v: 1195 }, { v: 1250 }, { v: 1280 }, { v: 1304 }],
+  reserves:   [{ v: 4800 }, { v: 4850 }, { v: 4820 }, { v: 4900 }, { v: 4950 }, { v: 4980 }],
+  blocks:     [{ v: 26 }, { v: 27 }, { v: 27 }, { v: 28 }, { v: 28 }, { v: 28 }],
+  capex:      [{ v: 42 }, { v: 44 }, { v: 45 }, { v: 47 }, { v: 48 }, { v: 50 }],
+  execution:  [{ v: 78 }, { v: 80 }, { v: 79 }, { v: 82 }, { v: 83 }, { v: 84 }],
+};
 
 const kpis = [
-  { label: "Produção", value: getTotalProduction(), suffix: " BOPD", icon: Activity, accent: "var(--primary)" },
-  { label: "Reservas", value: getTotalReserves(), suffix: " Mb", icon: BarChart3, accent: "var(--success)" },
-  { label: "Blocos Ativos", value: getActiveBlocks(), suffix: "", icon: Boxes, accent: "var(--warning)" },
-  { label: "CAPEX", value: getTotalCapex(), prefix: "$", suffix: "M", icon: DollarSign, accent: "var(--primary)" },
-  { label: "Execução", value: getAvgExecutionRate(), suffix: "%", icon: TrendingUp, accent: "var(--success)" },
+  { label: "Produção", value: getTotalProduction(), suffix: " BOPD", icon: Activity, accent: "var(--primary)", spark: sparkData.production },
+  { label: "Reservas", value: getTotalReserves(), suffix: " Mb", icon: BarChart3, accent: "var(--success)", spark: sparkData.reserves },
+  { label: "Blocos Ativos", value: getActiveBlocks(), suffix: "", icon: Boxes, accent: "var(--warning)", spark: sparkData.blocks },
+  { label: "CAPEX", value: getTotalCapex(), prefix: "$", suffix: "M", icon: DollarSign, accent: "var(--primary)", spark: sparkData.capex },
+  { label: "Execução", value: getAvgExecutionRate(), suffix: "%", icon: TrendingUp, accent: "var(--success)", spark: sparkData.execution },
 ];
+
+const Sparkline = ({ data, color }: { data: { v: number }[]; color: string }) => (
+  <ResponsiveContainer width="100%" height={24}>
+    <LineChart data={data}>
+      <Line type="monotone" dataKey="v" stroke={color} strokeWidth={1.5} dot={false} />
+    </LineChart>
+  </ResponsiveContainer>
+);
 
 const trendData = [
   { month: "Jul", value: 1180000 },
@@ -93,7 +110,10 @@ export const OverviewSidebar = ({
                     <kpi.icon className={`w-3 h-3 ${colorClass}`} />
                     <span className="text-[8px] uppercase tracking-wider text-muted-foreground font-medium">{kpi.label}</span>
                   </div>
-                  <AnimatedCounter target={kpi.value} prefix={kpi.prefix || ""} suffix={kpi.suffix} className={`text-base font-bold tabular-nums ${colorClass}`} />
+                  <AnimatedCounter target={kpi.value} prefix={kpi.prefix || ""} suffix={kpi.suffix} className={`text-sm font-bold tabular-nums ${colorClass}`} />
+                  <div className="mt-1">
+                    <Sparkline data={kpi.spark} color={`hsl(${kpi.accent})`} />
+                  </div>
                 </div>
                 );
               })}
@@ -107,7 +127,10 @@ export const OverviewSidebar = ({
                     <kpi.icon className={`w-3 h-3 ${colorClass}`} />
                     <span className="text-[8px] uppercase tracking-wider text-muted-foreground font-medium">{kpi.label}</span>
                   </div>
-                  <AnimatedCounter target={kpi.value} prefix={kpi.prefix || ""} suffix={kpi.suffix} className={`text-base font-bold tabular-nums ${colorClass}`} />
+                  <AnimatedCounter target={kpi.value} prefix={kpi.prefix || ""} suffix={kpi.suffix} className={`text-sm font-bold tabular-nums ${colorClass}`} />
+                  <div className="mt-1">
+                    <Sparkline data={kpi.spark} color={`hsl(${kpi.accent})`} />
+                  </div>
                 </div>
                 );
               })}
