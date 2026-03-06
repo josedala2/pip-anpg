@@ -1,3 +1,10 @@
+import takulaImg from "@/assets/facilities/takula-platform.jpg";
+import sanhaImg from "@/assets/facilities/sanha-fpso.jpg";
+import mafumeiraImg from "@/assets/facilities/mafumeira-platform.jpg";
+import malongoImg from "@/assets/facilities/malongo-terminal.jpg";
+import nembasImg from "@/assets/facilities/nembas-fpso.jpg";
+import subseaImg from "@/assets/facilities/subsea-tieback.jpg";
+
 export type BlockPhase = "Exploration" | "Development" | "Production" | "Suspended" | "Bidding";
 export type WaterDepth = "Onshore" | "Shallow Water" | "Deep Water" | "Ultra-Deep Water";
 
@@ -605,15 +612,16 @@ export const oilBlocks: OilBlock[] = [
       endOfLifeField: "Mafumeira Sul",
       cumulativeProductionBO: 290043686705,
       photos: [
-        { url: "/placeholder.svg", caption: "Vista aérea do complexo Takula", platform: "Takula", year: 2023 },
-        { url: "/placeholder.svg", caption: "Plataforma GIP-FOX — produção e processamento", platform: "GIP-FOX", year: 2024 },
-        { url: "/placeholder.svg", caption: "FPSO Sanha — área B", platform: "Sanha", year: 2024 },
-        { url: "/placeholder.svg", caption: "Mafumeira Sul — plataforma mais recente", platform: "Mafumeira", year: 2022 },
-        { url: "/placeholder.svg", caption: "Terminal Malongo — centro de operações", platform: "Malongo Terminal", year: 2023 },
-        { url: "/placeholder.svg", caption: "Nembas FPSO — processamento de gás", platform: "Nembas", year: 2024 },
+        { url: takulaImg, caption: "Vista aérea do complexo Takula", platform: "Takula", year: 2023 },
+        { url: takulaImg, caption: "Plataforma GIP-FOX — produção e processamento", platform: "GIP-FOX", year: 2024 },
+        { url: sanhaImg, caption: "FPSO Sanha — área B", platform: "Sanha", year: 2024 },
+        { url: mafumeiraImg, caption: "Mafumeira Sul — plataforma mais recente", platform: "Mafumeira", year: 2022 },
+        { url: malongoImg, caption: "Terminal Malongo — centro de operações", platform: "Malongo Terminal", year: 2023 },
+        { url: nembasImg, caption: "Nembas FPSO — processamento de gás", platform: "Nembas", year: 2024 },
+        { url: subseaImg, caption: "East Kwanza — sistema subsea", platform: "East Kwanza", year: 2023 },
       ],
       platformSpecs: [
-        { name: "Takula", type: "Fixed Platform", installationYear: 1971, waterDepthM: 60, capacity: "80.000 BOPD", status: "Operacional", lastInspection: "2024-06", nextMaintenance: "2025-Q2", photo: "/placeholder.svg" },
+        { name: "Takula", type: "Fixed Platform", installationYear: 1971, waterDepthM: 60, capacity: "80.000 BOPD", status: "Operacional", lastInspection: "2024-06", nextMaintenance: "2025-Q2", photo: takulaImg },
         { name: "GIP-FOX", type: "Fixed Platform", installationYear: 1985, waterDepthM: 45, capacity: "35.000 BOPD", status: "Operacional", lastInspection: "2024-03", nextMaintenance: "2025-Q1" },
         { name: "Mafumeira Norte", type: "Fixed Platform", installationYear: 2009, waterDepthM: 55, capacity: "100.000 BOPD", status: "Operacional", lastInspection: "2024-09", nextMaintenance: "2025-Q3" },
         { name: "Mafumeira Sul", type: "Fixed Platform", installationYear: 2015, waterDepthM: 65, capacity: "50.000 BOPD", status: "Operacional", lastInspection: "2024-11", nextMaintenance: "2025-Q4" },
