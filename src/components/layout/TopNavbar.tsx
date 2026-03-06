@@ -89,16 +89,31 @@ export const TopNavbar = () => {
           <span className="absolute top-1 right-1 w-2 h-2 bg-anpg rounded-full" />
         </button>
 
-        {/* User avatar */}
-        <button className="flex items-center gap-2 p-1.5 rounded-lg hover:bg-white/10 transition-colors">
-          <div className="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center">
-            <User className="w-3.5 h-3.5" />
-          </div>
-          <div className="hidden lg:block text-left">
-            <p className="text-xs font-medium leading-tight">Administrador</p>
-            <p className="text-[10px] text-white/50 leading-tight">ANPG</p>
-          </div>
-        </button>
+        {/* User dropdown */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button className="flex items-center gap-2 p-1.5 rounded-lg hover:bg-white/10 transition-colors">
+              <div className="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center">
+                <User className="w-3.5 h-3.5" />
+              </div>
+              <div className="hidden lg:block text-left">
+                <p className="text-xs font-medium leading-tight">{displayName}</p>
+                <p className="text-[10px] text-white/50 leading-tight">{displayCargo}</p>
+              </div>
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-48">
+            <div className="px-2 py-1.5">
+              <p className="text-sm font-medium">{displayName}</p>
+              <p className="text-xs text-muted-foreground">{user?.email}</p>
+            </div>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={handleSignOut} className="text-destructive cursor-pointer">
+              <LogOut className="w-4 h-4 mr-2" />
+              Terminar Sessão
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </header>
   );
