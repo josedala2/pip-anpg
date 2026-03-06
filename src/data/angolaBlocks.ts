@@ -143,6 +143,33 @@ export interface EnvironmentalYearData {
   gasFlaredTarget?: number;
 }
 
+export interface FacilityPhoto {
+  url: string;
+  caption: string;
+  platform?: string;
+  year?: number;
+}
+
+export interface FacilityDocument {
+  title: string;
+  type: "ficha-tecnica" | "inspecao" | "manutencao" | "certificacao" | "outro";
+  date?: string;
+  description?: string;
+  url?: string;
+}
+
+export interface PlatformSpec {
+  name: string;
+  type: string; // e.g. "Fixed Platform", "FPSO", "Subsea"
+  installationYear?: number;
+  waterDepthM?: number;
+  capacity?: string;
+  status: "Operacional" | "Manutenção" | "Descomissionada" | "Suspensa";
+  lastInspection?: string;
+  nextMaintenance?: string;
+  photo?: string;
+}
+
 export interface FacilityArea {
   name: string;
   efficiency: number; // percentage
@@ -162,6 +189,10 @@ export interface FacilityData {
   endOfLifeYear?: number;
   endOfLifeField?: string;
   cumulativeProductionBO?: number;
+  photos?: FacilityPhoto[];
+  documents?: FacilityDocument[];
+  platformSpecs?: PlatformSpec[];
+  maintenancePlan?: { period: string; scope: string; status: "Concluído" | "Em Curso" | "Planeado" }[];
 }
 
 export interface NPVBreakdown {
@@ -573,6 +604,48 @@ export const oilBlocks: OilBlock[] = [
       endOfLifeYear: 2040,
       endOfLifeField: "Mafumeira Sul",
       cumulativeProductionBO: 290043686705,
+      photos: [
+        { url: "/placeholder.svg", caption: "Vista aérea do complexo Takula", platform: "Takula", year: 2023 },
+        { url: "/placeholder.svg", caption: "Plataforma GIP-FOX — produção e processamento", platform: "GIP-FOX", year: 2024 },
+        { url: "/placeholder.svg", caption: "FPSO Sanha — área B", platform: "Sanha", year: 2024 },
+        { url: "/placeholder.svg", caption: "Mafumeira Sul — plataforma mais recente", platform: "Mafumeira", year: 2022 },
+        { url: "/placeholder.svg", caption: "Terminal Malongo — centro de operações", platform: "Malongo Terminal", year: 2023 },
+        { url: "/placeholder.svg", caption: "Nembas FPSO — processamento de gás", platform: "Nembas", year: 2024 },
+      ],
+      platformSpecs: [
+        { name: "Takula", type: "Fixed Platform", installationYear: 1971, waterDepthM: 60, capacity: "80.000 BOPD", status: "Operacional", lastInspection: "2024-06", nextMaintenance: "2025-Q2", photo: "/placeholder.svg" },
+        { name: "GIP-FOX", type: "Fixed Platform", installationYear: 1985, waterDepthM: 45, capacity: "35.000 BOPD", status: "Operacional", lastInspection: "2024-03", nextMaintenance: "2025-Q1" },
+        { name: "Mafumeira Norte", type: "Fixed Platform", installationYear: 2009, waterDepthM: 55, capacity: "100.000 BOPD", status: "Operacional", lastInspection: "2024-09", nextMaintenance: "2025-Q3" },
+        { name: "Mafumeira Sul", type: "Fixed Platform", installationYear: 2015, waterDepthM: 65, capacity: "50.000 BOPD", status: "Operacional", lastInspection: "2024-11", nextMaintenance: "2025-Q4" },
+        { name: "Sanha", type: "FPSO", installationYear: 2004, waterDepthM: 350, capacity: "100.000 BOPD", status: "Operacional", lastInspection: "2024-08", nextMaintenance: "2025-Q2" },
+        { name: "Sanha LPG", type: "FPSO", installationYear: 2005, waterDepthM: 350, capacity: "LPG Processing", status: "Operacional", lastInspection: "2024-05", nextMaintenance: "2025-Q3" },
+        { name: "Nembas", type: "FPSO", installationYear: 2010, waterDepthM: 400, capacity: "60.000 BOPD", status: "Operacional", lastInspection: "2024-07", nextMaintenance: "2025-Q1" },
+        { name: "East Kwanza (EK)", type: "Subsea Tieback", installationYear: 2012, waterDepthM: 450, capacity: "30.000 BOPD", status: "Operacional", lastInspection: "2024-04", nextMaintenance: "2025-Q2" },
+        { name: "West Kwanza (WK)", type: "Subsea Tieback", installationYear: 2014, waterDepthM: 480, capacity: "25.000 BOPD", status: "Operacional", lastInspection: "2024-10", nextMaintenance: "2025-Q4" },
+        { name: "Malongo Terminal", type: "Onshore Terminal", installationYear: 1968, waterDepthM: 0, capacity: "400.000 BOPD", status: "Operacional", lastInspection: "2024-12", nextMaintenance: "2025-Q1" },
+      ],
+      documents: [
+        { title: "Ficha Técnica — Plataforma Takula", type: "ficha-tecnica", date: "2024-06-15", description: "Especificações técnicas completas da plataforma Takula, incluindo capacidades de processamento e sistemas de segurança." },
+        { title: "Ficha Técnica — FPSO Sanha", type: "ficha-tecnica", date: "2024-03-20", description: "Dados técnicos do FPSO Sanha: capacidade de armazenamento, sistemas de offloading e especificações de processamento." },
+        { title: "Relatório de Inspecção — Área A (2024)", type: "inspecao", date: "2024-09-10", description: "Inspecção estrutural das plataformas da Área A. Identificados problemas de corrosão em Takula e GIP-FOX." },
+        { title: "Relatório de Inspecção — Área B (2024)", type: "inspecao", date: "2024-08-22", description: "Inspecção submarina dos risers e flowlines da Área B. Condição geral satisfatória." },
+        { title: "Plano de Manutenção Preventiva 2025", type: "manutencao", date: "2025-01-05", description: "Cronograma completo de manutenção preventiva para todas as instalações do Bloco 0 em 2025." },
+        { title: "Plano de Descomissionamento — Takula", type: "manutencao", date: "2024-11-30", description: "Estudo de viabilidade para descomissionamento parcial da plataforma Takula a partir de 2035." },
+        { title: "Certificado SOLAS — FPSO Sanha", type: "certificacao", date: "2024-07-18", description: "Certificação internacional de segurança marítima (SOLAS) para o FPSO Sanha, válida até 2029." },
+        { title: "Certificado Ambiental — Bloco 0", type: "certificacao", date: "2024-04-01", description: "Certificação ambiental emitida pelo Ministério do Ambiente para operações no Bloco 0." },
+        { title: "Certificado API — Equipamentos de Perfuração", type: "certificacao", date: "2024-02-14", description: "Certificação API para equipamentos de perfuração e completação utilizados nas operações." },
+      ],
+      maintenancePlan: [
+        { period: "2025-Q1", scope: "Inspecção submarina de risers — Área B", status: "Planeado" },
+        { period: "2025-Q1", scope: "Revisão de turbo-compressores — Malongo Terminal", status: "Em Curso" },
+        { period: "2025-Q2", scope: "Manutenção estrutural — Plataforma Takula", status: "Planeado" },
+        { period: "2025-Q2", scope: "Calibração de sistemas de segurança — FPSO Sanha", status: "Planeado" },
+        { period: "2025-Q3", scope: "Substituição de válvulas de controlo — Mafumeira Norte", status: "Planeado" },
+        { period: "2025-Q3", scope: "Inspecção de integridade — Sanha LPG", status: "Planeado" },
+        { period: "2025-Q4", scope: "Overhaul de bombas de injecção — West Kwanza", status: "Planeado" },
+        { period: "2024-Q4", scope: "Reparação de corrosão — GIP-FOX", status: "Concluído" },
+        { period: "2024-Q3", scope: "Substituição de flowlines — East Kwanza", status: "Concluído" },
+      ],
     },
     // Economic Vision (NPV analysis)
     economicVision: {
