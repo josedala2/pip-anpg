@@ -100,10 +100,11 @@ const Index = () => {
           <div className="flex items-center gap-2 3xl:gap-3">
             <Link
               to="/reports"
-              className="p-2 3xl:p-2.5 rounded-lg hover:bg-secondary transition-colors"
+              className="btn-anpg text-xs px-3 py-2 3xl:text-sm 3xl:px-4 3xl:py-2.5 rounded-lg"
               title="Relatórios"
             >
               <FileText className="w-4 h-4 3xl:w-5 3xl:h-5" />
+              <span className="hidden sm:inline">Relatórios</span>
             </Link>
             <button
               onClick={toggleTheme}
