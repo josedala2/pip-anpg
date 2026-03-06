@@ -1,5 +1,5 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Search, Bell, User, Sun, Moon, LogOut } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { Bell, User, Sun, Moon, LogOut } from "lucide-react";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useTheme } from "@/components/ThemeProvider";
 import { useAuth } from "@/components/auth/AuthProvider";
