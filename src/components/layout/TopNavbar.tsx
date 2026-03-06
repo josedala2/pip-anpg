@@ -20,7 +20,7 @@ export const TopNavbar = () => {
   };
 
   return (
-    <div className="shrink-0 sticky top-0 z-50">
+    <div className="fixed top-0 left-0 right-0 z-50">
       {/* Red accent line at top */}
       <div className="h-1 bg-gradient-to-r from-anpg via-anpg-dark to-anpg" />
 

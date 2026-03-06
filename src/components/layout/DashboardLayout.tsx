@@ -12,7 +12,9 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
     <SidebarProvider>
       <div className="h-screen flex flex-col w-full overflow-hidden">
         <TopNavbar />
-        <div className="flex-1 flex w-full overflow-hidden [&>.group\/sidebar-wrapper]:min-h-0 [&>.group\/sidebar-wrapper]:flex-1">
+        {/* Spacer for fixed navbar: red line (4px) + header (64px) = 68px */}
+        <div className="shrink-0 h-[calc(0.25rem+4rem)]" />
+        <div className="flex-1 flex w-full overflow-hidden">
           <AppSidebar />
           <div className="flex-1 flex flex-col overflow-hidden">
             <Breadcrumbs />
