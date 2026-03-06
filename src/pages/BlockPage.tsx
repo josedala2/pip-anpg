@@ -777,6 +777,12 @@ const BlockPage = () => {
                         </div>
                       ))}
                     </div>
+                    <button
+                      onClick={() => { setActiveTab("exploration"); window.scrollTo({ top: 0, behavior: "smooth" }); }}
+                      className="inline-flex items-center gap-1.5 text-xs text-primary hover:underline mt-2 transition-colors"
+                    >
+                      <Target className="w-3 h-3" />Ver Exploração completa<ArrowRight className="w-3 h-3" />
+                    </button>
                   </CardContent>
                 </Card>
               );
