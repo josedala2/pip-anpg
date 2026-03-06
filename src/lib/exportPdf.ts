@@ -219,6 +219,121 @@ export const exportReportPdf = async (
       pdf.setFillColor(gold.r, gold.g, gold.b);
       pdf.rect(0, pageH - 3, pageW, 3, "F");
 
+      // ─── TABLE OF CONTENTS PAGE ──────────────────────────────
+      pdf.addPage();
+
+      // Background
+      pdf.setFillColor(252, 253, 255);
+      pdf.rect(0, 0, pageW, pageH, "F");
+
+      // Top gold bar
+      pdf.setFillColor(gold.r, gold.g, gold.b);
+      pdf.rect(0, 0, pageW, 2.5, "F");
+
+      // Header line
+      pdf.setDrawColor(primary.r, primary.g, primary.b);
+      pdf.setLineWidth(0.6);
+      pdf.line(marginX, 12, pageW - marginX, 12);
+
+      // Mini logo
+      if (logoBase64) {
+        try {
+          pdf.addImage(logoBase64, "SVG", marginX, 16, 24, 9);
+        } catch { /* skip */ }
+      }
+
+      // TOC Title
+      pdf.setFontSize(18);
+      pdf.setTextColor(darkBlue.r, darkBlue.g, darkBlue.b);
+      pdf.text("Índice", pageW / 2, 38, { align: "center" });
+
+      // Gold underline
+      pdf.setDrawColor(gold.r, gold.g, gold.b);
+      pdf.setLineWidth(0.6);
+      pdf.line(pageW * 0.35, 42, pageW * 0.65, 42);
+
+      // TOC entries
+      let tocY = 56;
+      const tocItems: { label: string; desc: string }[] = [];
+
+      if (coverInfo.reportTypes.length > 0) {
+        const reportDescriptions: Record<string, string> = {
+          "Resumo Executivo": "Visão geral do bloco, operador, estado contratual e indicadores-chave.",
+          "Contractual & Fiscal": "Termos contratuais, condições fiscais, cronograma e obrigações.",
+          "Exploração & Produção": "Dados de produção, reservas, poços e actividade exploratória.",
+          "Consórcio & Participações": "Composição do consórcio e participações dos parceiros.",
+          "Legislação & Documentos": "Enquadramento legal, decretos e documentos de referência.",
+          "Económico & Financeiro": "Custos, investimentos, partilha de produção e indicadores financeiros.",
+        };
+        coverInfo.reportTypes.forEach((rt, idx) => {
+          tocItems.push({
+            label: rt,
+            desc: reportDescriptions[rt] || "Secção do relatório.",
+          });
+        });
+      }
+
+      tocItems.forEach((item, idx) => {
+        // Section number circle
+        const circleX = marginX + 8;
+        pdf.setFillColor(primary.r, primary.g, primary.b);
+        pdf.circle(circleX, tocY - 1.5, 4, "F");
+        pdf.setFontSize(9);
+        pdf.setTextColor(255, 255, 255);
+        pdf.text(String(idx + 1), circleX, tocY - 0.5, { align: "center" });
+
+        // Section title
+        pdf.setFontSize(12);
+        pdf.setTextColor(darkBlue.r, darkBlue.g, darkBlue.b);
+        pdf.text(item.label, marginX + 18, tocY);
+
+        // Dotted leader line
+        pdf.setDrawColor(200, 200, 200);
+        pdf.setLineWidth(0.2);
+        const textWidth = pdf.getTextWidth(item.label);
+        const leaderStart = marginX + 18 + textWidth + 3;
+        const leaderEnd = pageW - marginX - 10;
+        for (let dx = leaderStart; dx < leaderEnd; dx += 2.5) {
+          pdf.line(dx, tocY, dx + 1, tocY);
+        }
+
+        // Page indicator
+        pdf.setFontSize(9);
+        pdf.setTextColor(primary.r, primary.g, primary.b);
+        pdf.text(String(idx + 1), pageW - marginX - 4, tocY, { align: "center" });
+
+        // Description
+        pdf.setFontSize(8);
+        pdf.setTextColor(120, 130, 145);
+        pdf.text(item.desc, marginX + 18, tocY + 5.5);
+
+        tocY += 18;
+      });
+
+      // Blocks summary at bottom
+      const blocksBoxY = pageH - 55;
+      pdf.setDrawColor(200, 210, 220);
+      pdf.setLineWidth(0.3);
+      pdf.roundedRect(marginX, blocksBoxY, pageW - marginX * 2, 35, 3, 3, "S");
+
+      pdf.setFontSize(8);
+      pdf.setTextColor(gold.r, gold.g, gold.b);
+      pdf.text("BLOCOS INCLUÍDOS NESTE RELATÓRIO", marginX + 6, blocksBoxY + 8);
+
+      pdf.setFontSize(9);
+      pdf.setTextColor(darkBlue.r, darkBlue.g, darkBlue.b);
+      const blocksText = coverInfo.blockNames.join("  ·  ");
+      pdf.text(blocksText, marginX + 6, blocksBoxY + 17, { maxWidth: pageW - marginX * 2 - 12 });
+
+      pdf.setFontSize(7);
+      pdf.setTextColor(150, 160, 170);
+      const tocDate = new Date().toLocaleDateString("pt-AO", { year: "numeric", month: "long", day: "numeric" });
+      pdf.text(`Gerado em ${tocDate}`, marginX + 6, blocksBoxY + 27);
+
+      // Bottom gold bar
+      pdf.setFillColor(gold.r, gold.g, gold.b);
+      pdf.rect(0, pageH - 2.5, pageW, 2.5, "F");
+
       // Start content on next page
       pdf.addPage();
     }
