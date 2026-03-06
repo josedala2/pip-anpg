@@ -290,6 +290,7 @@ const BlockPage = () => {
   const uid = useId().replace(/:/g, "");
   const prodGradId = `prodGrad-${uid}`;
   const discGradId = `discGrad-${uid}`;
+  const [explorationBarMode, setExplorationBarMode] = useState<"grouped" | "stacked">("grouped");
   const [activeTab, setActiveTab] = useState("overview");
 
   // Calculate averages for reference lines
