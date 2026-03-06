@@ -14,7 +14,6 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarFooter,
-  SidebarHeader,
   useSidebar,
 } from "@/components/ui/sidebar";
 import anpgLogoColor from "@/assets/anpg-logo-color.svg";
@@ -44,14 +43,7 @@ export function AppSidebar() {
 
   return (
     <Sidebar collapsible="icon" className="border-r-0 bg-sidebar overflow-hidden">
-      {/* Header with logo */}
-      <SidebarHeader className="p-0">
-        {!collapsed && (
-          <div className="mx-4 mt-3 mb-2 h-px bg-gradient-to-r from-transparent via-sidebar-border to-transparent" />
-        )}
-      </SidebarHeader>
-
-      <SidebarContent className="px-2">
+      <SidebarContent className="px-2 pt-3">
         {/* Main Menu */}
         <SidebarGroup>
           {!collapsed && (
