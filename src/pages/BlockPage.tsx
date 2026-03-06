@@ -491,7 +491,7 @@ const BlockPage = () => {
                     )}
                     <button
                       onClick={() => { setActiveTab("financial"); window.scrollTo({ top: 0, behavior: "smooth" }); }}
-                      className="inline-flex items-center gap-1.5 text-xs text-primary hover:underline mt-2 transition-colors"
+                      className="btn-anpg-outline text-xs px-3 py-1.5 mt-2"
                     >
                       <DollarSign className="w-3 h-3" />Ver Financeiro & Contratual completo<ArrowRight className="w-3 h-3" />
                     </button>
@@ -601,7 +601,7 @@ const BlockPage = () => {
                     )}
                     <button
                       onClick={() => { setActiveTab("financial"); window.scrollTo({ top: 0, behavior: "smooth" }); }}
-                      className="inline-flex items-center gap-1.5 text-xs text-primary hover:underline mt-2 transition-colors"
+                      className="btn-anpg-outline text-xs px-3 py-1.5 mt-2"
                     >
                       <Scale className="w-3 h-3" />Ver todas as condições fiscais<ArrowRight className="w-3 h-3" />
                     </button>
@@ -640,7 +640,7 @@ const BlockPage = () => {
                   </div>
                   <button
                     onClick={() => { setActiveTab("hse"); window.scrollTo({ top: 0, behavior: "smooth" }); }}
-                    className="inline-flex items-center gap-1.5 text-xs text-primary hover:underline mt-2 transition-colors"
+                    className="btn-anpg-outline text-xs px-3 py-1.5 mt-2"
                   >
                     <Leaf className="w-3 h-3" />Ver HSE & Ambiente<ArrowRight className="w-3 h-3" />
                   </button>
@@ -779,7 +779,7 @@ const BlockPage = () => {
                     </div>
                     <button
                       onClick={() => { setActiveTab("exploration"); window.scrollTo({ top: 0, behavior: "smooth" }); }}
-                      className="inline-flex items-center gap-1.5 text-xs text-primary hover:underline mt-2 transition-colors"
+                      className="btn-anpg-outline text-xs px-3 py-1.5 mt-2"
                     >
                       <Target className="w-3 h-3" />Ver Exploração completa<ArrowRight className="w-3 h-3" />
                     </button>
