@@ -1,6 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
-import { Search, Bell, User } from "lucide-react";
+import { Search, Bell, User, Sun, Moon } from "lucide-react";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import { useTheme } from "@/components/ThemeProvider";
 import anpgLogoWhite from "@/assets/anpg-logo-white.svg";
 
 const navLinks = [
@@ -11,6 +12,7 @@ const navLinks = [
 ];
 
 export const TopNavbar = () => {
+  const { theme, toggleTheme } = useTheme();
   const location = useLocation();
 
   return (
@@ -59,6 +61,15 @@ export const TopNavbar = () => {
             className="bg-transparent text-sm text-white placeholder:text-white/40 outline-none w-32 lg:w-48"
           />
         </div>
+
+        {/* Theme toggle */}
+        <button
+          onClick={toggleTheme}
+          className="p-2 rounded-lg hover:bg-white/10 transition-colors"
+          title={theme === "dark" ? "Modo Claro" : "Modo Escuro"}
+        >
+          {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+        </button>
 
         {/* Notifications */}
         <button className="relative p-2 rounded-lg hover:bg-white/10 transition-colors">
