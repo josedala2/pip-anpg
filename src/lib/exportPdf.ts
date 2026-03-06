@@ -86,84 +86,138 @@ export const exportReportPdf = async (
 
     // ─── COVER PAGE ─────────────────────────────────────────
     if (coverInfo) {
-      // Background accent line at top
-      pdf.setDrawColor(0, 153, 204);
-      pdf.setLineWidth(2);
-      pdf.line(0, 0, pageW, 0);
-      pdf.setLineWidth(0.8);
-      pdf.line(marginX, 12, pageW - marginX, 12);
+      const primary = { r: 0, g: 153, b: 204 };    // ANPG blue
+      const darkBlue = { r: 10, g: 30, b: 60 };    // deep navy
+      const gold = { r: 212, g: 175, b: 55 };       // accent gold
 
-      // Centered logo
+      // ── Full-page dark gradient background ──
+      // Top band - deep navy
+      pdf.setFillColor(darkBlue.r, darkBlue.g, darkBlue.b);
+      pdf.rect(0, 0, pageW, pageH * 0.65, "F");
+      // Bottom band - slightly lighter
+      pdf.setFillColor(15, 40, 75);
+      pdf.rect(0, pageH * 0.65, pageW, pageH * 0.35, "F");
+
+      // ── Decorative geometric pattern (top-right) ──
+      pdf.setDrawColor(primary.r, primary.g, primary.b);
+      pdf.setLineWidth(0.3);
+      for (let i = 0; i < 8; i++) {
+        const opacity = 0.08 + i * 0.02;
+        pdf.setDrawColor(primary.r, primary.g, primary.b);
+        pdf.setLineWidth(0.2);
+        const x = pageW - 20 - i * 12;
+        const y = 10 + i * 8;
+        pdf.line(x, 0, pageW, y);
+      }
+      // Bottom-left decorative lines
+      for (let i = 0; i < 6; i++) {
+        pdf.setLineWidth(0.15);
+        pdf.setDrawColor(primary.r, primary.g, primary.b);
+        const x = 15 + i * 10;
+        pdf.line(0, pageH - 40 + i * 6, x, pageH);
+      }
+
+      // ── Gold accent bar at top ──
+      pdf.setFillColor(gold.r, gold.g, gold.b);
+      pdf.rect(0, 0, pageW, 3, "F");
+
+      // ── Thin blue line below gold ──
+      pdf.setDrawColor(primary.r, primary.g, primary.b);
+      pdf.setLineWidth(0.5);
+      pdf.line(marginX, 8, pageW - marginX, 8);
+
+      // ── Centered logo ──
       if (logoBase64) {
-        const logoW = 60;
-        const logoH = 24;
+        const logoW = 65;
+        const logoH = 26;
         const logoX = (pageW - logoW) / 2;
         try {
-          pdf.addImage(logoBase64, "SVG", logoX, pageH * 0.18, logoW, logoH);
+          pdf.addImage(logoBase64, "SVG", logoX, pageH * 0.12, logoW, logoH);
         } catch {
-          pdf.setFontSize(18);
-          pdf.setTextColor(0, 153, 204);
-          pdf.text("ANPG", pageW / 2, pageH * 0.22, { align: "center" });
+          pdf.setFontSize(20);
+          pdf.setTextColor(255, 255, 255);
+          pdf.text("ANPG", pageW / 2, pageH * 0.16, { align: "center" });
         }
       }
 
-      // Main title
-      pdf.setFontSize(22);
-      pdf.setTextColor(30, 30, 30);
-      pdf.text(coverInfo.title, pageW / 2, pageH * 0.38, { align: "center" });
+      // ── Gold decorative divider ──
+      const divY1 = pageH * 0.24;
+      pdf.setDrawColor(gold.r, gold.g, gold.b);
+      pdf.setLineWidth(0.8);
+      pdf.line(pageW * 0.25, divY1, pageW * 0.75, divY1);
+      // Small diamond accent
+      const dSize = 2;
+      pdf.setFillColor(gold.r, gold.g, gold.b);
+      const cx = pageW / 2;
+      // Draw diamond shape using triangle pairs
+      pdf.setLineWidth(0);
+      pdf.triangle(cx, divY1 - dSize, cx + dSize, divY1, cx, divY1 + dSize, "F");
+      pdf.triangle(cx, divY1 - dSize, cx - dSize, divY1, cx, divY1 + dSize, "F");
 
-      // Subtitle - institution
+      // ── Main title ──
+      pdf.setFontSize(26);
+      pdf.setTextColor(255, 255, 255);
+      pdf.text(coverInfo.title, pageW / 2, pageH * 0.33, { align: "center" });
+
+      // ── Institution subtitle ──
       pdf.setFontSize(11);
-      pdf.setTextColor(100, 100, 100);
-      pdf.text("Agência Nacional de Petróleo, Gás e Biocombustíveis", pageW / 2, pageH * 0.38 + 10, { align: "center" });
-      pdf.text("República de Angola", pageW / 2, pageH * 0.38 + 16, { align: "center" });
-
-      // Decorative line
-      pdf.setDrawColor(0, 153, 204);
-      pdf.setLineWidth(0.5);
-      const lineY = pageH * 0.38 + 24;
-      pdf.line(pageW * 0.3, lineY, pageW * 0.7, lineY);
-
-      // Report types section
-      let yPos = pageH * 0.55;
+      pdf.setTextColor(primary.r, primary.g, primary.b);
+      pdf.text("Agência Nacional de Petróleo, Gás e Biocombustíveis", pageW / 2, pageH * 0.33 + 12, { align: "center" });
       pdf.setFontSize(10);
-      pdf.setTextColor(60, 60, 60);
+      pdf.setTextColor(180, 200, 220);
+      pdf.text("República de Angola", pageW / 2, pageH * 0.33 + 19, { align: "center" });
+
+      // ── Second gold divider ──
+      const divY2 = pageH * 0.33 + 28;
+      pdf.setDrawColor(gold.r, gold.g, gold.b);
+      pdf.setLineWidth(0.4);
+      pdf.line(pageW * 0.35, divY2, pageW * 0.65, divY2);
+
+      // ── Report sections box ──
+      let yPos = pageH * 0.52;
+      pdf.setFontSize(9);
+      pdf.setTextColor(gold.r, gold.g, gold.b);
       pdf.text("SECÇÕES DO RELATÓRIO", pageW / 2, yPos, { align: "center" });
-      yPos += 8;
+      yPos += 7;
       pdf.setFontSize(9);
-      pdf.setTextColor(80, 80, 80);
+      pdf.setTextColor(210, 220, 230);
       coverInfo.reportTypes.forEach((rt) => {
-        pdf.text(`• ${rt}`, pageW / 2, yPos, { align: "center" });
+        pdf.text(`▸  ${rt}`, pageW / 2, yPos, { align: "center" });
         yPos += 5.5;
       });
 
-      // Blocks section
-      yPos += 6;
-      pdf.setFontSize(10);
-      pdf.setTextColor(60, 60, 60);
-      pdf.text("BLOCOS INCLUÍDOS", pageW / 2, yPos, { align: "center" });
+      // ── Blocks section ──
       yPos += 8;
       pdf.setFontSize(9);
-      pdf.setTextColor(80, 80, 80);
+      pdf.setTextColor(gold.r, gold.g, gold.b);
+      pdf.text("BLOCOS INCLUÍDOS", pageW / 2, yPos, { align: "center" });
+      yPos += 7;
+      pdf.setFontSize(9);
+      pdf.setTextColor(210, 220, 230);
       coverInfo.blockNames.forEach((bn) => {
-        pdf.text(`• ${bn}`, pageW / 2, yPos, { align: "center" });
+        pdf.text(`▸  ${bn}`, pageW / 2, yPos, { align: "center" });
         yPos += 5.5;
       });
 
-      // Date at bottom
+      // ── Date ──
       const now = new Date();
       const dateStr = now.toLocaleDateString("pt-AO", { year: "numeric", month: "long", day: "numeric" });
       pdf.setFontSize(10);
-      pdf.setTextColor(120, 120, 120);
-      pdf.text(dateStr, pageW / 2, pageH - 30, { align: "center" });
+      pdf.setTextColor(150, 170, 190);
+      pdf.text(dateStr, pageW / 2, pageH - 35, { align: "center" });
 
-      // Bottom line
-      pdf.setDrawColor(200, 200, 200);
-      pdf.setLineWidth(0.3);
-      pdf.line(marginX, pageH - 20, pageW - marginX, pageH - 20);
+      // ── Bottom gold accent bar ──
+      pdf.setFillColor(gold.r, gold.g, gold.b);
+      pdf.rect(0, pageH - 25, pageW, 1, "F");
+
+      // ── Confidencial footer ──
       pdf.setFontSize(7);
-      pdf.setTextColor(160, 160, 160);
-      pdf.text("CONFIDENCIAL — Uso interno ANPG", pageW / 2, pageH - 16, { align: "center" });
+      pdf.setTextColor(120, 140, 160);
+      pdf.text("CONFIDENCIAL — Uso interno ANPG", pageW / 2, pageH - 18, { align: "center" });
+
+      // ── Bottom gold bar ──
+      pdf.setFillColor(gold.r, gold.g, gold.b);
+      pdf.rect(0, pageH - 3, pageW, 3, "F");
 
       // Start content on next page
       pdf.addPage();
