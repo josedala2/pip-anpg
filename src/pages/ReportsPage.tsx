@@ -1,20 +1,15 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { ArrowLeft, Printer, Copy, Check, Sparkles, FileSpreadsheet, FileDown, Loader2 } from "lucide-react";
+import { Printer, Copy, Check, FileSpreadsheet, FileDown, Loader2 } from "lucide-react";
 import { exportToCsv, exportToExcel } from "@/lib/exportFinancial";
 import { exportReportPdf } from "@/lib/exportPdf";
 import { Button } from "@/components/ui/button";
-import { useTheme } from "@/components/ThemeProvider";
 import { ReportConfigurator, type ReportConfig } from "@/components/reports/ReportConfigurator";
 import { ReportPreview } from "@/components/reports/ReportPreview";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { oilBlocks } from "@/data/angolaBlocks";
-import anpgLogoColor from "@/assets/anpg-logo-color.svg";
-import anpgLogoWhite from "@/assets/anpg-logo-white.svg";
 
 const ReportsPage = () => {
-  const { theme } = useTheme();
   const [generated, setGenerated] = useState(false);
   const [copied, setCopied] = useState(false);
   const [aiNarrative, setAiNarrative] = useState<string | null>(null);
