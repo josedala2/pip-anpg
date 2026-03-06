@@ -159,8 +159,8 @@ const Index = () => {
           }`}
         >
           {activePanel === 0 && (
-            <div className="flex" style={{ height: "calc(100vh - 110px)" }}>
-              <div className="flex-[6] min-w-0 relative">
+            <div className="flex flex-col md:flex-row" style={{ height: "calc(100vh - 110px)" }}>
+              <div className="flex-1 md:flex-[6] min-w-0 relative h-[45vh] md:h-full">
                 <ConcessionMap
                   blocks={filteredBlocks}
                   selectedBlockId={selectedBlock?.id ?? null}
@@ -169,7 +169,7 @@ const Index = () => {
                   onBlockHover={setHoveredBlockId}
                 />
               </div>
-              <div className="flex-[4] min-w-[340px] max-w-[520px]">
+              <div className="flex-1 md:flex-[4] md:min-w-[340px] md:max-w-[520px] h-[55vh] md:h-full overflow-hidden">
                 <OverviewSidebar
                   filteredIds={filteredIds}
                   selectedBlock={selectedBlock}
