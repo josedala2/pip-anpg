@@ -621,7 +621,7 @@ export const oilBlocks: OilBlock[] = [
         { url: subseaImg, caption: "East Kwanza — sistema subsea", platform: "East Kwanza", year: 2023 },
       ],
       platformSpecs: [
-        { name: "Takula", type: "Fixed Platform", installationYear: 1971, waterDepthM: 60, capacity: "80.000 BOPD", status: "Operacional", lastInspection: "2024-06", nextMaintenance: "2025-Q2", photo: "/placeholder.svg" },
+        { name: "Takula", type: "Fixed Platform", installationYear: 1971, waterDepthM: 60, capacity: "80.000 BOPD", status: "Operacional", lastInspection: "2024-06", nextMaintenance: "2025-Q2", photo: takulaImg },
         { name: "GIP-FOX", type: "Fixed Platform", installationYear: 1985, waterDepthM: 45, capacity: "35.000 BOPD", status: "Operacional", lastInspection: "2024-03", nextMaintenance: "2025-Q1" },
         { name: "Mafumeira Norte", type: "Fixed Platform", installationYear: 2009, waterDepthM: 55, capacity: "100.000 BOPD", status: "Operacional", lastInspection: "2024-09", nextMaintenance: "2025-Q3" },
         { name: "Mafumeira Sul", type: "Fixed Platform", installationYear: 2015, waterDepthM: 65, capacity: "50.000 BOPD", status: "Operacional", lastInspection: "2024-11", nextMaintenance: "2025-Q4" },
