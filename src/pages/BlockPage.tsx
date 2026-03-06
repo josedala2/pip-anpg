@@ -308,11 +308,11 @@ const BlockPage = () => {
   if (!block) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <Card className="glass-card p-8 text-center max-w-md">
-          <h2 className="text-xl font-bold mb-2">Bloco não encontrado</h2>
-          <p className="text-muted-foreground mb-4">O bloco "{blockId}" não existe na base de dados.</p>
-          <Button onClick={() => navigate("/")} variant="outline"><ArrowLeft className="w-4 h-4 mr-2" />Voltar ao Dashboard</Button>
-        </Card>
+        <div className="instruction-card max-w-md text-center">
+          <h2 className="instruction-title text-xl mb-2">Bloco não encontrado</h2>
+          <p className="instruction-desc mb-4">O bloco "{blockId}" não existe na base de dados.</p>
+          <Button onClick={() => navigate("/")} variant="anpg"><ArrowLeft className="w-4 h-4 mr-2" />Voltar ao Dashboard</Button>
+        </div>
       </div>
     );
   }
@@ -491,7 +491,7 @@ const BlockPage = () => {
                     )}
                     <button
                       onClick={() => { setActiveTab("financial"); window.scrollTo({ top: 0, behavior: "smooth" }); }}
-                      className="inline-flex items-center gap-1.5 text-xs text-primary hover:underline mt-2 transition-colors"
+                      className="btn-anpg-outline text-xs px-3 py-1.5 mt-2"
                     >
                       <DollarSign className="w-3 h-3" />Ver Financeiro & Contratual completo<ArrowRight className="w-3 h-3" />
                     </button>
@@ -601,7 +601,7 @@ const BlockPage = () => {
                     )}
                     <button
                       onClick={() => { setActiveTab("financial"); window.scrollTo({ top: 0, behavior: "smooth" }); }}
-                      className="inline-flex items-center gap-1.5 text-xs text-primary hover:underline mt-2 transition-colors"
+                      className="btn-anpg-outline text-xs px-3 py-1.5 mt-2"
                     >
                       <Scale className="w-3 h-3" />Ver todas as condições fiscais<ArrowRight className="w-3 h-3" />
                     </button>
@@ -640,7 +640,7 @@ const BlockPage = () => {
                   </div>
                   <button
                     onClick={() => { setActiveTab("hse"); window.scrollTo({ top: 0, behavior: "smooth" }); }}
-                    className="inline-flex items-center gap-1.5 text-xs text-primary hover:underline mt-2 transition-colors"
+                    className="btn-anpg-outline text-xs px-3 py-1.5 mt-2"
                   >
                     <Leaf className="w-3 h-3" />Ver HSE & Ambiente<ArrowRight className="w-3 h-3" />
                   </button>
@@ -779,7 +779,7 @@ const BlockPage = () => {
                     </div>
                     <button
                       onClick={() => { setActiveTab("exploration"); window.scrollTo({ top: 0, behavior: "smooth" }); }}
-                      className="inline-flex items-center gap-1.5 text-xs text-primary hover:underline mt-2 transition-colors"
+                      className="btn-anpg-outline text-xs px-3 py-1.5 mt-2"
                     >
                       <Target className="w-3 h-3" />Ver Exploração completa<ArrowRight className="w-3 h-3" />
                     </button>
@@ -790,12 +790,14 @@ const BlockPage = () => {
 
             {/* Facility Summary - compact in overview */}
             {block.facilityData && (
-              <Card className="glass-card hover:border-primary/30 transition-colors cursor-pointer" onClick={() => { setActiveTab("facilities"); window.scrollTo({ top: 0, behavior: "smooth" }); }}>
-                <CardContent className="p-4 flex items-center justify-between gap-4">
+              <div className="instruction-card cursor-pointer hover:border-anpg/30 transition-colors" onClick={() => { setActiveTab("facilities"); window.scrollTo({ top: 0, behavior: "smooth" }); }}>
+                <div className="flex items-center justify-between gap-4">
                   <div className="flex items-center gap-3">
-                    <Building2 className="w-5 h-5 text-primary shrink-0" />
+                    <div className="instruction-icon">
+                      <Building2 className="w-5 h-5" />
+                    </div>
                     <div>
-                      <h4 className="text-sm font-semibold">Estado das Instalações</h4>
+                      <h4 className="instruction-title">Estado das Instalações</h4>
                       <div className="flex items-center gap-3 text-xs text-muted-foreground mt-0.5">
                         <span>Eficiência: <span className="font-mono font-bold text-success">{block.facilityData.overallEfficiency}%</span></span>
                         <span>·</span>
@@ -806,11 +808,11 @@ const BlockPage = () => {
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-1.5 text-xs text-primary shrink-0">
-                    Ver detalhes <ArrowRight className="w-3.5 h-3.5" />
+                  <div className="btn-anpg-outline text-xs px-3 py-1.5 shrink-0">
+                    Ver detalhes <ArrowRight className="w-3.5 h-3.5 inline ml-1" />
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             )}
           </TabsContent>
 

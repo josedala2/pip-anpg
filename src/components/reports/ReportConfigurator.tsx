@@ -79,10 +79,10 @@ export const ReportConfigurator = ({ config, onChange, onGenerate }: Props) => {
           {(Object.entries(reportTypeLabels) as [ReportType, typeof reportTypeLabels.executive][]).map(([key, val]) => (
             <label
               key={key}
-              className={`flex items-start gap-3 p-3 rounded-lg border cursor-pointer transition-all ${
+            className={`flex items-start gap-3 p-3 rounded-lg border cursor-pointer transition-all ${
                 config.reportTypes.includes(key)
-                  ? "border-primary bg-primary/5"
-                  : "border-border hover:border-primary/30"
+                  ? "border-anpg bg-anpg/5"
+                  : "border-border hover:border-anpg/30"
               }`}
             >
               <Checkbox
@@ -217,7 +217,7 @@ export const ReportConfigurator = ({ config, onChange, onGenerate }: Props) => {
       </div>
 
       {/* Generate Button */}
-      <Button onClick={onGenerate} disabled={!isValid} className="w-full gap-2">
+      <Button onClick={onGenerate} disabled={!isValid} variant="anpg" className="w-full gap-2">
         <FileText className="w-4 h-4" />
         Gerar Relatório
         {!isValid && <span className="text-xs opacity-70">(seleccione tipo e blocos)</span>}

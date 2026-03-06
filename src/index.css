@@ -36,6 +36,11 @@
 
     --radius: 0.75rem;
 
+    --anpg: 356 91% 58%;
+    --anpg-foreground: 0 0% 100%;
+    --anpg-dark: 356 85% 45%;
+    --anpg-glow: 356 91% 68%;
+
     --success: 152 69% 40%;
     --success-foreground: 210 40% 98%;
     --warning: 38 92% 50%;
@@ -93,6 +98,11 @@
     --border: 222 30% 18%;
     --input: 222 30% 18%;
     --ring: 199 89% 48%;
+
+    --anpg: 356 91% 58%;
+    --anpg-foreground: 0 0% 100%;
+    --anpg-dark: 356 85% 50%;
+    --anpg-glow: 356 91% 68%;
 
     --success: 152 69% 40%;
     --success-foreground: 210 40% 98%;
@@ -184,6 +194,10 @@
     box-shadow: 0 0 20px hsl(var(--danger) / 0.2);
   }
 
+  .glow-anpg {
+    box-shadow: 0 0 20px hsl(var(--anpg) / 0.25), 0 0 60px hsl(var(--anpg) / 0.08);
+  }
+
   .accent-border-card {
     @apply bg-card/90 backdrop-blur-sm rounded-lg p-2.5 border border-border/40;
     border-left: 3px solid hsl(var(--primary));
@@ -193,6 +207,84 @@
   .dark .accent-border-card {
     @apply bg-card/70;
     box-shadow: 0 1px 6px rgba(0, 0, 0, 0.15);
+  }
+
+  /* ANPG branded instruction card */
+  .instruction-card {
+    @apply bg-card/90 backdrop-blur-sm rounded-xl p-5 border border-border/40 relative overflow-hidden;
+    border-left: 4px solid hsl(var(--anpg));
+    box-shadow: 0 2px 12px hsl(var(--anpg) / 0.08);
+  }
+
+  .instruction-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 120px;
+    height: 120px;
+    background: radial-gradient(circle at top right, hsl(var(--anpg) / 0.06), transparent 70%);
+    pointer-events: none;
+  }
+
+  .dark .instruction-card {
+    @apply bg-card/70;
+    box-shadow: 0 2px 16px hsl(var(--anpg) / 0.12);
+  }
+
+  .instruction-card .instruction-icon {
+    @apply w-10 h-10 rounded-xl flex items-center justify-center shrink-0;
+    background: linear-gradient(135deg, hsl(var(--anpg) / 0.15), hsl(var(--anpg) / 0.05));
+  }
+
+  .instruction-card .instruction-icon svg {
+    @apply w-5 h-5;
+    color: hsl(var(--anpg));
+  }
+
+  .instruction-card .instruction-title {
+    @apply text-sm font-semibold text-foreground;
+  }
+
+  .instruction-card .instruction-desc {
+    @apply text-xs text-muted-foreground leading-relaxed mt-1;
+  }
+
+  /* ANPG branded button */
+  .btn-anpg {
+    @apply inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-semibold transition-all duration-200;
+    @apply px-5 py-2.5;
+    background: linear-gradient(135deg, hsl(var(--anpg)), hsl(var(--anpg-dark)));
+    color: hsl(var(--anpg-foreground));
+    box-shadow: 0 2px 8px hsl(var(--anpg) / 0.3), inset 0 1px 0 hsl(var(--anpg-glow) / 0.3);
+  }
+
+  .btn-anpg:hover {
+    background: linear-gradient(135deg, hsl(var(--anpg-glow)), hsl(var(--anpg)));
+    box-shadow: 0 4px 16px hsl(var(--anpg) / 0.4), inset 0 1px 0 hsl(var(--anpg-glow) / 0.4);
+    transform: translateY(-1px);
+  }
+
+  .btn-anpg:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 4px hsl(var(--anpg) / 0.3);
+  }
+
+  .btn-anpg:disabled {
+    @apply opacity-50 pointer-events-none;
+  }
+
+  .btn-anpg-outline {
+    @apply inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-semibold transition-all duration-200;
+    @apply px-5 py-2.5;
+    background: transparent;
+    color: hsl(var(--anpg));
+    border: 1.5px solid hsl(var(--anpg) / 0.4);
+  }
+
+  .btn-anpg-outline:hover {
+    background: hsl(var(--anpg) / 0.08);
+    border-color: hsl(var(--anpg) / 0.7);
   }
 
   .overview-panel {
@@ -205,7 +297,7 @@
 
   .text-gradient {
     @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--chart-4)));
+    background-image: linear-gradient(135deg, hsl(var(--anpg)), hsl(var(--chart-4)));
   }
 
   .kpi-value {
