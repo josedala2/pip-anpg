@@ -1,20 +1,21 @@
 import { useState } from "react";
-import { KPICards } from "./KPICards";
-import { OverviewBlockList } from "./OverviewBlockList";
 import { FilterBar, type FilterState } from "./FilterBar";
+import { OverviewBlockList } from "./OverviewBlockList";
+import { AnimatedCounter } from "./AnimatedCounter";
 import { type OilBlock, getTotalProduction, getTotalReserves, getActiveBlocks, getTotalCapex, getAvgExecutionRate } from "@/data/angolaBlocks";
-import { PanelRightClose, PanelRightOpen, BarChart3, Layers, TrendingUp, Activity, Boxes, DollarSign } from "lucide-react";
-
-const kpiData = [
-  { label: "Produção", value: getTotalProduction(), prefix: "", suffix: " BOPD", formatted: Math.round(getTotalProduction()).toLocaleString(), icon: Activity, color: "text-primary" },
-  { label: "Reservas", value: getTotalReserves(), prefix: "", suffix: " Mb", formatted: Math.round(getTotalReserves()).toLocaleString(), icon: BarChart3, color: "text-success" },
-  { label: "Blocos Ativos", value: getActiveBlocks(), prefix: "", suffix: "", formatted: getActiveBlocks().toString(), icon: Boxes, color: "text-warning" },
-  { label: "CAPEX", value: getTotalCapex(), prefix: "$", suffix: "M", formatted: Math.round(getTotalCapex()).toLocaleString(), icon: DollarSign, color: "text-primary" },
-  { label: "Execução", value: getAvgExecutionRate(), prefix: "", suffix: "%", formatted: Math.round(getAvgExecutionRate()).toString(), icon: TrendingUp, color: "text-success" },
-];
+import { Activity, BarChart3, Boxes, DollarSign, TrendingUp, Filter, ChevronDown } from "lucide-react";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 
-// Mini production trend data (aggregated)
+const kpis = [
+  { label: "Produção", value: getTotalProduction(), suffix: " BOPD", icon: Activity, accent: "var(--primary)" },
+  { label: "Reservas", value: getTotalReserves(), suffix: " Mb", icon: BarChart3, accent: "var(--success)" },
+  { label: "Blocos Ativos", value: getActiveBlocks(), suffix: "", icon: Boxes, accent: "var(--warning)" },
+  { label: "CAPEX", value: getTotalCapex(), prefix: "$", suffix: "M", icon: DollarSign, accent: "var(--primary)" },
+  { label: "Execução", value: getAvgExecutionRate(), suffix: "%", icon: TrendingUp, accent: "var(--success)" },
+];
+
 const trendData = [
   { month: "Jul", value: 1180000 },
   { month: "Ago", value: 1210000 },
@@ -24,7 +25,27 @@ const trendData = [
   { month: "Dez", value: 1304000 },
 ];
 
-type Tab = "kpis" | "blocks" | "trends";
+const basins = [
+  { name: "Bacia do Congo", value: 890000, pct: 68 },
+  { name: "Bacia do Kwanza", value: 320000, pct: 25 },
+  { name: "Bacia do Namibe", value: 94000, pct: 7 },
+];
+
+const phases = [
+  { phase: "Production", count: 28, color: "hsl(var(--success))" },
+  { phase: "Development", count: 8, color: "hsl(var(--warning))" },
+  { phase: "Exploration", count: 12, color: "hsl(var(--primary))" },
+  { phase: "Bidding", count: 22, color: "hsl(var(--bidding))" },
+  { phase: "Suspended", count: 2, color: "hsl(var(--danger))" },
+];
+
+const investData = [
+  { year: "2020", value: 8200 },
+  { year: "2021", value: 12500 },
+  { year: "2022", value: 18700 },
+  { year: "2023", value: 32400 },
+  { year: "2024", value: 49870 },
+];
 
 interface OverviewSidebarProps {
   filteredIds: string[];
@@ -33,185 +54,132 @@ interface OverviewSidebarProps {
   onFilterChange: (filters: FilterState) => void;
 }
 
+const SectionHeader = ({ children }: { children: React.ReactNode }) => (
+  <h4 className="text-[10px] uppercase tracking-widest text-muted-foreground font-semibold mb-2 flex items-center gap-2">
+    <span className="h-px flex-1 bg-border/60" />
+    <span>{children}</span>
+    <span className="h-px flex-1 bg-border/60" />
+  </h4>
+);
+
 export const OverviewSidebar = ({
   filteredIds,
   selectedBlock,
   onBlockSelect,
   onFilterChange,
 }: OverviewSidebarProps) => {
-  const [open, setOpen] = useState(true);
-  const [activeTab, setActiveTab] = useState<Tab>("kpis");
-
-  if (!open) {
-    return (
-      <>
-        <button
-          onClick={() => setOpen(true)}
-          className="absolute top-4 right-4 z-30 glass-card p-2.5 rounded-lg border border-border/50 hover:bg-secondary/50 transition-colors shadow-lg"
-          title="Abrir painel"
-        >
-          <PanelRightOpen className="w-5 h-5 text-muted-foreground" />
-        </button>
-        {/* Floating KPI mini-cards */}
-        <div className="absolute bottom-4 left-4 right-4 z-30 animate-fade-in">
-          <div className="flex flex-wrap gap-2">
-            {kpiData.map((kpi, i) => (
-              <div
-                key={kpi.label}
-                className="glass-card rounded-lg px-3 py-2 border border-border/50 shadow-lg flex items-center gap-2 animate-fade-in"
-                style={{ animationDelay: `${i * 80}ms` }}
-              >
-                <kpi.icon className={`w-3.5 h-3.5 ${kpi.color}`} />
-                <div className="flex flex-col">
-                  <span className="text-[8px] uppercase tracking-wider text-muted-foreground font-medium">{kpi.label}</span>
-                  <span className={`text-sm font-bold font-mono tabular-nums ${kpi.color}`}>
-                    {kpi.prefix}{kpi.formatted}{kpi.suffix}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </>
-    );
-  }
-
-  const tabs: { key: Tab; label: string; icon: React.ElementType }[] = [
-    { key: "kpis", label: "KPIs", icon: BarChart3 },
-    { key: "blocks", label: "Blocos", icon: Layers },
-    { key: "trends", label: "Tendências", icon: TrendingUp },
-  ];
+  const [filtersOpen, setFiltersOpen] = useState(false);
 
   return (
-    <div className="absolute top-0 right-0 z-30 h-full w-[420px] 3xl:w-[520px] max-w-[90vw] flex flex-col bg-background/85 backdrop-blur-2xl border-l border-border/50 shadow-2xl animate-fade-in">
-      {/* Header */}
-      <div className="flex items-center justify-between px-4 3xl:px-6 py-3 3xl:py-4 border-b border-border/50">
-        <div className="flex items-center gap-2 3xl:gap-3">
-          {tabs.map((tab) => (
-            <button
-              key={tab.key}
-              onClick={() => setActiveTab(tab.key)}
-              className={`flex items-center gap-1.5 px-3 py-1.5 3xl:px-4 3xl:py-2 rounded-lg text-xs 3xl:text-sm font-medium transition-all ${
-                activeTab === tab.key
-                  ? "bg-primary/10 text-primary border border-primary/30"
-                  : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
-              }`}
-            >
-              <tab.icon className="w-3.5 h-3.5 3xl:w-4 3xl:h-4" />
-              {tab.label}
-            </button>
-          ))}
-        </div>
-        <button
-          onClick={() => setOpen(false)}
-          className="p-1.5 3xl:p-2 rounded-lg hover:bg-secondary transition-colors"
-          title="Fechar painel"
-        >
-          <PanelRightClose className="w-4 h-4 3xl:w-5 3xl:h-5 text-muted-foreground" />
-        </button>
+    <div className="h-full flex flex-col overview-panel border-l border-border/50">
+      {/* Panel header */}
+      <div className="px-4 py-3 border-b border-border/40">
+        <h3 className="text-sm font-bold tracking-tight text-foreground">Command Center</h3>
+        <p className="text-[10px] text-muted-foreground">Visão consolidada · Q4 2024</p>
       </div>
 
-      {/* Filters (always visible) */}
-      <div className="px-4 3xl:px-6 py-2 3xl:py-3 border-b border-border/30">
-        <FilterBar onFilterChange={onFilterChange} />
-      </div>
+      <ScrollArea className="flex-1">
+        <div className="px-4 py-4 space-y-5">
 
-      {/* Content */}
-      <div className="flex-1 overflow-y-auto px-4 3xl:px-6 py-4 3xl:py-5 space-y-4 3xl:space-y-5">
-        {activeTab === "kpis" && (
-          <div className="animate-fade-in">
-            <KPICards compact />
-            {/* Mini trend chart */}
-            <div className="mt-4 3xl:mt-5 glass-card rounded-lg p-3 3xl:p-4">
-              <h4 className="text-[10px] 3xl:text-xs uppercase tracking-wider text-muted-foreground font-medium mb-2 3xl:mb-3">Produção Total (6 meses)</h4>
-              <ResponsiveContainer width="100%" height={120}>
+          {/* ── KPIs ── */}
+          <div>
+            <SectionHeader>Indicadores-Chave</SectionHeader>
+            <div className="grid grid-cols-3 gap-2">
+              {kpis.slice(0, 3).map((kpi, i) => {
+                const colorClass = kpi.accent.includes("primary") ? "text-primary" : kpi.accent.includes("success") ? "text-success" : "text-warning";
+                return (
+                <div key={kpi.label} className="accent-border-card animate-counter-up" style={{ animationDelay: `${i * 80}ms`, borderLeftColor: `hsl(${kpi.accent})` }}>
+                  <div className="flex items-center gap-1 mb-0.5">
+                    <kpi.icon className={`w-3 h-3 ${colorClass}`} />
+                    <span className="text-[8px] uppercase tracking-wider text-muted-foreground font-medium">{kpi.label}</span>
+                  </div>
+                  <AnimatedCounter target={kpi.value} prefix={kpi.prefix || ""} suffix={kpi.suffix} className={`text-base font-bold tabular-nums ${colorClass}`} />
+                </div>
+                );
+              })}
+            </div>
+            <div className="grid grid-cols-2 gap-2 mt-2">
+              {kpis.slice(3).map((kpi, i) => {
+                const colorClass = kpi.accent.includes("primary") ? "text-primary" : kpi.accent.includes("success") ? "text-success" : "text-warning";
+                return (
+                <div key={kpi.label} className="accent-border-card animate-counter-up" style={{ animationDelay: `${(i + 3) * 80}ms`, borderLeftColor: `hsl(${kpi.accent})` }}>
+                  <div className="flex items-center gap-1 mb-0.5">
+                    <kpi.icon className={`w-3 h-3 ${colorClass}`} />
+                    <span className="text-[8px] uppercase tracking-wider text-muted-foreground font-medium">{kpi.label}</span>
+                  </div>
+                  <AnimatedCounter target={kpi.value} prefix={kpi.prefix || ""} suffix={kpi.suffix} className={`text-base font-bold tabular-nums ${colorClass}`} />
+                </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* ── Production Trend ── */}
+          <div>
+            <SectionHeader>Produção Total (6 meses)</SectionHeader>
+            <div className="accent-border-card !border-l-0 !p-2">
+              <ResponsiveContainer width="100%" height={100}>
                 <AreaChart data={trendData}>
                   <defs>
-                    <linearGradient id="overviewProdGrad" x1="0" y1="0" x2="0" y2="1">
+                    <linearGradient id="sidebarProdGrad" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3} />
                       <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0} />
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                   <XAxis dataKey="month" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 9 }} stroke="hsl(var(--border))" />
-                  <YAxis tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 9 }} width={45} tickFormatter={(v) => `${(v / 1000000).toFixed(1)}M`} stroke="hsl(var(--border))" />
+                  <YAxis tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 9 }} width={40} tickFormatter={(v) => `${(v / 1000000).toFixed(1)}M`} stroke="hsl(var(--border))" />
                   <Tooltip
                     contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 11, color: "hsl(var(--foreground))" }}
                     formatter={(value: number) => [`${(value / 1000).toFixed(0)}k BOPD`, "Produção"]}
                   />
-                  <Area type="monotone" dataKey="value" stroke="hsl(var(--primary))" fill="url(#overviewProdGrad)" strokeWidth={2} />
+                  <Area type="monotone" dataKey="value" stroke="hsl(var(--primary))" fill="url(#sidebarProdGrad)" strokeWidth={2} />
                 </AreaChart>
               </ResponsiveContainer>
             </div>
           </div>
-        )}
 
-        {activeTab === "blocks" && (
-          <div className="animate-fade-in">
-            <OverviewBlockList
-              filteredIds={filteredIds}
-              selectedBlock={selectedBlock}
-              onBlockSelect={onBlockSelect}
-            />
-          </div>
-        )}
-
-        {activeTab === "trends" && (
-          <div className="animate-fade-in space-y-4 3xl:space-y-5">
-            {/* Production by basin */}
-            <div className="glass-card rounded-lg p-3 3xl:p-4">
-              <h4 className="text-[10px] 3xl:text-xs uppercase tracking-wider text-muted-foreground font-medium mb-3">Produção por Bacia</h4>
-              {[
-                { name: "Bacia do Congo", value: 890000, pct: 68 },
-                { name: "Bacia do Kwanza", value: 320000, pct: 25 },
-                { name: "Bacia do Namibe", value: 94000, pct: 7 },
-              ].map((basin) => (
-                <div key={basin.name} className="mb-2 3xl:mb-3">
-                  <div className="flex justify-between text-[10px] 3xl:text-xs mb-0.5">
+          {/* ── Production by Basin ── */}
+          <div>
+            <SectionHeader>Produção por Bacia</SectionHeader>
+            <div className="space-y-2">
+              {basins.map((basin) => (
+                <div key={basin.name}>
+                  <div className="flex justify-between text-[10px] mb-0.5">
                     <span className="text-foreground font-medium">{basin.name}</span>
                     <span className="font-mono text-muted-foreground">{(basin.value / 1000).toFixed(0)}k BOPD</span>
                   </div>
-                  <div className="h-1.5 3xl:h-2 bg-secondary rounded-full overflow-hidden">
-                    <div className="h-full bg-primary rounded-full transition-all" style={{ width: `${basin.pct}%` }} />
+                  <div className="h-1.5 bg-secondary rounded-full overflow-hidden">
+                    <div className="h-full bg-primary rounded-full transition-all duration-700" style={{ width: `${basin.pct}%` }} />
                   </div>
                 </div>
               ))}
             </div>
+          </div>
 
-            {/* Phase distribution */}
-            <div className="glass-card rounded-lg p-3 3xl:p-4">
-              <h4 className="text-[10px] 3xl:text-xs uppercase tracking-wider text-muted-foreground font-medium mb-3">Distribuição por Fase</h4>
-              <div className="grid grid-cols-2 gap-2 3xl:gap-3">
-                {[
-                  { phase: "Production", count: 28, color: "hsl(var(--success))" },
-                  { phase: "Development", count: 8, color: "hsl(var(--warning))" },
-                  { phase: "Exploration", count: 12, color: "hsl(var(--primary))" },
-                  { phase: "Bidding", count: 22, color: "hsl(var(--bidding))" },
-                  { phase: "Suspended", count: 2, color: "hsl(var(--danger))" },
-                ].map((item) => (
-                  <div key={item.phase} className="flex items-center gap-2">
-                    <span className="w-2.5 h-2.5 3xl:w-3 3xl:h-3 rounded-full shrink-0" style={{ backgroundColor: item.color }} />
-                    <span className="text-[10px] 3xl:text-xs text-foreground">{item.phase}</span>
-                    <span className="text-[10px] 3xl:text-xs font-mono text-muted-foreground ml-auto">{item.count}</span>
-                  </div>
-                ))}
-              </div>
+          {/* ── Phase Distribution ── */}
+          <div>
+            <SectionHeader>Distribuição por Fase</SectionHeader>
+            <div className="grid grid-cols-3 gap-x-3 gap-y-1.5">
+              {phases.map((item) => (
+                <div key={item.phase} className="flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: item.color }} />
+                  <span className="text-[10px] text-foreground truncate">{item.phase}</span>
+                  <span className="text-[10px] font-mono text-muted-foreground ml-auto">{item.count}</span>
+                </div>
+              ))}
             </div>
+          </div>
 
-            {/* Investment summary */}
-            <div className="glass-card rounded-lg p-3">
-              <h4 className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mb-3">Investimento Acumulado</h4>
-              <ResponsiveContainer width="100%" height={100}>
-                <AreaChart data={[
-                  { year: "2020", value: 8200 },
-                  { year: "2021", value: 12500 },
-                  { year: "2022", value: 18700 },
-                  { year: "2023", value: 32400 },
-                  { year: "2024", value: 49870 },
-                ]}>
+          {/* ── Investment Trend ── */}
+          <div>
+            <SectionHeader>Investimento Acumulado</SectionHeader>
+            <div className="accent-border-card !border-l-0 !p-2">
+              <ResponsiveContainer width="100%" height={80}>
+                <AreaChart data={investData}>
                   <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                   <XAxis dataKey="year" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 9 }} stroke="hsl(var(--border))" />
-                  <YAxis tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 9 }} width={35} tickFormatter={(v) => `$${(v / 1000).toFixed(0)}B`} stroke="hsl(var(--border))" />
+                  <YAxis tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 9 }} width={32} tickFormatter={(v) => `$${(v / 1000).toFixed(0)}B`} stroke="hsl(var(--border))" />
                   <Tooltip
                     contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 11, color: "hsl(var(--foreground))" }}
                     formatter={(value: number) => [`$${value}M`, "CAPEX"]}
@@ -221,8 +189,37 @@ export const OverviewSidebar = ({
               </ResponsiveContainer>
             </div>
           </div>
-        )}
-      </div>
+
+          {/* ── Filters (collapsible) ── */}
+          <Collapsible open={filtersOpen} onOpenChange={setFiltersOpen}>
+            <CollapsibleTrigger className="w-full">
+              <div className="flex items-center justify-between text-[10px] uppercase tracking-widest text-muted-foreground font-semibold py-1 cursor-pointer hover:text-foreground transition-colors">
+                <div className="flex items-center gap-1.5">
+                  <Filter className="w-3 h-3" />
+                  <span>Filtros</span>
+                </div>
+                <ChevronDown className={`w-3 h-3 transition-transform duration-200 ${filtersOpen ? "rotate-180" : ""}`} />
+              </div>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <div className="pt-2 pb-1">
+                <FilterBar onFilterChange={onFilterChange} />
+              </div>
+            </CollapsibleContent>
+          </Collapsible>
+
+          {/* ── Block List ── */}
+          <div>
+            <SectionHeader>Lista de Blocos</SectionHeader>
+            <OverviewBlockList
+              filteredIds={filteredIds}
+              selectedBlock={selectedBlock}
+              onBlockSelect={onBlockSelect}
+            />
+          </div>
+
+        </div>
+      </ScrollArea>
     </div>
   );
 };

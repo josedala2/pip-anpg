@@ -254,8 +254,8 @@ export const ConcessionMap = ({
         {/* Ocean background gradient */}
         <defs>
           <linearGradient id="ocean-grad" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0.1" />
-            <stop offset="60%" stopColor="hsl(var(--primary))" stopOpacity="0.02" />
+            <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0.18" />
+            <stop offset="40%" stopColor="hsl(var(--primary))" stopOpacity="0.06" />
             <stop offset="100%" stopColor="transparent" stopOpacity="0" />
           </linearGradient>
         </defs>
