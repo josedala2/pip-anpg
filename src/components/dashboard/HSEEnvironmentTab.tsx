@@ -4,6 +4,7 @@ import { ChartWrapper } from "@/components/dashboard/ChartWrapper";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import type { HSEIndicators, EnvironmentalYearData, FacilityData, EconomicVision, RevitalizationScenario } from "@/data/angolaBlocks";
 import { ShieldCheck, Flame, Droplets, Wind, Factory, AlertTriangle, Lightbulb, TrendingDown } from "lucide-react";
+import { Tooltip as UITooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
 import {
   BarChart, Bar, LineChart, Line, PieChart, Pie, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, ReferenceLine,
@@ -177,15 +178,30 @@ export const HSEEnvironmentTab = ({ hseData, environmentalData, facilityData, ec
               <TableHeader>
                 <TableRow>
                   <TableHead className="text-xs">Ano</TableHead>
-                  <TableHead className="text-xs text-center">FAT</TableHead>
-                  <TableHead className="text-xs text-center">LTI</TableHead>
-                  <TableHead className="text-xs text-center">RWC</TableHead>
-                  <TableHead className="text-xs text-center">MTC</TableHead>
-                  <TableHead className="text-xs text-center">FAC</TableHead>
-                  <TableHead className="text-xs text-center">NMI</TableHead>
-                  <TableHead className="text-xs text-center">HHR (M)</TableHead>
-                  <TableHead className="text-xs text-center">TRIR</TableHead>
-                  <TableHead className="text-xs text-center">LTIR</TableHead>
+                  {[
+                    { label: "FAT", tip: "Fatality — Acidente com morte" },
+                    { label: "LTI", tip: "Lost Time Injury — Acidente com tempo perdido" },
+                    { label: "RWC", tip: "Restricted Work Case — Trabalho com restrição" },
+                    { label: "MTC", tip: "Medical Treatment Case — Tratamento médico" },
+                    { label: "FAC", tip: "First Aid Case — Primeiros socorros" },
+                    { label: "NMI", tip: "Near Miss Incident — Quase-acidente" },
+                    { label: "HHR (M)", tip: "Horas Homem Trabalhadas (Milhões)" },
+                    { label: "TRIR", tip: "Total Recordable Incident Rate — Taxa total de incidentes registáveis" },
+                    { label: "LTIR", tip: "Lost Time Incident Rate — Taxa de incidentes com tempo perdido" },
+                  ].map(col => (
+                    <TableHead key={col.label} className="text-xs text-center">
+                      <TooltipProvider delayDuration={200}>
+                        <UITooltip>
+                          <TooltipTrigger asChild>
+                            <span className="cursor-help border-b border-dashed border-muted-foreground/40">{col.label}</span>
+                          </TooltipTrigger>
+                          <TooltipContent side="top" className="max-w-[220px] text-xs">
+                            {col.tip}
+                          </TooltipContent>
+                        </UITooltip>
+                      </TooltipProvider>
+                    </TableHead>
+                  ))}
                 </TableRow>
               </TableHeader>
               <TableBody>
