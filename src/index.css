@@ -150,6 +150,16 @@
     font-family: 'Inter', system-ui, sans-serif;
   }
 
+  /* Sidebar fits below navbar instead of full viewport */
+  [data-sidebar="sidebar"] {
+    height: 100% !important;
+    position: sticky !important;
+    top: 0 !important;
+  }
+  .group\/sidebar-wrapper {
+    min-height: 0 !important;
+  }
+
   /* Scale base font for ultra-wide / 4K screens */
   @media (min-width: 1920px) {
     html { font-size: 18px; }
