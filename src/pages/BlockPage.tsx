@@ -291,6 +291,7 @@ const BlockPage = () => {
   const prodGradId = `prodGrad-${uid}`;
   const discGradId = `discGrad-${uid}`;
   const [explorationBarMode, setExplorationBarMode] = useState<"grouped" | "stacked">("grouped");
+  const [activeTab, setActiveTab] = useState("overview");
 
   // Calculate averages for reference lines
   const avgProduction = useMemo(() => {
@@ -358,7 +359,7 @@ const BlockPage = () => {
 
       {/* Content */}
       <main className="max-w-[1920px] mx-auto p-4 2xl:p-8 space-y-4 2xl:space-y-6">
-         <Tabs defaultValue="overview" className="space-y-4 2xl:space-y-6">
+         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4 2xl:space-y-6">
            <TabsList className="glass-card p-1 2xl:p-1.5 h-auto flex-wrap">
               <TabsTrigger value="overview" className="gap-1.5 text-xs 2xl:text-sm"><Activity className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Visão Geral</TabsTrigger>
               <TabsTrigger value="financial" className="gap-1.5 text-xs 2xl:text-sm"><DollarSign className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Financeiro & Contratual</TabsTrigger>
@@ -825,6 +826,15 @@ const BlockPage = () => {
                       </div>
                     ))}
                   </div>
+                  {/* Link to HSE tab */}
+                  <button
+                    onClick={() => { setActiveTab("hse"); window.scrollTo({ top: 0, behavior: "smooth" }); }}
+                    className="inline-flex items-center gap-1.5 text-xs text-primary hover:underline mt-1 transition-colors"
+                  >
+                    <Leaf className="w-3 h-3" />
+                    Ver detalhes em HSE & Ambiente
+                    <ArrowRight className="w-3 h-3" />
+                  </button>
                 </CardContent>
               </Card>
             )}
