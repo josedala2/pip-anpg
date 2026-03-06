@@ -489,6 +489,12 @@ const BlockPage = () => {
                         </div>
                       </div>
                     )}
+                    <button
+                      onClick={() => { setActiveTab("financial"); window.scrollTo({ top: 0, behavior: "smooth" }); }}
+                      className="inline-flex items-center gap-1.5 text-xs text-primary hover:underline mt-2 transition-colors"
+                    >
+                      <DollarSign className="w-3 h-3" />Ver Financeiro & Contratual completo<ArrowRight className="w-3 h-3" />
+                    </button>
                   </CardContent>
                 </Card>
               )}
@@ -593,6 +599,12 @@ const BlockPage = () => {
                         ))}
                       </div>
                     )}
+                    <button
+                      onClick={() => { setActiveTab("financial"); window.scrollTo({ top: 0, behavior: "smooth" }); }}
+                      className="inline-flex items-center gap-1.5 text-xs text-primary hover:underline mt-2 transition-colors"
+                    >
+                      <Scale className="w-3 h-3" />Ver todas as condições fiscais<ArrowRight className="w-3 h-3" />
+                    </button>
                   </CardContent>
                 </Card>
               )}
@@ -626,6 +638,12 @@ const BlockPage = () => {
                      block.riskScore <= 6 ? "Risco moderado — requer monitorização contínua." :
                      "Risco elevado — necessário plano de mitigação activo."}
                   </div>
+                  <button
+                    onClick={() => { setActiveTab("hse"); window.scrollTo({ top: 0, behavior: "smooth" }); }}
+                    className="inline-flex items-center gap-1.5 text-xs text-primary hover:underline mt-2 transition-colors"
+                  >
+                    <Leaf className="w-3 h-3" />Ver HSE & Ambiente<ArrowRight className="w-3 h-3" />
+                  </button>
                 </CardContent>
               </Card>
             </div>
@@ -759,6 +777,12 @@ const BlockPage = () => {
                         </div>
                       ))}
                     </div>
+                    <button
+                      onClick={() => { setActiveTab("exploration"); window.scrollTo({ top: 0, behavior: "smooth" }); }}
+                      className="inline-flex items-center gap-1.5 text-xs text-primary hover:underline mt-2 transition-colors"
+                    >
+                      <Target className="w-3 h-3" />Ver Exploração completa<ArrowRight className="w-3 h-3" />
+                    </button>
                   </CardContent>
                 </Card>
               );
