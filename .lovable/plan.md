@@ -1,46 +1,95 @@
 
 
-## Plano: Actualizar dados de poços do Block 15 com dados reais do ficheiro Excel
+## Plano: Integração completa de dados económicos do Bloco 0
 
-### Dados Actuais vs Dados Reais (Excel)
+### Dados extraídos do PDF da ANPG
 
-Os dados actuais do Block 15 em `wellsData` estão incompletos — faltam os campos de resultados (`descobertaComercial`, `descobertaNaoComercial`, `seco`) e há discrepâncias nos valores de pesquisa/avaliação. Exemplo:
+**Custos Incorridos e Previsão (MMUSD):**
+- 2004-2021: Capex 4,872 + Opex 41,361 (total ~46,233)
+- 2022-2025: Capex 3,431 + Opex 8,303
+- 2026-2050: Capex 3,873 + Opex 22,855
 
-| Ano  | Actual (pesq/aval) | Excel (pesq/aval/com/ncom/seco) |
-|------|--------------------|---------------------------------|
-| 1998 | —                  | 5/1/4/0/1                       |
-| 1999 | 4/4               | 2/3/2/0/0                       |
-| 2000 | 2/0               | 6/1/5/1/0                       |
-| 2003 | 7/4               | 4/3/4/0/0                       |
-| 2006 | 3/3               | 0/3/0/0/0                       |
-| 2022 | 1/0               | 1/0/1/0/0                       |
-| 2024 | 0/1               | 1/0/1/0/0                       |
+**Plano de Investimentos Quinquenal (MMUSD) — 2026-2030:**
+| Ano  | Exploração | Desenvolvimento | Operação | Total  |
+|------|-----------|-----------------|----------|--------|
+| 2026 | 168       | 825             | 1,160    | 2,011  |
+| 2027 | 175       | 759             | 1,217    | 1,851  |
+| 2028 | 169       | 654             | 1,161    | 1,595  |
+| 2029 | 228       | 684             | 1,200    | 1,669  |
+| 2030 | 228       | 656             | 1,195    | 1,600  |
 
-### Alteração
+**Partilha de Produção GE (MMBO):**
+- 2026: 48, 2027: 46, 2028: 44, 2029: 39, 2030: 36 (Total: 213)
 
-**Ficheiro**: `src/data/angolaBlocks.ts` (linhas 628-641)
+**Abandono:**
+- Total: MMUSD 3,420
+- Valor para fundeamento: MMUSD 1,300 (depositado: MMUSD 102)
+- Dívida Sonangol: MMUSD 48
 
-Substituir o array `wellsData` do Block 15 pelos dados correctos do Excel, incluindo todos os campos de resultado:
+**Operação:**
+- Opex por barril 2025: USD 26,3
+- Receitas do Estado: 57% (até 2021), 16% (2026-2050, apenas royalty 15%)
+
+---
+
+### Alterações
+
+#### 1. Novo tipo `EconomicData` em `angolaBlocks.ts`
+
+Criar interface para dados económicos do bloco:
 
 ```typescript
-wellsData: [
-  { year: 1998, pesquisa: 5, avaliacao: 1, descobertaComercial: 4, descobertaNaoComercial: 0, seco: 1 },
-  { year: 1999, pesquisa: 2, avaliacao: 3, descobertaComercial: 2, descobertaNaoComercial: 0, seco: 0 },
-  { year: 2000, pesquisa: 6, avaliacao: 1, descobertaComercial: 5, descobertaNaoComercial: 1, seco: 0 },
-  { year: 2001, pesquisa: 1, avaliacao: 1, descobertaComercial: 1, descobertaNaoComercial: 0, seco: 0 },
-  { year: 2002, pesquisa: 1, avaliacao: 2, descobertaComercial: 1, descobertaNaoComercial: 0, seco: 0 },
-  { year: 2003, pesquisa: 4, avaliacao: 3, descobertaComercial: 4, descobertaNaoComercial: 0, seco: 0 },
-  { year: 2006, pesquisa: 0, avaliacao: 3, descobertaComercial: 0, descobertaNaoComercial: 0, seco: 0 },
-  { year: 2008, pesquisa: 0, avaliacao: 2, descobertaComercial: 0, descobertaNaoComercial: 0, seco: 0 },
-  { year: 2009, pesquisa: 0, avaliacao: 2, descobertaComercial: 0, descobertaNaoComercial: 0, seco: 0 },
-  { year: 2022, pesquisa: 1, avaliacao: 0, descobertaComercial: 1, descobertaNaoComercial: 0, seco: 0 },
-  { year: 2024, pesquisa: 1, avaliacao: 0, descobertaComercial: 1, descobertaNaoComercial: 0, seco: 0 },
-],
+export interface InvestmentPlanYear {
+  year: number;
+  exploracao: number;    // MMUSD
+  desenvolvimento: number;
+  operacao: number;
+  total: number;
+}
+
+export interface EconomicData {
+  costHistory?: {
+    period: string;
+    capex: number;   // MMUSD
+    opex: number;
+  }[];
+  investmentPlan?: InvestmentPlanYear[];
+  productionShareGE?: { year: number; mmbo: number }[];
+  abandonment?: {
+    total: number;
+    fundingRequired: number;
+    fundingDeposited: number;
+  };
+  opexPerBarrel?: number;   // USD/BO (2025)
+  opexPerBarrelYear?: number;
+  sonangolDebt?: number;
+  stateRevenueShare?: { period: string; percentage: number }[];
+  observations?: string[];
+}
 ```
 
-Os anos sem actividade (2004-2005, 2007, 2010-2021, 2023) são omitidos, mantendo o padrão dos outros blocos. O antigo entry de 1997 é removido pois não consta no ficheiro Excel oficial.
+#### 2. Adicionar `economicData?` ao tipo `OilBlock`
 
-### Impacto
-- Correcção de dados apenas — sem alteração de UI
-- Os gráficos de poços na aba Exploração do Block 15 e no painel agregado reflectirão automaticamente os dados correctos
+Campo opcional na interface existente.
+
+#### 3. Povoar `economicData` no Block 0
+
+Com todos os dados extraídos do PDF.
+
+#### 4. Actualizar `capexHistory` do Block 0
+
+Adicionar os anos 2026-2030 com CAPEX planeado (total por ano) e actual = 0 (previsão).
+
+#### 5. Nova secção na aba "Financeiro & Contratual" em `BlockPage.tsx`
+
+Adicionar, após o gráfico CAPEX existente, novas secções visuais:
+- **Plano de Investimentos Quinquenal** — gráfico de barras empilhadas (Exploração, Desenvolvimento, Operação)
+- **Partilha de Produção GE** — gráfico de barras com valores MMBO
+- **Custos Históricos** — cards com custos por período
+- **Abandono & Dívida** — indicadores-chave (total, fundeado, dívida Sonangol)
+- **Observações Estratégicas** — lista de bullet points com as observações do PDF
+
+### Ficheiros a modificar
+- `src/data/angolaBlocks.ts` — novo tipo + dados do Block 0
+- `src/pages/BlockPage.tsx` — novas secções na aba financeira
 
