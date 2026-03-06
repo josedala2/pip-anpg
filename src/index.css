@@ -153,11 +153,12 @@
   /* Sidebar fits below navbar instead of full viewport */
   [data-sidebar="sidebar"] {
     height: 100% !important;
-    position: sticky !important;
-    top: 0 !important;
+    position: relative !important;
+    top: auto !important;
   }
   .group\/sidebar-wrapper {
     min-height: 0 !important;
+    height: 100% !important;
   }
 
   /* Scale base font for ultra-wide / 4K screens */
