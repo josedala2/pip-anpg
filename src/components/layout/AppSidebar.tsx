@@ -46,26 +46,8 @@ export function AppSidebar() {
     <Sidebar collapsible="icon" className="border-r-0 bg-sidebar overflow-hidden">
       {/* Header with logo */}
       <SidebarHeader className="p-0">
-        <div className={`flex items-center gap-3 px-4 py-5 ${collapsed ? "justify-center px-2" : ""}`}>
-          <div className="relative">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-anpg to-anpg-dark flex items-center justify-center shadow-lg shadow-anpg/20">
-              <img src={anpgLogoColor} alt="ANPG" className="h-5 brightness-0 invert" />
-            </div>
-            <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-success border-2 border-sidebar" />
-          </div>
-          {!collapsed && (
-            <div className="flex flex-col">
-              <span className="text-xs font-bold tracking-wide text-sidebar-foreground">
-                Concession Vision
-              </span>
-              <span className="text-[10px] text-sidebar-foreground/40 font-medium">
-                Plataforma Executiva
-              </span>
-            </div>
-          )}
-        </div>
         {!collapsed && (
-          <div className="mx-4 mb-3 h-px bg-gradient-to-r from-transparent via-sidebar-border to-transparent" />
+          <div className="mx-4 mt-3 mb-2 h-px bg-gradient-to-r from-transparent via-sidebar-border to-transparent" />
         )}
       </SidebarHeader>
 
