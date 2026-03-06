@@ -690,6 +690,74 @@ const BlockPage = () => {
                 </Card>
               );
             })()}
+
+            {/* Facility Summary - inline in overview */}
+            {block.facilityData && (
+              <Card className="glass-card">
+                <CardHeader className="p-4 pb-2">
+                  <CardTitle className="text-sm flex items-center gap-2">
+                    <Building2 className="w-4 h-4 text-primary" />
+                    Estado das Instalações
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-4 pt-0 space-y-4">
+                  {/* Summary KPIs row */}
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    <div className="rounded-lg bg-secondary/50 p-3 text-center">
+                      <div className="text-[9px] uppercase text-muted-foreground">Eficiência Global</div>
+                      <div className="text-xl font-bold font-mono text-success">{block.facilityData.overallEfficiency}%</div>
+                    </div>
+                    <div className="rounded-lg bg-secondary/50 p-3 text-center">
+                      <div className="text-[9px] uppercase text-muted-foreground">Poços Activos</div>
+                      <div className="text-xl font-bold font-mono">
+                        {block.facilityData.activeWells.op + block.facilityData.activeWells.wi + block.facilityData.activeWells.gi}
+                      </div>
+                      <div className="text-[9px] text-muted-foreground">
+                        {block.facilityData.activeWells.op} OP · {block.facilityData.activeWells.wi} WI · {block.facilityData.activeWells.gi} GI
+                      </div>
+                    </div>
+                    {block.facilityData.capacityBOPD && (
+                      <div className="rounded-lg bg-secondary/50 p-3 text-center">
+                        <div className="text-[9px] uppercase text-muted-foreground">Capacidade</div>
+                        <div className="text-xl font-bold font-mono">{(block.facilityData.capacityBOPD / 1000).toFixed(0)}k</div>
+                        <div className="text-[9px] text-muted-foreground">BOPD</div>
+                      </div>
+                    )}
+                    {block.facilityData.productionStartYear && (
+                      <div className="rounded-lg bg-secondary/50 p-3 text-center">
+                        <div className="text-[9px] uppercase text-muted-foreground">Em Produção Desde</div>
+                        <div className="text-xl font-bold font-mono">{block.facilityData.productionStartYear}</div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Areas with efficiency bars */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {block.facilityData.areas.map(area => (
+                      <div key={area.name} className="rounded-lg border border-border/50 p-3 space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-medium">{area.name}</span>
+                          <Badge variant="outline" className={`text-[10px] ${area.efficiency >= 90 ? "text-success border-success/30" : "text-warning border-warning/30"}`}>
+                            {area.efficiency}%
+                          </Badge>
+                        </div>
+                        <div className="flex flex-wrap gap-1">
+                          {area.platforms.map(p => (
+                            <Badge key={p} variant="secondary" className="text-[9px] px-1.5 py-0">{p}</Badge>
+                          ))}
+                        </div>
+                        <div className="h-1.5 w-full bg-secondary rounded-full overflow-hidden">
+                          <div
+                            className={`h-full rounded-full ${area.efficiency >= 90 ? "bg-success" : "bg-warning"}`}
+                            style={{ width: `${area.efficiency}%` }}
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
           </TabsContent>
 
           {/* Tab 2: Consórcio */}
