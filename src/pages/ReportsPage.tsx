@@ -67,11 +67,26 @@ const ReportsPage = () => {
   const handlePrint = async () => {
     setPdfLoading(true);
     try {
-      const blockNames = oilBlocks
-        .filter(b => config.selectedBlockIds.includes(b.id))
-        .map(b => b.id)
-        .join("_");
-      await exportReportPdf("report-content", `relatorio_ANPG_${blockNames}.pdf`, config.pdfOrientation);
+      const selectedBlocks = oilBlocks.filter(b => config.selectedBlockIds.includes(b.id));
+      const blockNames = selectedBlocks.map(b => b.id).join("_");
+      const reportTypeLabels: Record<string, string> = {
+        executive: "Resumo Executivo",
+        contractual: "Contractual & Fiscal",
+        exploration: "Exploração & Produção",
+        consortium: "Consórcio & Participações",
+        legislation: "Legislação & Documentos",
+        financial: "Económico & Financeiro",
+      };
+      await exportReportPdf(
+        "report-content",
+        `relatorio_ANPG_${blockNames}.pdf`,
+        config.pdfOrientation,
+        {
+          title: "Relatório de Concessões",
+          blockNames: selectedBlocks.map(b => b.name),
+          reportTypes: config.reportTypes.map(t => reportTypeLabels[t] || t),
+        }
+      );
       toast({ title: "PDF exportado!", description: "Ficheiro PDF gerado com sucesso." });
     } catch (e: any) {
       console.error("PDF export error:", e);
