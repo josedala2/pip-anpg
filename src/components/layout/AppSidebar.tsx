@@ -14,7 +14,6 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarFooter,
-  SidebarHeader,
   useSidebar,
 } from "@/components/ui/sidebar";
 import anpgLogoColor from "@/assets/anpg-logo-color.svg";
