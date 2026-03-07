@@ -182,6 +182,36 @@ export const StrategicForecast = () => {
         </ResponsiveContainer>
       </ChartWrapper>
 
+      {/* Price Sensitivity Chart */}
+      <ChartWrapper title={`Sensibilidade da Receita ao Preço do Barril — 2029 (${scenarios.find(s => s.id === activeScenario)?.label})`} icon={<DollarSign className="w-4 h-4 text-primary" />}>
+        <ResponsiveContainer width="100%" height="100%">
+          <AreaChart data={sensitivityData}>
+            <defs>
+              <linearGradient id="revenueGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.4} />
+                <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0.05} />
+              </linearGradient>
+            </defs>
+            <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+            <XAxis dataKey="priceLabel" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} stroke="hsl(var(--border))" />
+            <YAxis tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} width={60} tickFormatter={v => `$${v.toFixed(1)}B`} stroke="hsl(var(--border))" />
+            <Tooltip
+              contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12, color: "hsl(var(--foreground))" }}
+              formatter={(value: number) => [`$${value.toFixed(2)}B`, "Receita Anual"]}
+              labelStyle={{ color: "hsl(var(--muted-foreground))" }}
+            />
+            <Area type="monotone" dataKey="revenue" stroke="hsl(var(--primary))" strokeWidth={2} fill="url(#revenueGradient)" dot={(props: any) => {
+              const isActive = props.payload.price === oilPrice[0];
+              if (!isActive) return <circle key={props.key} cx={props.cx} cy={props.cy} r={3} fill="hsl(var(--primary))" fillOpacity={0.4} stroke="none" />;
+              return <circle key={props.key} cx={props.cx} cy={props.cy} r={6} fill="hsl(var(--primary))" stroke="hsl(var(--background))" strokeWidth={2} />;
+            }} />
+            {sensitivityData.map(d => d.price === oilPrice[0] ? (
+              <Line key="ref" type="monotone" dataKey={() => null} />
+            ) : null)}
+          </AreaChart>
+        </ResponsiveContainer>
+      </ChartWrapper>
+
       {/* KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 2xl:gap-6 3xl:gap-8">
         <Card className="glass-card">
