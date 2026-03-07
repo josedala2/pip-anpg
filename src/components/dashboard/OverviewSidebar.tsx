@@ -72,7 +72,7 @@ interface OverviewSidebarProps {
 }
 
 const SectionHeader = ({ children }: { children: React.ReactNode }) => (
-  <h4 className="text-[10px] uppercase tracking-widest text-muted-foreground font-semibold mb-2 flex items-center gap-2">
+  <h4 className="text-xs uppercase tracking-widest text-muted-foreground font-bold mb-2 flex items-center gap-2">
     <span className="h-px flex-1 bg-border/60" />
     <span>{children}</span>
     <span className="h-px flex-1 bg-border/60" />
@@ -92,7 +92,7 @@ export const OverviewSidebar = ({
       {/* Panel header */}
       <div className="px-4 py-3 border-b border-border/40">
         <h3 className="text-sm font-bold tracking-tight text-foreground">Command Center</h3>
-        <p className="text-[10px] text-muted-foreground">Visão consolidada · Q4 2024</p>
+        <p className="text-xs text-muted-foreground">Visão consolidada · Q4 2024</p>
       </div>
 
       <ScrollArea className="flex-1">
@@ -108,7 +108,7 @@ export const OverviewSidebar = ({
                 <div key={kpi.label} className="accent-border-card animate-counter-up" style={{ animationDelay: `${i * 80}ms`, borderLeftColor: `hsl(${kpi.accent})` }}>
                   <div className="flex items-center gap-1 mb-0.5">
                     <kpi.icon className={`w-3 h-3 ${colorClass}`} />
-                    <span className="text-[8px] uppercase tracking-wider text-muted-foreground font-medium">{kpi.label}</span>
+                    <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">{kpi.label}</span>
                   </div>
                   <AnimatedCounter target={kpi.value} prefix={kpi.prefix || ""} suffix={kpi.suffix} className={`text-sm font-bold tabular-nums ${colorClass}`} />
                   <div className="mt-1">
@@ -125,7 +125,7 @@ export const OverviewSidebar = ({
                 <div key={kpi.label} className="accent-border-card animate-counter-up" style={{ animationDelay: `${(i + 3) * 80}ms`, borderLeftColor: `hsl(${kpi.accent})` }}>
                   <div className="flex items-center gap-1 mb-0.5">
                     <kpi.icon className={`w-3 h-3 ${colorClass}`} />
-                    <span className="text-[8px] uppercase tracking-wider text-muted-foreground font-medium">{kpi.label}</span>
+                    <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">{kpi.label}</span>
                   </div>
                   <AnimatedCounter target={kpi.value} prefix={kpi.prefix || ""} suffix={kpi.suffix} className={`text-sm font-bold tabular-nums ${colorClass}`} />
                   <div className="mt-1">
