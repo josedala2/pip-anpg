@@ -167,12 +167,25 @@ export const FacilitiesSchematic = () => {
       <CardContent className="p-2 sm:p-4 pt-0">
         <div className="flex flex-col lg:flex-row gap-3 sm:gap-4">
           <TooltipProvider delayDuration={100}>
-            <div className="w-full lg:flex-1 overflow-x-auto rounded-lg border border-border/30 bg-muted/20">
+            <div className="w-full lg:flex-1 overflow-hidden rounded-lg border border-border/30 bg-muted/20 relative touch-none">
+              {zoom > 1 && (
+                <button
+                  onClick={resetView}
+                  className="absolute top-1.5 right-1.5 z-10 text-[9px] sm:text-[10px] bg-background/80 backdrop-blur border border-border/50 rounded px-1.5 py-0.5 text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Reset
+                </button>
+              )}
               <svg
+                ref={svgRef}
                 viewBox="0 0 900 480"
                 className="w-full rounded-lg"
-                style={{ minHeight: 200, minWidth: 500 }}
+                style={{ minHeight: 200, minWidth: 500, transform: `scale(${zoom}) translate(${pan.x / zoom}px, ${pan.y / zoom}px)`, transformOrigin: "center center", transition: isPinching.current ? "none" : "transform 0.15s ease-out" }}
                 preserveAspectRatio="xMidYMid meet"
+                onTouchStart={handleTouchStart}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEnd}
+                onWheel={handleWheel}
               >
                 <defs>
                   {/* Arrowhead markers per link type */}
