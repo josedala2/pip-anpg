@@ -3,10 +3,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Tooltip as UITooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { ChartWrapper } from "./ChartWrapper";
 import { useState, useMemo } from "react";
 import { ArrowUpDown, AlertTriangle, TrendingDown, Target, DollarSign, Filter } from "lucide-react";
+import {
+  ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip,
+  ResponsiveContainer, ReferenceLine, Cell, ZAxis, Label,
+} from "recharts";
 
 type SortKey = "dailyProduction" | "riskScore" | "executionRate" | "accumulatedInvestment";
 
