@@ -109,6 +109,24 @@ export const FacilitiesSchematic = () => {
               className="w-full lg:flex-1 rounded-lg border border-border/30 bg-muted/20"
               style={{ minHeight: 320 }}
             >
+              <defs>
+                {links.map((link, i) => {
+                  const from = nodeMap[link.from];
+                  const to = nodeMap[link.to];
+                  const dx = to.x - from.x;
+                  const midX = from.x + dx * 0.5;
+                  const midY = (from.y + to.y) / 2 + (Math.abs(from.y - to.y) < 50 ? -30 : 0);
+                  return (
+                    <path
+                      key={`path-${i}`}
+                      id={`flow-path-${i}`}
+                      d={`M ${from.x} ${from.y} Q ${midX} ${midY} ${to.x} ${to.y}`}
+                      fill="none"
+                    />
+                  );
+                })}
+              </defs>
+
               {/* Water depth bands */}
               <rect x="0" y="0" width="200" height="480" fill="hsl(var(--primary) / 0.03)" />
               <text x="100" y="468" textAnchor="middle" className="fill-muted-foreground" fontSize="9" opacity="0.5">ONSHORE</text>
@@ -121,7 +139,7 @@ export const FacilitiesSchematic = () => {
               <line x1="200" y1="0" x2="200" y2="455" stroke="hsl(var(--border))" strokeWidth="1" strokeDasharray="4 4" opacity="0.4" />
               <line x1="450" y1="0" x2="450" y2="455" stroke="hsl(var(--border))" strokeWidth="1" strokeDasharray="4 4" opacity="0.4" />
 
-              {/* Links */}
+              {/* Links with flow particles */}
               {links.map((link, i) => {
                 const from = nodeMap[link.from];
                 const to = nodeMap[link.to];
@@ -130,6 +148,8 @@ export const FacilitiesSchematic = () => {
                 const dx = to.x - from.x;
                 const midX = from.x + dx * 0.5;
                 const midY = (from.y + to.y) / 2 + (Math.abs(from.y - to.y) < 50 ? -30 : 0);
+                const particleColor = link.type === "export" ? "hsl(var(--warning))" : link.type === "subsea-tieback" ? "hsl(280 65% 60%)" : link.type === "flowline" ? "hsl(var(--success))" : "hsl(var(--primary))";
+                const dur = link.type === "export" ? "3s" : link.type === "pipeline" ? "4s" : "5s";
                 return (
                   <g key={i} opacity={highlighted ? 1 : 0.15} style={{ transition: "opacity 0.25s" }}>
                     <path
@@ -139,6 +159,18 @@ export const FacilitiesSchematic = () => {
                       strokeWidth={style.width}
                       strokeDasharray={style.dash}
                     />
+                    {/* Flow particles */}
+                    {highlighted && [0, 0.33, 0.66].map((offset, pi) => (
+                      <circle key={pi} r={2.5} fill={particleColor} opacity="0.8">
+                        <animateMotion
+                          dur={dur}
+                          repeatCount="indefinite"
+                          begin={`${offset * parseFloat(dur)}s`}
+                        >
+                          <mpath href={`#flow-path-${i}`} />
+                        </animateMotion>
+                      </circle>
+                    ))}
                     {link.label && highlighted && (
                       <text x={midX} y={midY - 6} textAnchor="middle" className="fill-muted-foreground" fontSize="8" opacity="0.7">
                         {link.label}
