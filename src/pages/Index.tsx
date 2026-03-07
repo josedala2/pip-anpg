@@ -15,6 +15,7 @@ import { Link } from "react-router-dom";
 import { useTheme } from "@/components/ThemeProvider";
 import anpgLogoColor from "@/assets/anpg-logo-color.svg";
 import anpgLogoWhite from "@/assets/anpg-logo-white.svg";
+import { InstitutionalFooter } from "@/components/InstitutionalFooter";
 
 const panels = ["Overview", "Blocos & Concessões", "Exploração & Sísmica", "Risk & Performance", "Strategic Forecast"];
 
@@ -229,6 +230,9 @@ const Index = () => {
 
       {/* Block Detail Slide-in */}
       {selectedBlock && <BlockDetail block={selectedBlock} onClose={() => setSelectedBlock(null)} />}
+
+      {/* Footer — hidden in presentation mode */}
+      {!isPresentation && activePanel !== 0 && <InstitutionalFooter />}
     </div>
   );
 };
