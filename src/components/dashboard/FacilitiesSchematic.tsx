@@ -85,217 +85,224 @@ export const FacilitiesSchematic = () => {
 
   return (
     <Card className="glass-card">
-      <CardHeader className="p-4 pb-2">
-        <div className="flex items-center justify-between flex-wrap gap-2">
-          <CardTitle className="text-sm flex items-center gap-2">
-            <GitBranch className="w-4 h-4 text-primary" />
-            Diagrama Esquemático — Infraestrutura
+      <CardHeader className="p-2 sm:p-4 pb-1 sm:pb-2">
+        <div className="flex items-center justify-between flex-wrap gap-1.5 sm:gap-2">
+          <CardTitle className="text-xs sm:text-sm flex items-center gap-1.5 sm:gap-2">
+            <GitBranch className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
+            <span className="hidden sm:inline">Diagrama Esquemático — Infraestrutura</span>
+            <span className="sm:hidden">Esquemático</span>
           </CardTitle>
-          <div className="flex items-center gap-1.5 flex-wrap">
+          <div className="flex items-center gap-1 sm:gap-1.5 flex-wrap">
             {Object.entries(typeStyles).map(([key, s]) => (
-              <Badge key={key} variant="outline" className="text-[9px] gap-1" style={{ borderColor: s.stroke, color: s.stroke }}>
-                <span className="w-2 h-2 rounded-full inline-block" style={{ background: s.stroke }} />
-                {s.badge}
+              <Badge key={key} variant="outline" className="text-[7px] sm:text-[9px] gap-0.5 sm:gap-1 px-1 sm:px-1.5 py-0" style={{ borderColor: s.stroke, color: s.stroke }}>
+                <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full inline-block" style={{ background: s.stroke }} />
+                <span className="hidden xs:inline">{s.badge}</span>
+                <span className="xs:hidden">{key === "terminal" ? "Onsh" : key === "fixed" ? "Fix" : key === "fpso" ? "FPSO" : "Sub"}</span>
               </Badge>
             ))}
           </div>
         </div>
       </CardHeader>
-      <CardContent className="p-4 pt-0">
-        <div className="flex flex-col lg:flex-row gap-4">
+      <CardContent className="p-2 sm:p-4 pt-0">
+        <div className="flex flex-col lg:flex-row gap-3 sm:gap-4">
           <TooltipProvider delayDuration={100}>
-            <svg
-              viewBox="0 0 900 480"
-              className="w-full lg:flex-1 rounded-lg border border-border/30 bg-muted/20"
-              style={{ minHeight: 320 }}
-            >
-              <defs>
-                {/* Arrowhead markers per link type */}
-                {Object.entries(linkStyles).map(([type, style]) => (
-                  <marker
-                    key={`arrow-${type}`}
-                    id={`arrow-${type}`}
-                    viewBox="0 0 10 6"
-                    refX="9"
-                    refY="3"
-                    markerWidth="8"
-                    markerHeight="6"
-                    orient="auto-start-reverse"
-                  >
-                    <path d="M 0 0 L 10 3 L 0 6 Z" fill={style.stroke} />
-                  </marker>
-                ))}
+            <div className="w-full lg:flex-1 overflow-x-auto rounded-lg border border-border/30 bg-muted/20">
+              <svg
+                viewBox="0 0 900 480"
+                className="w-full rounded-lg"
+                style={{ minHeight: 200, minWidth: 500 }}
+                preserveAspectRatio="xMidYMid meet"
+              >
+                <defs>
+                  {/* Arrowhead markers per link type */}
+                  {Object.entries(linkStyles).map(([type, style]) => (
+                    <marker
+                      key={`arrow-${type}`}
+                      id={`arrow-${type}`}
+                      viewBox="0 0 10 6"
+                      refX="9"
+                      refY="3"
+                      markerWidth="8"
+                      markerHeight="6"
+                      orient="auto-start-reverse"
+                    >
+                      <path d="M 0 0 L 10 3 L 0 6 Z" fill={style.stroke} />
+                    </marker>
+                  ))}
+                  {links.map((link, i) => {
+                    const from = nodeMap[link.from];
+                    const to = nodeMap[link.to];
+                    const dx = to.x - from.x;
+                    const midX = from.x + dx * 0.5;
+                    const midY = (from.y + to.y) / 2 + (Math.abs(from.y - to.y) < 50 ? -30 : 0);
+                    return (
+                      <path
+                        key={`path-${i}`}
+                        id={`flow-path-${i}`}
+                        d={`M ${from.x} ${from.y} Q ${midX} ${midY} ${to.x} ${to.y}`}
+                        fill="none"
+                      />
+                    );
+                  })}
+                </defs>
+
+                {/* Water depth bands */}
+                <rect x="0" y="0" width="200" height="480" fill="hsl(var(--primary) / 0.03)" />
+                <text x="100" y="468" textAnchor="middle" className="fill-muted-foreground" fontSize="10" opacity="0.5">ONSHORE</text>
+                <rect x="200" y="0" width="250" height="480" fill="hsl(var(--primary) / 0.05)" />
+                <text x="325" y="468" textAnchor="middle" className="fill-muted-foreground" fontSize="10" opacity="0.5">{"SHALLOW (<100m)"}</text>
+                <rect x="450" y="0" width="450" height="480" fill="hsl(var(--primary) / 0.08)" />
+                <text x="675" y="468" textAnchor="middle" className="fill-muted-foreground" fontSize="10" opacity="0.5">DEEP WATER (350-480m)</text>
+
+                {/* Depth separator lines */}
+                <line x1="200" y1="0" x2="200" y2="455" stroke="hsl(var(--border))" strokeWidth="1" strokeDasharray="4 4" opacity="0.4" />
+                <line x1="450" y1="0" x2="450" y2="455" stroke="hsl(var(--border))" strokeWidth="1" strokeDasharray="4 4" opacity="0.4" />
+
+                {/* Links with flow particles */}
                 {links.map((link, i) => {
                   const from = nodeMap[link.from];
                   const to = nodeMap[link.to];
+                  const style = linkStyles[link.type];
+                  const highlighted = isLinkHighlighted(link);
                   const dx = to.x - from.x;
                   const midX = from.x + dx * 0.5;
                   const midY = (from.y + to.y) / 2 + (Math.abs(from.y - to.y) < 50 ? -30 : 0);
+                  const particleColor = link.type === "export" ? "hsl(var(--warning))" : link.type === "subsea-tieback" ? "hsl(280 65% 60%)" : link.type === "flowline" ? "hsl(var(--success))" : "hsl(var(--primary))";
+                  const dur = link.type === "export" ? "3s" : link.type === "pipeline" ? "4s" : "5s";
                   return (
-                    <path
-                      key={`path-${i}`}
-                      id={`flow-path-${i}`}
-                      d={`M ${from.x} ${from.y} Q ${midX} ${midY} ${to.x} ${to.y}`}
-                      fill="none"
-                    />
+                    <g key={i} opacity={highlighted ? 1 : 0.15} style={{ transition: "opacity 0.25s" }}>
+                      <path
+                        d={`M ${from.x} ${from.y} Q ${midX} ${midY} ${to.x} ${to.y}`}
+                        fill="none"
+                        stroke={style.stroke}
+                        strokeWidth={style.width}
+                        strokeDasharray={style.dash}
+                        markerEnd={`url(#arrow-${link.type})`}
+                      />
+                      {/* Flow particles */}
+                      {highlighted && [0, 0.33, 0.66].map((offset, pi) => (
+                        <circle key={pi} r={2.5} fill={particleColor} opacity="0.8">
+                          <animateMotion
+                            dur={dur}
+                            repeatCount="indefinite"
+                            begin={`${offset * parseFloat(dur)}s`}
+                          >
+                            <mpath href={`#flow-path-${i}`} />
+                          </animateMotion>
+                        </circle>
+                      ))}
+                      {link.label && highlighted && (
+                        <text x={midX} y={midY - 6} textAnchor="middle" className="fill-muted-foreground" fontSize="9" opacity="0.7">
+                          {link.label}
+                        </text>
+                      )}
+                    </g>
                   );
                 })}
-              </defs>
 
-              {/* Water depth bands */}
-              <rect x="0" y="0" width="200" height="480" fill="hsl(var(--primary) / 0.03)" />
-              <text x="100" y="468" textAnchor="middle" className="fill-muted-foreground" fontSize="9" opacity="0.5">ONSHORE</text>
-              <rect x="200" y="0" width="250" height="480" fill="hsl(var(--primary) / 0.05)" />
-              <text x="325" y="468" textAnchor="middle" className="fill-muted-foreground" fontSize="9" opacity="0.5">{"SHALLOW (<100m)"}</text>
-              <rect x="450" y="0" width="450" height="480" fill="hsl(var(--primary) / 0.08)" />
-              <text x="675" y="468" textAnchor="middle" className="fill-muted-foreground" fontSize="9" opacity="0.5">DEEP WATER (350-480m)</text>
+                {/* Nodes */}
+                {nodes.map(node => {
+                  const style = typeStyles[node.type];
+                  const highlighted = isHighlighted(node.id);
+                  const isActive = selected === node.id || hovered === node.id;
+                  const w = node.type === "terminal" ? 80 : 64;
+                  const h = 36;
 
-              {/* Depth separator lines */}
-              <line x1="200" y1="0" x2="200" y2="455" stroke="hsl(var(--border))" strokeWidth="1" strokeDasharray="4 4" opacity="0.4" />
-              <line x1="450" y1="0" x2="450" y2="455" stroke="hsl(var(--border))" strokeWidth="1" strokeDasharray="4 4" opacity="0.4" />
-
-              {/* Links with flow particles */}
-              {links.map((link, i) => {
-                const from = nodeMap[link.from];
-                const to = nodeMap[link.to];
-                const style = linkStyles[link.type];
-                const highlighted = isLinkHighlighted(link);
-                const dx = to.x - from.x;
-                const midX = from.x + dx * 0.5;
-                const midY = (from.y + to.y) / 2 + (Math.abs(from.y - to.y) < 50 ? -30 : 0);
-                const particleColor = link.type === "export" ? "hsl(var(--warning))" : link.type === "subsea-tieback" ? "hsl(280 65% 60%)" : link.type === "flowline" ? "hsl(var(--success))" : "hsl(var(--primary))";
-                const dur = link.type === "export" ? "3s" : link.type === "pipeline" ? "4s" : "5s";
-                return (
-                  <g key={i} opacity={highlighted ? 1 : 0.15} style={{ transition: "opacity 0.25s" }}>
-                    <path
-                      d={`M ${from.x} ${from.y} Q ${midX} ${midY} ${to.x} ${to.y}`}
-                      fill="none"
-                      stroke={style.stroke}
-                      strokeWidth={style.width}
-                      strokeDasharray={style.dash}
-                      markerEnd={`url(#arrow-${link.type})`}
-                    />
-                    {/* Flow particles */}
-                    {highlighted && [0, 0.33, 0.66].map((offset, pi) => (
-                      <circle key={pi} r={2.5} fill={particleColor} opacity="0.8">
-                        <animateMotion
-                          dur={dur}
-                          repeatCount="indefinite"
-                          begin={`${offset * parseFloat(dur)}s`}
+                  return (
+                    <Tooltip key={node.id}>
+                      <TooltipTrigger asChild>
+                        <g
+                          opacity={highlighted ? 1 : 0.2}
+                          style={{ transition: "opacity 0.25s", cursor: "pointer" }}
+                          onMouseEnter={() => setHovered(node.id)}
+                          onMouseLeave={() => setHovered(null)}
+                          onClick={() => setSelected(prev => prev === node.id ? null : node.id)}
                         >
-                          <mpath href={`#flow-path-${i}`} />
-                        </animateMotion>
-                      </circle>
-                    ))}
-                    {link.label && highlighted && (
-                      <text x={midX} y={midY - 6} textAnchor="middle" className="fill-muted-foreground" fontSize="8" opacity="0.7">
-                        {link.label}
-                      </text>
-                    )}
-                  </g>
-                );
-              })}
-
-              {/* Nodes */}
-              {nodes.map(node => {
-                const style = typeStyles[node.type];
-                const highlighted = isHighlighted(node.id);
-                const isActive = selected === node.id || hovered === node.id;
-                const w = node.type === "terminal" ? 80 : 64;
-                const h = 36;
-
-                return (
-                  <Tooltip key={node.id}>
-                    <TooltipTrigger asChild>
-                      <g
-                        opacity={highlighted ? 1 : 0.2}
-                        style={{ transition: "opacity 0.25s", cursor: "pointer" }}
-                        onMouseEnter={() => setHovered(node.id)}
-                        onMouseLeave={() => setHovered(null)}
-                        onClick={() => setSelected(prev => prev === node.id ? null : node.id)}
-                      >
-                        {node.type === "fpso" ? (
-                          <ellipse
-                            cx={node.x}
-                            cy={node.y}
-                            rx={w / 2}
-                            ry={h / 2}
-                            fill={style.fill}
-                            stroke={style.stroke}
-                            strokeWidth={isActive ? 2.5 : 1.5}
-                          />
-                        ) : node.type === "subsea" ? (
-                          <polygon
-                            points={`${node.x},${node.y - h / 2} ${node.x + w / 2},${node.y} ${node.x},${node.y + h / 2} ${node.x - w / 2},${node.y}`}
-                            fill={style.fill}
-                            stroke={style.stroke}
-                            strokeWidth={isActive ? 2.5 : 1.5}
-                          />
-                        ) : (
-                          <rect
-                            x={node.x - w / 2}
-                            y={node.y - h / 2}
-                            width={w}
-                            height={h}
-                            rx={6}
-                            fill={style.fill}
-                            stroke={style.stroke}
-                            strokeWidth={isActive ? 2.5 : 1.5}
-                          />
-                        )}
-                        <text
-                          x={node.x}
-                          y={node.y + 1}
-                          textAnchor="middle"
-                          dominantBaseline="middle"
-                          className="fill-foreground"
-                          fontSize="9"
-                          fontWeight={isActive ? "700" : "500"}
-                        >
-                          {node.label}
-                        </text>
-                      </g>
-                    </TooltipTrigger>
-                    <TooltipContent side="top" className="text-xs space-y-0.5">
-                      <p className="font-semibold">{node.label}</p>
-                      <p className="text-muted-foreground">{node.capacity} · {node.depth}m · {node.year}</p>
-                    </TooltipContent>
-                  </Tooltip>
-                );
-              })}
-            </svg>
+                          {node.type === "fpso" ? (
+                            <ellipse
+                              cx={node.x}
+                              cy={node.y}
+                              rx={w / 2}
+                              ry={h / 2}
+                              fill={style.fill}
+                              stroke={style.stroke}
+                              strokeWidth={isActive ? 2.5 : 1.5}
+                            />
+                          ) : node.type === "subsea" ? (
+                            <polygon
+                              points={`${node.x},${node.y - h / 2} ${node.x + w / 2},${node.y} ${node.x},${node.y + h / 2} ${node.x - w / 2},${node.y}`}
+                              fill={style.fill}
+                              stroke={style.stroke}
+                              strokeWidth={isActive ? 2.5 : 1.5}
+                            />
+                          ) : (
+                            <rect
+                              x={node.x - w / 2}
+                              y={node.y - h / 2}
+                              width={w}
+                              height={h}
+                              rx={6}
+                              fill={style.fill}
+                              stroke={style.stroke}
+                              strokeWidth={isActive ? 2.5 : 1.5}
+                            />
+                          )}
+                          <text
+                            x={node.x}
+                            y={node.y + 1}
+                            textAnchor="middle"
+                            dominantBaseline="middle"
+                            className="fill-foreground"
+                            fontSize="10"
+                            fontWeight={isActive ? "700" : "500"}
+                          >
+                            {node.label}
+                          </text>
+                        </g>
+                      </TooltipTrigger>
+                      <TooltipContent side="top" className="text-xs space-y-0.5">
+                        <p className="font-semibold">{node.label}</p>
+                        <p className="text-muted-foreground">{node.capacity} · {node.depth}m · {node.year}</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  );
+                })}
+              </svg>
+            </div>
           </TooltipProvider>
 
           {/* Detail panel */}
           {selectedNode && (
-            <div className="lg:w-56 space-y-3 rounded-lg border border-border/50 p-3 bg-card/50">
+            <div className="lg:w-56 space-y-2 sm:space-y-3 rounded-lg border border-border/50 p-2 sm:p-3 bg-card/50">
               <div>
-                <Badge variant="outline" className="text-[9px] mb-1" style={{ borderColor: typeStyles[selectedNode.type].stroke, color: typeStyles[selectedNode.type].stroke }}>
+                <Badge variant="outline" className="text-[8px] sm:text-[9px] mb-1" style={{ borderColor: typeStyles[selectedNode.type].stroke, color: typeStyles[selectedNode.type].stroke }}>
                   {typeStyles[selectedNode.type].badge}
                 </Badge>
-                <h4 className="text-sm font-bold">{selectedNode.label}</h4>
+                <h4 className="text-xs sm:text-sm font-bold">{selectedNode.label}</h4>
               </div>
-              <div className="space-y-1.5 text-xs text-muted-foreground">
+              <div className="grid grid-cols-2 lg:grid-cols-1 gap-1 sm:gap-1.5 text-[11px] sm:text-xs text-muted-foreground">
                 <div className="flex justify-between"><span>Capacidade</span><span className="font-mono text-foreground">{selectedNode.capacity}</span></div>
                 <div className="flex justify-between"><span>Instalação</span><span className="font-mono text-foreground">{selectedNode.year}</span></div>
                 <div className="flex justify-between"><span>Prof. Água</span><span className="font-mono text-foreground">{selectedNode.depth}m</span></div>
                 <div className="flex justify-between"><span>Estado</span><span className="text-success font-medium">{selectedNode.status}</span></div>
               </div>
-              <div className="pt-2 border-t border-border/30">
-                <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">Conexões</p>
-                {links
-                  .filter(l => l.from === selectedNode.id || l.to === selectedNode.id)
-                  .map((l, i) => {
-                    const otherId = l.from === selectedNode.id ? l.to : l.from;
-                    const other = nodeMap[otherId];
-                    return (
-                      <div key={i} className="flex items-center gap-1.5 text-xs py-0.5">
-                        <span className="w-2 h-2 rounded-full" style={{ background: linkStyles[l.type].stroke }} />
-                        <span>{other.label}</span>
-                        {l.label && <span className="text-muted-foreground text-[9px]">({l.label})</span>}
-                      </div>
-                    );
-                  })}
+              <div className="pt-1.5 sm:pt-2 border-t border-border/30">
+                <p className="text-[9px] sm:text-[10px] uppercase tracking-wider text-muted-foreground mb-1">Conexões</p>
+                <div className="grid grid-cols-2 lg:grid-cols-1 gap-0.5">
+                  {links
+                    .filter(l => l.from === selectedNode.id || l.to === selectedNode.id)
+                    .map((l, i) => {
+                      const otherId = l.from === selectedNode.id ? l.to : l.from;
+                      const other = nodeMap[otherId];
+                      return (
+                        <div key={i} className="flex items-center gap-1 sm:gap-1.5 text-[11px] sm:text-xs py-0.5">
+                          <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full shrink-0" style={{ background: linkStyles[l.type].stroke }} />
+                          <span className="truncate">{other.label}</span>
+                          {l.label && <span className="text-muted-foreground text-[8px] sm:text-[9px] hidden sm:inline">({l.label})</span>}
+                        </div>
+                      );
+                    })}
+                </div>
               </div>
             </div>
           )}
