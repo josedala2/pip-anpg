@@ -173,6 +173,7 @@ export const FacilitiesSchematic = () => {
                       stroke={style.stroke}
                       strokeWidth={style.width}
                       strokeDasharray={style.dash}
+                      markerEnd={`url(#arrow-${link.type})`}
                     />
                     {/* Flow particles */}
                     {highlighted && [0, 0.33, 0.66].map((offset, pi) => (
