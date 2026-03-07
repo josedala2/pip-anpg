@@ -69,6 +69,18 @@ export const StrategicForecast = () => {
       .sort((a, b) => b.projected - a.projected);
   }, [activeScenario, oilPrice, activeBlocks]);
 
+  // Price sensitivity data
+  const sensitivityData = useMemo(() => {
+    const prices = Array.from({ length: 17 }, (_, i) => 40 + i * 5);
+    return prices.map(price => ({
+      price,
+      priceLabel: `$${price}`,
+      revenue: (projected2029Raw * 365 * price) / 1e9,
+    }));
+  }, [activeScenario]);
+
+  const projected2029Raw = (projectionData[4] as Record<string, number>)?.[activeScenario] || 0;
+
   const totals = useMemo(() => ({
     current: blockBreakdown.reduce((s, b) => s + b.current, 0),
     projected: blockBreakdown.reduce((s, b) => s + b.projected, 0),
