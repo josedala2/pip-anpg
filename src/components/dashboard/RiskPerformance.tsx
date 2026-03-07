@@ -211,6 +211,64 @@ export const RiskPerformance = () => {
           </CardContent>
         </Card>
       </div>
+
+      {/* Scatter Chart: Risk vs Execution */}
+      <ChartWrapper title="Risk Score vs Execution Rate" height={350}>
+        <ResponsiveContainer width="100%" height={350}>
+          <ScatterChart margin={{ top: 10, right: 20, bottom: 20, left: 10 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.5} />
+            <XAxis
+              type="number"
+              dataKey="riskScore"
+              name="Risk Score"
+              domain={[0, 10]}
+              tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
+            >
+              <Label value="Risk Score" position="bottom" offset={5} style={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} />
+            </XAxis>
+            <YAxis
+              type="number"
+              dataKey="executionRate"
+              name="Execution Rate"
+              domain={[0, 100]}
+              tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
+              unit="%"
+            >
+              <Label value="Execution %" angle={-90} position="insideLeft" offset={10} style={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} />
+            </YAxis>
+            <ZAxis type="number" dataKey="dailyProduction" range={[40, 400]} name="Production" />
+            <ReferenceLine y={70} stroke="hsl(var(--warning))" strokeDasharray="4 4" label={{ value: "Min Exec 70%", position: "right", fontSize: 10, fill: "hsl(var(--warning))" }} />
+            <ReferenceLine x={8} stroke="hsl(var(--danger))" strokeDasharray="4 4" label={{ value: "Critical", position: "top", fontSize: 10, fill: "hsl(var(--danger))" }} />
+            <RechartsTooltip
+              cursor={{ strokeDasharray: "3 3" }}
+              content={({ payload }) => {
+                if (!payload?.length) return null;
+                const d = payload[0].payload as OilBlock;
+                return (
+                  <div className="rounded-md border bg-popover p-2 text-xs shadow-md">
+                    <p className="font-semibold">{d.name}</p>
+                    <p className="text-muted-foreground">{d.operator} · {d.phase}</p>
+                    <p>Risk: <span className="font-mono font-bold">{d.riskScore}</span></p>
+                    <p>Execution: <span className="font-mono font-bold">{d.executionRate}%</span></p>
+                    <p>Production: <span className="font-mono">{d.dailyProduction.toLocaleString()} BOPD</span></p>
+                  </div>
+                );
+              }}
+            />
+            <Scatter data={filtered}>
+              {filtered.map((block) => (
+                <Cell
+                  key={block.id}
+                  fill={`hsl(${block.riskScore <= 3 ? 'var(--success)' : block.riskScore <= 6 ? 'var(--warning)' : 'var(--danger)'})`}
+                  fillOpacity={0.75}
+                  stroke={`hsl(${block.riskScore <= 3 ? 'var(--success)' : block.riskScore <= 6 ? 'var(--warning)' : 'var(--danger)'})`}
+                  strokeWidth={1}
+                />
+              ))}
+            </Scatter>
+          </ScatterChart>
+        </ResponsiveContainer>
+      </ChartWrapper>
     </div>
   );
 };
