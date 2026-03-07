@@ -338,7 +338,7 @@ const BlockPage = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="sticky top-0 z-50 glass-card border-b border-border/50 px-4 py-3">
+      <header className="sticky top-0 z-50 glass-card border-b border-border/50 border-t-4 border-t-primary px-4 py-3">
         <div className="max-w-[1920px] mx-auto flex items-center gap-4">
           <Button onClick={() => navigate("/")} variant="ghost" size="sm" className="gap-2">
             <ArrowLeft className="w-4 h-4" />

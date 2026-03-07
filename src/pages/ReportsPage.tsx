@@ -112,7 +112,7 @@ const ReportsPage = () => {
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Header — hidden on print */}
-      <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-border/50 print:hidden">
+      <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-border/50 border-t-4 border-t-primary print:hidden">
         <div className="flex items-center justify-between px-4 md:px-6 py-3">
           <div className="flex items-center gap-3">
             <Link to="/" className="p-2 rounded-lg hover:bg-secondary transition-colors">
@@ -125,10 +125,10 @@ const ReportsPage = () => {
             />
             <div>
               <h1 className="text-lg md:text-xl font-bold tracking-tight">
-                <span className="text-gradient">Relatórios</span>
-                <span className="text-muted-foreground font-light ml-2">Automáticos</span>
+                <span className="text-primary">Relatórios</span>
+                <span className="text-foreground font-light ml-2">Automáticos</span>
               </h1>
-              <p className="text-[10px] md:text-xs text-muted-foreground">Geração de relatórios personalizados</p>
+              <p className="text-xs md:text-xs text-muted-foreground font-medium">Geração de relatórios personalizados</p>
             </div>
           </div>
 
