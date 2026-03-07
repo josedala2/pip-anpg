@@ -129,7 +129,7 @@ export const RiskPerformance = () => {
             <TooltipProvider delayDuration={200}>
               <div className="grid grid-cols-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-1.5 2xl:gap-2">
                 {filtered.map(block => (
-                  <Tooltip key={block.id}>
+                  <UITooltip key={block.id}>
                     <TooltipTrigger asChild>
                       <div
                         className="p-1.5 2xl:p-2.5 rounded-md text-center transition-all hover:scale-105 cursor-default"
@@ -144,7 +144,7 @@ export const RiskPerformance = () => {
                       <p className="text-muted-foreground">{block.operator}</p>
                       <p>Risk: {block.riskScore} · Exec: {block.executionRate}%</p>
                     </TooltipContent>
-                  </Tooltip>
+                  </UITooltip>
                 ))}
                 {filtered.length === 0 && (
                   <div className="col-span-full text-center text-sm text-muted-foreground py-8">
