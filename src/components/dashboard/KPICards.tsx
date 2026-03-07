@@ -49,7 +49,7 @@ export const KPICards = ({ compact = false }: { compact?: boolean }) => (
         <CardContent className={compact ? "p-2.5" : "p-4 md:p-5 2xl:p-6 3xl:p-8"}>
           <div className="flex items-center gap-1.5 mb-1 2xl:mb-2 3xl:mb-3">
             <kpi.icon className={`w-3.5 h-3.5 2xl:w-5 2xl:h-5 3xl:w-6 3xl:h-6 ${kpi.color}`} />
-            <span className={`text-muted-foreground uppercase tracking-wider font-medium ${compact ? "text-[9px]" : "text-xs 2xl:text-sm 3xl:text-base"}`}>{kpi.label}</span>
+            <span className={`text-muted-foreground uppercase tracking-wider font-semibold ${compact ? "text-[10px]" : "text-xs 2xl:text-sm 3xl:text-base"}`}>{kpi.label}</span>
           </div>
           <AnimatedCounter
             target={kpi.value}

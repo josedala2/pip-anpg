@@ -81,7 +81,7 @@ const Index = () => {
   return (
     <div className={`min-h-screen bg-background text-foreground ${isPresentation ? "fixed inset-0 z-[100]" : ""}`}>
       {/* Header */}
-      <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-border/50">
+      <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-border/50 border-t-4 border-t-primary">
         <div className="flex items-center justify-between px-4 md:px-6 3xl:px-8 py-3 3xl:py-4">
           <div className="flex items-center gap-3 3xl:gap-4">
             <img
@@ -90,11 +90,11 @@ const Index = () => {
               className="h-8 md:h-10 3xl:h-12"
             />
             <div>
-            <h1 className="text-lg md:text-xl 2xl:text-2xl 3xl:text-3xl font-bold tracking-tight">
-                <span className="text-gradient">ANGOLA</span>
-                <span className="text-muted-foreground font-light ml-2">Oil Concessions</span>
+              <h1 className="text-lg md:text-xl 2xl:text-2xl 3xl:text-3xl font-bold tracking-tight">
+                <span className="text-primary">Sistema de Gestão</span>
+                <span className="text-foreground font-light ml-2">de Concessões</span>
               </h1>
-              <p className="text-[10px] md:text-xs 2xl:text-sm 3xl:text-base text-muted-foreground">Executive Intelligence Dashboard • Q4 2024</p>
+              <p className="text-xs md:text-xs 2xl:text-sm 3xl:text-base text-muted-foreground font-medium">Plataforma de Inteligência Petrolífera • Q4 2024</p>
             </div>
           </div>
           <div className="flex items-center gap-2 3xl:gap-3">
@@ -130,10 +130,10 @@ const Index = () => {
             <button
               key={panel}
               onClick={() => switchPanel(i)}
-              className={`relative px-3 py-1.5 2xl:px-4 2xl:py-2 3xl:px-5 3xl:py-2.5 rounded-lg text-xs 2xl:text-sm 3xl:text-base font-medium transition-all group ${
+              className={`relative px-3 py-1.5 2xl:px-4 2xl:py-2 3xl:px-5 3xl:py-2.5 rounded-lg text-xs 2xl:text-sm 3xl:text-base font-semibold transition-all group ${
                 activePanel === i
-                  ? "text-primary"
-                  : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
+                  ? "text-primary bg-accent"
+                  : "text-muted-foreground hover:text-foreground hover:bg-secondary/60"
               }`}
             >
               {panel}
