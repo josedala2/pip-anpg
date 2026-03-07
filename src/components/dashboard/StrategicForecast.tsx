@@ -71,15 +71,14 @@ export const StrategicForecast = () => {
 
   // Price sensitivity data
   const sensitivityData = useMemo(() => {
+    const proj = (projectionData[4] as Record<string, number>)?.[activeScenario] || 0;
     const prices = Array.from({ length: 17 }, (_, i) => 40 + i * 5);
     return prices.map(price => ({
       price,
       priceLabel: `$${price}`,
-      revenue: (projected2029Raw * 365 * price) / 1e9,
+      revenue: (proj * 365 * price) / 1e9,
     }));
-  }, [activeScenario]);
-
-  const projected2029Raw = (projectionData[4] as Record<string, number>)?.[activeScenario] || 0;
+  }, [activeScenario, projectionData]);
 
   const totals = useMemo(() => ({
     current: blockBreakdown.reduce((s, b) => s + b.current, 0),
