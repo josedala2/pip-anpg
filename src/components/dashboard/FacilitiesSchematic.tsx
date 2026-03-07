@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -67,6 +67,67 @@ const nodeMap = Object.fromEntries(nodes.map(n => [n.id, n]));
 export const FacilitiesSchematic = () => {
   const [hovered, setHovered] = useState<string | null>(null);
   const [selected, setSelected] = useState<string | null>(null);
+  const [zoom, setZoom] = useState(1);
+  const [pan, setPan] = useState({ x: 0, y: 0 });
+  const svgRef = useRef<SVGSVGElement>(null);
+  const lastTouchDist = useRef<number | null>(null);
+  const lastTouchCenter = useRef<{ x: number; y: number } | null>(null);
+  const isPinching = useRef(false);
+
+  const clampZoom = (z: number) => Math.min(Math.max(z, 1), 4);
+
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    if (e.touches.length === 2) {
+      isPinching.current = true;
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      lastTouchDist.current = Math.hypot(dx, dy);
+      lastTouchCenter.current = {
+        x: (e.touches[0].clientX + e.touches[1].clientX) / 2,
+        y: (e.touches[0].clientY + e.touches[1].clientY) / 2,
+      };
+    }
+  }, []);
+
+  const handleTouchMove = useCallback((e: React.TouchEvent) => {
+    if (e.touches.length === 2 && lastTouchDist.current !== null && lastTouchCenter.current !== null) {
+      e.preventDefault();
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      const dist = Math.hypot(dx, dy);
+      const scale = dist / lastTouchDist.current;
+      const center = {
+        x: (e.touches[0].clientX + e.touches[1].clientX) / 2,
+        y: (e.touches[0].clientY + e.touches[1].clientY) / 2,
+      };
+      const panDx = center.x - lastTouchCenter.current.x;
+      const panDy = center.y - lastTouchCenter.current.y;
+
+      setZoom(prev => clampZoom(prev * scale));
+      setPan(prev => ({ x: prev.x + panDx, y: prev.y + panDy }));
+
+      lastTouchDist.current = dist;
+      lastTouchCenter.current = center;
+    }
+  }, []);
+
+  const handleTouchEnd = useCallback(() => {
+    lastTouchDist.current = null;
+    lastTouchCenter.current = null;
+    setTimeout(() => { isPinching.current = false; }, 50);
+  }, []);
+
+  const handleWheel = useCallback((e: React.WheelEvent) => {
+    if (e.ctrlKey || e.metaKey) {
+      e.preventDefault();
+      setZoom(prev => clampZoom(prev - e.deltaY * 0.005));
+    }
+  }, []);
+
+  const resetView = useCallback(() => {
+    setZoom(1);
+    setPan({ x: 0, y: 0 });
+  }, []);
 
   const isHighlighted = useCallback((nodeId: string) => {
     if (!hovered && !selected) return true;
@@ -106,12 +167,25 @@ export const FacilitiesSchematic = () => {
       <CardContent className="p-2 sm:p-4 pt-0">
         <div className="flex flex-col lg:flex-row gap-3 sm:gap-4">
           <TooltipProvider delayDuration={100}>
-            <div className="w-full lg:flex-1 overflow-x-auto rounded-lg border border-border/30 bg-muted/20">
+            <div className="w-full lg:flex-1 overflow-hidden rounded-lg border border-border/30 bg-muted/20 relative touch-none">
+              {zoom > 1 && (
+                <button
+                  onClick={resetView}
+                  className="absolute top-1.5 right-1.5 z-10 text-[9px] sm:text-[10px] bg-background/80 backdrop-blur border border-border/50 rounded px-1.5 py-0.5 text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Reset
+                </button>
+              )}
               <svg
+                ref={svgRef}
                 viewBox="0 0 900 480"
                 className="w-full rounded-lg"
-                style={{ minHeight: 200, minWidth: 500 }}
+                style={{ minHeight: 200, minWidth: 500, transform: `scale(${zoom}) translate(${pan.x / zoom}px, ${pan.y / zoom}px)`, transformOrigin: "center center", transition: isPinching.current ? "none" : "transform 0.15s ease-out" }}
                 preserveAspectRatio="xMidYMid meet"
+                onTouchStart={handleTouchStart}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEnd}
+                onWheel={handleWheel}
               >
                 <defs>
                   {/* Arrowhead markers per link type */}
