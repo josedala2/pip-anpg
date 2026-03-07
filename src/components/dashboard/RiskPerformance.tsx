@@ -7,6 +7,7 @@ import { Tooltip as UITooltip, TooltipContent, TooltipProvider, TooltipTrigger }
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ChartWrapper } from "./ChartWrapper";
 import { useState, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import { ArrowUpDown, AlertTriangle, TrendingDown, Target, DollarSign, Filter, X } from "lucide-react";
 import {
   ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip,
@@ -25,6 +26,7 @@ const alertBadge = (block: OilBlock) => {
 const ALL = "__all__";
 
 export const RiskPerformance = () => {
+  const navigate = useNavigate();
   const [sortKey, setSortKey] = useState<SortKey>("riskScore");
   const [sortAsc, setSortAsc] = useState(false);
   const [operatorFilter, setOperatorFilter] = useState(ALL);
@@ -131,8 +133,9 @@ export const RiskPerformance = () => {
                     <UITooltip key={block.id}>
                       <TooltipTrigger asChild>
                         <div
-                          className="p-1.5 rounded text-center transition-all hover:scale-105 cursor-default"
+                          className="p-1.5 rounded text-center transition-all hover:scale-105 hover:ring-1 hover:ring-primary/40 cursor-pointer"
                           style={{ backgroundColor: `hsl(${block.riskScore <= 3 ? 'var(--success)' : block.riskScore <= 6 ? 'var(--warning)' : 'var(--danger)'} / 0.15)` }}
+                          onClick={() => navigate(`/block/${block.id}`)}
                         >
                           <div className="text-[9px] font-medium truncate leading-tight">{block.name}</div>
                           <div className="text-sm font-mono font-bold leading-tight">{block.riskScore}</div>
