@@ -26,6 +26,7 @@ const alertBadge = (block: OilBlock) => {
 const ALL = "__all__";
 
 export const RiskPerformance = () => {
+  const navigate = useNavigate();
   const [sortKey, setSortKey] = useState<SortKey>("riskScore");
   const [sortAsc, setSortAsc] = useState(false);
   const [operatorFilter, setOperatorFilter] = useState(ALL);
