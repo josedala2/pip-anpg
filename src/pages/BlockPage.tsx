@@ -474,20 +474,17 @@ const BlockPage = () => {
                       </div>
                     )}
 
-                    {/* GE Inicial mini-table */}
+                    {/* GE Inicial summary */}
                     {block.contractInfo.initialConsortium && (
                       <div className="mt-2">
-                        <div className="text-[10px] 2xl:text-xs uppercase tracking-wider text-muted-foreground mb-2 font-medium flex items-center gap-1.5">
-                          <Building2 className="w-3 h-3" /> GE Inicial
-                        </div>
-                        <div className="space-y-1">
-                          {block.contractInfo.initialConsortium.map(p => (
-                            <div key={p.name} className="flex justify-between items-center py-1 text-xs 2xl:text-sm">
-                              <span className="text-muted-foreground">{p.name} {p.isOperator && <Badge variant="outline" className="text-[8px] ml-1 py-0 px-1">Op.</Badge>}</span>
-                              <span className="font-mono font-semibold">{p.share.toFixed(2)}%</span>
-                            </div>
-                          ))}
-                        </div>
+                        <button
+                          onClick={() => { setActiveTab("consortium"); window.scrollTo({ top: 0, behavior: "smooth" }); }}
+                          className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors"
+                        >
+                          <Building2 className="w-3 h-3" />
+                          <span>GE Inicial: {block.contractInfo.initialConsortium.length} parceiros</span>
+                          <ArrowRight className="w-3 h-3" />
+                        </button>
                       </div>
                     )}
                     <button
@@ -927,53 +924,26 @@ const BlockPage = () => {
               </Card>
             )}
 
-            {/* Pie chart */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 2xl:gap-6">
-              <Card className="glass-card">
-                <CardHeader className="p-4 pb-2">
-                  <CardTitle className="text-sm 2xl:text-base">Parceiros Actuais</CardTitle>
-                </CardHeader>
-                <CardContent className="p-4 pt-0">
-                  <div className="space-y-3">
-                    {block.concession.map((p, i) => (
-                      <div key={i} className="flex items-center gap-3">
-                        <div className="w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: CONSORTIUM_COLORS[i % CONSORTIUM_COLORS.length] }} />
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2">
-                            <span className="text-sm 2xl:text-base font-medium truncate">{p.name}</span>
-                            {p.isOperator && <Badge variant="outline" className="text-[9px] bg-primary/10 text-primary border-primary/30">Operador</Badge>}
-                          </div>
-                          <div className="w-full h-2 bg-secondary rounded-full mt-1 overflow-hidden">
-                            <div className="h-full rounded-full transition-all" style={{ width: `${p.share}%`, backgroundColor: CONSORTIUM_COLORS[i % CONSORTIUM_COLORS.length] }} />
-                          </div>
-                        </div>
-                        <span className="font-mono text-sm 2xl:text-base font-bold w-14 text-right">{p.share.toFixed(1)}%</span>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="glass-card">
-                <CardHeader className="p-4 pb-2">
-                  <CardTitle className="text-sm 2xl:text-base">Distribuição de Participações</CardTitle>
-                </CardHeader>
-                <CardContent className="p-4 pt-0">
-                  <ResponsiveContainer width="100%" height={380}>
-                    <PieChart>
-                      <Pie data={block.concession.map(p => ({ name: p.name, value: p.share }))}
-                        cx="50%" cy="50%" innerRadius={60} outerRadius={100} paddingAngle={2} dataKey="value"
-                        label={({ name, value }) => `${name.split(" ")[0]} ${value.toFixed(0)}%`}>
-                        {block.concession.map((_, i) => (
-                          <Cell key={i} fill={CONSORTIUM_COLORS[i % CONSORTIUM_COLORS.length]} />
-                        ))}
-                      </Pie>
-                      <Tooltip formatter={(val: number) => `${val.toFixed(1)}%`} />
-                    </PieChart>
-                  </ResponsiveContainer>
-                </CardContent>
-              </Card>
-            </div>
+            {/* Pie chart - full width */}
+            <Card className="glass-card">
+              <CardHeader className="p-4 pb-2">
+                <CardTitle className="text-sm 2xl:text-base">Distribuição de Participações</CardTitle>
+              </CardHeader>
+              <CardContent className="p-4 pt-0">
+                <ResponsiveContainer width="100%" height={280}>
+                  <PieChart>
+                    <Pie data={block.concession.map(p => ({ name: p.name, value: p.share }))}
+                      cx="50%" cy="50%" innerRadius={60} outerRadius={100} paddingAngle={2} dataKey="value"
+                      label={({ name, value }) => `${name.split(" ")[0]} ${value.toFixed(0)}%`}>
+                      {block.concession.map((_, i) => (
+                        <Cell key={i} fill={CONSORTIUM_COLORS[i % CONSORTIUM_COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <Tooltip formatter={(val: number) => `${val.toFixed(1)}%`} />
+                  </PieChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
           </TabsContent>
 
           {/* Tab 3: Exploração */}
