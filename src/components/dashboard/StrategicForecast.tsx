@@ -216,9 +216,6 @@ export const StrategicForecast = () => {
               if (!isActive) return <circle key={props.key} cx={props.cx} cy={props.cy} r={3} fill="hsl(var(--primary))" fillOpacity={0.4} stroke="none" />;
               return <circle key={props.key} cx={props.cx} cy={props.cy} r={6} fill="hsl(var(--primary))" stroke="hsl(var(--background))" strokeWidth={2} />;
             }} />
-            {sensitivityData.map(d => d.price === oilPrice[0] ? (
-              <Line key="ref" type="monotone" dataKey={() => null} />
-            ) : null)}
           </AreaChart>
         </ResponsiveContainer>
       </ChartWrapper>
