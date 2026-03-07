@@ -1,260 +1,234 @@
-import { useMemo } from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
+import { Separator } from "@/components/ui/separator";
+
+import { ConcessionMap } from "@/components/dashboard/ConcessionMap";
+import { applyFilters, type FilterState } from "@/components/dashboard/FilterBar";
+import { BlockDetail } from "@/components/dashboard/BlockDetail";
+import { OverviewSidebar } from "@/components/dashboard/OverviewSidebar";
+import { RiskPerformance } from "@/components/dashboard/RiskPerformance";
+import { StrategicForecast } from "@/components/dashboard/StrategicForecast";
+import { BlocksPanel } from "@/components/dashboard/BlocksPanel";
+import { ExplorationPanel } from "@/components/dashboard/ExplorationPanel";
+import { type OilBlock, oilBlocks } from "@/data/angolaBlocks";
+import { Maximize2, Minimize2, ChevronLeft, ChevronRight, Sun, Moon, FileText } from "lucide-react";
 import { Link } from "react-router-dom";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { AnimatedCounter } from "@/components/dashboard/AnimatedCounter";
-import {
-  getTotalProduction, getTotalReserves, getActiveBlocks, getTotalCapex, getAvgExecutionRate,
-  oilBlocks,
-} from "@/data/angolaBlocks";
-import {
-  Activity, BarChart3, Boxes, DollarSign, TrendingUp, Users, Plus,
-  ArrowRight, ShieldCheck, FileText, Droplets, Flame, Landmark,
-  AlertTriangle, CheckCircle2, Clock,
-} from "lucide-react";
-import {
-  AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
-  ResponsiveContainer, Legend,
-} from "recharts";
+import { useTheme } from "@/components/ThemeProvider";
+import anpgLogoColor from "@/assets/anpg-logo-color.svg";
+import anpgLogoWhite from "@/assets/anpg-logo-white.svg";
 
-/* ── KPI definitions ── */
-const kpis = [
-  { label: "Total Concessões", value: oilBlocks.length, suffix: "", icon: Boxes, color: "text-primary" },
-  { label: "Activas", value: getActiveBlocks(), suffix: "", icon: Activity, color: "text-success" },
-  { label: "Operadores", value: [...new Set(oilBlocks.map(b => b.operator))].length, suffix: "", icon: Users, color: "text-warning" },
-  { label: "Petróleo", value: getTotalProduction(), suffix: " BOPD", icon: Droplets, color: "text-primary" },
-  { label: "Reservas Est.", value: getTotalReserves(), suffix: " Mb", icon: Flame, color: "text-anpg" },
-  { label: "CAPEX Total", value: getTotalCapex(), prefix: "$", suffix: "M", icon: Landmark, color: "text-success" },
-];
-
-/* ── Quick actions ── */
-const quickActions = [
-  { title: "Dados de Produção", desc: "Monitorizar produção diária", icon: Activity, path: "/producao" },
-  { title: "Compliance", desc: "Verificar conformidade", icon: ShieldCheck, path: "/risk" },
-  { title: "Gerar Relatório", desc: "Relatórios automáticos", icon: FileText, path: "/reports" },
-];
-
-/* ── Production trend data ── */
-const productionTrend = [
-  { month: "Jul", value: 1180000 },
-  { month: "Ago", value: 1210000 },
-  { month: "Set", value: 1195000 },
-  { month: "Out", value: 1250000 },
-  { month: "Nov", value: 1280000 },
-  { month: "Dez", value: 1304000 },
-];
-
-/* ── Compliance alerts ── */
-const complianceAlerts = [
-  { block: "Block 15", type: "warning", message: "Relatório ambiental pendente", date: "2024-12-28" },
-  { block: "Block 17", type: "success", message: "Auditoria Q4 aprovada", date: "2024-12-25" },
-  { block: "Block 0", type: "info", message: "Inspeção de segurança agendada", date: "2025-01-05" },
-  { block: "Block 31", type: "warning", message: "Licença de operação expira em 30 dias", date: "2024-12-30" },
-  { block: "Block 14", type: "success", message: "Compliance fiscal atualizado", date: "2024-12-22" },
-];
-
-/* ── Basin production data ── */
-const basinData = [
-  { name: "Bacia do Congo", value: 890 },
-  { name: "Bacia do Kwanza", value: 320 },
-  { name: "Bacia do Namibe", value: 94 },
-];
-
-/* ── Operator production data ── */
-const operatorData = useMemoOperatorData();
-
-function useMemoOperatorData() {
-  const opMap = new Map<string, number>();
-  oilBlocks.forEach(b => {
-    opMap.set(b.operator, (opMap.get(b.operator) || 0) + b.dailyProduction);
-  });
-  return Array.from(opMap.entries())
-    .map(([name, value]) => ({ name, value: Math.round(value / 1000) }))
-    .sort((a, b) => b.value - a.value)
-    .slice(0, 8);
-}
-
-const tooltipStyle = {
-  background: "hsl(var(--card))",
-  border: "1px solid hsl(var(--border))",
-  borderRadius: 8,
-  fontSize: 12,
-  color: "hsl(var(--foreground))",
-};
+const panels = ["Overview", "Blocos & Concessões", "Exploração & Sísmica", "Risk & Performance", "Strategic Forecast"];
 
 const Index = () => {
-  const today = new Date().toLocaleDateString("pt-AO", { year: "numeric", month: "long", day: "numeric" });
+  const { theme, toggleTheme } = useTheme();
+  const [activePanel, setActivePanel] = useState(0);
+  const [slideDirection, setSlideDirection] = useState<"left" | "right">("right");
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [selectedBlock, setSelectedBlock] = useState<OilBlock | null>(null);
+  const [filteredIds, setFilteredIds] = useState<string[]>(oilBlocks.map(b => b.id));
+  const [hoveredBlockId, setHoveredBlockId] = useState<string | null>(null);
+  const [isPresentation, setIsPresentation] = useState(false);
+
+  const filteredBlocks = useMemo(() =>
+    oilBlocks.filter(b => filteredIds.includes(b.id)),
+    [filteredIds]
+  );
+
+  const handleFilterChange = useCallback((filters: FilterState) => {
+    const filtered = applyFilters(filters);
+    setFilteredIds(filtered.map(b => b.id));
+  }, []);
+
+  const switchPanel = useCallback((newPanel: number) => {
+    if (newPanel === activePanel || isTransitioning) return;
+    setSlideDirection(newPanel > activePanel ? "right" : "left");
+    setIsTransitioning(true);
+    setTimeout(() => {
+      setActivePanel(newPanel);
+      setTimeout(() => setIsTransitioning(false), 50);
+    }, 200);
+  }, [activePanel, isTransitioning]);
+
+  const nextPanel = () => switchPanel(Math.min(activePanel + 1, panels.length - 1));
+  const prevPanel = () => switchPanel(Math.max(activePanel - 1, 0));
+
+  // Keyboard nav for presentation
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "ArrowRight") nextPanel();
+      if (e.key === "ArrowLeft") prevPanel();
+      if (e.key === "Escape") setIsPresentation(false);
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, []);
+
+  // Touch swipe
+  useEffect(() => {
+    let startX = 0;
+    const onStart = (e: TouchEvent) => { startX = e.touches[0].clientX; };
+    const onEnd = (e: TouchEvent) => {
+      const diff = startX - e.changedTouches[0].clientX;
+      if (Math.abs(diff) > 60) {
+        if (diff > 0) nextPanel();
+        else prevPanel();
+      }
+    };
+    window.addEventListener("touchstart", onStart);
+    window.addEventListener("touchend", onEnd);
+    return () => { window.removeEventListener("touchstart", onStart); window.removeEventListener("touchend", onEnd); };
+  }, []);
 
   return (
-    <div className="p-4 md:p-6 lg:p-8 space-y-6 max-w-[1920px] mx-auto">
-      {/* Page header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground">
-            Dashboard Executivo
-          </h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            Visão geral do sector petrolífero angolano
-          </p>
+    <div className={`min-h-screen bg-background text-foreground ${isPresentation ? "fixed inset-0 z-[100]" : ""}`}>
+      {/* Header */}
+      <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-border/50">
+        <div className="flex items-center justify-between px-4 md:px-6 3xl:px-8 py-3 3xl:py-4">
+          <div className="flex items-center gap-3 3xl:gap-4">
+            <img
+              src={theme === "dark" ? anpgLogoWhite : anpgLogoColor}
+              alt="ANPG Logo"
+              className="h-8 md:h-10 3xl:h-12"
+            />
+            <div>
+            <h1 className="text-lg md:text-xl 2xl:text-2xl 3xl:text-3xl font-bold tracking-tight">
+                <span className="text-gradient">ANGOLA</span>
+                <span className="text-muted-foreground font-light ml-2">Oil Concessions</span>
+              </h1>
+              <p className="text-[10px] md:text-xs 2xl:text-sm 3xl:text-base text-muted-foreground">Executive Intelligence Dashboard • Q4 2024</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 3xl:gap-3">
+            <Link
+              to="/reports"
+              className="p-2 3xl:p-2.5 rounded-lg hover:bg-secondary transition-colors"
+              title="Relatórios"
+            >
+              <FileText className="w-4 h-4 3xl:w-5 3xl:h-5" />
+            </Link>
+            <button
+              onClick={toggleTheme}
+              className="p-2 3xl:p-2.5 rounded-lg hover:bg-secondary transition-colors"
+              title={theme === "dark" ? "Modo Claro" : "Modo Escuro"}
+            >
+              {theme === "dark" ? <Sun className="w-4 h-4 3xl:w-5 3xl:h-5" /> : <Moon className="w-4 h-4 3xl:w-5 3xl:h-5" />}
+            </button>
+            <button
+              onClick={() => setIsPresentation(!isPresentation)}
+              className="p-2 rounded-lg hover:bg-secondary transition-colors"
+              title={isPresentation ? "Exit Presentation" : "Presentation Mode"}
+            >
+              {isPresentation ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
+            </button>
+          </div>
         </div>
-        <div className="flex items-center gap-3">
-          <Badge variant="outline" className="text-xs font-mono">
-            <Clock className="w-3 h-3 mr-1" />
-            {today}
-          </Badge>
-          <Button variant="anpg" size="sm" className="gap-2">
-            <Plus className="w-4 h-4" />
-            Nova Concessão
-          </Button>
-        </div>
-      </div>
 
-      {/* Quick action cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        {quickActions.map((action) => (
-          <Link key={action.title} to={action.path}>
-            <Card className="group hover:border-anpg/30 hover:shadow-md transition-all cursor-pointer">
-              <CardContent className="p-4 flex items-center gap-4">
-                <div className="w-12 h-12 rounded-full bg-anpg/10 flex items-center justify-center shrink-0 group-hover:bg-anpg/20 transition-colors">
-                  <action.icon className="w-5 h-5 text-anpg" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="text-sm font-semibold text-foreground">{action.title}</h3>
-                  <p className="text-xs text-muted-foreground">{action.desc}</p>
-                </div>
-                <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-anpg group-hover:translate-x-1 transition-all" />
-              </CardContent>
-            </Card>
-          </Link>
-        ))}
-      </div>
+        <Separator className="mx-4 md:mx-6" />
 
-      {/* KPI Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
-        {kpis.map((kpi, i) => (
-          <Card
-            key={kpi.label}
-            className="overflow-hidden animate-counter-up"
-            style={{ animationDelay: `${i * 80}ms` }}
-          >
-            <CardContent className="p-4">
-              <div className="flex items-center gap-1.5 mb-2">
-                <kpi.icon className={`w-4 h-4 ${kpi.color}`} />
-                <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium">
-                  {kpi.label}
-                </span>
-              </div>
-              <AnimatedCounter
-                target={kpi.value}
-                prefix={kpi.prefix || ""}
-                suffix={kpi.suffix}
-                className={`text-2xl md:text-3xl font-bold font-mono ${kpi.color}`}
+        {/* Panel Tabs */}
+        <div className="flex items-center px-4 md:px-6 3xl:px-8 py-2 3xl:py-3 gap-1 3xl:gap-2">
+          {panels.map((panel, i) => (
+            <button
+              key={panel}
+              onClick={() => switchPanel(i)}
+              className={`relative px-3 py-1.5 2xl:px-4 2xl:py-2 3xl:px-5 3xl:py-2.5 rounded-lg text-xs 2xl:text-sm 3xl:text-base font-medium transition-all group ${
+                activePanel === i
+                  ? "text-primary"
+                  : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
+              }`}
+            >
+              {panel}
+              <span
+                className={`absolute bottom-0 left-1/2 -translate-x-1/2 h-0.5 rounded-full bg-primary transition-all duration-300 ${
+                  activePanel === i ? "w-3/4 opacity-100" : "w-0 opacity-0 group-hover:w-1/2 group-hover:opacity-50"
+                }`}
               />
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+            </button>
+          ))}
+        </div>
+      </header>
 
-      {/* Charts + Alerts Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-4">
-        {/* Production Trend */}
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-semibold flex items-center gap-2">
-              <TrendingUp className="w-4 h-4 text-primary" />
-              Tendência de Produção (6 meses)
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="pb-4">
-            <ResponsiveContainer width="100%" height={280}>
-              <AreaChart data={productionTrend}>
-                <defs>
-                  <linearGradient id="prodGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3} />
-                    <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                <XAxis dataKey="month" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }} stroke="hsl(var(--border))" />
-                <YAxis tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }} width={50} tickFormatter={(v) => `${(v / 1000000).toFixed(1)}M`} stroke="hsl(var(--border))" />
-                <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => [`${(v / 1000).toFixed(0)}k BOPD`, "Produção"]} />
-                <Area type="monotone" dataKey="value" stroke="hsl(var(--primary))" fill="url(#prodGrad)" strokeWidth={2} />
-              </AreaChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-
-        {/* Compliance Alerts */}
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-semibold flex items-center gap-2">
-              <ShieldCheck className="w-4 h-4 text-anpg" />
-              Alertas de Compliance
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-2">
-            {complianceAlerts.map((alert, i) => (
-              <div key={i} className="flex items-start gap-3 p-2.5 rounded-lg bg-muted/50 hover:bg-muted transition-colors">
-                {alert.type === "warning" && <AlertTriangle className="w-4 h-4 text-warning shrink-0 mt-0.5" />}
-                {alert.type === "success" && <CheckCircle2 className="w-4 h-4 text-success shrink-0 mt-0.5" />}
-                {alert.type === "info" && <Activity className="w-4 h-4 text-primary shrink-0 mt-0.5" />}
-                <div className="flex-1 min-w-0">
-                  <p className="text-xs font-medium text-foreground">{alert.message}</p>
-                  <p className="text-[10px] text-muted-foreground mt-0.5">
-                    {alert.block} • {new Date(alert.date).toLocaleDateString("pt-AO")}
-                  </p>
-                </div>
+      {/* Content */}
+      <main className="overflow-hidden">
+        <div
+          className={`transition-all duration-300 ease-out ${
+            isTransitioning
+              ? slideDirection === "right"
+                ? "opacity-0 translate-x-8"
+                : "opacity-0 -translate-x-8"
+              : "opacity-100 translate-x-0"
+          }`}
+        >
+          {activePanel === 0 && (
+            <div className="flex flex-col md:flex-row" style={{ height: "calc(100vh - 110px)" }}>
+              <div className="flex-1 md:flex-[6] min-w-0 relative h-[45vh] md:h-full">
+                <ConcessionMap
+                  blocks={filteredBlocks}
+                  selectedBlockId={selectedBlock?.id ?? null}
+                  hoveredBlockId={hoveredBlockId}
+                  onBlockClick={() => {}}
+                  onBlockHover={setHoveredBlockId}
+                />
               </div>
+              <div className="flex-1 md:flex-[4] md:min-w-[340px] md:max-w-[520px] h-[55vh] md:h-full overflow-hidden">
+                <OverviewSidebar
+                  filteredIds={filteredIds}
+                  selectedBlock={selectedBlock}
+                  onBlockSelect={setSelectedBlock}
+                  onFilterChange={handleFilterChange}
+                />
+              </div>
+            </div>
+          )}
+
+          <div className="p-4 md:p-6 2xl:p-8 3xl:p-10 max-w-[1920px] 3xl:max-w-[2400px] mx-auto">
+          {activePanel === 1 && <BlocksPanel />}
+          {activePanel === 2 && <ExplorationPanel />}
+          {activePanel === 3 && <RiskPerformance />}
+          {activePanel === 4 && <StrategicForecast />}
+          </div>
+        </div>
+      </main>
+
+      {/* Presentation nav arrows */}
+      {isPresentation && (
+        <>
+          <button onClick={prevPanel} disabled={activePanel === 0} className="fixed left-4 top-1/2 -translate-y-1/2 z-[101] p-3 glass-card rounded-full disabled:opacity-20">
+            <ChevronLeft className="w-6 h-6" />
+          </button>
+          <button onClick={nextPanel} disabled={activePanel === panels.length - 1} className="fixed right-4 top-1/2 -translate-y-1/2 z-[101] p-3 glass-card rounded-full disabled:opacity-20">
+            <ChevronRight className="w-6 h-6" />
+          </button>
+          <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-[101] flex items-center gap-3 glass-card px-4 py-2.5 rounded-full">
+            <span className="text-[10px] text-muted-foreground font-mono mr-1">
+              {activePanel + 1}/{panels.length}
+            </span>
+            {panels.map((label, i) => (
+              <button
+                key={i}
+                onClick={() => switchPanel(i)}
+                title={label}
+                className="relative group"
+              >
+                <span
+                  className={`block rounded-full transition-all duration-300 ${
+                    i === activePanel
+                      ? "w-8 h-2 bg-primary"
+                      : i < activePanel
+                        ? "w-2 h-2 bg-primary/50"
+                        : "w-2 h-2 bg-muted-foreground/30"
+                  }`}
+                />
+                <span className="absolute -top-7 left-1/2 -translate-x-1/2 text-[9px] text-foreground bg-popover px-2 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none border border-border">
+                  {label}
+                </span>
+              </button>
             ))}
-          </CardContent>
-        </Card>
-      </div>
+          </div>
+        </>
+      )}
 
-      {/* Bottom charts row */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {/* Production by Basin */}
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-semibold flex items-center gap-2">
-              <BarChart3 className="w-4 h-4 text-primary" />
-              Produção por Bacia (kBOPD)
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={220}>
-              <BarChart data={basinData} layout="vertical">
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                <XAxis type="number" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }} stroke="hsl(var(--border))" />
-                <YAxis dataKey="name" type="category" width={130} tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }} stroke="hsl(var(--border))" />
-                <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => [`${v}k BOPD`, "Produção"]} />
-                <Bar dataKey="value" fill="hsl(var(--primary))" radius={[0, 4, 4, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-
-        {/* Production by Operator */}
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-semibold flex items-center gap-2">
-              <Users className="w-4 h-4 text-anpg" />
-              Produção por Operador (kBOPD)
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={220}>
-              <BarChart data={operatorData} layout="vertical">
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                <XAxis type="number" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }} stroke="hsl(var(--border))" />
-                <YAxis dataKey="name" type="category" width={130} tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }} stroke="hsl(var(--border))" />
-                <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => [`${v}k BOPD`, "Produção"]} />
-                <Bar dataKey="value" fill="hsl(var(--anpg))" radius={[0, 4, 4, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-      </div>
+      {/* Block Detail Slide-in */}
+      {selectedBlock && <BlockDetail block={selectedBlock} onClose={() => setSelectedBlock(null)} />}
     </div>
   );
 };

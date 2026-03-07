@@ -73,16 +73,6 @@ export default {
           DEFAULT: "hsl(var(--danger))",
           foreground: "hsl(var(--danger-foreground))",
         },
-        anpg: {
-          DEFAULT: "hsl(var(--anpg))",
-          foreground: "hsl(var(--anpg-foreground))",
-          dark: "hsl(var(--anpg-dark))",
-          glow: "hsl(var(--anpg-glow))",
-        },
-        navbar: {
-          DEFAULT: "hsl(var(--navbar))",
-          foreground: "hsl(var(--navbar-foreground))",
-        },
         exploration: "hsl(var(--exploration))",
         development: "hsl(var(--development))",
         production: "hsl(var(--production))",
