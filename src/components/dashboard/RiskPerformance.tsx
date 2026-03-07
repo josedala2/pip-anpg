@@ -133,8 +133,9 @@ export const RiskPerformance = () => {
                     <UITooltip key={block.id}>
                       <TooltipTrigger asChild>
                         <div
-                          className="p-1.5 rounded text-center transition-all hover:scale-105 cursor-default"
+                          className="p-1.5 rounded text-center transition-all hover:scale-105 hover:ring-1 hover:ring-primary/40 cursor-pointer"
                           style={{ backgroundColor: `hsl(${block.riskScore <= 3 ? 'var(--success)' : block.riskScore <= 6 ? 'var(--warning)' : 'var(--danger)'} / 0.15)` }}
+                          onClick={() => navigate(`/block/${block.id}`)}
                         >
                           <div className="text-[9px] font-medium truncate leading-tight">{block.name}</div>
                           <div className="text-sm font-mono font-bold leading-tight">{block.riskScore}</div>
