@@ -1,11 +1,12 @@
-import { oilBlocks, type OilBlock } from "@/data/angolaBlocks";
+import { oilBlocks, type OilBlock, type BlockPhase } from "@/data/angolaBlocks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useState, useMemo } from "react";
-import { ArrowUpDown, AlertTriangle, TrendingDown, Target, DollarSign } from "lucide-react";
+import { ArrowUpDown, AlertTriangle, TrendingDown, Target, DollarSign, Filter } from "lucide-react";
 
 type SortKey = "dailyProduction" | "riskScore" | "executionRate" | "accumulatedInvestment";
 
@@ -16,11 +17,25 @@ const alertBadge = (block: OilBlock) => {
   return <Badge variant="secondary" className="text-[10px]">Monitor</Badge>;
 };
 
+const ALL = "__all__";
+
 export const RiskPerformance = () => {
   const [sortKey, setSortKey] = useState<SortKey>("riskScore");
   const [sortAsc, setSortAsc] = useState(false);
+  const [operatorFilter, setOperatorFilter] = useState(ALL);
+  const [phaseFilter, setPhaseFilter] = useState(ALL);
 
-  const sorted = [...oilBlocks].sort((a, b) => {
+  const operators = useMemo(() => [...new Set(oilBlocks.map(b => b.operator))].sort(), []);
+  const phases = useMemo(() => [...new Set(oilBlocks.map(b => b.phase))].sort(), []);
+
+  const filtered = useMemo(() => {
+    return oilBlocks.filter(b =>
+      (operatorFilter === ALL || b.operator === operatorFilter) &&
+      (phaseFilter === ALL || b.phase === phaseFilter)
+    );
+  }, [operatorFilter, phaseFilter]);
+
+  const sorted = [...filtered].sort((a, b) => {
     const diff = (a[sortKey] as number) - (b[sortKey] as number);
     return sortAsc ? diff : -diff;
   });
@@ -30,15 +45,12 @@ export const RiskPerformance = () => {
     else { setSortKey(key); setSortAsc(false); }
   };
 
-  const riskColor = (score: number) =>
-    score <= 3 ? "bg-success" : score <= 6 ? "bg-warning" : "bg-danger";
-
   const stats = useMemo(() => ({
-    critical: oilBlocks.filter(b => b.riskScore >= 8).length,
-    belowPlan: oilBlocks.filter(b => b.executionRate < 70).length,
-    onTarget: oilBlocks.filter(b => b.executionRate >= 90).length,
-    totalInvestment: oilBlocks.reduce((s, b) => s + b.accumulatedInvestment, 0),
-  }), []);
+    critical: filtered.filter(b => b.riskScore >= 8).length,
+    belowPlan: filtered.filter(b => b.executionRate < 70).length,
+    onTarget: filtered.filter(b => b.executionRate >= 90).length,
+    totalInvestment: filtered.reduce((s, b) => s + b.accumulatedInvestment, 0),
+  }), [filtered]);
 
   const summaryCards = [
     { label: "Blocos Críticos", value: stats.critical, icon: AlertTriangle, color: "text-danger" },
@@ -47,21 +59,58 @@ export const RiskPerformance = () => {
     { label: "Investimento Total", value: `$${stats.totalInvestment.toLocaleString()}M`, icon: DollarSign, color: "text-primary" },
   ];
 
+  const activeFilters = (operatorFilter !== ALL ? 1 : 0) + (phaseFilter !== ALL ? 1 : 0);
+
   return (
     <div className="space-y-4 2xl:space-y-6">
-      {/* KPI Summary Bar */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 2xl:gap-3">
-        {summaryCards.map(card => (
-          <Card key={card.label} className="glass-card">
-            <CardContent className="p-3 2xl:p-4 flex items-center gap-2">
-              <card.icon className={`w-4 h-4 2xl:w-5 2xl:h-5 ${card.color} shrink-0`} />
-              <div className="min-w-0">
-                <div className="text-[10px] 2xl:text-xs text-muted-foreground uppercase tracking-wider">{card.label}</div>
-                <div className={`text-lg 2xl:text-xl font-bold font-mono ${card.color}`}>{card.value}</div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+      {/* Filter Bar + KPI Summary */}
+      <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+        <div className="flex items-center gap-2 shrink-0">
+          <Filter className="w-4 h-4 text-muted-foreground" />
+          <Select value={operatorFilter} onValueChange={setOperatorFilter}>
+            <SelectTrigger className="h-8 w-[160px] text-xs bg-card border-border">
+              <SelectValue placeholder="Operador" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value={ALL}>Todos Operadores</SelectItem>
+              {operators.map(op => (
+                <SelectItem key={op} value={op}>{op}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Select value={phaseFilter} onValueChange={setPhaseFilter}>
+            <SelectTrigger className="h-8 w-[140px] text-xs bg-card border-border">
+              <SelectValue placeholder="Fase" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value={ALL}>Todas Fases</SelectItem>
+              {phases.map(p => (
+                <SelectItem key={p} value={p}>{p}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          {activeFilters > 0 && (
+            <button
+              onClick={() => { setOperatorFilter(ALL); setPhaseFilter(ALL); }}
+              className="text-[10px] text-muted-foreground hover:text-foreground underline"
+            >
+              Limpar ({activeFilters})
+            </button>
+          )}
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 2xl:gap-3 flex-1">
+          {summaryCards.map(card => (
+            <Card key={card.label} className="glass-card">
+              <CardContent className="p-3 2xl:p-4 flex items-center gap-2">
+                <card.icon className={`w-4 h-4 2xl:w-5 2xl:h-5 ${card.color} shrink-0`} />
+                <div className="min-w-0">
+                  <div className="text-[10px] 2xl:text-xs text-muted-foreground uppercase tracking-wider">{card.label}</div>
+                  <div className={`text-lg 2xl:text-xl font-bold font-mono ${card.color}`}>{card.value}</div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       </div>
 
       {/* Side-by-side: Heatmap + Table */}
@@ -74,7 +123,7 @@ export const RiskPerformance = () => {
           <CardContent className="p-3 2xl:p-4 pt-1">
             <TooltipProvider delayDuration={200}>
               <div className="grid grid-cols-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-1.5 2xl:gap-2">
-                {oilBlocks.map(block => (
+                {filtered.map(block => (
                   <Tooltip key={block.id}>
                     <TooltipTrigger asChild>
                       <div
@@ -92,6 +141,11 @@ export const RiskPerformance = () => {
                     </TooltipContent>
                   </Tooltip>
                 ))}
+                {filtered.length === 0 && (
+                  <div className="col-span-full text-center text-sm text-muted-foreground py-8">
+                    Nenhum bloco encontrado
+                  </div>
+                )}
               </div>
             </TooltipProvider>
           </CardContent>
@@ -100,7 +154,7 @@ export const RiskPerformance = () => {
         {/* Ranking Table */}
         <Card className="glass-card">
           <CardHeader className="p-3 2xl:p-4 pb-1">
-            <CardTitle className="text-sm 2xl:text-base">Block Rankings</CardTitle>
+            <CardTitle className="text-sm 2xl:text-base">Block Rankings <span className="text-muted-foreground font-normal">({filtered.length})</span></CardTitle>
           </CardHeader>
           <CardContent className="p-0">
             <ScrollArea className="h-[420px] 2xl:h-[500px]">
@@ -126,6 +180,11 @@ export const RiskPerformance = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
+                  {sorted.length === 0 && (
+                    <TableRow>
+                      <TableCell colSpan={7} className="text-center text-muted-foreground py-8">Nenhum bloco encontrado</TableCell>
+                    </TableRow>
+                  )}
                   {sorted.map(block => (
                     <TableRow key={block.id} className="border-border text-xs 2xl:text-sm">
                       <TableCell className="font-semibold py-2">{block.name}</TableCell>
