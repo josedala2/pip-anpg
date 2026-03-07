@@ -73,6 +73,7 @@ export const FacilitiesSchematic = () => {
   const lastTouchDist = useRef<number | null>(null);
   const lastTouchCenter = useRef<{ x: number; y: number } | null>(null);
   const isPinching = useRef(false);
+  const lastTapTime = useRef(0);
 
   const clampZoom = (z: number) => Math.min(Math.max(z, 1), 4);
 
@@ -86,6 +87,21 @@ export const FacilitiesSchematic = () => {
         x: (e.touches[0].clientX + e.touches[1].clientX) / 2,
         y: (e.touches[0].clientY + e.touches[1].clientY) / 2,
       };
+    } else if (e.touches.length === 1) {
+      const now = Date.now();
+      if (now - lastTapTime.current < 300) {
+        // Double-tap detected: toggle between 1x and 2.5x
+        setZoom(prev => {
+          if (prev > 1) {
+            setPan({ x: 0, y: 0 });
+            return 1;
+          }
+          return 2.5;
+        });
+        lastTapTime.current = 0;
+      } else {
+        lastTapTime.current = now;
+      }
     }
   }, []);
 
