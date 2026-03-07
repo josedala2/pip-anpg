@@ -110,6 +110,21 @@ export const FacilitiesSchematic = () => {
               style={{ minHeight: 320 }}
             >
               <defs>
+                {/* Arrowhead markers per link type */}
+                {Object.entries(linkStyles).map(([type, style]) => (
+                  <marker
+                    key={`arrow-${type}`}
+                    id={`arrow-${type}`}
+                    viewBox="0 0 10 6"
+                    refX="9"
+                    refY="3"
+                    markerWidth="8"
+                    markerHeight="6"
+                    orient="auto-start-reverse"
+                  >
+                    <path d="M 0 0 L 10 3 L 0 6 Z" fill={style.stroke} />
+                  </marker>
+                ))}
                 {links.map((link, i) => {
                   const from = nodeMap[link.from];
                   const to = nodeMap[link.to];
