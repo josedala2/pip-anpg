@@ -7,6 +7,7 @@ import { Tooltip as UITooltip, TooltipContent, TooltipProvider, TooltipTrigger }
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ChartWrapper } from "./ChartWrapper";
 import { useState, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import { ArrowUpDown, AlertTriangle, TrendingDown, Target, DollarSign, Filter, X } from "lucide-react";
 import {
   ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip,
