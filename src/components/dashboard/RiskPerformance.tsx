@@ -144,7 +144,7 @@ export const RiskPerformance = () => {
                           <div className="text-base 2xl:text-lg font-mono font-bold">{block.riskScore}</div>
                         </div>
                       </TooltipTrigger>
-                      <TooltipContent side="right" className="text-xs">
+                      <TooltipContent side="top" className="text-xs z-50">
                         <p className="font-semibold">{block.name}</p>
                         <p className="text-muted-foreground">{block.operator}</p>
                         <p>Risk: {block.riskScore} · Exec: {block.executionRate}%</p>
