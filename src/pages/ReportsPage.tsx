@@ -129,7 +129,7 @@ const ReportsPage = () => {
                 <span className="text-primary">Relatórios</span>
                 <span className="text-foreground font-light ml-2">Automáticos</span>
               </h1>
-              <p className="text-xs md:text-xs text-muted-foreground font-medium">Geração de relatórios personalizados</p>
+              <p className="text-xs md:text-xs text-muted-foreground font-medium">ANPG Concession Vision • Relatórios personalizados</p>
             </div>
           </div>
 
