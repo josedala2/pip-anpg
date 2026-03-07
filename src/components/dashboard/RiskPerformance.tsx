@@ -7,7 +7,7 @@ import { Tooltip as UITooltip, TooltipContent, TooltipProvider, TooltipTrigger }
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ChartWrapper } from "./ChartWrapper";
 import { useState, useMemo } from "react";
-import { ArrowUpDown, AlertTriangle, TrendingDown, Target, DollarSign, Filter } from "lucide-react";
+import { ArrowUpDown, AlertTriangle, TrendingDown, Target, DollarSign, Filter, X } from "lucide-react";
 import {
   ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip,
   ResponsiveContainer, ReferenceLine, Cell, ZAxis, Label,
@@ -16,10 +16,10 @@ import {
 type SortKey = "dailyProduction" | "riskScore" | "executionRate" | "accumulatedInvestment";
 
 const alertBadge = (block: OilBlock) => {
-  if (block.riskScore >= 8) return <Badge className="bg-danger text-danger-foreground text-[10px]">Critical</Badge>;
-  if (block.executionRate < 70) return <Badge className="bg-warning text-warning-foreground text-[10px]">Below Plan</Badge>;
-  if (block.executionRate >= 90) return <Badge className="bg-success text-success-foreground text-[10px]">On Target</Badge>;
-  return <Badge variant="secondary" className="text-[10px]">Monitor</Badge>;
+  if (block.riskScore >= 8) return <Badge className="bg-danger text-danger-foreground text-[9px] px-1.5 py-0">Critical</Badge>;
+  if (block.executionRate < 70) return <Badge className="bg-warning text-warning-foreground text-[9px] px-1.5 py-0">Below Plan</Badge>;
+  if (block.executionRate >= 90) return <Badge className="bg-success text-success-foreground text-[9px] px-1.5 py-0">On Target</Badge>;
+  return <Badge variant="secondary" className="text-[9px] px-1.5 py-0">Monitor</Badge>;
 };
 
 const ALL = "__all__";
@@ -57,152 +57,154 @@ export const RiskPerformance = () => {
     totalInvestment: filtered.reduce((s, b) => s + b.accumulatedInvestment, 0),
   }), [filtered]);
 
-  const summaryCards = [
-    { label: "Blocos Críticos", value: stats.critical, icon: AlertTriangle, color: "text-danger" },
-    { label: "Below Plan", value: stats.belowPlan, icon: TrendingDown, color: "text-warning" },
-    { label: "On Target", value: stats.onTarget, icon: Target, color: "text-success" },
-    { label: "Investimento Total", value: `$${stats.totalInvestment.toLocaleString()}M`, icon: DollarSign, color: "text-primary" },
-  ];
-
   const activeFilters = (operatorFilter !== ALL ? 1 : 0) + (phaseFilter !== ALL ? 1 : 0);
 
+  const summaryCards = [
+    { label: "Críticos", value: stats.critical, icon: AlertTriangle, color: "text-danger", bg: "bg-danger/10" },
+    { label: "Below Plan", value: stats.belowPlan, icon: TrendingDown, color: "text-warning", bg: "bg-warning/10" },
+    { label: "On Target", value: stats.onTarget, icon: Target, color: "text-success", bg: "bg-success/10" },
+    { label: "Investimento", value: `$${stats.totalInvestment.toLocaleString()}M`, icon: DollarSign, color: "text-primary", bg: "bg-primary/10" },
+  ];
+
   return (
-    <div className="space-y-4 2xl:space-y-6">
-      {/* Filter Bar + KPI Summary */}
-      <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-        <div className="flex items-center gap-2 shrink-0">
-          <Filter className="w-4 h-4 text-muted-foreground" />
+    <div className="space-y-3">
+      {/* Compact top bar: filters + KPIs inline */}
+      <div className="flex flex-wrap items-center gap-2">
+        {/* Filters */}
+        <div className="flex items-center gap-1.5">
+          <Filter className="w-3.5 h-3.5 text-muted-foreground" />
           <Select value={operatorFilter} onValueChange={setOperatorFilter}>
-            <SelectTrigger className="h-8 w-[160px] text-xs bg-card border-border">
+            <SelectTrigger className="h-7 w-[140px] text-[11px] bg-card border-border/60 rounded-md">
               <SelectValue placeholder="Operador" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value={ALL}>Todos Operadores</SelectItem>
-              {operators.map(op => (
-                <SelectItem key={op} value={op}>{op}</SelectItem>
-              ))}
+              {operators.map(op => <SelectItem key={op} value={op}>{op}</SelectItem>)}
             </SelectContent>
           </Select>
           <Select value={phaseFilter} onValueChange={setPhaseFilter}>
-            <SelectTrigger className="h-8 w-[140px] text-xs bg-card border-border">
+            <SelectTrigger className="h-7 w-[120px] text-[11px] bg-card border-border/60 rounded-md">
               <SelectValue placeholder="Fase" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value={ALL}>Todas Fases</SelectItem>
-              {phases.map(p => (
-                <SelectItem key={p} value={p}>{p}</SelectItem>
-              ))}
+              {phases.map(p => <SelectItem key={p} value={p}>{p}</SelectItem>)}
             </SelectContent>
           </Select>
           {activeFilters > 0 && (
             <button
               onClick={() => { setOperatorFilter(ALL); setPhaseFilter(ALL); }}
-              className="text-[10px] text-muted-foreground hover:text-foreground underline"
+              className="h-7 px-2 rounded-md bg-muted/50 text-[10px] text-muted-foreground hover:text-foreground hover:bg-muted flex items-center gap-1 transition-colors"
             >
-              Limpar ({activeFilters})
+              <X className="w-3 h-3" /> Limpar
             </button>
           )}
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 2xl:gap-3 flex-1">
+
+        {/* Separator */}
+        <div className="hidden sm:block w-px h-5 bg-border/60" />
+
+        {/* Inline KPIs */}
+        <div className="flex items-center gap-1.5 flex-wrap">
           {summaryCards.map(card => (
-            <Card key={card.label} className="glass-card">
-              <CardContent className="p-3 2xl:p-4 flex items-center gap-2">
-                <card.icon className={`w-4 h-4 2xl:w-5 2xl:h-5 ${card.color} shrink-0`} />
-                <div className="min-w-0">
-                  <div className="text-[10px] 2xl:text-xs text-muted-foreground uppercase tracking-wider">{card.label}</div>
-                  <div className={`text-lg 2xl:text-xl font-bold font-mono ${card.color}`}>{card.value}</div>
-                </div>
-              </CardContent>
-            </Card>
+            <div key={card.label} className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md ${card.bg} border border-transparent`}>
+              <card.icon className={`w-3.5 h-3.5 ${card.color}`} />
+              <span className="text-[10px] text-muted-foreground">{card.label}</span>
+              <span className={`text-xs font-bold font-mono ${card.color}`}>{card.value}</span>
+            </div>
           ))}
         </div>
       </div>
 
-      {/* Side-by-side: Heatmap + Table */}
-      <div className="grid grid-cols-1 md:grid-cols-[2fr_3fr] gap-4 2xl:gap-6">
-        {/* Risk Heatmap */}
+      {/* Main grid: 3-column layout — Heatmap | Table | Scatter */}
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.5fr_1.2fr] gap-3">
+        {/* Risk Heatmap — compact */}
         <Card className="glass-card">
-          <CardHeader className="p-3 2xl:p-4 pb-1">
-            <CardTitle className="text-sm 2xl:text-base">Risk Heatmap</CardTitle>
+          <CardHeader className="px-3 py-2 pb-1">
+            <CardTitle className="text-xs font-semibold tracking-wide uppercase text-muted-foreground">Risk Heatmap</CardTitle>
           </CardHeader>
-          <CardContent className="p-3 2xl:p-4 pt-1">
-            <TooltipProvider delayDuration={200}>
-              <div className="grid grid-cols-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-1.5 2xl:gap-2">
-                {filtered.map(block => (
-                  <UITooltip key={block.id}>
-                    <TooltipTrigger asChild>
-                      <div
-                        className="p-1.5 2xl:p-2.5 rounded-md text-center transition-all hover:scale-105 cursor-default"
-                        style={{ backgroundColor: `hsl(${block.riskScore <= 3 ? 'var(--success)' : block.riskScore <= 6 ? 'var(--warning)' : 'var(--danger)'} / 0.15)` }}
-                      >
-                        <div className="text-[10px] 2xl:text-xs font-bold truncate">{block.name}</div>
-                        <div className="text-base 2xl:text-lg font-mono font-bold">{block.riskScore}</div>
-                      </div>
-                    </TooltipTrigger>
-                    <TooltipContent side="top" className="text-xs">
-                      <p className="font-semibold">{block.name}</p>
-                      <p className="text-muted-foreground">{block.operator}</p>
-                      <p>Risk: {block.riskScore} · Exec: {block.executionRate}%</p>
-                    </TooltipContent>
-                  </UITooltip>
-                ))}
-                {filtered.length === 0 && (
-                  <div className="col-span-full text-center text-sm text-muted-foreground py-8">
-                    Nenhum bloco encontrado
-                  </div>
-                )}
-              </div>
+          <CardContent className="px-3 pb-3 pt-1">
+            <TooltipProvider delayDuration={150}>
+              <ScrollArea className="h-[360px]">
+                <div className="grid grid-cols-3 xl:grid-cols-4 gap-1">
+                  {filtered.map(block => (
+                    <UITooltip key={block.id}>
+                      <TooltipTrigger asChild>
+                        <div
+                          className="p-1.5 rounded text-center transition-all hover:scale-105 cursor-default"
+                          style={{ backgroundColor: `hsl(${block.riskScore <= 3 ? 'var(--success)' : block.riskScore <= 6 ? 'var(--warning)' : 'var(--danger)'} / 0.15)` }}
+                        >
+                          <div className="text-[9px] font-medium truncate leading-tight">{block.name}</div>
+                          <div className="text-sm font-mono font-bold leading-tight">{block.riskScore}</div>
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent side="right" className="text-xs">
+                        <p className="font-semibold">{block.name}</p>
+                        <p className="text-muted-foreground">{block.operator}</p>
+                        <p>Risk: {block.riskScore} · Exec: {block.executionRate}%</p>
+                      </TooltipContent>
+                    </UITooltip>
+                  ))}
+                  {filtered.length === 0 && (
+                    <div className="col-span-full text-center text-xs text-muted-foreground py-6">
+                      Nenhum bloco encontrado
+                    </div>
+                  )}
+                </div>
+              </ScrollArea>
             </TooltipProvider>
           </CardContent>
         </Card>
 
-        {/* Ranking Table */}
+        {/* Rankings Table — compact rows */}
         <Card className="glass-card">
-          <CardHeader className="p-3 2xl:p-4 pb-1">
-            <CardTitle className="text-sm 2xl:text-base">Block Rankings <span className="text-muted-foreground font-normal">({filtered.length})</span></CardTitle>
+          <CardHeader className="px-3 py-2 pb-1">
+            <CardTitle className="text-xs font-semibold tracking-wide uppercase text-muted-foreground">
+              Rankings <span className="text-muted-foreground/60 font-normal normal-case">({filtered.length})</span>
+            </CardTitle>
           </CardHeader>
           <CardContent className="p-0">
-            <ScrollArea className="h-[420px] 2xl:h-[500px]">
+            <ScrollArea className="h-[360px]">
               <Table>
                 <TableHeader className="sticky top-0 bg-card z-10">
                   <TableRow className="border-border hover:bg-transparent">
-                    <TableHead className="text-xs 2xl:text-sm">Block</TableHead>
-                    <TableHead className="text-xs 2xl:text-sm">Operator</TableHead>
+                    <TableHead className="text-[10px] h-7 px-2">Block</TableHead>
+                    <TableHead className="text-[10px] h-7 px-2 hidden xl:table-cell">Operador</TableHead>
                     {([
                       ["dailyProduction", "Prod."],
                       ["riskScore", "Risk"],
                       ["executionRate", "Exec%"],
-                      ["accumulatedInvestment", "Invest."],
+                      ["accumulatedInvestment", "Inv."],
                     ] as [SortKey, string][]).map(([key, label]) => (
-                      <TableHead key={key} className="text-xs 2xl:text-sm cursor-pointer hover:text-foreground" onClick={() => toggleSort(key)}>
-                        <div className="flex items-center gap-1">
+                      <TableHead key={key} className="text-[10px] h-7 px-2 cursor-pointer hover:text-foreground" onClick={() => toggleSort(key)}>
+                        <div className="flex items-center gap-0.5">
                           {label}
-                          <ArrowUpDown className="w-3 h-3" />
+                          <ArrowUpDown className="w-2.5 h-2.5" />
                         </div>
                       </TableHead>
                     ))}
-                    <TableHead className="text-xs 2xl:text-sm">Status</TableHead>
+                    <TableHead className="text-[10px] h-7 px-2">Status</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {sorted.length === 0 && (
                     <TableRow>
-                      <TableCell colSpan={7} className="text-center text-muted-foreground py-8">Nenhum bloco encontrado</TableCell>
+                      <TableCell colSpan={7} className="text-center text-muted-foreground py-6 text-xs">Nenhum bloco</TableCell>
                     </TableRow>
                   )}
                   {sorted.map(block => (
-                    <TableRow key={block.id} className="border-border text-xs 2xl:text-sm">
-                      <TableCell className="font-semibold py-2">{block.name}</TableCell>
-                      <TableCell className="text-muted-foreground py-2">{block.operator}</TableCell>
-                      <TableCell className="font-mono py-2">{block.dailyProduction.toLocaleString()}</TableCell>
-                      <TableCell className="py-2">
+                    <TableRow key={block.id} className="border-border/50 text-[11px]">
+                      <TableCell className="font-semibold py-1 px-2">{block.name}</TableCell>
+                      <TableCell className="text-muted-foreground py-1 px-2 hidden xl:table-cell">{block.operator}</TableCell>
+                      <TableCell className="font-mono py-1 px-2">{block.dailyProduction.toLocaleString()}</TableCell>
+                      <TableCell className="py-1 px-2">
                         <span className={`font-mono font-bold ${block.riskScore <= 3 ? 'text-success' : block.riskScore <= 6 ? 'text-warning' : 'text-danger'}`}>
                           {block.riskScore}
                         </span>
                       </TableCell>
-                      <TableCell className="font-mono py-2">{block.executionRate}%</TableCell>
-                      <TableCell className="font-mono py-2">${block.accumulatedInvestment}M</TableCell>
-                      <TableCell className="py-2">{alertBadge(block)}</TableCell>
+                      <TableCell className="font-mono py-1 px-2">{block.executionRate}%</TableCell>
+                      <TableCell className="font-mono py-1 px-2">${block.accumulatedInvestment}M</TableCell>
+                      <TableCell className="py-1 px-2">{alertBadge(block)}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -210,65 +212,62 @@ export const RiskPerformance = () => {
             </ScrollArea>
           </CardContent>
         </Card>
-      </div>
 
-      {/* Scatter Chart: Risk vs Execution */}
-      <ChartWrapper title="Risk Score vs Execution Rate" height={350}>
-        <ResponsiveContainer width="100%" height={350}>
-          <ScatterChart margin={{ top: 10, right: 20, bottom: 20, left: 10 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.5} />
-            <XAxis
-              type="number"
-              dataKey="riskScore"
-              name="Risk Score"
-              domain={[0, 10]}
-              tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
-            >
-              <Label value="Risk Score" position="bottom" offset={5} style={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} />
-            </XAxis>
-            <YAxis
-              type="number"
-              dataKey="executionRate"
-              name="Execution Rate"
-              domain={[0, 100]}
-              tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
-              unit="%"
-            >
-              <Label value="Execution %" angle={-90} position="insideLeft" offset={10} style={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} />
-            </YAxis>
-            <ZAxis type="number" dataKey="dailyProduction" range={[40, 400]} name="Production" />
-            <ReferenceLine y={70} stroke="hsl(var(--warning))" strokeDasharray="4 4" label={{ value: "Min Exec 70%", position: "right", fontSize: 10, fill: "hsl(var(--warning))" }} />
-            <ReferenceLine x={8} stroke="hsl(var(--danger))" strokeDasharray="4 4" label={{ value: "Critical", position: "top", fontSize: 10, fill: "hsl(var(--danger))" }} />
-            <RechartsTooltip
-              cursor={{ strokeDasharray: "3 3" }}
-              content={({ payload }) => {
-                if (!payload?.length) return null;
-                const d = payload[0].payload as OilBlock;
-                return (
-                  <div className="rounded-md border bg-popover p-2 text-xs shadow-md">
-                    <p className="font-semibold">{d.name}</p>
-                    <p className="text-muted-foreground">{d.operator} · {d.phase}</p>
-                    <p>Risk: <span className="font-mono font-bold">{d.riskScore}</span></p>
-                    <p>Execution: <span className="font-mono font-bold">{d.executionRate}%</span></p>
-                    <p>Production: <span className="font-mono">{d.dailyProduction.toLocaleString()} BOPD</span></p>
-                  </div>
-                );
-              }}
-            />
-            <Scatter data={filtered}>
-              {filtered.map((block) => (
-                <Cell
-                  key={block.id}
-                  fill={`hsl(${block.riskScore <= 3 ? 'var(--success)' : block.riskScore <= 6 ? 'var(--warning)' : 'var(--danger)'})`}
-                  fillOpacity={0.75}
-                  stroke={`hsl(${block.riskScore <= 3 ? 'var(--success)' : block.riskScore <= 6 ? 'var(--warning)' : 'var(--danger)'})`}
-                  strokeWidth={1}
+        {/* Scatter Chart — side by side instead of below */}
+        <Card className="glass-card">
+          <CardHeader className="px-3 py-2 pb-1">
+            <CardTitle className="text-xs font-semibold tracking-wide uppercase text-muted-foreground">Risk vs Execução</CardTitle>
+          </CardHeader>
+          <CardContent className="px-2 pb-2 pt-0">
+            <ResponsiveContainer width="100%" height={360}>
+              <ScatterChart margin={{ top: 8, right: 8, bottom: 20, left: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.4} />
+                <XAxis
+                  type="number" dataKey="riskScore" name="Risk" domain={[0, 10]}
+                  tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }}
+                >
+                  <Label value="Risco" position="bottom" offset={3} style={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} />
+                </XAxis>
+                <YAxis
+                  type="number" dataKey="executionRate" name="Execução" domain={[0, 100]}
+                  tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} unit="%" width={35}
+                >
+                  <Label value="Exec %" angle={-90} position="insideLeft" offset={8} style={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} />
+                </YAxis>
+                <ZAxis type="number" dataKey="dailyProduction" range={[30, 300]} name="Produção" />
+                <ReferenceLine y={70} stroke="hsl(var(--warning))" strokeDasharray="4 4" strokeOpacity={0.7} />
+                <ReferenceLine x={8} stroke="hsl(var(--danger))" strokeDasharray="4 4" strokeOpacity={0.7} />
+                <RechartsTooltip
+                  cursor={{ strokeDasharray: "3 3" }}
+                  content={({ payload }) => {
+                    if (!payload?.length) return null;
+                    const d = payload[0].payload as OilBlock;
+                    return (
+                      <div className="rounded-md border bg-popover p-2 text-[11px] shadow-md">
+                        <p className="font-semibold">{d.name}</p>
+                        <p className="text-muted-foreground">{d.operator}</p>
+                        <p>Risk: <span className="font-mono font-bold">{d.riskScore}</span> · Exec: <span className="font-mono font-bold">{d.executionRate}%</span></p>
+                        <p className="text-muted-foreground">{d.dailyProduction.toLocaleString()} BOPD</p>
+                      </div>
+                    );
+                  }}
                 />
-              ))}
-            </Scatter>
-          </ScatterChart>
-        </ResponsiveContainer>
-      </ChartWrapper>
+                <Scatter data={filtered}>
+                  {filtered.map((block) => (
+                    <Cell
+                      key={block.id}
+                      fill={`hsl(${block.riskScore <= 3 ? 'var(--success)' : block.riskScore <= 6 ? 'var(--warning)' : 'var(--danger)'})`}
+                      fillOpacity={0.7}
+                      stroke={`hsl(${block.riskScore <= 3 ? 'var(--success)' : block.riskScore <= 6 ? 'var(--warning)' : 'var(--danger)'})`}
+                      strokeWidth={1}
+                    />
+                  ))}
+                </Scatter>
+              </ScatterChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 };
