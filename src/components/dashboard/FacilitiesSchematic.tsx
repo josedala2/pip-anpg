@@ -168,14 +168,33 @@ export const FacilitiesSchematic = () => {
         <div className="flex flex-col lg:flex-row gap-3 sm:gap-4">
           <TooltipProvider delayDuration={100}>
             <div className="w-full lg:flex-1 overflow-hidden rounded-lg border border-border/30 bg-muted/20 relative touch-none">
-              {zoom > 1 && (
+              <div className="absolute top-1.5 right-1.5 z-10 flex items-center gap-0.5">
                 <button
-                  onClick={resetView}
-                  className="absolute top-1.5 right-1.5 z-10 text-[9px] sm:text-[10px] bg-background/80 backdrop-blur border border-border/50 rounded px-1.5 py-0.5 text-muted-foreground hover:text-foreground transition-colors"
+                  onClick={() => setZoom(prev => clampZoom(prev - 0.3))}
+                  disabled={zoom <= 1}
+                  className="text-xs sm:text-sm bg-background/80 backdrop-blur border border-border/50 rounded w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center text-muted-foreground hover:text-foreground disabled:opacity-30 transition-colors"
                 >
-                  Reset
+                  −
                 </button>
-              )}
+                <span className="text-[9px] sm:text-[10px] bg-background/80 backdrop-blur border border-border/50 rounded px-1.5 py-0.5 font-mono text-muted-foreground min-w-[2.5rem] text-center">
+                  {Math.round(zoom * 100)}%
+                </span>
+                <button
+                  onClick={() => setZoom(prev => clampZoom(prev + 0.3))}
+                  disabled={zoom >= 4}
+                  className="text-xs sm:text-sm bg-background/80 backdrop-blur border border-border/50 rounded w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center text-muted-foreground hover:text-foreground disabled:opacity-30 transition-colors"
+                >
+                  +
+                </button>
+                {zoom > 1 && (
+                  <button
+                    onClick={resetView}
+                    className="text-[9px] sm:text-[10px] bg-background/80 backdrop-blur border border-border/50 rounded px-1.5 py-0.5 text-muted-foreground hover:text-foreground transition-colors ml-0.5"
+                  >
+                    Reset
+                  </button>
+                )}
+              </div>
               <svg
                 ref={svgRef}
                 viewBox="0 0 900 480"
