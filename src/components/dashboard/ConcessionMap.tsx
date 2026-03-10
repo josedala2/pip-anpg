@@ -626,23 +626,28 @@ export const ConcessionMap = ({
                 </svg>
                 <span className="text-[10px] text-foreground/80 font-medium">Concessão Existente</span>
               </div>
+              {/* Land border legend */}
+              <div className="flex items-center gap-2 mt-2 pt-1.5 border-t border-border/20">
+                <div className="w-5 h-0 border-t-2" style={{ borderColor: "#fbbf24" }} />
+                <span className="text-[9px] text-foreground/60">Fronteira Terrestre</span>
+              </div>
               {/* Maritime limits legend */}
               {showLimits && (
-                <div className="mt-2 pt-1.5 border-t border-border/20 space-y-1">
+                <div className="mt-1.5 space-y-1">
                   <div className="flex items-center gap-2">
-                    <div className="w-5 h-0 border-t border-dashed border-gray-400" />
+                    <svg width="20" height="4"><line x1="0" y1="2" x2="20" y2="2" stroke="#e2e8f0" strokeWidth="1.2" strokeDasharray="4 4" /></svg>
                     <span className="text-[9px] text-foreground/60">12 M.N.</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="w-5 h-0 border-t border-dashed border-gray-500" />
+                    <svg width="20" height="4"><line x1="0" y1="2" x2="20" y2="2" stroke="#cbd5e1" strokeWidth="1.5" strokeDasharray="6 4" /></svg>
                     <span className="text-[9px] text-foreground/60">24 M.N.</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="w-5 h-0 border-t-2 border-dashed border-red-400" />
-                    <span className="text-[9px] text-foreground/60">ZEE (200 M.N.)</span>
+                    <svg width="20" height="4"><line x1="0" y1="2" x2="20" y2="2" stroke="#ef4444" strokeWidth="2.5" strokeDasharray="10 5" /></svg>
+                    <span className="text-[9px] text-foreground/60 font-semibold">ZEE (200 M.N.)</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="w-5 h-0 border-t border-dashed border-slate-500" />
+                    <svg width="20" height="4"><line x1="0" y1="2" x2="20" y2="2" stroke="#a78bfa" strokeWidth="1.8" strokeDasharray="12 6" /></svg>
                     <span className="text-[9px] text-foreground/60">350 M.N.</span>
                   </div>
                 </div>
