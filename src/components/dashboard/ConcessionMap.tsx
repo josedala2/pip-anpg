@@ -591,22 +591,32 @@ export const ConcessionMap = ({
             {[8, 9, 10, 11, 12, 13, 14, 15].map(lon => {
               const p1 = geoToSvg(lon, LAT_MIN);
               const p2 = geoToSvg(lon, LAT_MAX);
-              return <line key={`lon-${lon}`} x1={p1.x} y1={p1.y} x2={p2.x} y2={p2.y} stroke={showSatellite ? "white" : "hsl(var(--border))"} strokeWidth="0.15" opacity="0.25" />;
+              return <line key={`lon-${lon}`} x1={p1.x} y1={p1.y} x2={p2.x} y2={p2.y} stroke={showSatellite ? "rgba(255,255,255,0.3)" : "hsl(var(--border))"} strokeWidth="0.2" opacity="0.35" />;
             })}
             {[-5, -6, -7, -8, -9, -10, -11, -12, -13, -14, -15, -16, -17].map(lat => {
               const p1 = geoToSvg(LON_MIN, lat);
               const p2 = geoToSvg(LON_MAX, lat);
-              return <line key={`lat-${lat}`} x1={p1.x} y1={p1.y} x2={p2.x} y2={p2.y} stroke={showSatellite ? "white" : "hsl(var(--border))"} strokeWidth="0.15" opacity="0.25" />;
+              return <line key={`lat-${lat}`} x1={p1.x} y1={p1.y} x2={p2.x} y2={p2.y} stroke={showSatellite ? "rgba(255,255,255,0.3)" : "hsl(var(--border))"} strokeWidth="0.2" opacity="0.35" />;
             })}
 
-            {/* Coordinate labels */}
-            {[8, 10, 12, 14].map(lon => {
+            {/* Coordinate labels — with background pill */}
+            {[8, 9, 10, 11, 12, 13, 14].map(lon => {
               const p = geoToSvg(lon, LAT_MIN);
-              return <text key={`lon-l-${lon}`} x={p.x} y={-1} fill={showSatellite ? "white" : "hsl(var(--muted-foreground))"} fontSize="3" textAnchor="middle" opacity="0.5">{lon}°E</text>;
+              return (
+                <g key={`lon-l-${lon}`}>
+                  <rect x={p.x - 5} y={-4.5} width={10} height={4.5} rx="1" fill={showSatellite ? "rgba(0,0,0,0.45)" : "hsl(var(--background))"} opacity="0.6" />
+                  <text x={p.x} y={-1} fill={showSatellite ? "white" : "hsl(var(--foreground))"} fontSize="3.2" textAnchor="middle" opacity="0.75" fontWeight="500">{lon}°E</text>
+                </g>
+              );
             })}
-            {[-5, -7.5, -10, -12.5, -15, -17].map(lat => {
+            {[-5, -7, -9, -11, -13, -15, -17].map(lat => {
               const p = geoToSvg(LON_MAX, lat);
-              return <text key={`lat-l-${lat}`} x={p.x + 8} y={p.y + 1} fill={showSatellite ? "white" : "hsl(var(--muted-foreground))"} fontSize="3" opacity="0.5">{Math.abs(lat)}°S</text>;
+              return (
+                <g key={`lat-l-${lat}`}>
+                  <rect x={p.x + 2} y={p.y - 2.5} width={14} height={4.5} rx="1" fill={showSatellite ? "rgba(0,0,0,0.45)" : "hsl(var(--background))"} opacity="0.6" />
+                  <text x={p.x + 9} y={p.y + 1} fill={showSatellite ? "white" : "hsl(var(--foreground))"} fontSize="3.2" opacity="0.75" textAnchor="middle" fontWeight="500">{Math.abs(lat)}°S</text>
+                </g>
+              );
             })}
           </>
         )}
@@ -617,8 +627,10 @@ export const ConcessionMap = ({
           const p2 = geoToSvg(12, -17);
           return (
             <g>
-              <line x1={p1.x} y1={p1.y} x2={p2.x} y2={p2.y} stroke="hsl(var(--foreground))" strokeWidth="0.5" opacity="0.4" />
-              <text x={(p1.x + p2.x) / 2} y={p1.y + 5} fill="hsl(var(--muted-foreground))" fontSize="3" textAnchor="middle" opacity="0.4">~220 km</text>
+              <line x1={p1.x} y1={p1.y} x2={p2.x} y2={p2.y} stroke="hsl(var(--foreground))" strokeWidth="0.7" opacity="0.5" />
+              <line x1={p1.x} y1={p1.y - 1.5} x2={p1.x} y2={p1.y + 1.5} stroke="hsl(var(--foreground))" strokeWidth="0.5" opacity="0.5" />
+              <line x1={p2.x} y1={p2.y - 1.5} x2={p2.x} y2={p2.y + 1.5} stroke="hsl(var(--foreground))" strokeWidth="0.5" opacity="0.5" />
+              <text x={(p1.x + p2.x) / 2} y={p1.y + 5} fill="hsl(var(--foreground))" fontSize="3.2" textAnchor="middle" opacity="0.55" fontWeight="500">~220 km</text>
             </g>
           );
         })()}
