@@ -69,21 +69,24 @@ type SortKey = "name" | "dailyProduction" | "pct" | "operator" | "basin";
 
 const operators = [...new Set(oilBlocks.filter(b => b.dailyProduction > 0).map(b => b.operator))].sort();
 const basins = [...new Set(oilBlocks.filter(b => b.dailyProduction > 0).map(b => b.basin))].sort();
+const producingBlockNames = oilBlocks.filter(b => b.dailyProduction > 0).sort((a, b) => a.name.localeCompare(b.name));
 
 export const ProductionPanel = () => {
   const [sortKey, setSortKey] = useState<SortKey>("dailyProduction");
   const [sortAsc, setSortAsc] = useState(false);
   const [filterOperator, setFilterOperator] = useState("all");
   const [filterBasin, setFilterBasin] = useState("all");
+  const [filterBlock, setFilterBlock] = useState("all");
 
   const filteredBlocks = useMemo(() =>
     oilBlocks.filter(b => {
       if (b.dailyProduction <= 0) return false;
       if (filterOperator !== "all" && b.operator !== filterOperator) return false;
       if (filterBasin !== "all" && b.basin !== filterBasin) return false;
+      if (filterBlock !== "all" && b.id !== filterBlock) return false;
       return true;
     }),
-    [filterOperator, filterBasin]
+    [filterOperator, filterBasin, filterBlock]
   );
 
   const totalProduction = useMemo(() => filteredBlocks.reduce((s, b) => s + b.dailyProduction, 0), [filteredBlocks]);
@@ -115,7 +118,7 @@ export const ProductionPanel = () => {
     [producingBlocks]
   );
 
-  const isFiltered = filterOperator !== "all" || filterBasin !== "all";
+  const isFiltered = filterOperator !== "all" || filterBasin !== "all" || filterBlock !== "all";
   const prevYearTotal = 1080000;
   const yoyChange = ((nationalTotal - prevYearTotal) / prevYearTotal) * 100;
   const target2026 = 1100000;
@@ -152,9 +155,18 @@ export const ProductionPanel = () => {
             {basins.map(b => <SelectItem key={b} value={b}>{b}</SelectItem>)}
           </SelectContent>
         </Select>
+        <Select value={filterBlock} onValueChange={setFilterBlock}>
+          <SelectTrigger className="w-40 md:w-48 h-8 text-xs glass-card border-border/50">
+            <SelectValue placeholder="Bloco" />
+          </SelectTrigger>
+          <SelectContent className="bg-card border-border">
+            <SelectItem value="all">Todos Blocos</SelectItem>
+            {producingBlockNames.map(b => <SelectItem key={b.id} value={b.id}>{b.name}</SelectItem>)}
+          </SelectContent>
+        </Select>
         {isFiltered && (
           <button
-            onClick={() => { setFilterOperator("all"); setFilterBasin("all"); }}
+            onClick={() => { setFilterOperator("all"); setFilterBasin("all"); setFilterBlock("all"); }}
             className="text-[10px] text-primary hover:underline"
           >
             Limpar filtros
@@ -301,7 +313,7 @@ export const ProductionPanel = () => {
       </ChartWrapper>
 
       {/* Field-level breakdown */}
-      <FieldProductionBreakdown filterOperator={filterOperator} filterBasin={filterBasin} />
+      <FieldProductionBreakdown filterOperator={filterOperator} filterBasin={filterBasin} filterBlock={filterBlock} />
 
       {/* Production Table */}
       <ChartWrapper title="Produção por Bloco — Dados Actuais">

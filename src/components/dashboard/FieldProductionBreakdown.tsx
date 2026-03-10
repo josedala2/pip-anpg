@@ -62,9 +62,10 @@ const CustomTreemapContent = ({ x, y, width, height, name, blockName, fill }: Tr
 interface FieldProductionBreakdownProps {
   filterOperator?: string;
   filterBasin?: string;
+  filterBlock?: string;
 }
 
-export const FieldProductionBreakdown = ({ filterOperator = "all", filterBasin = "all" }: FieldProductionBreakdownProps) => {
+export const FieldProductionBreakdown = ({ filterOperator = "all", filterBasin = "all", filterBlock = "all" }: FieldProductionBreakdownProps) => {
   const [expandedBlocks, setExpandedBlocks] = useState<Set<string>>(new Set());
   const totalProduction = useMemo(() => getTotalProduction(), []);
 
@@ -74,6 +75,7 @@ export const FieldProductionBreakdown = ({ filterOperator = "all", filterBasin =
         if (b.dailyProduction <= 0 || !b.fields || b.fields.length === 0) return false;
         if (filterOperator !== "all" && b.operator !== filterOperator) return false;
         if (filterBasin !== "all" && b.basin !== filterBasin) return false;
+        if (filterBlock !== "all" && b.id !== filterBlock) return false;
         return true;
       })
       .map(b => {
@@ -83,7 +85,7 @@ export const FieldProductionBreakdown = ({ filterOperator = "all", filterBasin =
       })
       .filter(b => b.producingFields.length > 0)
       .sort((a, b) => b.dailyProduction - a.dailyProduction),
-    [filterOperator, filterBasin]
+    [filterOperator, filterBasin, filterBlock]
   );
 
   const treemapData = useMemo(() =>
