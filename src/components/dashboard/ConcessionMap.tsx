@@ -391,20 +391,25 @@ export const ConcessionMap = ({
         {/* Maritime limits */}
         {showLimits && (
           <>
-            <path d={toSvgPath(limit350M)} fill="none" stroke="hsl(var(--muted-foreground))" strokeWidth="0.3" strokeDasharray="6 3" opacity="0.25" />
-            <path d={toSvgPath(limit200M)} fill="none" stroke="hsl(var(--muted-foreground))" strokeWidth="0.4" strokeDasharray="4 2" opacity="0.3" />
-            <path d={toSvgPath(limit24M)} fill="none" stroke="hsl(var(--muted-foreground))" strokeWidth="0.3" strokeDasharray="2 2" opacity="0.35" />
-            <path d={toSvgPath(limit12M)} fill="none" stroke="hsl(var(--muted-foreground))" strokeWidth="0.3" opacity="0.35" />
-            {/* Limit labels */}
+            <path d={toSvgPath(limit350M)} fill="none" stroke={showSatellite ? "rgba(255,255,255,0.35)" : "hsl(var(--muted-foreground))"} strokeWidth="0.5" strokeDasharray="6 3" opacity="0.5" />
+            <path d={toSvgPath(limit200M)} fill="none" stroke={showSatellite ? "rgba(255,255,255,0.45)" : "hsl(var(--primary))"} strokeWidth="0.6" strokeDasharray="4 2" opacity="0.45" />
+            <path d={toSvgPath(limit24M)} fill="none" stroke={showSatellite ? "rgba(255,255,255,0.4)" : "hsl(var(--muted-foreground))"} strokeWidth="0.45" strokeDasharray="2 2" opacity="0.5" />
+            <path d={toSvgPath(limit12M)} fill="none" stroke={showSatellite ? "rgba(255,255,255,0.4)" : "hsl(var(--muted-foreground))"} strokeWidth="0.4" opacity="0.5" />
+            {/* Limit labels with background for readability */}
             {([
-              { label: "350M", pts: limit350M, idx: 4 },
-              { label: "200M", pts: limit200M, idx: 6 },
-              { label: "24M", pts: limit24M, idx: 8 },
-              { label: "12M", pts: limit12M, idx: 8 },
+              { label: "350 M.N.", pts: limit350M, idx: 4 },
+              { label: "ZEE (200 M.N.)", pts: limit200M, idx: 6 },
+              { label: "24 M.N.", pts: limit24M, idx: 8 },
+              { label: "12 M.N.", pts: limit12M, idx: 8 },
             ] as const).map(({ label, pts, idx }) => {
               const p = geoToSvg(pts[idx][0], pts[idx][1]);
+              const textW = label.length * 1.8;
               return (
-                <text key={label} x={p.x} y={p.y - 2} fill="hsl(var(--muted-foreground))" fontSize="3" opacity="0.4" textAnchor="middle">{label}</text>
+                <g key={label}>
+                  <rect x={p.x - textW / 2 - 1} y={p.y - 6} width={textW + 2} height={5} rx="1"
+                    fill={showSatellite ? "rgba(0,0,0,0.5)" : "hsl(var(--background))"} opacity="0.7" />
+                  <text x={p.x} y={p.y - 2.5} fill={showSatellite ? "white" : "hsl(var(--foreground))"} fontSize="3.2" opacity="0.8" textAnchor="middle" fontWeight="500">{label}</text>
+                </g>
               );
             })}
           </>
