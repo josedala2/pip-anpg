@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { oilBlocks, getTotalProduction } from "@/data/angolaBlocks";
 import { AnimatedCounter } from "./AnimatedCounter";
 import { ChartWrapper } from "./ChartWrapper";
-import { Activity, TrendingUp, Target, ArrowUpRight, ArrowDownRight } from "lucide-react";
+import { Activity, TrendingUp, Target, ArrowUpRight, ArrowDownRight, Filter } from "lucide-react";
 import {
   PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend,
   BarChart, Bar, XAxis, YAxis, CartesianGrid,
@@ -11,6 +11,7 @@ import {
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { FieldProductionBreakdown } from "./FieldProductionBreakdown";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const COLORS = [
   "hsl(var(--primary))", "hsl(var(--success))", "hsl(var(--warning))",
@@ -66,15 +67,30 @@ const stackColors = [COLORS[0], COLORS[1], COLORS[2], COLORS[3], COLORS[4], COLO
 
 type SortKey = "name" | "dailyProduction" | "pct" | "operator" | "basin";
 
+const operators = [...new Set(oilBlocks.filter(b => b.dailyProduction > 0).map(b => b.operator))].sort();
+const basins = [...new Set(oilBlocks.filter(b => b.dailyProduction > 0).map(b => b.basin))].sort();
+
 export const ProductionPanel = () => {
   const [sortKey, setSortKey] = useState<SortKey>("dailyProduction");
   const [sortAsc, setSortAsc] = useState(false);
+  const [filterOperator, setFilterOperator] = useState("all");
+  const [filterBasin, setFilterBasin] = useState("all");
 
-  const totalProduction = useMemo(() => getTotalProduction(), []);
+  const filteredBlocks = useMemo(() =>
+    oilBlocks.filter(b => {
+      if (b.dailyProduction <= 0) return false;
+      if (filterOperator !== "all" && b.operator !== filterOperator) return false;
+      if (filterBasin !== "all" && b.basin !== filterBasin) return false;
+      return true;
+    }),
+    [filterOperator, filterBasin]
+  );
+
+  const totalProduction = useMemo(() => filteredBlocks.reduce((s, b) => s + b.dailyProduction, 0), [filteredBlocks]);
+  const nationalTotal = useMemo(() => getTotalProduction(), []);
 
   const producingBlocks = useMemo(() =>
-    oilBlocks
-      .filter(b => b.dailyProduction > 0)
+    filteredBlocks
       .map(b => ({
         ...b,
         pct: (b.dailyProduction / totalProduction) * 100,
@@ -83,7 +99,7 @@ export const ProductionPanel = () => {
         ? (a[sortKey] > b[sortKey] ? 1 : -1)
         : (a[sortKey] < b[sortKey] ? 1 : -1)
       ),
-    [totalProduction, sortKey, sortAsc]
+    [filteredBlocks, totalProduction, sortKey, sortAsc]
   );
 
   const pieData = useMemo(() =>
@@ -99,10 +115,11 @@ export const ProductionPanel = () => {
     [producingBlocks]
   );
 
+  const isFiltered = filterOperator !== "all" || filterBasin !== "all";
   const prevYearTotal = 1080000;
-  const yoyChange = ((totalProduction - prevYearTotal) / prevYearTotal) * 100;
+  const yoyChange = ((nationalTotal - prevYearTotal) / prevYearTotal) * 100;
   const target2026 = 1100000;
-  const targetCompliance = (totalProduction / target2026) * 100;
+  const targetCompliance = (nationalTotal / target2026) * 100;
 
   const handleSort = (key: SortKey) => {
     if (sortKey === key) setSortAsc(!sortAsc);
@@ -114,6 +131,42 @@ export const ProductionPanel = () => {
 
   return (
     <div className="space-y-6">
+      {/* Filters */}
+      <div className="flex flex-wrap items-center gap-2 md:gap-3">
+        <Filter className="w-4 h-4 text-muted-foreground" />
+        <Select value={filterOperator} onValueChange={setFilterOperator}>
+          <SelectTrigger className="w-40 md:w-48 h-8 text-xs glass-card border-border/50">
+            <SelectValue placeholder="Operador" />
+          </SelectTrigger>
+          <SelectContent className="bg-card border-border">
+            <SelectItem value="all">Todos Operadores</SelectItem>
+            {operators.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}
+          </SelectContent>
+        </Select>
+        <Select value={filterBasin} onValueChange={setFilterBasin}>
+          <SelectTrigger className="w-40 md:w-48 h-8 text-xs glass-card border-border/50">
+            <SelectValue placeholder="Bacia" />
+          </SelectTrigger>
+          <SelectContent className="bg-card border-border">
+            <SelectItem value="all">Todas Bacias</SelectItem>
+            {basins.map(b => <SelectItem key={b} value={b}>{b}</SelectItem>)}
+          </SelectContent>
+        </Select>
+        {isFiltered && (
+          <button
+            onClick={() => { setFilterOperator("all"); setFilterBasin("all"); }}
+            className="text-[10px] text-primary hover:underline"
+          >
+            Limpar filtros
+          </button>
+        )}
+        {isFiltered && (
+          <span className="text-[10px] text-muted-foreground ml-auto">
+            {filteredBlocks.length} blocos · {totalProduction.toLocaleString()} BOPD ({((totalProduction / nationalTotal) * 100).toFixed(1)}% do total)
+          </span>
+        )}
+      </div>
+
       {/* KPIs */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="accent-border-card">
@@ -248,7 +301,7 @@ export const ProductionPanel = () => {
       </ChartWrapper>
 
       {/* Field-level breakdown */}
-      <FieldProductionBreakdown />
+      <FieldProductionBreakdown filterOperator={filterOperator} filterBasin={filterBasin} />
 
       {/* Production Table */}
       <ChartWrapper title="Produção por Bloco — Dados Actuais">
