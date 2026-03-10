@@ -118,7 +118,7 @@ export const ProductionPanel = () => {
     [producingBlocks]
   );
 
-  const isFiltered = filterOperator !== "all" || filterBasin !== "all";
+  const isFiltered = filterOperator !== "all" || filterBasin !== "all" || filterBlock !== "all";
   const prevYearTotal = 1080000;
   const yoyChange = ((nationalTotal - prevYearTotal) / prevYearTotal) * 100;
   const target2026 = 1100000;
