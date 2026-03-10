@@ -796,17 +796,17 @@ export const ConcessionMap = ({
                 </div>
               )}
               {/* Concession hatch legend */}
-              <div className="flex items-center gap-1.5 mt-1.5 pt-1 border-t border-border/20">
-                <svg width="12" height="12" className="shrink-0">
+              <div className="flex items-center gap-2 mt-2 pt-1.5 border-t border-border/20">
+                <svg width="14" height="14" className="shrink-0">
                   <defs>
                     <pattern id="legend-hatch" patternUnits="userSpaceOnUse" width="3" height="3" patternTransform="rotate(45)">
                       <line x1="0" y1="0" x2="0" y2="3" stroke="currentColor" strokeWidth="0.6" opacity="0.5" />
                     </pattern>
                   </defs>
-                  <rect width="12" height="12" fill="hsl(var(--muted-foreground) / 0.15)" rx="1" />
-                  <rect width="12" height="12" fill="url(#legend-hatch)" rx="1" className="text-foreground" />
+                  <rect width="14" height="14" fill="hsl(var(--muted-foreground) / 0.15)" rx="1.5" stroke="hsl(var(--border))" strokeWidth="0.5" />
+                  <rect width="14" height="14" fill="url(#legend-hatch)" rx="1.5" className="text-foreground" />
                 </svg>
-                <span className="text-[9px] text-muted-foreground">Concessão Petrolífera Existente</span>
+                <span className="text-[10px] text-foreground/80 font-medium">Concessão Petrolífera Existente</span>
               </div>
             </div>
           </div>
