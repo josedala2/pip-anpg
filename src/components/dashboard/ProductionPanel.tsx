@@ -131,6 +131,42 @@ export const ProductionPanel = () => {
 
   return (
     <div className="space-y-6">
+      {/* Filters */}
+      <div className="flex flex-wrap items-center gap-2 md:gap-3">
+        <Filter className="w-4 h-4 text-muted-foreground" />
+        <Select value={filterOperator} onValueChange={setFilterOperator}>
+          <SelectTrigger className="w-40 md:w-48 h-8 text-xs glass-card border-border/50">
+            <SelectValue placeholder="Operador" />
+          </SelectTrigger>
+          <SelectContent className="bg-card border-border">
+            <SelectItem value="all">Todos Operadores</SelectItem>
+            {operators.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}
+          </SelectContent>
+        </Select>
+        <Select value={filterBasin} onValueChange={setFilterBasin}>
+          <SelectTrigger className="w-40 md:w-48 h-8 text-xs glass-card border-border/50">
+            <SelectValue placeholder="Bacia" />
+          </SelectTrigger>
+          <SelectContent className="bg-card border-border">
+            <SelectItem value="all">Todas Bacias</SelectItem>
+            {basins.map(b => <SelectItem key={b} value={b}>{b}</SelectItem>)}
+          </SelectContent>
+        </Select>
+        {isFiltered && (
+          <button
+            onClick={() => { setFilterOperator("all"); setFilterBasin("all"); }}
+            className="text-[10px] text-primary hover:underline"
+          >
+            Limpar filtros
+          </button>
+        )}
+        {isFiltered && (
+          <span className="text-[10px] text-muted-foreground ml-auto">
+            {filteredBlocks.length} blocos · {totalProduction.toLocaleString()} BOPD ({((totalProduction / nationalTotal) * 100).toFixed(1)}% do total)
+          </span>
+        )}
+      </div>
+
       {/* KPIs */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="accent-border-card">
