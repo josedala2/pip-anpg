@@ -263,3 +263,57 @@
   #report-content .bg-card { background: #f9f9f9 !important; }
   @page { margin: 1.5cm; }
 }
+
+/* ── Leaflet custom styles ── */
+.leaflet-block-marker {
+  background: transparent !important;
+  border: none !important;
+}
+
+.leaflet-city-label {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  color: white;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.8), 0 0 2px rgba(0,0,0,0.5);
+  font-family: 'Inter', sans-serif;
+}
+.leaflet-city-label::before {
+  display: none !important;
+}
+
+.leaflet-basin-label {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  color: rgba(255,255,255,0.5);
+  text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+  font-family: 'Inter', sans-serif;
+  letter-spacing: 2px;
+}
+.leaflet-basin-label::before {
+  display: none !important;
+}
+
+.leaflet-reserve-label {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  color: rgba(255,255,255,0.5);
+  font-family: 'Inter', sans-serif;
+}
+.leaflet-reserve-label::before {
+  display: none !important;
+}
+
+.leaflet-block-popup .leaflet-popup-content-wrapper {
+  border-radius: 10px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+}
+
+.leaflet-container {
+  font-family: 'Inter', sans-serif;
+}
