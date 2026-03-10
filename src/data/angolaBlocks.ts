@@ -313,10 +313,10 @@ export const oilBlocks: OilBlock[] = [
     ],
     mapPosition: { x: 18, y: 62 },
     productionHistory: [
-      { month: "Jan", value: 121000 }, { month: "Feb", value: 120500 }, { month: "Mar", value: 119800 },
-      { month: "Apr", value: 118500 }, { month: "May", value: 119000 }, { month: "Jun", value: 120200 },
-      { month: "Jul", value: 119500 }, { month: "Aug", value: 118800 }, { month: "Sep", value: 119100 },
-      { month: "Oct", value: 119500 }, { month: "Nov", value: 119200 }, { month: "Dec", value: 119285 },
+      { month: "Jan", value: 101000 }, { month: "Feb", value: 100500 }, { month: "Mar", value: 99800 },
+      { month: "Apr", value: 98500 }, { month: "May", value: 99000 }, { month: "Jun", value: 99200 },
+      { month: "Jul", value: 98500 }, { month: "Aug", value: 98800 }, { month: "Sep", value: 98100 },
+      { month: "Oct", value: 98500 }, { month: "Nov", value: 98200 }, { month: "Dec", value: 98280 },
     ],
     capexHistory: [
       { year: "2020", planned: 800, actual: 780 }, { year: "2021", planned: 850, actual: 830 },
