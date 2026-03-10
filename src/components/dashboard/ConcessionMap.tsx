@@ -353,8 +353,24 @@ export const ConcessionMap = ({
           <pattern id="reserve-hatch" patternUnits="userSpaceOnUse" width="4" height="4">
             <path d="M0,4 l4,-4" stroke="hsl(var(--muted-foreground))" strokeWidth="0.5" opacity="0.3" />
           </pattern>
+          <clipPath id="map-clip">
+            <rect x="-10" y="-5" width={VB_W + 20} height={VB_H + 10} />
+          </clipPath>
         </defs>
-        <rect x="-10" y="-5" width={VB_W + 20} height={VB_H + 10} fill="url(#ocean-grad)" />
+
+        {/* Background: satellite or gradient */}
+        {showSatellite ? (
+          <image
+            href={angolaSatellite}
+            x="-10" y="-5"
+            width={VB_W + 20} height={VB_H + 10}
+            preserveAspectRatio="xMidYMid slice"
+            opacity="0.85"
+            clipPath="url(#map-clip)"
+          />
+        ) : (
+          <rect x="-10" y="-5" width={VB_W + 20} height={VB_H + 10} fill="url(#ocean-grad)" />
+        )}
 
         {/* Maritime limits */}
         {showLimits && (
