@@ -90,8 +90,7 @@ export const ProductionPanel = () => {
   const nationalTotal = useMemo(() => getTotalProduction(), []);
 
   const producingBlocks = useMemo(() =>
-    oilBlocks
-      .filter(b => b.dailyProduction > 0)
+    filteredBlocks
       .map(b => ({
         ...b,
         pct: (b.dailyProduction / totalProduction) * 100,
@@ -100,7 +99,7 @@ export const ProductionPanel = () => {
         ? (a[sortKey] > b[sortKey] ? 1 : -1)
         : (a[sortKey] < b[sortKey] ? 1 : -1)
       ),
-    [totalProduction, sortKey, sortAsc]
+    [filteredBlocks, totalProduction, sortKey, sortAsc]
   );
 
   const pieData = useMemo(() =>
