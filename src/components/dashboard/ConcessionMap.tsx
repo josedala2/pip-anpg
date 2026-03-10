@@ -637,9 +637,9 @@ export const ConcessionMap = ({
 
         {/* North arrow */}
         <g transform={`translate(15, 15)`}>
-          <line x1="0" y1="8" x2="0" y2="0" stroke="hsl(var(--foreground))" strokeWidth="0.6" opacity="0.4" />
-          <polygon points="-2,3 0,0 2,3" fill="hsl(var(--foreground))" opacity="0.4" />
-          <text x="0" y="-2" fill="hsl(var(--foreground))" fontSize="4" fontWeight="700" textAnchor="middle" opacity="0.4">N</text>
+          <line x1="0" y1="8" x2="0" y2="0" stroke="hsl(var(--foreground))" strokeWidth="0.8" opacity="0.6" />
+          <polygon points="-2.5,3.5 0,-0.5 2.5,3.5" fill="hsl(var(--primary))" opacity="0.7" />
+          <text x="0" y="-3" fill="hsl(var(--foreground))" fontSize="4.5" fontWeight="800" textAnchor="middle" opacity="0.6">N</text>
         </g>
       </svg>
 
