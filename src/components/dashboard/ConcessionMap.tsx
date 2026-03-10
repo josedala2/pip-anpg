@@ -721,6 +721,7 @@ export const ConcessionMap = ({
               <div className="flex flex-col gap-1.5">
                 {([
                   { key: "blocks", label: "Blocos", icon: <Mountain className="w-3 h-3" />, checked: showBlocks, set: setShowBlocks },
+                  { key: "concessions", label: "Concessões Petrolíferas", icon: <Layers className="w-3 h-3" />, checked: showConcessions, set: setShowConcessions },
                   { key: "limits", label: "Limites Offshore", icon: <Waves className="w-3 h-3" />, checked: showLimits, set: setShowLimits },
                   { key: "cities", label: "Cidades", icon: <Map className="w-3 h-3" />, checked: showCities, set: setShowCities },
                   { key: "basins", label: "Bacias & Zonas", icon: <Mountain className="w-3 h-3" />, checked: showBasins, set: setShowBasins },
