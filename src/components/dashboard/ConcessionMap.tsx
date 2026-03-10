@@ -359,15 +359,8 @@ export const ConcessionMap = ({
       >
         <TileSwitch showSatellite={showSatellite} />
 
-        {/* Angola land borders */}
-        <Polyline
-          positions={angolaBorder}
-          pathOptions={{ color: "#fbbf24", weight: 2, opacity: 0.8, dashArray: undefined }}
-        />
-        <Polyline
-          positions={cabindaBorder}
-          pathOptions={{ color: "#fbbf24", weight: 2, opacity: 0.8, dashArray: undefined }}
-        />
+
+
 
         {/* Maritime limits — 12M, 24M, 200M (ZEE), 350M */}
         {showLimits && (
