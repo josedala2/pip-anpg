@@ -313,7 +313,7 @@ export const ProductionPanel = () => {
       </ChartWrapper>
 
       {/* Field-level breakdown */}
-      <FieldProductionBreakdown filterOperator={filterOperator} filterBasin={filterBasin} />
+      <FieldProductionBreakdown filterOperator={filterOperator} filterBasin={filterBasin} filterBlock={filterBlock} />
 
       {/* Production Table */}
       <ChartWrapper title="Produção por Bloco — Dados Actuais">
