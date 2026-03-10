@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { type OilBlock, type BlockPhase } from "@/data/angolaBlocks";
 
@@ -18,210 +18,284 @@ const phaseColorMap: Record<BlockPhase, string> = {
   Bidding: "hsl(var(--bidding))",
 };
 
-// ── Real geographic coordinates for Angola oil blocks ──
-// Based on ANPG concession map: lat ~4.5°S–17.5°S, lon ~8°E–24°E
-// SVG viewBox: 0 0 200 250
-// Projection: lon → x, lat → y (inverted, south = larger y)
+// ── Bidding year color scheme matching PDF ──
+type BiddingYear = 2019 | 2020 | 2021 | 2023 | 2025;
+const biddingYearColors: Record<BiddingYear, string> = {
+  2019: "#8fbc8f", // sage green (Licitação 2019)
+  2020: "#d2b48c", // tan/sandy (Licitação 2020)
+  2021: "#a9c8d8", // light steel blue (Licitação 2021)
+  2023: "#c9a9d8", // light purple (Licitação 2023)
+  2025: "#d8c9a9", // wheat (Licitação 2025)
+};
 
+// Bidding year mapping per block (from ANPG PDF table)
+const blockBiddingYear: Record<string, BiddingYear> = {
+  // Licitação 2019 — Benguela
+  "block-10": 2019, "block-41": 2019, "block-11": 2019, "block-12": 2019, "block-13": 2019,
+  // Licitação 2019 — Namibe
+  "block-27": 2019, "block-28": 2019, "block-29": 2019, "block-42": 2019, "block-43": 2019,
+  // Licitação 2019 — Baixo Congo onshore
+  "block-con1": 2019, "block-con5": 2019, "block-con6": 2019,
+  // Licitação 2020 — Kwanza onshore
+  "block-kon5": 2020, "block-kon6": 2020, "block-kon8": 2020, "block-kon9": 2020,
+  // Licitação 2021 — Baixo Congo deep
+  "block-14": 2021, "block-31": 2021, "block-32": 2021,
+  // Licitação 2021 — Kwanza
+  "block-33": 2021, "block-34": 2021,
+  // Licitação 2021 — BL7-9
+  "block-7": 2021, "block-8": 2021, "block-9": 2021,
+  // Licitação 2023 — Baixo Congo onshore
+  "block-con2": 2023, "block-con3": 2023, "block-con4": 2023, "block-con8": 2023,
+  // Licitação 2023 — Kwanza onshore
+  "block-kon1": 2023, "block-kon3": 2023, "block-kon4": 2023, "block-kon10": 2023,
+  "block-kon11": 2023, "block-kon14": 2023, "block-kon15": 2023,
+  // Licitação 2025
+  "block-22": 2025, "block-23": 2025, "block-25": 2025, "block-35": 2025, "block-36": 2025,
+  "block-37": 2025, "block-38": 2025, "block-24": 2025, "block-26": 2025, "block-39": 2025, "block-40": 2025,
+};
+
+// ── Projection: WGS84 → SVG  ──
+// Map covers 7°30'E–15°E, 4.5°S–17.5°S (matches PDF extent)
 const LON_MIN = 7.5;
-const LON_MAX = 24.5;
-const LAT_MIN = -4.0;  // northernmost (Cabinda)
-const LAT_MAX = -17.5; // southernmost (Namibe)
+const LON_MAX = 15.0;
+const LAT_MIN = -4.5;
+const LAT_MAX = -17.5;
+const VB_W = 300;
+const VB_H = 400;
 
 const geoToSvg = (lon: number, lat: number) => ({
-  x: ((lon - LON_MIN) / (LON_MAX - LON_MIN)) * 200,
-  y: ((lat - LAT_MIN) / (LAT_MAX - LAT_MIN)) * 250,
+  x: ((lon - LON_MIN) / (LON_MAX - LON_MIN)) * VB_W,
+  y: ((lat - LAT_MIN) / (LAT_MAX - LAT_MIN)) * VB_H,
 });
 
-// Real approximate positions for each block (lon, lat)
+// ── Corrected block positions matching ANPG PDF map ──
 const blockGeoPositions: Record<string, [number, number]> = {
   // Cabinda onshore
-  "cabinda-norte":  [12.25, -5.1],
-  "cabinda-centro": [12.30, -5.35],
-  "cabinda-sul":    [12.28, -5.55],
-  "fs-associacoes": [12.15, -5.2],
-  "fst-associacoes":[12.18, -5.4],
-  // Congo onshore (CON blocks)
-  "block-con1":     [13.2, -6.0],
-  "block-con2":     [13.5, -6.1],
-  "block-con3":     [13.8, -6.2],
-  "block-con4":     [13.3, -6.35],
-  "block-con5":     [13.6, -6.4],
-  "block-con6":     [13.9, -6.3],
-  "block-con8":     [14.1, -6.15],
-  // Kwanza onshore (KON blocks)
-  "block-kon1":     [14.5, -8.3],
-  "block-kon2":     [14.8, -8.5],
-  "block-kon3":     [15.1, -8.7],
-  "block-kon4":     [15.4, -8.9],
-  "block-kon5":     [15.2, -8.8],
-  "block-kon6":     [15.5, -9.0],
-  "block-kon7":     [15.8, -9.1],
-  "block-kon8":     [15.8, -9.2],
-  "block-kon9":     [16.1, -9.4],
-  "block-kon10":    [16.4, -9.6],
-  "block-kon11":    [16.0, -9.8],
-  "block-kon12":    [15.0, -9.5],
-  "block-kon13":    [15.3, -10.0],
-  "block-kon14":    [15.6, -10.2],
-  "block-kon15":    [15.3, -9.8],
-  "block-kon16":    [15.6, -10.0],
-  "block-kon17":    [15.9, -10.2],
-  "block-kon18":    [16.2, -10.4],
-  "block-kon19":    [15.4, -10.5],
-  "block-kon20":    [15.7, -10.7],
-  // Shallow water
-  "block-0":        [11.8, -5.8],
-  "block-1":        [12.0, -6.5],  // Block 1/14
-  "block-2-05":     [12.3, -7.0],
-  "block-3":        [12.5, -6.3],  // Block 3/05
-  "block-3-05a":    [12.7, -6.5],
-  "block-3-24":     [12.6, -6.8],
-  "block-3-15":     [12.4, -7.3],
-  "block-2-15":     [12.1, -7.5],
-  "block-4-05":     [13.0, -7.2],
-  "block-5-06":     [12.8, -8.2],
-  "block-6-24":     [12.6, -8.6],
+  "cabinda-norte":  [12.35, -5.15],
+  "cabinda-centro": [12.40, -5.40],
+  "cabinda-sul":    [12.30, -5.60],
+  "fs-associacoes": [12.20, -5.25],
+  "fst-associacoes":[12.25, -5.45],
+  // Congo onshore (CON blocks) — near Soyo
+  "block-con1":     [12.70, -5.90],
+  "block-con2":     [12.90, -6.00],
+  "block-con3":     [13.10, -6.05],
+  "block-con4":     [12.75, -6.15],
+  "block-con5":     [12.95, -6.15],
+  "block-con6":     [13.15, -6.20],
+  "block-con7":     [13.30, -6.10],
+  "block-con8":     [13.40, -6.25],
+  "block-con9":     [13.50, -6.30],
+  "block-con10":    [13.60, -7.20],
+  // Kwanza onshore (KON blocks) — grid near Luanda/Dondo
+  "block-kon1":     [13.50, -9.10],
+  "block-kon2":     [13.65, -9.10],
+  "block-kon3":     [13.80, -9.10],
+  "block-kon4":     [13.20, -9.35],
+  "block-kon5":     [13.40, -9.35],
+  "block-kon6":     [13.60, -9.35],
+  "block-kon7":     [13.80, -9.35],
+  "block-kon8":     [13.40, -9.60],
+  "block-kon9":     [13.60, -9.60],
+  "block-kon10":    [13.80, -9.60],
+  "block-kon11":    [13.30, -9.85],
+  "block-kon12":    [13.50, -9.85],
+  "block-kon13":    [13.70, -9.85],
+  "block-kon14":    [13.90, -9.85],
+  "block-kon15":    [13.20, -10.10],
+  "block-kon16":    [13.45, -10.10],
+  "block-kon17":    [13.70, -10.10],
+  "block-kon18":    [13.95, -10.10],
+  "block-kon19":    [13.45, -10.35],
+  "block-kon20":    [13.70, -10.35],
+  "block-kon21":    [14.00, -10.60],
+  "block-kon22":    [14.20, -10.60],
+  "block-kon23":    [14.40, -11.00],
+  // Shallow water — along coast
+  "block-0":        [11.50, -6.20],
+  "block-1":        [12.00, -6.30],
+  "block-2-05":     [12.20, -6.60],
+  "block-3":        [12.00, -7.00],
+  "block-3-05a":    [12.20, -7.20],
+  "block-3-24":     [12.00, -7.40],
+  "block-3-15":     [12.00, -7.70],
+  "block-2-15":     [11.80, -7.30],
+  "block-4-05":     [12.20, -7.50],
+  "block-5-06":     [12.10, -8.80],
+  "block-6-24":     [12.00, -9.40],
+  "block-7":        [12.10, -10.00],
+  "block-8":        [12.30, -10.80],
+  "block-9":        [12.50, -11.50],
+  "block-10":       [12.10, -12.50],
+  "block-11":       [12.00, -13.80],
+  "block-12":       [11.60, -15.80],
+  "block-13":       [11.40, -16.30],
   // Deep water
-  "block-14":       [11.2, -6.0],
-  "block-15":       [10.8, -6.5],
-  "block-15-06":    [11.0, -6.8],
-  "block-15-14":    [11.3, -6.3],
-  "block-16":       [10.5, -7.5],
-  "block-18":       [10.2, -7.0],
-  "block-20":       [10.8, -8.5],
-  "block-21":       [10.5, -9.0],
+  "block-14":       [11.00, -6.40],
+  "block-15":       [11.80, -6.30],
+  "block-15-06":    [11.20, -6.80],
+  "block-15-14":    [11.50, -6.50],
+  "block-16":       [10.80, -7.00],
+  "block-17":       [11.20, -7.50],
+  "block-18":       [10.80, -8.50],
+  "block-19":       [10.50, -9.40],
+  "block-20":       [11.00, -10.00],
+  "block-21":       [11.00, -10.80],
   // Ultra-deep water
-  "block-17":       [9.5, -6.8],
-  "block-31":       [9.0, -7.5],
-  "block-31-21":    [9.2, -8.0],
-  "block-32":       [9.5, -8.5],
-  "block-48":       [9.0, -13.5],
-  "block-44":       [8.8, -14.5],
-  "block-45":       [9.0, -15.0],
-  "block-46":       [8.5, -15.5],
-  "block-47":       [8.8, -16.0],
-  "block-49":       [8.2, -16.5],
-  "block-50":       [8.5, -17.0],
-  // Bidding blocks (22-30): Congo/Kwanza deep water
-  "block-22":       [10.0, -7.0],
-  "block-23":       [10.7, -7.4],
-  "block-24":       [10.0, -7.8],
-  "block-25":       [10.7, -8.2],
-  "block-26":       [10.0, -8.6],
-  "block-27":       [10.7, -9.0],
-  "block-28":       [10.0, -9.4],
-  "block-29":       [10.7, -9.8],
-  "block-30":       [10.0, -10.2],
-  // Bidding blocks (33-43): Namibe/Benguela
-  "block-33":       [9.5, -11.0],
-  "block-34":       [10.3, -11.5],
-  "block-35":       [9.5, -12.0],
-  "block-36":       [10.3, -12.5],
-  "block-37":       [9.5, -13.0],
-  "block-38":       [10.3, -13.5],
-  "block-39":       [9.5, -14.0],
-  "block-40":       [10.3, -14.5],
-  "block-41":       [9.5, -15.0],
-  "block-42":       [10.3, -15.5],
-  "block-43":       [9.5, -16.0],
+  "block-31":       [9.20, -6.80],
+  "block-31-21":    [9.40, -7.20],
+  "block-32":       [9.50, -7.50],
+  "block-46":       [8.50, -6.50],
+  "block-47":       [8.80, -7.00],
+  "block-48":       [9.00, -7.50],
+  "block-49":       [9.00, -8.20],
+  "block-50":       [9.20, -9.00],
+  // Bidding blocks — Kwanza/Benguela deep/ultra-deep
+  "block-22":       [11.00, -11.30],
+  "block-23":       [11.30, -11.80],
+  "block-24":       [11.50, -12.50],
+  "block-25":       [11.30, -13.00],
+  "block-26":       [11.00, -13.50],
+  "block-27":       [11.00, -14.20],
+  "block-28":       [11.20, -14.80],
+  "block-29":       [11.00, -15.30],
+  "block-30":       [10.80, -16.00],
+  // Bidding blocks — Namibe/Benguela ultra-deep
+  "block-33":       [10.00, -8.50],
+  "block-34":       [10.50, -9.00],
+  "block-35":       [10.00, -9.80],
+  "block-36":       [10.00, -10.30],
+  "block-37":       [9.80, -10.80],
+  "block-38":       [10.00, -11.30],
+  "block-39":       [10.20, -12.00],
+  "block-40":       [10.80, -12.30],
+  "block-41":       [10.50, -13.20],
+  "block-42":       [10.30, -13.80],
+  "block-43":       [10.30, -14.50],
+  "block-44":       [10.50, -15.50],
+  "block-45":       [10.00, -16.30],
 };
 
 const getBlockSvgPos = (block: OilBlock) => {
   const geo = blockGeoPositions[block.id];
   if (geo) return geoToSvg(geo[0], geo[1]);
-  // Fallback: use mapPosition scaled
-  return { x: block.mapPosition.x * 2, y: block.mapPosition.y * 2.5 };
+  return { x: block.mapPosition.x * 3, y: block.mapPosition.y * 4 };
 };
 
-// Angola coastline as real coordinates → SVG path
+// ── Angola coastline (refined from PDF) ──
 const coastlinePoints: [number, number][] = [
-  [12.3, -4.4],   // Cabinda north
-  [12.5, -4.5],
-  [12.4, -5.0],
-  [12.2, -5.5],
-  [12.0, -5.8],   // Cabinda south / Congo river
-  [12.3, -5.9],   // North of mainland
-  [13.0, -5.8],
-  [12.8, -6.2],
-  [12.5, -6.5],
-  [12.8, -7.0],
-  [13.0, -7.5],
-  [13.2, -8.0],
-  [13.3, -8.5],
-  [13.5, -8.8],   // Luanda area
-  [13.3, -9.2],
-  [13.0, -9.8],
-  [12.8, -10.5],
-  [13.2, -11.2],
-  [13.5, -12.0],
-  [13.3, -12.5],  // Lobito / Benguela
-  [12.8, -13.0],
-  [12.5, -13.5],
-  [12.2, -14.0],
-  [12.0, -14.5],
-  [11.8, -15.0],  // Namibe
-  [11.7, -15.5],
-  [11.8, -16.0],
-  [12.0, -16.5],
-  [12.2, -17.0],
-  [12.5, -17.3],
+  [12.35, -4.45],
+  [12.50, -4.55],
+  [12.45, -5.00],
+  [12.25, -5.50],
+  [12.10, -5.80],
+  [12.35, -5.85],
+  [13.00, -5.80],
+  [12.85, -6.15],
+  [12.60, -6.50],
+  [12.80, -7.00],
+  [13.00, -7.50],
+  [13.15, -8.00],
+  [13.30, -8.50],
+  [13.50, -8.80],
+  [13.35, -9.20],
+  [13.10, -9.80],
+  [12.90, -10.50],
+  [13.20, -11.20],
+  [13.50, -12.00],
+  [13.35, -12.50],
+  [12.90, -13.00],
+  [12.60, -13.50],
+  [12.30, -14.00],
+  [12.10, -14.50],
+  [11.90, -15.00],
+  [11.80, -15.50],
+  [11.90, -16.00],
+  [12.10, -16.50],
+  [12.30, -17.00],
+  [12.50, -17.30],
 ];
 
-const coastlineSvg = coastlinePoints.map(([lon, lat]) => {
-  const p = geoToSvg(lon, lat);
-  return `${p.x},${p.y}`;
-}).join(" L");
+const toSvgPath = (pts: [number, number][]) =>
+  pts.map(([lon, lat], i) => {
+    const p = geoToSvg(lon, lat);
+    return `${i === 0 ? "M" : "L"}${p.x.toFixed(1)},${p.y.toFixed(1)}`;
+  }).join(" ");
 
-// Simplified Angola border (inland)
+// Inland border
 const borderPoints: [number, number][] = [
-  [12.3, -4.4],
-  [13.5, -4.3],
-  [16.0, -4.4],
-  [18.5, -4.5],
-  [21.0, -5.5],
-  [22.5, -6.0],
-  [24.0, -6.5],
-  [24.0, -8.0],
-  [23.5, -9.0],
-  [22.0, -10.0],
-  [22.0, -11.0],
-  [24.0, -11.5],
-  [24.0, -13.0],
-  [23.0, -13.5],
-  [22.0, -14.0],
-  [21.0, -15.0],
-  [20.0, -16.0],
-  [18.0, -17.0],
-  [15.0, -17.3],
-  [12.5, -17.3],
+  [12.35, -4.45], [13.50, -4.35], [15.00, -4.40],
+  [15.00, -5.00], [15.00, -6.00], [15.00, -7.50],
+  [15.00, -8.00], [15.00, -9.00], [15.00, -10.00],
+  [15.00, -11.00], [15.00, -12.00], [15.00, -13.00],
+  [15.00, -14.00], [15.00, -15.00], [15.00, -16.00],
+  [15.00, -17.00], [14.00, -17.30], [12.50, -17.30],
 ];
-
-const borderSvg = borderPoints.map(([lon, lat]) => {
-  const p = geoToSvg(lon, lat);
-  return `${p.x},${p.y}`;
-}).join(" L");
 
 // Cabinda enclave
 const cabindaPoints: [number, number][] = [
-  [12.1, -4.4], [12.8, -4.3], [13.1, -4.5], [13.0, -5.0],
-  [12.5, -5.3], [12.2, -5.6], [12.0, -5.8], [11.8, -5.3], [12.0, -4.8], [12.1, -4.4],
+  [12.15, -4.45], [12.80, -4.35], [13.10, -4.50], [13.05, -5.00],
+  [12.55, -5.30], [12.25, -5.60], [12.10, -5.80], [11.90, -5.30], [12.05, -4.80], [12.15, -4.45],
 ];
-const cabindaSvg = cabindaPoints.map(([lon, lat]) => {
-  const p = geoToSvg(lon, lat);
-  return `${p.x},${p.y}`;
-}).join(" L");
 
-// Depth contour lines (approximate bathymetry)
-const makeContour = (offsetLon: number, points: [number, number][]) =>
-  points.map(([lon, lat]) => {
-    const p = geoToSvg(lon - offsetLon, lat);
-    return `${p.x},${p.y}`;
-  }).join(" L");
+// ── Offshore maritime limits ──
+const makeOffsetLine = (offsetDeg: number): [number, number][] =>
+  coastlinePoints.map(([lon, lat]) => [lon - offsetDeg, lat]);
 
-const shallowContour = makeContour(0.8, coastlinePoints);
-const deepContour = makeContour(2.0, coastlinePoints);
-const ultraDeepContour = makeContour(3.5, coastlinePoints);
+const limit12M = makeOffsetLine(0.2);
+const limit24M = makeOffsetLine(0.4);
+const limit200M = makeOffsetLine(3.4);
+const limit350M = makeOffsetLine(5.8);
+
+// ── Cities from PDF ──
+const cities: { name: string; lon: number; lat: number; size?: "major" | "minor" }[] = [
+  { name: "Cabinda", lon: 12.55, lat: -5.00, size: "major" },
+  { name: "Soyo", lon: 12.80, lat: -6.00, size: "major" },
+  { name: "M'banza Congo", lon: 14.25, lat: -6.25 },
+  { name: "Ambriz", lon: 13.30, lat: -7.80 },
+  { name: "Songo", lon: 14.50, lat: -7.40 },
+  { name: "Uíge", lon: 14.85, lat: -7.60 },
+  { name: "Luanda", lon: 13.30, lat: -8.85, size: "major" },
+  { name: "Caxito", lon: 13.65, lat: -8.55 },
+  { name: "Dondo", lon: 14.50, lat: -9.70 },
+  { name: "Calulo", lon: 14.90, lat: -9.90 },
+  { name: "Sumbe", lon: 13.85, lat: -11.20 },
+  { name: "Quibala", lon: 14.85, lat: -10.70 },
+  { name: "Waku Kungo", lon: 15.10, lat: -11.30 },
+  { name: "Lobito", lon: 13.65, lat: -12.35, size: "major" },
+  { name: "Benguela", lon: 13.45, lat: -12.60, size: "major" },
+  { name: "Cubal", lon: 14.30, lat: -13.00 },
+  { name: "Lubango", lon: 13.50, lat: -14.90 },
+  { name: "Chibia", lon: 13.85, lat: -15.10 },
+  { name: "Quipungo", lon: 14.50, lat: -14.80 },
+  { name: "Tombua", lon: 12.00, lat: -15.80 },
+  { name: "Namibe", lon: 12.20, lat: -15.20, size: "major" },
+  { name: "Chibemba", lon: 14.80, lat: -15.30 },
+  { name: "Cunene", lon: 15.00, lat: -16.00 },
+  { name: "Xangongo", lon: 14.90, lat: -16.50 },
+];
+
+// ── Natural reserves from PDF ──
+const naturalReserves: { name: string; lon: number; lat: number; w: number; h: number }[] = [
+  { name: "Reserva Parcial de Búfalo", lon: 14.00, lat: -12.80, w: 0.8, h: 0.5 },
+  { name: "R.N. de Chimaulero", lon: 14.40, lat: -13.20, w: 0.6, h: 0.4 },
+  { name: "Parque N. do Namibe", lon: 13.50, lat: -15.40, w: 1.2, h: 0.8 },
+  { name: "Parque N. de Iona", lon: 13.00, lat: -16.50, w: 1.5, h: 1.0 },
+];
+
+// Basin labels
+const basins = [
+  { name: "Bacia Terrestre\ndo Baixo Congo", lon: 13.30, lat: -5.95 },
+  { name: "Bacia do Kwanza", lon: 14.20, lat: -8.80 },
+  { name: "Bacia do Namibe", lon: 11.80, lat: -14.50 },
+  { name: "Bacia de Benguela", lon: 12.20, lat: -12.00 },
+];
+
+// Depth zone labels
+const depthZones = [
+  { name: "Ultra Deep Water", lon: 8.5, lat: -8.5 },
+  { name: "Deep Water", lon: 10.0, lat: -8.5 },
+];
 
 export const ConcessionMap = ({
   blocks,
@@ -232,6 +306,9 @@ export const ConcessionMap = ({
 }: ConcessionMapProps) => {
   const navigate = useNavigate();
   const [tooltip, setTooltip] = useState<{ block: OilBlock; x: number; y: number } | null>(null);
+  const [showLimits, setShowLimits] = useState(true);
+  const [showReserves, setShowReserves] = useState(true);
+  const [colorMode, setColorMode] = useState<"phase" | "bidding">("phase");
 
   const blockPositions = useMemo(() => {
     const positions: Record<string, { x: number; y: number }> = {};
@@ -239,96 +316,130 @@ export const ConcessionMap = ({
     return positions;
   }, [blocks]);
 
-  const handleClick = (block: OilBlock, svgX: number, svgY: number) => {
+  const handleClick = useCallback((block: OilBlock, svgX: number, svgY: number) => {
     onBlockClick(block);
     setTooltip(prev => prev?.block.id === block.id ? null : { block, x: svgX, y: svgY });
-  };
+  }, [onBlockClick]);
 
-  const handleCloseTooltip = () => {
-    setTooltip(null);
+  const getBlockColor = useCallback((block: OilBlock) => {
+    if (colorMode === "bidding") {
+      const year = blockBiddingYear[block.id];
+      if (year) return biddingYearColors[year];
+      return phaseColorMap[block.phase];
+    }
+    return phaseColorMap[block.phase];
+  }, [colorMode]);
+
+  // Block size based on area/production
+  const getBlockSize = (block: OilBlock) => {
+    if (block.areaKm2 && block.areaKm2 > 5000) return 8;
+    if (block.areaKm2 && block.areaKm2 > 3000) return 6;
+    if (block.dailyProduction > 100000) return 5;
+    if (block.dailyProduction > 0) return 4;
+    return 3.5;
   };
 
   return (
     <div className="relative w-full h-full min-h-[500px]">
-      <svg viewBox="-10 -5 220 260" className="w-full h-full" fill="none" preserveAspectRatio="xMidYMid meet">
-        {/* Ocean background gradient */}
+      <svg viewBox={`-10 -5 ${VB_W + 20} ${VB_H + 10}`} className="w-full h-full" fill="none" preserveAspectRatio="xMidYMid meet">
         <defs>
           <linearGradient id="ocean-grad" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0.18" />
-            <stop offset="40%" stopColor="hsl(var(--primary))" stopOpacity="0.06" />
+            <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0.15" />
+            <stop offset="60%" stopColor="hsl(var(--primary))" stopOpacity="0.04" />
             <stop offset="100%" stopColor="transparent" stopOpacity="0" />
           </linearGradient>
+          <pattern id="reserve-hatch" patternUnits="userSpaceOnUse" width="4" height="4">
+            <path d="M0,4 l4,-4" stroke="hsl(var(--muted-foreground))" strokeWidth="0.5" opacity="0.3" />
+          </pattern>
         </defs>
-        <rect x="-10" y="-5" width="220" height="260" fill="url(#ocean-grad)" />
+        <rect x="-10" y="-5" width={VB_W + 20} height={VB_H + 10} fill="url(#ocean-grad)" />
 
-        {/* Bathymetry contours */}
-        <path d={`M${ultraDeepContour}`} fill="none" stroke="hsl(var(--primary) / 0.12)" strokeWidth="0.3" />
-        <path d={`M${deepContour}`} fill="none" stroke="hsl(var(--primary) / 0.15)" strokeWidth="0.3" />
-        <path d={`M${shallowContour}`} fill="none" stroke="hsl(var(--primary) / 0.2)" strokeWidth="0.4" />
+        {/* Maritime limits */}
+        {showLimits && (
+          <>
+            <path d={toSvgPath(limit350M)} fill="none" stroke="hsl(var(--muted-foreground))" strokeWidth="0.3" strokeDasharray="6 3" opacity="0.25" />
+            <path d={toSvgPath(limit200M)} fill="none" stroke="hsl(var(--muted-foreground))" strokeWidth="0.4" strokeDasharray="4 2" opacity="0.3" />
+            <path d={toSvgPath(limit24M)} fill="none" stroke="hsl(var(--muted-foreground))" strokeWidth="0.3" strokeDasharray="2 2" opacity="0.35" />
+            <path d={toSvgPath(limit12M)} fill="none" stroke="hsl(var(--muted-foreground))" strokeWidth="0.3" opacity="0.35" />
+            {/* Limit labels */}
+            {([
+              { label: "350M", pts: limit350M, idx: 4 },
+              { label: "200M", pts: limit200M, idx: 6 },
+              { label: "24M", pts: limit24M, idx: 8 },
+              { label: "12M", pts: limit12M, idx: 8 },
+            ] as const).map(({ label, pts, idx }) => {
+              const p = geoToSvg(pts[idx][0], pts[idx][1]);
+              return (
+                <text key={label} x={p.x} y={p.y - 2} fill="hsl(var(--muted-foreground))" fontSize="3" opacity="0.4" textAnchor="middle">{label}</text>
+              );
+            })}
+          </>
+        )}
 
         {/* Landmass */}
         <path
-          d={`M${coastlineSvg} L${borderSvg} Z`}
-          fill="hsl(var(--secondary) / 0.35)"
-          stroke="hsl(var(--border))"
-          strokeWidth="0.6"
-        />
-
-        {/* Cabinda enclave */}
-        <path
-          d={`M${cabindaSvg}`}
-          fill="hsl(var(--secondary) / 0.4)"
+          d={`${toSvgPath(coastlinePoints)} ${toSvgPath(borderPoints.slice().reverse())} Z`}
+          fill="hsl(var(--secondary) / 0.3)"
           stroke="hsl(var(--border))"
           strokeWidth="0.5"
         />
 
-        {/* Coastline overlay */}
-        <path d={`M${coastlineSvg}`} fill="none" stroke="hsl(var(--primary) / 0.3)" strokeWidth="0.8" />
+        {/* Cabinda enclave */}
+        <path d={toSvgPath(cabindaPoints)} fill="hsl(var(--secondary) / 0.35)" stroke="hsl(var(--border))" strokeWidth="0.4" />
 
-        {/* Province/City labels */}
-        {[
-          { name: "Cabinda", lon: 12.5, lat: -4.7 },
-          { name: "Soyo", lon: 13.2, lat: -5.9 },
-          { name: "Luanda", lon: 13.8, lat: -8.8 },
-          { name: "Lobito", lon: 13.8, lat: -12.3 },
-          { name: "Benguela", lon: 14.0, lat: -12.6 },
-          { name: "Namibe", lon: 12.5, lat: -15.2 },
-        ].map(city => {
+        {/* Coastline highlight */}
+        <path d={toSvgPath(coastlinePoints)} fill="none" stroke="hsl(var(--primary) / 0.3)" strokeWidth="0.7" />
+
+        {/* Natural reserves */}
+        {showReserves && naturalReserves.map(r => {
+          const tl = geoToSvg(r.lon, r.lat);
+          const br = geoToSvg(r.lon + r.w, r.lat - r.h);
+          return (
+            <g key={r.name}>
+              <rect x={tl.x} y={tl.y} width={br.x - tl.x} height={br.y - tl.y}
+                fill="url(#reserve-hatch)" stroke="hsl(var(--muted-foreground))" strokeWidth="0.3" opacity="0.4" rx="1" />
+              <text x={tl.x + (br.x - tl.x) / 2} y={tl.y + (br.y - tl.y) / 2 + 1}
+                fill="hsl(var(--muted-foreground))" fontSize="2.5" textAnchor="middle" opacity="0.5" fontStyle="italic">
+                {r.name}
+              </text>
+            </g>
+          );
+        })}
+
+        {/* Cities */}
+        {cities.map(city => {
           const p = geoToSvg(city.lon, city.lat);
+          const isMajor = city.size === "major";
           return (
             <g key={city.name}>
-              <circle cx={p.x} cy={p.y} r="1" fill="hsl(var(--foreground))" opacity="0.3" />
-              <text x={p.x + 3} y={p.y + 1} fill="hsl(var(--muted-foreground))" fontSize="4" opacity="0.5" fontWeight="500">{city.name}</text>
+              <circle cx={p.x} cy={p.y} r={isMajor ? 1.5 : 0.8} fill="hsl(var(--foreground))" opacity={isMajor ? 0.5 : 0.3} />
+              <text x={p.x + 2.5} y={p.y + 1} fill="hsl(var(--foreground))" fontSize={isMajor ? 4.5 : 3} fontWeight={isMajor ? "600" : "400"} opacity={isMajor ? 0.6 : 0.4}>
+                {city.name}
+              </text>
             </g>
           );
         })}
 
         {/* Basin labels */}
-        {[
-          { name: "Bacia do Congo", lon: 10.0, lat: -5.5 },
-          { name: "Bacia do Kwanza", lon: 10.5, lat: -9.5 },
-          { name: "Bacia do Namibe", lon: 9.5, lat: -14.5 },
-        ].map(basin => {
-          const p = geoToSvg(basin.lon, basin.lat);
-          return (
-            <text key={basin.name} x={p.x} y={p.y} fill="hsl(var(--primary))" fontSize="4.5" fontWeight="600" opacity="0.25" textAnchor="middle">{basin.name}</text>
-          );
+        {basins.map(b => {
+          const p = geoToSvg(b.lon, b.lat);
+          return b.name.split("\n").map((line, i) => (
+            <text key={`${b.name}-${i}`} x={p.x} y={p.y + i * 5} fill="hsl(var(--primary))" fontSize="4" fontWeight="600" opacity="0.2" textAnchor="middle">
+              {line}
+            </text>
+          ));
         })}
 
-        {/* Depth zone labels along left edge */}
-        {[
-          { name: "Ultra-Profundas", lon: 8.2, lat: -5.0 },
-          { name: "Profundas", lon: 9.8, lat: -5.0 },
-          { name: "Águas Rasas", lon: 11.5, lat: -5.0 },
-        ].map(z => {
+        {/* Depth zone labels */}
+        {depthZones.map(z => {
           const p = geoToSvg(z.lon, z.lat);
           return (
-            <text key={z.name} x={p.x} y={p.y} fill="hsl(var(--muted-foreground))" fontSize="3" fontWeight="600" opacity="0.3" textAnchor="middle"
+            <text key={z.name} x={p.x} y={p.y} fill="hsl(var(--muted-foreground))" fontSize="3.5" fontWeight="500" opacity="0.2" textAnchor="middle"
               transform={`rotate(-90, ${p.x}, ${p.y})`}>{z.name}</text>
           );
         })}
 
-        {/* Block dots */}
+        {/* Block markers */}
         {blocks.map((block) => {
           const pos = blockPositions[block.id];
           if (!pos) return null;
@@ -336,8 +447,11 @@ export const ConcessionMap = ({
           const isSelected = selectedBlockId === block.id;
           const isHovered = hoveredBlockId === block.id;
           const isHighlighted = isSelected || isHovered;
-          const baseR = block.dailyProduction > 100000 ? 3.5 : block.dailyProduction > 0 ? 2.5 : 1.8;
-          const r = isHighlighted ? baseR + 1.2 : baseR;
+          const sz = getBlockSize(block);
+          const color = getBlockColor(block);
+
+          // Render as filled rectangles for bidding blocks, circles for concession blocks
+          const isBiddingBlock = !!blockBiddingYear[block.id] && colorMode === "bidding";
 
           return (
             <g
@@ -347,57 +461,111 @@ export const ConcessionMap = ({
               onMouseEnter={() => onBlockHover(block.id)}
               onMouseLeave={() => onBlockHover(null)}
             >
-              <circle cx={pos.x} cy={pos.y} r={r + 3} fill="transparent" />
+              {/* Hit area */}
+              <rect x={pos.x - sz - 2} y={pos.y - sz - 2} width={(sz + 2) * 2} height={(sz + 2) * 2} fill="transparent" />
 
+              {/* Selection ring */}
               {isHighlighted && (
-                <circle
-                  cx={pos.x} cy={pos.y} r={r + 2.5}
-                  fill="none"
-                  stroke={phaseColorMap[block.phase]}
-                  strokeWidth="0.5"
-                  opacity="0.5"
+                <rect
+                  x={pos.x - sz - 1.5} y={pos.y - sz - 1.5}
+                  width={(sz + 1.5) * 2} height={(sz + 1.5) * 2}
+                  fill="none" stroke={color} strokeWidth="0.5" opacity="0.5" rx="1"
                   className={isSelected ? "animate-pulse" : ""}
                 />
               )}
 
-              <circle
-                cx={pos.x} cy={pos.y} r={r}
-                fill={phaseColorMap[block.phase]}
-                opacity={isHighlighted ? 1 : 0.7}
-                style={{
-                  filter: isHighlighted ? `drop-shadow(0 0 5px ${phaseColorMap[block.phase]})` : "none",
-                }}
-                className="transition-all duration-200"
-              />
-
-              {(isHighlighted || block.dailyProduction > 100000) && (
-                <text
-                  x={pos.x}
-                  y={pos.y - r - 2}
-                  textAnchor="middle"
-                  fill="hsl(var(--foreground))"
-                  fontSize="3.5"
-                  fontWeight="700"
-                  className="pointer-events-none"
-                >
-                  {block.name}
-                </text>
+              {/* Block shape */}
+              {isBiddingBlock ? (
+                <rect
+                  x={pos.x - sz} y={pos.y - sz}
+                  width={sz * 2} height={sz * 2}
+                  fill={color} opacity={isHighlighted ? 0.9 : 0.6}
+                  stroke={isHighlighted ? color : "hsl(var(--border))"}
+                  strokeWidth={isHighlighted ? "0.6" : "0.3"}
+                  rx="0.5"
+                  style={{ filter: isHighlighted ? `drop-shadow(0 0 4px ${color})` : "none" }}
+                  className="transition-all duration-200"
+                />
+              ) : (
+                <circle
+                  cx={pos.x} cy={pos.y}
+                  r={isHighlighted ? sz * 0.8 : sz * 0.65}
+                  fill={color}
+                  opacity={isHighlighted ? 1 : 0.7}
+                  style={{ filter: isHighlighted ? `drop-shadow(0 0 5px ${color})` : "none" }}
+                  className="transition-all duration-200"
+                />
               )}
+
+              {/* Block label */}
+              <text
+                x={pos.x}
+                y={pos.y - sz - 2}
+                textAnchor="middle"
+                fill="hsl(var(--foreground))"
+                fontSize={isHighlighted ? "3.5" : "2.8"}
+                fontWeight={isHighlighted ? "700" : "500"}
+                opacity={isHighlighted ? 1 : 0.7}
+                className="pointer-events-none"
+              >
+                {block.name}
+              </text>
             </g>
           );
         })}
+
+        {/* Grid lines (graticule) */}
+        {[8, 9, 10, 11, 12, 13, 14, 15].map(lon => {
+          const p1 = geoToSvg(lon, LAT_MIN);
+          const p2 = geoToSvg(lon, LAT_MAX);
+          return <line key={`lon-${lon}`} x1={p1.x} y1={p1.y} x2={p2.x} y2={p2.y} stroke="hsl(var(--border))" strokeWidth="0.15" opacity="0.3" />;
+        })}
+        {[-5, -6, -7, -8, -9, -10, -11, -12, -13, -14, -15, -16, -17].map(lat => {
+          const p1 = geoToSvg(LON_MIN, lat);
+          const p2 = geoToSvg(LON_MAX, lat);
+          return <line key={`lat-${lat}`} x1={p1.x} y1={p1.y} x2={p2.x} y2={p2.y} stroke="hsl(var(--border))" strokeWidth="0.15" opacity="0.3" />;
+        })}
+
+        {/* Coordinate labels */}
+        {[8, 10, 12, 14].map(lon => {
+          const p = geoToSvg(lon, LAT_MIN);
+          return <text key={`lon-l-${lon}`} x={p.x} y={-1} fill="hsl(var(--muted-foreground))" fontSize="3" textAnchor="middle" opacity="0.4">{lon}°E</text>;
+        })}
+        {[-5, -7.5, -10, -12.5, -15, -17].map(lat => {
+          const p = geoToSvg(LON_MAX, lat);
+          return <text key={`lat-l-${lat}`} x={p.x + 8} y={p.y + 1} fill="hsl(var(--muted-foreground))" fontSize="3" opacity="0.4">{Math.abs(lat)}°S</text>;
+        })}
+
+        {/* Scale bar */}
+        {(() => {
+          const p1 = geoToSvg(10, -17);
+          const p2 = geoToSvg(12, -17);
+          return (
+            <g>
+              <line x1={p1.x} y1={p1.y} x2={p2.x} y2={p2.y} stroke="hsl(var(--foreground))" strokeWidth="0.5" opacity="0.4" />
+              <text x={(p1.x + p2.x) / 2} y={p1.y + 5} fill="hsl(var(--muted-foreground))" fontSize="3" textAnchor="middle" opacity="0.4">~220 km</text>
+            </g>
+          );
+        })()}
+
+        {/* North arrow */}
+        <g transform={`translate(15, 15)`}>
+          <line x1="0" y1="8" x2="0" y2="0" stroke="hsl(var(--foreground))" strokeWidth="0.6" opacity="0.4" />
+          <polygon points="-2,3 0,0 2,3" fill="hsl(var(--foreground))" opacity="0.4" />
+          <text x="0" y="-2" fill="hsl(var(--foreground))" fontSize="4" fontWeight="700" textAnchor="middle" opacity="0.4">N</text>
+        </g>
       </svg>
 
-      {/* Tooltip */}
+      {/* Tooltip popup */}
       {tooltip && (
         <div
           className="absolute z-50 glass-card p-2.5 rounded-lg shadow-lg border border-border/50 min-w-[160px]"
           style={{
-            left: `${Math.min(85, Math.max(15, (tooltip.x / 210) * 100))}%`,
-            top: `${Math.max(5, (tooltip.y / 255) * 100 - 10)}%`,
+            left: `${Math.min(85, Math.max(15, (tooltip.x / (VB_W + 10)) * 100))}%`,
+            top: `${Math.max(5, (tooltip.y / (VB_H + 5)) * 100 - 10)}%`,
             transform: "translateX(-50%)",
           }}
-          onMouseLeave={handleCloseTooltip}
+          onMouseLeave={() => setTooltip(null)}
         >
           <div className="font-bold text-xs">{tooltip.block.name}</div>
           <div className="text-[10px] text-muted-foreground">{tooltip.block.operator}</div>
@@ -408,6 +576,12 @@ export const ConcessionMap = ({
               <span className="text-[10px] font-mono ml-auto">{(tooltip.block.dailyProduction / 1000).toFixed(0)}k BOPD</span>
             )}
           </div>
+          {blockBiddingYear[tooltip.block.id] && (
+            <div className="text-[10px] mt-1 flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-sm" style={{ backgroundColor: biddingYearColors[blockBiddingYear[tooltip.block.id]] }} />
+              <span className="text-muted-foreground">Licitação {blockBiddingYear[tooltip.block.id]}</span>
+            </div>
+          )}
           {tooltip.block.concession.length > 0 && (
             <div className="mt-1 pt-1 border-t border-border/30">
               {tooltip.block.concession.slice(0, 3).map((p, i) => (
@@ -431,15 +605,59 @@ export const ConcessionMap = ({
       )}
 
       {/* Legend */}
-      <div className="absolute top-3 left-3 3xl:top-4 3xl:left-4 glass-card p-2 3xl:p-3 rounded-lg z-20 max-w-[calc(100%-1.5rem)]">
-        <div className="flex flex-wrap gap-x-3 gap-y-1">
-          {(["Production", "Development", "Exploration", "Bidding", "Suspended"] as BlockPhase[]).map(phase => (
-            <div key={phase} className="flex items-center gap-1">
-              <span className="w-2 h-2 rounded-full" style={{ backgroundColor: phaseColorMap[phase] }} />
-              <span className="text-[9px] text-muted-foreground">{phase}</span>
-            </div>
-          ))}
+      <div className="absolute top-3 left-3 3xl:top-4 3xl:left-4 glass-card p-2.5 3xl:p-3 rounded-lg z-20 max-w-[220px]">
+        {/* Color mode toggle */}
+        <div className="flex gap-1 mb-2">
+          <button
+            onClick={() => setColorMode("phase")}
+            className={`text-[8px] px-1.5 py-0.5 rounded transition-colors ${colorMode === "phase" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-secondary"}`}
+          >
+            Fase
+          </button>
+          <button
+            onClick={() => setColorMode("bidding")}
+            className={`text-[8px] px-1.5 py-0.5 rounded transition-colors ${colorMode === "bidding" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-secondary"}`}
+          >
+            Licitação
+          </button>
         </div>
+
+        {colorMode === "phase" ? (
+          <div className="flex flex-wrap gap-x-3 gap-y-1">
+            {(["Production", "Development", "Exploration", "Bidding", "Suspended"] as BlockPhase[]).map(phase => (
+              <div key={phase} className="flex items-center gap-1">
+                <span className="w-2 h-2 rounded-full" style={{ backgroundColor: phaseColorMap[phase] }} />
+                <span className="text-[9px] text-muted-foreground">{phase}</span>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="flex flex-wrap gap-x-3 gap-y-1">
+            {([2019, 2020, 2021, 2023, 2025] as BiddingYear[]).map(year => (
+              <div key={year} className="flex items-center gap-1">
+                <span className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: biddingYearColors[year] }} />
+                <span className="text-[9px] text-muted-foreground">{year}</span>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Layer toggles */}
+        <div className="mt-2 pt-1.5 border-t border-border/30 flex flex-col gap-1">
+          <label className="flex items-center gap-1.5 text-[9px] text-muted-foreground cursor-pointer">
+            <input type="checkbox" checked={showLimits} onChange={e => setShowLimits(e.target.checked)} className="w-2.5 h-2.5 rounded" />
+            Limites Offshore
+          </label>
+          <label className="flex items-center gap-1.5 text-[9px] text-muted-foreground cursor-pointer">
+            <input type="checkbox" checked={showReserves} onChange={e => setShowReserves(e.target.checked)} className="w-2.5 h-2.5 rounded" />
+            Reservas Naturais
+          </label>
+        </div>
+      </div>
+
+      {/* Attribution */}
+      <div className="absolute bottom-2 right-2 text-[8px] text-muted-foreground opacity-40">
+        DATUM WGS84 · ANPG
       </div>
     </div>
   );
