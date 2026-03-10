@@ -619,11 +619,6 @@ export const ConcessionMap = ({
                 </svg>
                 <span className="text-[10px] text-foreground/80 font-medium">Concessão Existente</span>
               </div>
-              {/* Land border legend */}
-              <div className="flex items-center gap-2 mt-2 pt-1.5 border-t border-border/20">
-                <div className="w-5 h-0 border-t-2" style={{ borderColor: "#fbbf24" }} />
-                <span className="text-[9px] text-foreground/60">Fronteira Terrestre</span>
-              </div>
               {/* Maritime limits legend */}
               {showLimits && (
                 <div className="mt-1.5 space-y-1">
