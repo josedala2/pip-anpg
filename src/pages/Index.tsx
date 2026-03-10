@@ -9,6 +9,7 @@ import { RiskPerformance } from "@/components/dashboard/RiskPerformance";
 import { StrategicForecast } from "@/components/dashboard/StrategicForecast";
 import { BlocksPanel } from "@/components/dashboard/BlocksPanel";
 import { ExplorationPanel } from "@/components/dashboard/ExplorationPanel";
+import { ProductionPanel } from "@/components/dashboard/ProductionPanel";
 import { type OilBlock, oilBlocks } from "@/data/angolaBlocks";
 import { Maximize2, Minimize2, ChevronLeft, ChevronRight, Sun, Moon, FileText } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -17,7 +18,7 @@ import anpgLogoColor from "@/assets/anpg-logo-color.svg";
 import anpgLogoWhite from "@/assets/anpg-logo-white.svg";
 import { InstitutionalFooter } from "@/components/InstitutionalFooter";
 
-const panels = ["Overview", "Blocos & Concessões", "Exploração & Sísmica", "Risk & Performance", "Strategic Forecast"];
+const panels = ["Overview", "Blocos & Concessões", "Produção", "Exploração & Sísmica", "Risk & Performance", "Strategic Forecast"];
 
 const Index = () => {
   const { theme, toggleTheme } = useTheme();
@@ -183,9 +184,10 @@ const Index = () => {
 
           <div className="p-4 md:p-6 2xl:p-8 3xl:p-10 max-w-[1920px] 3xl:max-w-[2400px] mx-auto">
           {activePanel === 1 && <BlocksPanel />}
-          {activePanel === 2 && <ExplorationPanel />}
-          {activePanel === 3 && <RiskPerformance />}
-          {activePanel === 4 && <StrategicForecast />}
+          {activePanel === 2 && <ProductionPanel />}
+          {activePanel === 3 && <ExplorationPanel />}
+          {activePanel === 4 && <RiskPerformance />}
+          {activePanel === 5 && <StrategicForecast />}
           </div>
         </div>
       </main>
