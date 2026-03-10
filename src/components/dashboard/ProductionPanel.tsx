@@ -155,6 +155,15 @@ export const ProductionPanel = () => {
             {basins.map(b => <SelectItem key={b} value={b}>{b}</SelectItem>)}
           </SelectContent>
         </Select>
+        <Select value={filterBlock} onValueChange={setFilterBlock}>
+          <SelectTrigger className="w-40 md:w-48 h-8 text-xs glass-card border-border/50">
+            <SelectValue placeholder="Bloco" />
+          </SelectTrigger>
+          <SelectContent className="bg-card border-border">
+            <SelectItem value="all">Todos Blocos</SelectItem>
+            {producingBlockNames.map(b => <SelectItem key={b.id} value={b.id}>{b.name}</SelectItem>)}
+          </SelectContent>
+        </Select>
         {isFiltered && (
           <button
             onClick={() => { setFilterOperator("all"); setFilterBasin("all"); }}
