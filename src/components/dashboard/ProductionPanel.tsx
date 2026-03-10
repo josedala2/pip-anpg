@@ -247,7 +247,7 @@ export const ProductionPanel = () => {
       </ChartWrapper>
 
       {/* Production Table */}
-      <ChartWrapper title="Produção por Bloco" subtitle="Dados actuais ordenáveis">
+      <ChartWrapper title="Produção por Bloco — Dados Actuais">
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>

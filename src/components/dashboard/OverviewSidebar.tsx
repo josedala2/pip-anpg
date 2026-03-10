@@ -33,28 +33,34 @@ const Sparkline = ({ data, color }: { data: { v: number }[]; color: string }) =>
   </ResponsiveContainer>
 );
 
-const trendData = [
-  { month: "Jul", value: 1180000 },
-  { month: "Ago", value: 1210000 },
-  { month: "Set", value: 1195000 },
-  { month: "Out", value: 1250000 },
-  { month: "Nov", value: 1280000 },
-  { month: "Dez", value: 1304000 },
-];
+const computeTrendData = () => {
+  const total = getTotalProduction();
+  return [
+    { month: "Jul", value: Math.round(total * 1.12) },
+    { month: "Ago", value: Math.round(total * 1.10) },
+    { month: "Set", value: Math.round(total * 1.08) },
+    { month: "Out", value: Math.round(total * 1.05) },
+    { month: "Nov", value: Math.round(total * 1.02) },
+    { month: "Dez", value: total },
+  ];
+};
 
-const basins = [
-  { name: "Bacia do Congo", value: 890000, pct: 68 },
-  { name: "Bacia do Kwanza", value: 320000, pct: 25 },
-  { name: "Bacia do Namibe", value: 94000, pct: 7 },
-];
+const computeBasins = () => {
+  const basinMap: Record<string, number> = {};
+  oilBlocks.forEach(b => {
+    if (b.dailyProduction > 0) {
+      const basin = b.basin.includes("Congo") ? "Bacia do Congo" : b.basin.includes("Kwanza") ? "Bacia do Kwanza" : "Bacia do Namibe";
+      basinMap[basin] = (basinMap[basin] || 0) + b.dailyProduction;
+    }
+  });
+  const total = Object.values(basinMap).reduce((s, v) => s + v, 0);
+  return Object.entries(basinMap)
+    .map(([name, value]) => ({ name, value, pct: Math.round((value / total) * 100) }))
+    .sort((a, b) => b.value - a.value);
+};
 
-const phases = [
-  { phase: "Production", count: 28, color: "hsl(var(--success))" },
-  { phase: "Development", count: 8, color: "hsl(var(--warning))" },
-  { phase: "Exploration", count: 12, color: "hsl(var(--primary))" },
-  { phase: "Bidding", count: 22, color: "hsl(var(--bidding))" },
-  { phase: "Suspended", count: 2, color: "hsl(var(--danger))" },
-];
+const trendData = computeTrendData();
+const basins = computeBasins();
 
 const investData = [
   { year: "2020", value: 8200 },
