@@ -1,7 +1,7 @@
-import { useState, useMemo, useCallback, useEffect, useRef } from "react";
+import { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { MapContainer, TileLayer, Polygon, Polyline, Marker, Popup, useMap, CircleMarker, Tooltip as LeafletTooltip, Rectangle } from "react-leaflet";
-import L from "leaflet";
+import { MapContainer, TileLayer, Polygon, Polyline, Popup, CircleMarker, Tooltip as LeafletTooltip, Rectangle } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
 import "leaflet/dist/leaflet.css";
 import { type OilBlock, type BlockPhase } from "@/data/angolaBlocks";
 import { Layers, Map as MapIcon, Satellite, Mountain, Waves, TreePine, ChevronDown, ChevronUp } from "lucide-react";
@@ -173,39 +173,18 @@ const TileSwitch = ({ showSatellite }: { showSatellite: boolean }) => {
   );
 };
 
-// ── Custom SVG block marker ──
-const createBlockIcon = (
-  block: OilBlock,
-  color: string,
-  isHighlighted: boolean,
-  isExistingConcession: boolean,
-  showConcessions: boolean
-) => {
-  const isSmall = block.id.startsWith("block-kon") || block.id.startsWith("block-con") ||
-    block.id.startsWith("cabinda") || block.id.startsWith("fs");
-  const size = isSmall ? 28 : (block.areaKm2 && block.areaKm2 > 4000) ? 48 : 40;
-  const hatchId = `hatch-${block.id.replace(/[^a-z0-9]/g, "")}`;
-
-  const hatchPattern = isExistingConcession && showConcessions
-    ? `<defs><pattern id="${hatchId}" patternUnits="userSpaceOnUse" width="4" height="4" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="4" stroke="rgba(0,0,0,0.4)" stroke-width="1"/></pattern></defs>
-       <rect x="2" y="2" width="${size - 4}" height="${size - 4}" fill="url(#${hatchId})" rx="3"/>`
-    : "";
-
-  const svg = `
-    <svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}">
-      ${isHighlighted ? `<rect x="0" y="0" width="${size}" height="${size}" fill="none" stroke="${color}" stroke-width="2.5" rx="4" opacity="0.7"/>` : ""}
-      <rect x="2" y="2" width="${size - 4}" height="${size - 4}" fill="${color}" opacity="${isHighlighted ? 0.85 : 0.65}" stroke="${isHighlighted ? color : 'rgba(255,255,255,0.5)'}" stroke-width="${isHighlighted ? '1.5' : '0.8'}" rx="3"
-        ${isHighlighted ? `filter="drop-shadow(0 0 6px ${color})"` : ""}/>
-      ${hatchPattern}
-      <text x="${size / 2}" y="${size / 2 + (isSmall ? 3 : 4)}" text-anchor="middle" fill="white" font-size="${isSmall ? 7 : 10}" font-weight="700" font-family="Inter, sans-serif" style="text-shadow: 0 1px 3px rgba(0,0,0,0.8)">${block.name}</text>
-    </svg>`;
-
-  return L.divIcon({
-    html: svg,
-    className: "leaflet-block-marker",
-    iconSize: [size, size],
-    iconAnchor: [size / 2, size / 2],
-  });
+// Generate polygon bounds from center + half-size
+const getBlockPolygon = (block: OilBlock): [number, number][] | null => {
+  const geo = blockGeoPositions[block.id];
+  if (!geo) return null;
+  const [lon, lat] = geo;
+  const [hw, hh] = getBlockSize(block);
+  return [
+    [lat - hh, lon - hw],
+    [lat - hh, lon + hw],
+    [lat + hh, lon + hw],
+    [lat + hh, lon - hw],
+  ];
 };
 
 export const ConcessionMap = ({
@@ -314,10 +293,11 @@ export const ConcessionMap = ({
           </CircleMarker>
         ))}
 
-        {/* Block markers */}
+        {/* Block polygons */}
         {showBlocks && blocks.map(block => {
-          const geo = blockGeoPositions[block.id];
-          if (!geo) return null;
+          const polygon = getBlockPolygon(block);
+          if (!polygon) return null;
+          const geo = blockGeoPositions[block.id]!;
           const [lon, lat] = geo;
           const isSelected = selectedBlockId === block.id;
           const isHovered = hoveredBlockId === block.id;
@@ -326,19 +306,26 @@ export const ConcessionMap = ({
           const hasBiddingYear = !!blockBiddingYear[block.id];
           const isExistingConcession = !hasBiddingYear && (block.phase === "Production" || block.phase === "Development");
 
-          const icon = createBlockIcon(block, color, isHighlighted, isExistingConcession, showConcessions);
-
           return (
-            <Marker
+            <Polygon
               key={block.id}
-              position={[lat, lon]}
-              icon={icon}
+              positions={polygon}
+              pathOptions={{
+                color: isHighlighted ? "white" : color,
+                weight: isHighlighted ? 2.5 : 1,
+                fillColor: color,
+                fillOpacity: isHighlighted ? 0.7 : isExistingConcession ? 0.35 : 0.5,
+                dashArray: isExistingConcession && showConcessions ? "4 3" : undefined,
+              }}
               eventHandlers={{
                 click: () => onBlockClick(block),
                 mouseover: () => onBlockHover(block.id),
                 mouseout: () => onBlockHover(null),
               }}
             >
+              <LeafletTooltip permanent direction="center" className="leaflet-block-label">
+                <span className="font-bold">{block.name}</span>
+              </LeafletTooltip>
               <Popup className="leaflet-block-popup" maxWidth={280} minWidth={200}>
                 <div className="p-1">
                   <div className="font-bold text-sm mb-0.5">{block.name}</div>
@@ -374,7 +361,7 @@ export const ConcessionMap = ({
                   </button>
                 </div>
               </Popup>
-            </Marker>
+            </Polygon>
           );
         })}
       </MapContainer>
