@@ -644,55 +644,112 @@ export const ConcessionMap = ({
         </div>
       )}
 
-      {/* Legend */}
-      <div className="absolute top-3 left-3 3xl:top-4 3xl:left-4 glass-card p-2.5 3xl:p-3 rounded-lg z-20 max-w-[220px]">
-        {/* Color mode toggle */}
-        <div className="flex gap-1 mb-2">
-          <button
-            onClick={() => setColorMode("phase")}
-            className={`text-[8px] px-1.5 py-0.5 rounded transition-colors ${colorMode === "phase" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-secondary"}`}
-          >
-            Fase
-          </button>
-          <button
-            onClick={() => setColorMode("bidding")}
-            className={`text-[8px] px-1.5 py-0.5 rounded transition-colors ${colorMode === "bidding" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-secondary"}`}
-          >
-            Licitação
-          </button>
-        </div>
+      {/* Layers Panel */}
+      <div className="absolute top-3 left-3 3xl:top-4 3xl:left-4 z-20 flex flex-col gap-2">
+        {/* Layer toggle button */}
+        <button
+          onClick={() => setLayersPanelOpen(!layersPanelOpen)}
+          className="glass-card p-2 rounded-lg flex items-center gap-1.5 hover:bg-secondary/60 transition-colors"
+          title="Camadas"
+        >
+          <Layers className="w-4 h-4 text-foreground" />
+          <span className="text-[10px] font-semibold text-foreground">Camadas</span>
+          {layersPanelOpen ? <ChevronUp className="w-3 h-3 text-muted-foreground" /> : <ChevronDown className="w-3 h-3 text-muted-foreground" />}
+        </button>
 
-        {colorMode === "phase" ? (
-          <div className="flex flex-wrap gap-x-3 gap-y-1">
-            {(["Production", "Development", "Exploration", "Bidding", "Suspended"] as BlockPhase[]).map(phase => (
-              <div key={phase} className="flex items-center gap-1">
-                <span className="w-2 h-2 rounded-full" style={{ backgroundColor: phaseColorMap[phase] }} />
-                <span className="text-[9px] text-muted-foreground">{phase}</span>
+        {layersPanelOpen && (
+          <div className="glass-card p-3 rounded-lg min-w-[200px] space-y-3 animate-in fade-in slide-in-from-top-2 duration-200">
+            {/* Base map */}
+            <div>
+              <div className="text-[9px] font-bold text-muted-foreground uppercase tracking-wider mb-1.5">Mapa Base</div>
+              <div className="flex gap-1">
+                <button
+                  onClick={() => setShowSatellite(false)}
+                  className={`flex items-center gap-1.5 px-2 py-1.5 rounded text-[10px] transition-colors ${!showSatellite ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-secondary"}`}
+                >
+                  <Map className="w-3 h-3" />
+                  Vectorial
+                </button>
+                <button
+                  onClick={() => setShowSatellite(true)}
+                  className={`flex items-center gap-1.5 px-2 py-1.5 rounded text-[10px] transition-colors ${showSatellite ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-secondary"}`}
+                >
+                  <Satellite className="w-3 h-3" />
+                  Satélite
+                </button>
               </div>
-            ))}
-          </div>
-        ) : (
-          <div className="flex flex-wrap gap-x-3 gap-y-1">
-            {([2019, 2020, 2021, 2023, 2025] as BiddingYear[]).map(year => (
-              <div key={year} className="flex items-center gap-1">
-                <span className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: biddingYearColors[year] }} />
-                <span className="text-[9px] text-muted-foreground">{year}</span>
+            </div>
+
+            {/* Color mode */}
+            <div>
+              <div className="text-[9px] font-bold text-muted-foreground uppercase tracking-wider mb-1.5">Coloração</div>
+              <div className="flex gap-1">
+                <button
+                  onClick={() => setColorMode("phase")}
+                  className={`text-[10px] px-2 py-1 rounded transition-colors ${colorMode === "phase" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-secondary"}`}
+                >
+                  Fase
+                </button>
+                <button
+                  onClick={() => setColorMode("bidding")}
+                  className={`text-[10px] px-2 py-1 rounded transition-colors ${colorMode === "bidding" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-secondary"}`}
+                >
+                  Licitação
+                </button>
               </div>
-            ))}
+            </div>
+
+            {/* Layer toggles */}
+            <div>
+              <div className="text-[9px] font-bold text-muted-foreground uppercase tracking-wider mb-1.5">Camadas</div>
+              <div className="flex flex-col gap-1.5">
+                {([
+                  { key: "blocks", label: "Blocos", icon: <Mountain className="w-3 h-3" />, checked: showBlocks, set: setShowBlocks },
+                  { key: "limits", label: "Limites Offshore", icon: <Waves className="w-3 h-3" />, checked: showLimits, set: setShowLimits },
+                  { key: "cities", label: "Cidades", icon: <Map className="w-3 h-3" />, checked: showCities, set: setShowCities },
+                  { key: "basins", label: "Bacias & Zonas", icon: <Mountain className="w-3 h-3" />, checked: showBasins, set: setShowBasins },
+                  { key: "reserves", label: "Reservas Naturais", icon: <TreePine className="w-3 h-3" />, checked: showReserves, set: setShowReserves },
+                  { key: "grid", label: "Grelha (Graticule)", icon: <Layers className="w-3 h-3" />, checked: showGrid, set: setShowGrid },
+                ] as const).map(layer => (
+                  <label key={layer.key} className="flex items-center gap-2 text-[10px] text-foreground cursor-pointer hover:bg-secondary/40 rounded px-1 py-0.5 transition-colors">
+                    <input
+                      type="checkbox"
+                      checked={layer.checked}
+                      onChange={e => layer.set(e.target.checked)}
+                      className="w-3 h-3 rounded accent-primary"
+                    />
+                    {layer.icon}
+                    <span>{layer.label}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            {/* Legend */}
+            <div className="pt-1.5 border-t border-border/30">
+              <div className="text-[9px] font-bold text-muted-foreground uppercase tracking-wider mb-1.5">Legenda</div>
+              {colorMode === "phase" ? (
+                <div className="flex flex-wrap gap-x-3 gap-y-1">
+                  {(["Production", "Development", "Exploration", "Bidding", "Suspended"] as BlockPhase[]).map(phase => (
+                    <div key={phase} className="flex items-center gap-1">
+                      <span className="w-2 h-2 rounded-full" style={{ backgroundColor: phaseColorMap[phase] }} />
+                      <span className="text-[9px] text-muted-foreground">{phase}</span>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="flex flex-wrap gap-x-3 gap-y-1">
+                  {([2019, 2020, 2021, 2023, 2025] as BiddingYear[]).map(year => (
+                    <div key={year} className="flex items-center gap-1">
+                      <span className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: biddingYearColors[year] }} />
+                      <span className="text-[9px] text-muted-foreground">{year}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         )}
-
-        {/* Layer toggles */}
-        <div className="mt-2 pt-1.5 border-t border-border/30 flex flex-col gap-1">
-          <label className="flex items-center gap-1.5 text-[9px] text-muted-foreground cursor-pointer">
-            <input type="checkbox" checked={showLimits} onChange={e => setShowLimits(e.target.checked)} className="w-2.5 h-2.5 rounded" />
-            Limites Offshore
-          </label>
-          <label className="flex items-center gap-1.5 text-[9px] text-muted-foreground cursor-pointer">
-            <input type="checkbox" checked={showReserves} onChange={e => setShowReserves(e.target.checked)} className="w-2.5 h-2.5 rounded" />
-            Reservas Naturais
-          </label>
-        </div>
       </div>
 
       {/* Attribution */}
