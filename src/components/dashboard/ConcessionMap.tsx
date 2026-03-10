@@ -2,7 +2,6 @@ import { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { MapContainer, TileLayer, Polygon, Polyline, Popup, CircleMarker, Tooltip as LeafletTooltip, Rectangle } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import "leaflet/dist/leaflet.css";
 import { type OilBlock, type BlockPhase } from "@/data/angolaBlocks";
 import { Layers, Map as MapIcon, Satellite, Mountain, Waves, TreePine, ChevronDown, ChevronUp } from "lucide-react";
 
@@ -46,69 +45,129 @@ const blockBiddingYear: Record<string, BiddingYear> = {
   "block-37": 2025, "block-38": 2025, "block-24": 2025, "block-26": 2025, "block-39": 2025, "block-40": 2025,
 };
 
-// ── Block positions (lon, lat) — WGS84 ──
-const blockGeoPositions: Record<string, [number, number]> = {
-  "cabinda-norte":  [12.40, -5.00],
-  "cabinda-centro": [12.30, -5.20],
-  "cabinda-sul":    [12.20, -5.40],
-  "fs-associacoes": [12.15, -5.10],
-  "fst-associacoes":[12.18, -5.30],
-  "block-con1": [12.55, -5.80], "block-con2": [12.70, -5.80], "block-con3": [12.90, -5.80],
-  "block-con4": [12.60, -6.00], "block-con5": [12.80, -5.80], "block-con6": [13.05, -6.10],
-  "block-con7": [13.25, -6.10], "block-con8": [13.05, -6.30], "block-con9": [13.25, -6.30],
-  "block-con10": [13.45, -7.20],
-  "block-kon1": [13.40, -8.95], "block-kon2": [13.55, -8.95], "block-kon3": [13.70, -8.95],
-  "block-kon4": [13.20, -9.15], "block-kon5": [13.35, -9.20], "block-kon6": [13.50, -9.20],
-  "block-kon7": [13.65, -9.20], "block-kon8": [13.35, -9.42], "block-kon9": [13.50, -9.42],
-  "block-kon10": [13.65, -9.42], "block-kon11": [13.25, -9.62], "block-kon12": [13.40, -9.62],
-  "block-kon13": [13.55, -9.62], "block-kon14": [13.70, -9.62], "block-kon15": [13.15, -9.82],
-  "block-kon16": [13.35, -9.92], "block-kon17": [13.55, -9.92], "block-kon18": [13.80, -10.00],
-  "block-kon19": [13.35, -10.15], "block-kon20": [13.55, -10.15],
-  "block-kon21": [13.80, -10.55], "block-kon22": [14.00, -10.55], "block-kon23": [14.25, -11.00],
-  "block-0": [11.50, -5.85], "block-1": [12.05, -5.95],
-  "block-2-05": [12.30, -6.45], "block-3": [12.20, -7.00],
-  "block-3-05a": [12.10, -6.70], "block-3-24": [12.10, -7.30], "block-3-15": [12.05, -7.60],
-  "block-2-15": [11.85, -7.20], "block-4-05": [12.30, -7.50],
-  "block-5-06": [12.15, -8.70], "block-6-24": [12.05, -9.30],
-  "block-7": [12.10, -9.95], "block-8": [12.30, -10.80], "block-9": [12.50, -11.30],
-  "block-10": [12.15, -12.50], "block-11": [12.00, -14.00],
-  "block-12": [11.60, -15.65], "block-13": [11.40, -16.30],
-  "block-14": [10.90, -6.10], "block-15": [11.70, -5.95],
-  "block-15-06": [11.25, -6.80], "block-15-14": [11.50, -6.45],
-  "block-16": [10.70, -6.85], "block-17": [11.25, -7.30],
-  "block-18": [10.85, -8.40], "block-19": [10.55, -9.30],
-  "block-20": [11.05, -9.85], "block-21": [11.05, -10.55],
-  "block-46": [8.30, -6.15], "block-31": [9.20, -6.50],
-  "block-47": [8.55, -6.70], "block-48": [9.05, -7.20],
-  "block-31-21": [9.35, -7.00], "block-32": [9.50, -7.15],
-  "block-49": [9.00, -8.00], "block-50": [9.25, -8.90],
-  "block-22": [11.05, -11.15], "block-23": [11.30, -11.55],
-  "block-24": [11.45, -12.30], "block-25": [11.25, -12.75],
-  "block-26": [11.00, -13.25], "block-27": [11.00, -14.05],
-  "block-28": [11.15, -14.70], "block-29": [11.00, -15.20], "block-30": [10.80, -15.90],
-  "block-33": [10.05, -8.50], "block-34": [10.45, -9.00],
-  "block-35": [10.05, -9.65], "block-36": [10.05, -10.20],
-  "block-37": [9.85, -10.70], "block-38": [10.05, -11.15],
-  "block-39": [10.25, -11.75], "block-40": [10.75, -12.20],
-  "block-41": [10.50, -13.00], "block-42": [10.35, -13.55],
-  "block-43": [10.30, -14.35], "block-44": [10.50, -15.30], "block-45": [10.00, -16.20],
+// ── Block polygon corners [lat, lon][] — traced from ANPG PDF (DATUM WGS84) ──
+const blockPolygons: Record<string, [number, number][]> = {
+  // Cabinda onshore
+  "cabinda-norte":  [[-4.55, 12.10], [-4.55, 12.50], [-4.90, 12.50], [-4.90, 12.10]],
+  "cabinda-centro": [[-4.90, 12.00], [-4.90, 12.45], [-5.15, 12.45], [-5.15, 12.00]],
+  "cabinda-sul":    [[-5.15, 11.90], [-5.15, 12.35], [-5.45, 12.35], [-5.45, 11.90]],
+  "fs-associacoes": [[-4.70, 12.05], [-4.70, 12.30], [-4.90, 12.30], [-4.90, 12.05]],
+  "fst-associacoes":[[-5.00, 12.00], [-5.00, 12.25], [-5.20, 12.25], [-5.20, 12.00]],
+
+  // Baixo Congo onshore (CON)
+  "block-con1": [[-5.65, 12.40], [-5.65, 12.60], [-5.85, 12.60], [-5.85, 12.40]],
+  "block-con2": [[-5.65, 12.60], [-5.65, 12.80], [-5.85, 12.80], [-5.85, 12.60]],
+  "block-con3": [[-5.85, 12.60], [-5.85, 12.80], [-6.05, 12.80], [-6.05, 12.60]],
+  "block-con4": [[-5.65, 12.80], [-5.65, 13.00], [-5.85, 13.00], [-5.85, 12.80]],
+  "block-con5": [[-5.85, 12.80], [-5.85, 13.00], [-6.05, 13.00], [-6.05, 12.80]],
+  "block-con6": [[-5.85, 13.00], [-5.85, 13.20], [-6.10, 13.20], [-6.10, 13.00]],
+  "block-con7": [[-5.85, 13.20], [-5.85, 13.45], [-6.10, 13.45], [-6.10, 13.20]],
+  "block-con8": [[-6.10, 13.00], [-6.10, 13.20], [-6.35, 13.20], [-6.35, 13.00]],
+  "block-con9": [[-6.10, 13.20], [-6.10, 13.45], [-6.35, 13.45], [-6.35, 13.20]],
+  "block-con10":[[-6.90, 13.20], [-6.90, 13.55], [-7.25, 13.55], [-7.25, 13.20]],
+
+  // Kwanza onshore (KON) — regular grid
+  "block-kon1": [[-8.85, 13.30], [-8.85, 13.45], [-9.00, 13.45], [-9.00, 13.30]],
+  "block-kon2": [[-8.85, 13.45], [-8.85, 13.60], [-9.00, 13.60], [-9.00, 13.45]],
+  "block-kon3": [[-8.85, 13.60], [-8.85, 13.75], [-9.00, 13.75], [-9.00, 13.60]],
+  "block-kon4": [[-9.00, 13.15], [-9.00, 13.30], [-9.15, 13.30], [-9.15, 13.15]],
+  "block-kon5": [[-9.10, 13.25], [-9.10, 13.40], [-9.25, 13.40], [-9.25, 13.25]],
+  "block-kon6": [[-9.10, 13.40], [-9.10, 13.55], [-9.25, 13.55], [-9.25, 13.40]],
+  "block-kon7": [[-9.10, 13.55], [-9.10, 13.70], [-9.25, 13.70], [-9.25, 13.55]],
+  "block-kon8": [[-9.30, 13.25], [-9.30, 13.40], [-9.45, 13.40], [-9.45, 13.25]],
+  "block-kon9": [[-9.30, 13.40], [-9.30, 13.55], [-9.45, 13.55], [-9.45, 13.40]],
+  "block-kon10":[[-9.30, 13.55], [-9.30, 13.70], [-9.45, 13.70], [-9.45, 13.55]],
+  "block-kon11":[[-9.50, 13.15], [-9.50, 13.30], [-9.65, 13.30], [-9.65, 13.15]],
+  "block-kon12":[[-9.50, 13.30], [-9.50, 13.45], [-9.65, 13.45], [-9.65, 13.30]],
+  "block-kon13":[[-9.50, 13.45], [-9.50, 13.60], [-9.65, 13.60], [-9.65, 13.45]],
+  "block-kon14":[[-9.50, 13.60], [-9.50, 13.75], [-9.65, 13.75], [-9.65, 13.60]],
+  "block-kon15":[[-9.70, 13.05], [-9.70, 13.20], [-9.85, 13.20], [-9.85, 13.05]],
+  "block-kon16":[[-9.80, 13.25], [-9.80, 13.40], [-9.95, 13.40], [-9.95, 13.25]],
+  "block-kon17":[[-9.80, 13.45], [-9.80, 13.60], [-9.95, 13.60], [-9.95, 13.45]],
+  "block-kon18":[[-9.85, 13.70], [-9.85, 13.90], [-10.05, 13.90], [-10.05, 13.70]],
+  "block-kon19":[[-10.05, 13.25], [-10.05, 13.45], [-10.20, 13.45], [-10.20, 13.25]],
+  "block-kon20":[[-10.05, 13.45], [-10.05, 13.65], [-10.20, 13.65], [-10.20, 13.45]],
+  "block-kon21":[[-10.40, 13.70], [-10.40, 13.90], [-10.60, 13.90], [-10.60, 13.70]],
+  "block-kon22":[[-10.40, 13.90], [-10.40, 14.10], [-10.60, 14.10], [-10.60, 13.90]],
+  "block-kon23":[[-10.85, 14.15], [-10.85, 14.35], [-11.05, 14.35], [-11.05, 14.15]],
+
+  // Shallow water — coastal
+  "block-0":    [[-5.50, 11.20], [-5.50, 11.80], [-6.20, 11.80], [-6.20, 11.20]],
+  "block-1":    [[-5.70, 12.00], [-5.70, 12.40], [-6.20, 12.40], [-6.20, 12.00]],
+  "block-2-05": [[-6.20, 12.15], [-6.20, 12.55], [-6.65, 12.55], [-6.65, 12.15]],
+  "block-3-05a":[[-6.40, 11.90], [-6.40, 12.25], [-6.75, 12.25], [-6.75, 11.90]],
+  "block-3":    [[-6.65, 12.05], [-6.65, 12.50], [-7.10, 12.50], [-7.10, 12.05]],
+  "block-3-24": [[-7.10, 11.90], [-7.10, 12.30], [-7.50, 12.30], [-7.50, 11.90]],
+  "block-3-15": [[-7.40, 11.80], [-7.40, 12.20], [-7.80, 12.20], [-7.80, 11.80]],
+  "block-2-15": [[-7.00, 11.60], [-7.00, 12.00], [-7.45, 12.00], [-7.45, 11.60]],
+  "block-4-05": [[-7.15, 12.10], [-7.15, 12.60], [-7.70, 12.60], [-7.70, 12.10]],
+  "block-5-06": [[-8.30, 11.90], [-8.30, 12.40], [-9.00, 12.40], [-9.00, 11.90]],
+  "block-6-24": [[-9.00, 11.80], [-9.00, 12.30], [-9.60, 12.30], [-9.60, 11.80]],
+  "block-7":    [[-9.60, 11.80], [-9.60, 12.40], [-10.30, 12.40], [-10.30, 11.80]],
+  "block-8":    [[-10.40, 12.00], [-10.40, 12.60], [-11.10, 12.60], [-11.10, 12.00]],
+  "block-9":    [[-11.00, 12.20], [-11.00, 12.80], [-11.60, 12.80], [-11.60, 12.20]],
+  "block-10":   [[-12.10, 11.80], [-12.10, 12.50], [-12.85, 12.50], [-12.85, 11.80]],
+  "block-11":   [[-13.50, 11.60], [-13.50, 12.30], [-14.40, 12.30], [-14.40, 11.60]],
+  "block-12":   [[-15.20, 11.30], [-15.20, 11.90], [-15.90, 11.90], [-15.90, 11.30]],
+  "block-13":   [[-15.90, 11.10], [-15.90, 11.70], [-16.60, 11.70], [-16.60, 11.10]],
+
+  // Deep water
+  "block-14":   [[-5.50, 10.50], [-5.50, 11.20], [-6.30, 11.20], [-6.30, 10.50]],
+  "block-15":   [[-5.50, 11.40], [-5.50, 12.00], [-6.00, 12.00], [-6.00, 11.40]],
+  "block-15-06":[[-6.30, 10.90], [-6.30, 11.50], [-7.00, 11.50], [-7.00, 10.90]],
+  "block-15-14":[[-6.20, 11.20], [-6.20, 11.75], [-6.60, 11.75], [-6.60, 11.20]],
+  "block-16":   [[-6.30, 10.20], [-6.30, 11.00], [-7.20, 11.00], [-7.20, 10.20]],
+  "block-17":   [[-7.00, 10.90], [-7.00, 11.60], [-7.80, 11.60], [-7.80, 10.90]],
+  "block-18":   [[-7.90, 10.40], [-7.90, 11.30], [-8.80, 11.30], [-8.80, 10.40]],
+  "block-19":   [[-8.90, 10.10], [-8.90, 11.00], [-9.70, 11.00], [-9.70, 10.10]],
+  "block-20":   [[-9.50, 10.70], [-9.50, 11.40], [-10.20, 11.40], [-10.20, 10.70]],
+  "block-21":   [[-10.20, 10.70], [-10.20, 11.40], [-10.90, 11.40], [-10.90, 10.70]],
+
+  // Ultra-deep water
+  "block-46":   [[-5.50, 7.80], [-5.50, 8.80], [-6.40, 8.80], [-6.40, 7.80]],
+  "block-31":   [[-5.80, 8.80], [-5.80, 9.60], [-6.50, 9.60], [-6.50, 8.80]],
+  "block-47":   [[-6.30, 8.10], [-6.30, 9.00], [-7.00, 9.00], [-7.00, 8.10]],
+  "block-48":   [[-6.80, 8.60], [-6.80, 9.50], [-7.50, 9.50], [-7.50, 8.60]],
+  "block-31-21":[[-6.60, 9.10], [-6.60, 9.65], [-7.10, 9.65], [-7.10, 9.10]],
+  "block-32":   [[-6.50, 9.20], [-6.50, 9.80], [-7.20, 9.80], [-7.20, 9.20]],
+  "block-49":   [[-7.50, 8.50], [-7.50, 9.50], [-8.40, 9.50], [-8.40, 8.50]],
+  "block-50":   [[-8.40, 8.80], [-8.40, 9.70], [-9.20, 9.70], [-9.20, 8.80]],
+
+  // Bidding — deep south
+  "block-22":   [[-10.80, 10.70], [-10.80, 11.40], [-11.50, 11.40], [-11.50, 10.70]],
+  "block-23":   [[-11.20, 11.00], [-11.20, 11.65], [-11.80, 11.65], [-11.80, 11.00]],
+  "block-24":   [[-11.90, 11.10], [-11.90, 11.80], [-12.55, 11.80], [-12.55, 11.10]],
+  "block-25":   [[-12.40, 10.90], [-12.40, 11.55], [-12.95, 11.55], [-12.95, 10.90]],
+  "block-26":   [[-12.90, 10.65], [-12.90, 11.30], [-13.55, 11.30], [-13.55, 10.65]],
+  "block-27":   [[-13.60, 10.60], [-13.60, 11.30], [-14.30, 11.30], [-14.30, 10.60]],
+  "block-28":   [[-14.30, 10.80], [-14.30, 11.50], [-14.95, 11.50], [-14.95, 10.80]],
+  "block-29":   [[-14.80, 10.60], [-14.80, 11.35], [-15.50, 11.35], [-15.50, 10.60]],
+  "block-30":   [[-15.50, 10.40], [-15.50, 11.20], [-16.20, 11.20], [-16.20, 10.40]],
+
+  // Bidding — Kwanza/Benguela ultra-deep
+  "block-33":   [[-8.10, 9.60], [-8.10, 10.50], [-8.90, 10.50], [-8.90, 9.60]],
+  "block-34":   [[-8.60, 10.00], [-8.60, 10.80], [-9.30, 10.80], [-9.30, 10.00]],
+  "block-35":   [[-9.25, 9.60], [-9.25, 10.50], [-9.95, 10.50], [-9.95, 9.60]],
+  "block-36":   [[-9.80, 9.60], [-9.80, 10.50], [-10.50, 10.50], [-10.50, 9.60]],
+  "block-37":   [[-10.30, 9.40], [-10.30, 10.30], [-11.00, 10.30], [-11.00, 9.40]],
+  "block-38":   [[-10.75, 9.60], [-10.75, 10.50], [-11.45, 10.50], [-11.45, 9.60]],
+  "block-39":   [[-11.35, 9.80], [-11.35, 10.70], [-12.05, 10.70], [-12.05, 9.80]],
+  "block-40":   [[-11.85, 10.35], [-11.85, 11.10], [-12.50, 11.10], [-12.50, 10.35]],
+  "block-41":   [[-12.55, 10.10], [-12.55, 10.90], [-13.30, 10.90], [-13.30, 10.10]],
+  "block-42":   [[-13.15, 9.95], [-13.15, 10.75], [-13.80, 10.75], [-13.80, 9.95]],
+  "block-43":   [[-13.90, 9.90], [-13.90, 10.70], [-14.70, 10.70], [-14.70, 9.90]],
+  "block-44":   [[-14.90, 10.10], [-14.90, 10.90], [-15.65, 10.90], [-15.65, 10.10]],
+  "block-45":   [[-15.70, 9.50], [-15.70, 10.50], [-16.50, 10.50], [-16.50, 9.50]],
 };
 
-// Block size in degrees (half-width, half-height)
-const getBlockSize = (block: OilBlock): [number, number] => {
-  const isKon = block.id.startsWith("block-kon");
-  const isCon = block.id.startsWith("block-con");
-  const isCabinda = block.id.startsWith("cabinda") || block.id.startsWith("fs");
-  if (isKon) return [0.07, 0.08];
-  if (isCon) return [0.08, 0.07];
-  if (isCabinda) return [0.07, 0.09];
-  if (block.areaKm2 && block.areaKm2 > 6000) return [0.45, 0.45];
-  if (block.areaKm2 && block.areaKm2 > 4000) return [0.38, 0.38];
-  if (block.waterDepth !== "Onshore") return [0.32, 0.35];
-  return [0.22, 0.25];
+// Center of polygon for labels
+const getPolygonCenter = (coords: [number, number][]): [number, number] => {
+  const latSum = coords.reduce((s, c) => s + c[0], 0);
+  const lonSum = coords.reduce((s, c) => s + c[1], 0);
+  return [latSum / coords.length, lonSum / coords.length];
 };
 
-// ── Maritime limit lines ──
+// ── Maritime limits (offset from coastline) ──
 const coastlineCoords: [number, number][] = [
   [-4.45, 12.35], [-4.55, 12.50], [-5.00, 12.45], [-5.50, 12.25], [-5.80, 12.10],
   [-5.85, 12.35], [-5.80, 13.00], [-6.15, 12.85], [-6.50, 12.60], [-7.00, 12.80],
@@ -122,41 +181,60 @@ const makeOffsetLine = (offsetDeg: number): [number, number][] =>
   coastlineCoords.map(([lat, lon]) => [lat, lon - offsetDeg]);
 
 const limit12M = makeOffsetLine(0.2);
+const limit24M = makeOffsetLine(0.4);
 const limit200M = makeOffsetLine(3.4);
+const limit350M = makeOffsetLine(5.8);
 
-// Cities
+// Cities from PDF
 const cities: { name: string; lat: number; lon: number; major?: boolean }[] = [
   { name: "Cabinda", lat: -5.00, lon: 12.55, major: true },
   { name: "Soyo", lat: -6.00, lon: 12.80, major: true },
   { name: "M'banza Congo", lat: -6.25, lon: 14.25 },
   { name: "Ambriz", lat: -7.80, lon: 13.30 },
+  { name: "Songo", lat: -7.40, lon: 14.50 },
+  { name: "Uíge", lat: -7.60, lon: 14.85 },
   { name: "Luanda", lat: -8.85, lon: 13.30, major: true },
   { name: "Caxito", lat: -8.55, lon: 13.65 },
   { name: "Dondo", lat: -9.70, lon: 14.50 },
+  { name: "Calulo", lat: -9.90, lon: 14.90 },
   { name: "Sumbe", lat: -11.20, lon: 13.85 },
+  { name: "Quibala", lat: -10.70, lon: 14.85 },
+  { name: "Waku Kungo", lat: -11.35, lon: 15.10 },
   { name: "Lobito", lat: -12.35, lon: 13.65, major: true },
   { name: "Benguela", lat: -12.60, lon: 13.45, major: true },
+  { name: "Cubal", lat: -13.00, lon: 14.30 },
   { name: "Lubango", lat: -14.90, lon: 13.50 },
+  { name: "Chibia", lat: -15.10, lon: 13.85 },
+  { name: "Quipungo", lat: -14.80, lon: 14.50 },
   { name: "Namibe", lat: -15.20, lon: 12.20, major: true },
   { name: "Tombua", lat: -15.80, lon: 12.00 },
+  { name: "Chibemba", lat: -15.30, lon: 14.80 },
+  { name: "Xangongo", lat: -16.50, lon: 14.90 },
 ];
 
 // Basin labels
 const basins = [
-  { name: "Bacia do Baixo Congo", lat: -5.95, lon: 13.30 },
-  { name: "Bacia do Kwanza", lat: -8.80, lon: 14.20 },
+  { name: "Bacia Terrestre do Baixo Congo", lat: -5.95, lon: 13.30 },
+  { name: "Bacia do Kwanza", lat: -9.10, lon: 14.20 },
   { name: "Bacia do Namibe", lat: -14.50, lon: 11.80 },
   { name: "Bacia de Benguela", lat: -12.00, lon: 12.20 },
 ];
 
-// Natural reserves
-const naturalReserves = [
-  { name: "Reserva de Búfalo", lat: -12.80, lon: 14.00, w: 0.8, h: 0.5 },
-  { name: "Parque N. do Namibe", lat: -15.40, lon: 13.50, w: 1.2, h: 0.8 },
-  { name: "Parque N. de Iona", lat: -16.50, lon: 13.00, w: 1.5, h: 1.0 },
+// Depth zone labels
+const depthZones = [
+  { name: "Ultra Deep Water", lat: -8.5, lon: 9.0 },
+  { name: "Deep Water", lat: -8.5, lon: 10.5 },
 ];
 
-// ── Tile layer switcher ──
+// Natural reserves from PDF
+const naturalReserves = [
+  { name: "Reserva Parcial de Búfalo", lat: -12.80, lon: 14.00, w: 0.8, h: 0.5 },
+  { name: "R.N. de Chimaulero", lat: -13.20, lon: 14.40, w: 0.6, h: 0.4 },
+  { name: "Parque N. do Namibe", lat: -15.20, lon: 13.30, w: 1.2, h: 0.8 },
+  { name: "Parque N. de Iona", lat: -16.20, lon: 12.60, w: 1.5, h: 1.0 },
+];
+
+// Tile layer switcher
 const TileSwitch = ({ showSatellite }: { showSatellite: boolean }) => {
   return showSatellite ? (
     <TileLayer
@@ -171,20 +249,6 @@ const TileSwitch = ({ showSatellite }: { showSatellite: boolean }) => {
       maxZoom={19}
     />
   );
-};
-
-// Generate polygon bounds from center + half-size
-const getBlockPolygon = (block: OilBlock): [number, number][] | null => {
-  const geo = blockGeoPositions[block.id];
-  if (!geo) return null;
-  const [lon, lat] = geo;
-  const [hw, hh] = getBlockSize(block);
-  return [
-    [lat - hh, lon - hw],
-    [lat - hh, lon + hw],
-    [lat + hh, lon + hw],
-    [lat + hh, lon - hw],
-  ];
 };
 
 export const ConcessionMap = ({
@@ -228,14 +292,15 @@ export const ConcessionMap = ({
         attributionControl={false}
         maxBounds={[[-20, 5], [-2, 18]]}
       >
-        {/* Tile layer */}
         <TileSwitch showSatellite={showSatellite} />
 
-        {/* Maritime limits */}
+        {/* Maritime limits — 12M, 24M, 200M (ZEE), 350M */}
         {showLimits && (
           <>
-            <Polyline positions={limit12M} pathOptions={{ color: "#94a3b8", weight: 1, dashArray: "4 4", opacity: 0.5 }} />
+            <Polyline positions={limit12M} pathOptions={{ color: "#94a3b8", weight: 0.8, dashArray: "2 3", opacity: 0.4 }} />
+            <Polyline positions={limit24M} pathOptions={{ color: "#94a3b8", weight: 0.8, dashArray: "4 3", opacity: 0.4 }} />
             <Polyline positions={limit200M} pathOptions={{ color: "#f4323f", weight: 1.5, dashArray: "8 4", opacity: 0.5 }} />
+            <Polyline positions={limit350M} pathOptions={{ color: "#64748b", weight: 1, dashArray: "10 5", opacity: 0.3 }} />
           </>
         )}
 
@@ -244,13 +309,7 @@ export const ConcessionMap = ({
           <Rectangle
             key={r.name}
             bounds={[[r.lat, r.lon], [r.lat - r.h, r.lon + r.w]]}
-            pathOptions={{
-              color: "#6b7280",
-              weight: 1,
-              fillColor: "#22c55e",
-              fillOpacity: 0.08,
-              dashArray: "3 3",
-            }}
+            pathOptions={{ color: "#6b7280", weight: 1, fillColor: "#22c55e", fillOpacity: 0.08, dashArray: "3 3" }}
           >
             <LeafletTooltip permanent direction="center" className="leaflet-reserve-label">
               <span className="text-[9px] italic opacity-70">{r.name}</span>
@@ -281,24 +340,27 @@ export const ConcessionMap = ({
 
         {/* Basin labels */}
         {showBasins && basins.map(b => (
-          <CircleMarker
-            key={b.name}
-            center={[b.lat, b.lon]}
-            radius={0}
-            pathOptions={{ opacity: 0 }}
-          >
+          <CircleMarker key={b.name} center={[b.lat, b.lon]} radius={0} pathOptions={{ opacity: 0 }}>
             <LeafletTooltip permanent direction="center" className="leaflet-basin-label">
               <span className="text-[10px] font-bold tracking-wider uppercase opacity-50">{b.name}</span>
             </LeafletTooltip>
           </CircleMarker>
         ))}
 
+        {/* Depth zone labels */}
+        {showBasins && depthZones.map(z => (
+          <CircleMarker key={z.name} center={[z.lat, z.lon]} radius={0} pathOptions={{ opacity: 0 }}>
+            <LeafletTooltip permanent direction="center" className="leaflet-depth-label">
+              <span className="text-[9px] font-medium tracking-widest uppercase opacity-40">{z.name}</span>
+            </LeafletTooltip>
+          </CircleMarker>
+        ))}
+
         {/* Block polygons */}
         {showBlocks && blocks.map(block => {
-          const polygon = getBlockPolygon(block);
+          const polygon = blockPolygons[block.id];
           if (!polygon) return null;
-          const geo = blockGeoPositions[block.id]!;
-          const [lon, lat] = geo;
+          const center = getPolygonCenter(polygon);
           const isSelected = selectedBlockId === block.id;
           const isHovered = hoveredBlockId === block.id;
           const isHighlighted = isSelected || isHovered;
@@ -366,7 +428,7 @@ export const ConcessionMap = ({
         })}
       </MapContainer>
 
-      {/* Layers Panel — floating over map */}
+      {/* Layers Panel */}
       <div className="absolute top-3 left-3 z-[1000] flex flex-col gap-2">
         <button
           onClick={() => setLayersPanelOpen(!layersPanelOpen)}
@@ -389,7 +451,7 @@ export const ConcessionMap = ({
                   className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-[10px] font-medium transition-colors ${!showSatellite ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-secondary"}`}
                 >
                   <MapIcon className="w-3 h-3" />
-                  Oceânico
+                  OpenStreetMap
                 </button>
                 <button
                   onClick={() => setShowSatellite(true)}
@@ -429,7 +491,7 @@ export const ConcessionMap = ({
                   { key: "concessions", label: "Concessões Petrolíferas", icon: <Layers className="w-3 h-3" />, checked: showConcessions, set: setShowConcessions },
                   { key: "limits", label: "Limites Marítimos", icon: <Waves className="w-3 h-3" />, checked: showLimits, set: setShowLimits },
                   { key: "cities", label: "Cidades", icon: <MapIcon className="w-3 h-3" />, checked: showCities, set: setShowCities },
-                  { key: "basins", label: "Bacias", icon: <Mountain className="w-3 h-3" />, checked: showBasins, set: setShowBasins },
+                  { key: "basins", label: "Bacias & Zonas", icon: <Mountain className="w-3 h-3" />, checked: showBasins, set: setShowBasins },
                   { key: "reserves", label: "Reservas Naturais", icon: <TreePine className="w-3 h-3" />, checked: showReserves, set: setShowReserves },
                 ] as const).map(layer => (
                   <label key={layer.key} className="flex items-center gap-2 text-[10px] text-foreground cursor-pointer hover:bg-secondary/40 rounded px-1.5 py-1 transition-colors">
@@ -468,6 +530,7 @@ export const ConcessionMap = ({
                   ))}
                 </div>
               )}
+              {/* Concession hatch legend */}
               <div className="flex items-center gap-2 mt-2 pt-1.5 border-t border-border/20">
                 <svg width="14" height="14" className="shrink-0">
                   <defs>
@@ -484,12 +547,20 @@ export const ConcessionMap = ({
               {showLimits && (
                 <div className="mt-2 pt-1.5 border-t border-border/20 space-y-1">
                   <div className="flex items-center gap-2">
-                    <div className="w-4 h-0 border-t border-dashed border-gray-400" />
+                    <div className="w-5 h-0 border-t border-dashed border-gray-400" />
                     <span className="text-[9px] text-foreground/60">12 M.N.</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="w-4 h-0 border-t-2 border-dashed border-red-400" />
+                    <div className="w-5 h-0 border-t border-dashed border-gray-500" />
+                    <span className="text-[9px] text-foreground/60">24 M.N.</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-5 h-0 border-t-2 border-dashed border-red-400" />
                     <span className="text-[9px] text-foreground/60">ZEE (200 M.N.)</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-5 h-0 border-t border-dashed border-slate-500" />
+                    <span className="text-[9px] text-foreground/60">350 M.N.</span>
                   </div>
                 </div>
               )}
@@ -498,9 +569,9 @@ export const ConcessionMap = ({
         )}
       </div>
 
-      {/* Attribution badge */}
+      {/* Attribution */}
       <div className="absolute bottom-2 right-2 z-[1000] bg-background/70 backdrop-blur-sm px-2 py-1 rounded text-[9px] text-muted-foreground border border-border/30">
-        DATUM WGS84 · ANPG · Esri
+        DATUM WGS84 · ANPG · 3371-NOV-19-GIS-GAD
       </div>
     </div>
   );
