@@ -475,9 +475,16 @@ export const ConcessionMap = ({
         {showBasins && basins.map(b => {
           const p = geoToSvg(b.lon, b.lat);
           return b.name.split("\n").map((line, i) => (
-            <text key={`${b.name}-${i}`} x={p.x} y={p.y + i * 5} fill={showSatellite ? "white" : "hsl(var(--primary))"} fontSize="4" fontWeight="600" opacity={showSatellite ? 0.5 : 0.2} textAnchor="middle">
-              {line}
-            </text>
+            <g key={`${b.name}-${i}`}>
+              {showSatellite && (
+                <text x={p.x} y={p.y + i * 5.5} fill="black" fontSize="4.5" fontWeight="700" opacity="0.4" textAnchor="middle"
+                  stroke="black" strokeWidth="0.6" strokeLinejoin="round">{line}</text>
+              )}
+              <text x={p.x} y={p.y + i * 5.5} fill={showSatellite ? "white" : "hsl(var(--primary))"} fontSize="4.5" fontWeight="700" opacity={showSatellite ? 0.7 : 0.35} textAnchor="middle"
+                letterSpacing="0.5">
+                {line}
+              </text>
+            </g>
           ));
         })}
 
