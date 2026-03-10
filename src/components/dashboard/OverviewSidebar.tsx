@@ -2,7 +2,7 @@ import { useState } from "react";
 import { FilterBar, type FilterState } from "./FilterBar";
 import { OverviewBlockList } from "./OverviewBlockList";
 import { AnimatedCounter } from "./AnimatedCounter";
-import { type OilBlock, getTotalProduction, getTotalReserves, getActiveBlocks, getTotalCapex, getAvgExecutionRate } from "@/data/angolaBlocks";
+import { type OilBlock, oilBlocks, getTotalProduction, getTotalReserves, getActiveBlocks, getTotalCapex, getAvgExecutionRate, getBlocksByPhase } from "@/data/angolaBlocks";
 import { Activity, BarChart3, Boxes, DollarSign, TrendingUp, Filter, ChevronDown } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
