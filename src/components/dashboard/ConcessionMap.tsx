@@ -440,7 +440,7 @@ export const ConcessionMap = ({
           );
         })}
 
-        {/* Block markers */}
+        {/* Block markers — all rendered as rectangles matching PDF */}
         {blocks.map((block) => {
           const pos = blockPositions[block.id];
           if (!pos) return null;
@@ -448,11 +448,25 @@ export const ConcessionMap = ({
           const isSelected = selectedBlockId === block.id;
           const isHovered = hoveredBlockId === block.id;
           const isHighlighted = isSelected || isHovered;
-          const sz = getBlockSize(block);
           const color = getBlockColor(block);
 
-          // Render as filled rectangles for bidding blocks, circles for concession blocks
-          const isBiddingBlock = !!blockBiddingYear[block.id] && colorMode === "bidding";
+          // Size blocks based on type (matching PDF proportions)
+          const isKon = block.id.startsWith("block-kon");
+          const isCon = block.id.startsWith("block-con");
+          const isCabinda = block.id.startsWith("cabinda") || block.id.startsWith("fs");
+          const isLargeOffshore = !isKon && !isCon && !isCabinda && block.waterDepth !== "Onshore";
+
+          let w: number, h: number;
+          if (isKon) { w = 5; h = 5.5; }
+          else if (isCon) { w = 5.5; h = 5; }
+          else if (isCabinda) { w = 5; h = 6; }
+          else if (block.areaKm2 && block.areaKm2 > 6000) { w = 14; h = 14; }
+          else if (block.areaKm2 && block.areaKm2 > 4000) { w = 12; h = 12; }
+          else if (isLargeOffshore) { w = 10; h = 11; }
+          else { w = 7; h = 8; }
+
+          const hasBiddingYear = !!blockBiddingYear[block.id];
+          const isExistingConcession = !hasBiddingYear && (block.phase === "Production" || block.phase === "Development");
 
           return (
             <g
@@ -463,50 +477,49 @@ export const ConcessionMap = ({
               onMouseLeave={() => onBlockHover(null)}
             >
               {/* Hit area */}
-              <rect x={pos.x - sz - 2} y={pos.y - sz - 2} width={(sz + 2) * 2} height={(sz + 2) * 2} fill="transparent" />
+              <rect x={pos.x - w - 1} y={pos.y - h - 1} width={(w + 1) * 2} height={(h + 1) * 2} fill="transparent" />
 
               {/* Selection ring */}
               {isHighlighted && (
                 <rect
-                  x={pos.x - sz - 1.5} y={pos.y - sz - 1.5}
-                  width={(sz + 1.5) * 2} height={(sz + 1.5) * 2}
-                  fill="none" stroke={color} strokeWidth="0.5" opacity="0.5" rx="1"
+                  x={pos.x - w - 1.5} y={pos.y - h - 1.5}
+                  width={(w + 1.5) * 2} height={(h + 1.5) * 2}
+                  fill="none" stroke={color} strokeWidth="0.6" opacity="0.6" rx="0.5"
                   className={isSelected ? "animate-pulse" : ""}
                 />
               )}
 
-              {/* Block shape */}
-              {isBiddingBlock ? (
+              {/* Block rectangle */}
+              <rect
+                x={pos.x - w} y={pos.y - h}
+                width={w * 2} height={h * 2}
+                fill={color}
+                opacity={isHighlighted ? 0.75 : isExistingConcession ? 0.45 : 0.5}
+                stroke={isHighlighted ? color : "hsl(var(--border))"}
+                strokeWidth={isHighlighted ? "0.6" : "0.3"}
+                rx="0.3"
+                style={{ filter: isHighlighted ? `drop-shadow(0 0 4px ${color})` : "none" }}
+                className="transition-all duration-200"
+              />
+
+              {/* Hatching for existing concessions */}
+              {isExistingConcession && colorMode === "bidding" && (
                 <rect
-                  x={pos.x - sz} y={pos.y - sz}
-                  width={sz * 2} height={sz * 2}
-                  fill={color} opacity={isHighlighted ? 0.9 : 0.6}
-                  stroke={isHighlighted ? color : "hsl(var(--border))"}
-                  strokeWidth={isHighlighted ? "0.6" : "0.3"}
-                  rx="0.5"
-                  style={{ filter: isHighlighted ? `drop-shadow(0 0 4px ${color})` : "none" }}
-                  className="transition-all duration-200"
-                />
-              ) : (
-                <circle
-                  cx={pos.x} cy={pos.y}
-                  r={isHighlighted ? sz * 0.8 : sz * 0.65}
-                  fill={color}
-                  opacity={isHighlighted ? 1 : 0.7}
-                  style={{ filter: isHighlighted ? `drop-shadow(0 0 5px ${color})` : "none" }}
-                  className="transition-all duration-200"
+                  x={pos.x - w} y={pos.y - h}
+                  width={w * 2} height={h * 2}
+                  fill="url(#reserve-hatch)" opacity="0.3" rx="0.3"
                 />
               )}
 
-              {/* Block label */}
+              {/* Block label inside */}
               <text
                 x={pos.x}
-                y={pos.y - sz - 2}
+                y={pos.y + 1}
                 textAnchor="middle"
                 fill="hsl(var(--foreground))"
-                fontSize={isHighlighted ? "3.5" : "2.8"}
-                fontWeight={isHighlighted ? "700" : "500"}
-                opacity={isHighlighted ? 1 : 0.7}
+                fontSize={isKon || isCon || isCabinda ? "2.5" : isHighlighted ? "3.5" : "3"}
+                fontWeight={isHighlighted ? "700" : "600"}
+                opacity={isHighlighted ? 1 : 0.75}
                 className="pointer-events-none"
               >
                 {block.name}
