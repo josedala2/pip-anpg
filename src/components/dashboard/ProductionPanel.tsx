@@ -10,6 +10,7 @@ import {
 } from "recharts";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { FieldProductionBreakdown } from "./FieldProductionBreakdown";
 
 const COLORS = [
   "hsl(var(--primary))", "hsl(var(--success))", "hsl(var(--warning))",
@@ -245,6 +246,9 @@ export const ProductionPanel = () => {
           <p>• Pressupostos: Preços Brent $75-85/bbl, investimento contínuo em exploração e desenvolvimento</p>
         </div>
       </ChartWrapper>
+
+      {/* Field-level breakdown */}
+      <FieldProductionBreakdown />
 
       {/* Production Table */}
       <ChartWrapper title="Produção por Bloco — Dados Actuais">
