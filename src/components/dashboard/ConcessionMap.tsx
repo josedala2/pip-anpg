@@ -786,11 +786,11 @@ export const ConcessionMap = ({
                   ))}
                 </div>
               ) : (
-                <div className="flex flex-wrap gap-x-3 gap-y-1">
+                <div className="flex flex-wrap gap-x-3 gap-y-1.5">
                   {([2019, 2020, 2021, 2023, 2025] as BiddingYear[]).map(year => (
-                    <div key={year} className="flex items-center gap-1">
-                      <span className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: biddingYearColors[year] }} />
-                      <span className="text-[9px] text-muted-foreground">{year}</span>
+                    <div key={year} className="flex items-center gap-1.5">
+                      <span className="w-3 h-3 rounded-sm border border-border/30" style={{ backgroundColor: biddingYearColors[year] }} />
+                      <span className="text-[10px] text-foreground/80 font-medium">{year}</span>
                     </div>
                   ))}
                 </div>
