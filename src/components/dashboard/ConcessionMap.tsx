@@ -774,14 +774,14 @@ export const ConcessionMap = ({
             </div>
 
             {/* Legend */}
-            <div className="pt-1.5 border-t border-border/30">
-              <div className="text-[9px] font-bold text-muted-foreground uppercase tracking-wider mb-1.5">Legenda</div>
+            <div className="pt-2 border-t border-border/40">
+              <div className="text-[10px] font-bold text-foreground uppercase tracking-wider mb-2">Legenda</div>
               {colorMode === "phase" ? (
-                <div className="flex flex-wrap gap-x-3 gap-y-1">
+                <div className="flex flex-wrap gap-x-3 gap-y-1.5">
                   {(["Production", "Development", "Exploration", "Bidding", "Suspended"] as BlockPhase[]).map(phase => (
-                    <div key={phase} className="flex items-center gap-1">
-                      <span className="w-2 h-2 rounded-full" style={{ backgroundColor: phaseColorMap[phase] }} />
-                      <span className="text-[9px] text-muted-foreground">{phase}</span>
+                    <div key={phase} className="flex items-center gap-1.5">
+                      <span className="w-2.5 h-2.5 rounded-sm border border-border/30" style={{ backgroundColor: phaseColorMap[phase] }} />
+                      <span className="text-[10px] text-foreground/80 font-medium">{phase}</span>
                     </div>
                   ))}
                 </div>
