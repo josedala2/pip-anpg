@@ -208,7 +208,7 @@ export const ProductionPanel = () => {
       </div>
 
       {/* Forecast */}
-      <ChartWrapper title="Previsão de Produção a Médio-Longo Prazo" subtitle="kBOPD · 2020–2050 · Fonte: ANPG">
+      <ChartWrapper title="Previsão de Produção a Médio-Longo Prazo (kBOPD · 2020–2050)">
         <ResponsiveContainer width="100%" height={340}>
           <AreaChart data={nationalForecast}>
             <defs>
