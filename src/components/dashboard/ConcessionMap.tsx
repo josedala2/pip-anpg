@@ -311,7 +311,13 @@ export const ConcessionMap = ({
   const [tooltip, setTooltip] = useState<{ block: OilBlock; x: number; y: number } | null>(null);
   const [showLimits, setShowLimits] = useState(true);
   const [showReserves, setShowReserves] = useState(true);
+  const [showCities, setShowCities] = useState(true);
+  const [showBasins, setShowBasins] = useState(true);
+  const [showGrid, setShowGrid] = useState(true);
+  const [showBlocks, setShowBlocks] = useState(true);
+  const [showSatellite, setShowSatellite] = useState(false);
   const [colorMode, setColorMode] = useState<"phase" | "bidding">("phase");
+  const [layersPanelOpen, setLayersPanelOpen] = useState(false);
 
   const blockPositions = useMemo(() => {
     const positions: Record<string, { x: number; y: number }> = {};
