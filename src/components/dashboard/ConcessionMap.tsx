@@ -1,6 +1,8 @@
 import { useState, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { type OilBlock, type BlockPhase } from "@/data/angolaBlocks";
+import { Layers, Map, Satellite, Mountain, Waves, TreePine, ChevronDown, ChevronUp } from "lucide-react";
+import angolaSatellite from "@/assets/angola-satellite.jpg";
 
 interface ConcessionMapProps {
   blocks: OilBlock[];
