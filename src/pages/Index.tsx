@@ -184,9 +184,10 @@ const Index = () => {
 
           <div className="p-4 md:p-6 2xl:p-8 3xl:p-10 max-w-[1920px] 3xl:max-w-[2400px] mx-auto">
           {activePanel === 1 && <BlocksPanel />}
-          {activePanel === 2 && <ExplorationPanel />}
-          {activePanel === 3 && <RiskPerformance />}
-          {activePanel === 4 && <StrategicForecast />}
+          {activePanel === 2 && <ProductionPanel />}
+          {activePanel === 3 && <ExplorationPanel />}
+          {activePanel === 4 && <RiskPerformance />}
+          {activePanel === 5 && <StrategicForecast />}
           </div>
         </div>
       </main>
