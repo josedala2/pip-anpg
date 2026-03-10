@@ -391,40 +391,46 @@ export const ConcessionMap = ({
         {/* Maritime limits */}
         {showLimits && (
           <>
-            <path d={toSvgPath(limit350M)} fill="none" stroke="hsl(var(--muted-foreground))" strokeWidth="0.3" strokeDasharray="6 3" opacity="0.25" />
-            <path d={toSvgPath(limit200M)} fill="none" stroke="hsl(var(--muted-foreground))" strokeWidth="0.4" strokeDasharray="4 2" opacity="0.3" />
-            <path d={toSvgPath(limit24M)} fill="none" stroke="hsl(var(--muted-foreground))" strokeWidth="0.3" strokeDasharray="2 2" opacity="0.35" />
-            <path d={toSvgPath(limit12M)} fill="none" stroke="hsl(var(--muted-foreground))" strokeWidth="0.3" opacity="0.35" />
-            {/* Limit labels */}
+            <path d={toSvgPath(limit350M)} fill="none" stroke={showSatellite ? "rgba(255,255,255,0.35)" : "hsl(var(--muted-foreground))"} strokeWidth="0.5" strokeDasharray="6 3" opacity="0.5" />
+            <path d={toSvgPath(limit200M)} fill="none" stroke={showSatellite ? "rgba(255,255,255,0.45)" : "hsl(var(--primary))"} strokeWidth="0.6" strokeDasharray="4 2" opacity="0.45" />
+            <path d={toSvgPath(limit24M)} fill="none" stroke={showSatellite ? "rgba(255,255,255,0.4)" : "hsl(var(--muted-foreground))"} strokeWidth="0.45" strokeDasharray="2 2" opacity="0.5" />
+            <path d={toSvgPath(limit12M)} fill="none" stroke={showSatellite ? "rgba(255,255,255,0.4)" : "hsl(var(--muted-foreground))"} strokeWidth="0.4" opacity="0.5" />
+            {/* Limit labels with background for readability */}
             {([
-              { label: "350M", pts: limit350M, idx: 4 },
-              { label: "200M", pts: limit200M, idx: 6 },
-              { label: "24M", pts: limit24M, idx: 8 },
-              { label: "12M", pts: limit12M, idx: 8 },
+              { label: "350 M.N.", pts: limit350M, idx: 4 },
+              { label: "ZEE (200 M.N.)", pts: limit200M, idx: 6 },
+              { label: "24 M.N.", pts: limit24M, idx: 8 },
+              { label: "12 M.N.", pts: limit12M, idx: 8 },
             ] as const).map(({ label, pts, idx }) => {
               const p = geoToSvg(pts[idx][0], pts[idx][1]);
+              const textW = label.length * 1.8;
               return (
-                <text key={label} x={p.x} y={p.y - 2} fill="hsl(var(--muted-foreground))" fontSize="3" opacity="0.4" textAnchor="middle">{label}</text>
+                <g key={label}>
+                  <rect x={p.x - textW / 2 - 1} y={p.y - 6} width={textW + 2} height={5} rx="1"
+                    fill={showSatellite ? "rgba(0,0,0,0.5)" : "hsl(var(--background))"} opacity="0.7" />
+                  <text x={p.x} y={p.y - 2.5} fill={showSatellite ? "white" : "hsl(var(--foreground))"} fontSize="3.2" opacity="0.8" textAnchor="middle" fontWeight="500">{label}</text>
+                </g>
               );
             })}
           </>
         )}
 
-        {/* Landmass — hidden on satellite */}
+        {/* Landmass */}
         {!showSatellite && (
           <>
             <path
               d={`${toSvgPath(coastlinePoints)} ${toSvgPath(borderPoints.slice().reverse())} Z`}
-              fill="hsl(var(--secondary) / 0.3)"
-              stroke="hsl(var(--border))"
-              strokeWidth="0.5"
+              fill="hsl(var(--secondary) / 0.4)"
+              stroke="hsl(var(--foreground))"
+              strokeWidth="0.7"
+              opacity="0.9"
             />
-            <path d={toSvgPath(cabindaPoints)} fill="hsl(var(--secondary) / 0.35)" stroke="hsl(var(--border))" strokeWidth="0.4" />
-            <path d={toSvgPath(coastlinePoints)} fill="none" stroke="hsl(var(--primary) / 0.3)" strokeWidth="0.7" />
+            <path d={toSvgPath(cabindaPoints)} fill="hsl(var(--secondary) / 0.45)" stroke="hsl(var(--foreground))" strokeWidth="0.6" opacity="0.9" />
+            <path d={toSvgPath(coastlinePoints)} fill="none" stroke="hsl(var(--primary))" strokeWidth="0.9" opacity="0.5" />
           </>
         )}
         {showSatellite && (
-          <path d={toSvgPath(coastlinePoints)} fill="none" stroke="white" strokeWidth="0.5" opacity="0.4" />
+          <path d={toSvgPath(coastlinePoints)} fill="none" stroke="white" strokeWidth="0.8" opacity="0.6" />
         )}
 
         {/* Natural reserves */}
@@ -450,9 +456,15 @@ export const ConcessionMap = ({
           const textColor = showSatellite ? "white" : "hsl(var(--foreground))";
           return (
             <g key={city.name}>
-              <circle cx={p.x} cy={p.y} r={isMajor ? 1.5 : 0.8} fill={textColor} opacity={isMajor ? 0.7 : 0.5} />
-              <text x={p.x + 2.5} y={p.y + 1} fill={textColor} fontSize={isMajor ? 4.5 : 3} fontWeight={isMajor ? "600" : "400"} opacity={isMajor ? 0.8 : 0.6}
-                stroke={showSatellite ? "rgba(0,0,0,0.5)" : "none"} strokeWidth={showSatellite ? "0.3" : "0"}>
+              {/* Background halo for readability */}
+              <circle cx={p.x} cy={p.y} r={isMajor ? 2.5 : 1.5} fill={showSatellite ? "rgba(0,0,0,0.4)" : "hsl(var(--background))"} opacity="0.5" />
+              <circle cx={p.x} cy={p.y} r={isMajor ? 1.8 : 1} fill={textColor} opacity={isMajor ? 0.85 : 0.65} />
+              {/* Text shadow/outline for contrast */}
+              {showSatellite && (
+                <text x={p.x + 3} y={p.y + 1.2} fill="black" fontSize={isMajor ? 5 : 3.5} fontWeight={isMajor ? "700" : "500"} opacity="0.5"
+                  stroke="black" strokeWidth="0.8" strokeLinejoin="round">{city.name}</text>
+              )}
+              <text x={p.x + 3} y={p.y + 1.2} fill={textColor} fontSize={isMajor ? 5 : 3.5} fontWeight={isMajor ? "700" : "500"} opacity={isMajor ? 0.95 : 0.8}>
                 {city.name}
               </text>
             </g>
@@ -463,9 +475,16 @@ export const ConcessionMap = ({
         {showBasins && basins.map(b => {
           const p = geoToSvg(b.lon, b.lat);
           return b.name.split("\n").map((line, i) => (
-            <text key={`${b.name}-${i}`} x={p.x} y={p.y + i * 5} fill={showSatellite ? "white" : "hsl(var(--primary))"} fontSize="4" fontWeight="600" opacity={showSatellite ? 0.5 : 0.2} textAnchor="middle">
-              {line}
-            </text>
+            <g key={`${b.name}-${i}`}>
+              {showSatellite && (
+                <text x={p.x} y={p.y + i * 5.5} fill="black" fontSize="4.5" fontWeight="700" opacity="0.4" textAnchor="middle"
+                  stroke="black" strokeWidth="0.6" strokeLinejoin="round">{line}</text>
+              )}
+              <text x={p.x} y={p.y + i * 5.5} fill={showSatellite ? "white" : "hsl(var(--primary))"} fontSize="4.5" fontWeight="700" opacity={showSatellite ? 0.7 : 0.35} textAnchor="middle"
+                letterSpacing="0.5">
+                {line}
+              </text>
+            </g>
           ));
         })}
 
@@ -572,22 +591,32 @@ export const ConcessionMap = ({
             {[8, 9, 10, 11, 12, 13, 14, 15].map(lon => {
               const p1 = geoToSvg(lon, LAT_MIN);
               const p2 = geoToSvg(lon, LAT_MAX);
-              return <line key={`lon-${lon}`} x1={p1.x} y1={p1.y} x2={p2.x} y2={p2.y} stroke={showSatellite ? "white" : "hsl(var(--border))"} strokeWidth="0.15" opacity="0.25" />;
+              return <line key={`lon-${lon}`} x1={p1.x} y1={p1.y} x2={p2.x} y2={p2.y} stroke={showSatellite ? "rgba(255,255,255,0.3)" : "hsl(var(--border))"} strokeWidth="0.2" opacity="0.35" />;
             })}
             {[-5, -6, -7, -8, -9, -10, -11, -12, -13, -14, -15, -16, -17].map(lat => {
               const p1 = geoToSvg(LON_MIN, lat);
               const p2 = geoToSvg(LON_MAX, lat);
-              return <line key={`lat-${lat}`} x1={p1.x} y1={p1.y} x2={p2.x} y2={p2.y} stroke={showSatellite ? "white" : "hsl(var(--border))"} strokeWidth="0.15" opacity="0.25" />;
+              return <line key={`lat-${lat}`} x1={p1.x} y1={p1.y} x2={p2.x} y2={p2.y} stroke={showSatellite ? "rgba(255,255,255,0.3)" : "hsl(var(--border))"} strokeWidth="0.2" opacity="0.35" />;
             })}
 
-            {/* Coordinate labels */}
-            {[8, 10, 12, 14].map(lon => {
+            {/* Coordinate labels — with background pill */}
+            {[8, 9, 10, 11, 12, 13, 14].map(lon => {
               const p = geoToSvg(lon, LAT_MIN);
-              return <text key={`lon-l-${lon}`} x={p.x} y={-1} fill={showSatellite ? "white" : "hsl(var(--muted-foreground))"} fontSize="3" textAnchor="middle" opacity="0.5">{lon}°E</text>;
+              return (
+                <g key={`lon-l-${lon}`}>
+                  <rect x={p.x - 5} y={-4.5} width={10} height={4.5} rx="1" fill={showSatellite ? "rgba(0,0,0,0.45)" : "hsl(var(--background))"} opacity="0.6" />
+                  <text x={p.x} y={-1} fill={showSatellite ? "white" : "hsl(var(--foreground))"} fontSize="3.2" textAnchor="middle" opacity="0.75" fontWeight="500">{lon}°E</text>
+                </g>
+              );
             })}
-            {[-5, -7.5, -10, -12.5, -15, -17].map(lat => {
+            {[-5, -7, -9, -11, -13, -15, -17].map(lat => {
               const p = geoToSvg(LON_MAX, lat);
-              return <text key={`lat-l-${lat}`} x={p.x + 8} y={p.y + 1} fill={showSatellite ? "white" : "hsl(var(--muted-foreground))"} fontSize="3" opacity="0.5">{Math.abs(lat)}°S</text>;
+              return (
+                <g key={`lat-l-${lat}`}>
+                  <rect x={p.x + 2} y={p.y - 2.5} width={14} height={4.5} rx="1" fill={showSatellite ? "rgba(0,0,0,0.45)" : "hsl(var(--background))"} opacity="0.6" />
+                  <text x={p.x + 9} y={p.y + 1} fill={showSatellite ? "white" : "hsl(var(--foreground))"} fontSize="3.2" opacity="0.75" textAnchor="middle" fontWeight="500">{Math.abs(lat)}°S</text>
+                </g>
+              );
             })}
           </>
         )}
@@ -598,17 +627,19 @@ export const ConcessionMap = ({
           const p2 = geoToSvg(12, -17);
           return (
             <g>
-              <line x1={p1.x} y1={p1.y} x2={p2.x} y2={p2.y} stroke="hsl(var(--foreground))" strokeWidth="0.5" opacity="0.4" />
-              <text x={(p1.x + p2.x) / 2} y={p1.y + 5} fill="hsl(var(--muted-foreground))" fontSize="3" textAnchor="middle" opacity="0.4">~220 km</text>
+              <line x1={p1.x} y1={p1.y} x2={p2.x} y2={p2.y} stroke="hsl(var(--foreground))" strokeWidth="0.7" opacity="0.5" />
+              <line x1={p1.x} y1={p1.y - 1.5} x2={p1.x} y2={p1.y + 1.5} stroke="hsl(var(--foreground))" strokeWidth="0.5" opacity="0.5" />
+              <line x1={p2.x} y1={p2.y - 1.5} x2={p2.x} y2={p2.y + 1.5} stroke="hsl(var(--foreground))" strokeWidth="0.5" opacity="0.5" />
+              <text x={(p1.x + p2.x) / 2} y={p1.y + 5} fill="hsl(var(--foreground))" fontSize="3.2" textAnchor="middle" opacity="0.55" fontWeight="500">~220 km</text>
             </g>
           );
         })()}
 
         {/* North arrow */}
         <g transform={`translate(15, 15)`}>
-          <line x1="0" y1="8" x2="0" y2="0" stroke="hsl(var(--foreground))" strokeWidth="0.6" opacity="0.4" />
-          <polygon points="-2,3 0,0 2,3" fill="hsl(var(--foreground))" opacity="0.4" />
-          <text x="0" y="-2" fill="hsl(var(--foreground))" fontSize="4" fontWeight="700" textAnchor="middle" opacity="0.4">N</text>
+          <line x1="0" y1="8" x2="0" y2="0" stroke="hsl(var(--foreground))" strokeWidth="0.8" opacity="0.6" />
+          <polygon points="-2.5,3.5 0,-0.5 2.5,3.5" fill="hsl(var(--primary))" opacity="0.7" />
+          <text x="0" y="-3" fill="hsl(var(--foreground))" fontSize="4.5" fontWeight="800" textAnchor="middle" opacity="0.6">N</text>
         </g>
       </svg>
 
@@ -743,39 +774,39 @@ export const ConcessionMap = ({
             </div>
 
             {/* Legend */}
-            <div className="pt-1.5 border-t border-border/30">
-              <div className="text-[9px] font-bold text-muted-foreground uppercase tracking-wider mb-1.5">Legenda</div>
+            <div className="pt-2 border-t border-border/40">
+              <div className="text-[10px] font-bold text-foreground uppercase tracking-wider mb-2">Legenda</div>
               {colorMode === "phase" ? (
-                <div className="flex flex-wrap gap-x-3 gap-y-1">
+                <div className="flex flex-wrap gap-x-3 gap-y-1.5">
                   {(["Production", "Development", "Exploration", "Bidding", "Suspended"] as BlockPhase[]).map(phase => (
-                    <div key={phase} className="flex items-center gap-1">
-                      <span className="w-2 h-2 rounded-full" style={{ backgroundColor: phaseColorMap[phase] }} />
-                      <span className="text-[9px] text-muted-foreground">{phase}</span>
+                    <div key={phase} className="flex items-center gap-1.5">
+                      <span className="w-2.5 h-2.5 rounded-sm border border-border/30" style={{ backgroundColor: phaseColorMap[phase] }} />
+                      <span className="text-[10px] text-foreground/80 font-medium">{phase}</span>
                     </div>
                   ))}
                 </div>
               ) : (
-                <div className="flex flex-wrap gap-x-3 gap-y-1">
+                <div className="flex flex-wrap gap-x-3 gap-y-1.5">
                   {([2019, 2020, 2021, 2023, 2025] as BiddingYear[]).map(year => (
-                    <div key={year} className="flex items-center gap-1">
-                      <span className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: biddingYearColors[year] }} />
-                      <span className="text-[9px] text-muted-foreground">{year}</span>
+                    <div key={year} className="flex items-center gap-1.5">
+                      <span className="w-3 h-3 rounded-sm border border-border/30" style={{ backgroundColor: biddingYearColors[year] }} />
+                      <span className="text-[10px] text-foreground/80 font-medium">{year}</span>
                     </div>
                   ))}
                 </div>
               )}
               {/* Concession hatch legend */}
-              <div className="flex items-center gap-1.5 mt-1.5 pt-1 border-t border-border/20">
-                <svg width="12" height="12" className="shrink-0">
+              <div className="flex items-center gap-2 mt-2 pt-1.5 border-t border-border/20">
+                <svg width="14" height="14" className="shrink-0">
                   <defs>
                     <pattern id="legend-hatch" patternUnits="userSpaceOnUse" width="3" height="3" patternTransform="rotate(45)">
                       <line x1="0" y1="0" x2="0" y2="3" stroke="currentColor" strokeWidth="0.6" opacity="0.5" />
                     </pattern>
                   </defs>
-                  <rect width="12" height="12" fill="hsl(var(--muted-foreground) / 0.15)" rx="1" />
-                  <rect width="12" height="12" fill="url(#legend-hatch)" rx="1" className="text-foreground" />
+                  <rect width="14" height="14" fill="hsl(var(--muted-foreground) / 0.15)" rx="1.5" stroke="hsl(var(--border))" strokeWidth="0.5" />
+                  <rect width="14" height="14" fill="url(#legend-hatch)" rx="1.5" className="text-foreground" />
                 </svg>
-                <span className="text-[9px] text-muted-foreground">Concessão Petrolífera Existente</span>
+                <span className="text-[10px] text-foreground/80 font-medium">Concessão Petrolífera Existente</span>
               </div>
             </div>
           </div>
