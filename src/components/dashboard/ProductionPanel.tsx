@@ -188,7 +188,7 @@ export const ProductionPanel = () => {
         </ChartWrapper>
 
         {/* Stacked Bar Historical */}
-        <ChartWrapper title="Histórico de Produção por Blocos" subtitle="kBOPD · 2018–2025">
+        <ChartWrapper title="Histórico de Produção por Blocos (kBOPD · 2018–2025)">
           <ResponsiveContainer width="100%" height={380}>
             <BarChart data={historicalByBlock}>
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
