@@ -83,9 +83,10 @@ export const ProductionPanel = () => {
       if (b.dailyProduction <= 0) return false;
       if (filterOperator !== "all" && b.operator !== filterOperator) return false;
       if (filterBasin !== "all" && b.basin !== filterBasin) return false;
+      if (filterBlock !== "all" && b.id !== filterBlock) return false;
       return true;
     }),
-    [filterOperator, filterBasin]
+    [filterOperator, filterBasin, filterBlock]
   );
 
   const totalProduction = useMemo(() => filteredBlocks.reduce((s, b) => s + b.dailyProduction, 0), [filteredBlocks]);
