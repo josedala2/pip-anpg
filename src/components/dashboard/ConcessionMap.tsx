@@ -196,6 +196,42 @@ const getPolygonCenter = (coords: [number, number][]): [number, number] => {
   return [latSum / coords.length, lonSum / coords.length];
 };
 
+// ── Angola land border (simplified WGS84) ──
+const angolaBorder: [number, number][] = [
+  // Northern border (Congo/DRC)
+  [-4.38, 12.20], [-4.43, 12.58], [-4.80, 12.80], [-5.00, 12.85], [-5.10, 12.88],
+  [-5.25, 12.18], [-5.50, 12.20], [-5.80, 12.10], [-5.85, 12.35],
+  // Coast down to Soyo, then inland border with DRC
+  [-5.80, 13.07], [-5.90, 13.35], [-6.10, 13.50], [-6.30, 14.00], [-6.00, 14.50],
+  [-5.85, 15.00], [-5.85, 16.00], [-5.90, 16.50], [-5.98, 17.10],
+  [-6.20, 17.40], [-6.50, 17.70], [-7.00, 17.90], [-7.30, 18.00],
+  [-7.50, 18.50], [-7.80, 19.00], [-8.00, 19.50], [-8.20, 19.80],
+  [-7.90, 20.50], [-7.50, 21.00], [-7.30, 21.50], [-7.00, 21.80],
+  [-6.50, 22.00], [-6.20, 22.20], [-6.00, 22.50], [-5.90, 23.00],
+  [-5.90, 23.50], [-6.00, 24.00], [-6.30, 24.00],
+  // Eastern border with Zambia
+  [-7.00, 24.00], [-8.00, 24.00], [-8.50, 24.00], [-9.00, 24.00],
+  [-10.00, 24.00], [-11.00, 24.00], [-12.00, 24.00], [-13.00, 24.00],
+  // Southern border with Namibia
+  [-13.00, 23.50], [-13.00, 22.50], [-13.50, 21.00], [-14.50, 19.00],
+  [-16.00, 17.50], [-17.00, 16.50], [-17.26, 15.70], [-17.39, 14.50],
+  [-17.35, 13.50], [-17.26, 12.30], [-17.25, 11.75],
+  // Coast northward
+  [-16.50, 12.00], [-15.80, 11.80], [-15.20, 11.75], [-14.50, 12.10],
+  [-14.00, 12.30], [-13.50, 12.60], [-13.00, 12.90], [-12.50, 13.35],
+  [-12.00, 13.50], [-11.20, 13.20], [-10.50, 12.90], [-9.80, 13.10],
+  [-9.20, 13.35], [-8.80, 13.50], [-8.50, 13.30], [-8.00, 13.15],
+  [-7.50, 13.00], [-7.00, 12.80], [-6.50, 12.60], [-6.15, 12.85],
+  [-5.80, 13.07],
+];
+
+// Cabinda exclave border
+const cabindaBorder: [number, number][] = [
+  [-4.38, 12.20], [-4.30, 12.50], [-4.30, 12.85], [-4.38, 13.10],
+  [-4.55, 13.20], [-4.80, 13.10], [-5.00, 12.85], [-5.10, 12.88],
+  [-5.25, 12.18], [-4.80, 12.15], [-4.55, 12.10], [-4.38, 12.20],
+];
+
 // ── Maritime limits (offset from coastline) ──
 const coastlineCoords: [number, number][] = [
   [-4.45, 12.35], [-4.55, 12.50], [-5.00, 12.45], [-5.50, 12.25], [-5.80, 12.10],
@@ -323,13 +359,31 @@ export const ConcessionMap = ({
       >
         <TileSwitch showSatellite={showSatellite} />
 
+        {/* Angola land borders */}
+        <Polyline
+          positions={angolaBorder}
+          pathOptions={{ color: "#fbbf24", weight: 2, opacity: 0.8, dashArray: undefined }}
+        />
+        <Polyline
+          positions={cabindaBorder}
+          pathOptions={{ color: "#fbbf24", weight: 2, opacity: 0.8, dashArray: undefined }}
+        />
+
         {/* Maritime limits — 12M, 24M, 200M (ZEE), 350M */}
         {showLimits && (
           <>
-            <Polyline positions={limit12M} pathOptions={{ color: "#94a3b8", weight: 0.8, dashArray: "2 3", opacity: 0.4 }} />
-            <Polyline positions={limit24M} pathOptions={{ color: "#94a3b8", weight: 0.8, dashArray: "4 3", opacity: 0.4 }} />
-            <Polyline positions={limit200M} pathOptions={{ color: "#f4323f", weight: 1.5, dashArray: "8 4", opacity: 0.5 }} />
-            <Polyline positions={limit350M} pathOptions={{ color: "#64748b", weight: 1, dashArray: "10 5", opacity: 0.3 }} />
+            <Polyline positions={limit12M} pathOptions={{ color: "#e2e8f0", weight: 1.2, dashArray: "4 4", opacity: 0.6 }}>
+              <LeafletTooltip sticky className="leaflet-depth-label"><span className="text-[9px]">12 M.N.</span></LeafletTooltip>
+            </Polyline>
+            <Polyline positions={limit24M} pathOptions={{ color: "#cbd5e1", weight: 1.5, dashArray: "6 4", opacity: 0.65 }}>
+              <LeafletTooltip sticky className="leaflet-depth-label"><span className="text-[9px]">24 M.N.</span></LeafletTooltip>
+            </Polyline>
+            <Polyline positions={limit200M} pathOptions={{ color: "#ef4444", weight: 2.5, dashArray: "10 5", opacity: 0.75 }}>
+              <LeafletTooltip sticky className="leaflet-depth-label"><span className="text-[9px] font-bold">ZEE (200 M.N.)</span></LeafletTooltip>
+            </Polyline>
+            <Polyline positions={limit350M} pathOptions={{ color: "#a78bfa", weight: 1.8, dashArray: "12 6", opacity: 0.55 }}>
+              <LeafletTooltip sticky className="leaflet-depth-label"><span className="text-[9px]">350 M.N.</span></LeafletTooltip>
+            </Polyline>
           </>
         )}
 
@@ -572,23 +626,28 @@ export const ConcessionMap = ({
                 </svg>
                 <span className="text-[10px] text-foreground/80 font-medium">Concessão Existente</span>
               </div>
+              {/* Land border legend */}
+              <div className="flex items-center gap-2 mt-2 pt-1.5 border-t border-border/20">
+                <div className="w-5 h-0 border-t-2" style={{ borderColor: "#fbbf24" }} />
+                <span className="text-[9px] text-foreground/60">Fronteira Terrestre</span>
+              </div>
               {/* Maritime limits legend */}
               {showLimits && (
-                <div className="mt-2 pt-1.5 border-t border-border/20 space-y-1">
+                <div className="mt-1.5 space-y-1">
                   <div className="flex items-center gap-2">
-                    <div className="w-5 h-0 border-t border-dashed border-gray-400" />
+                    <svg width="20" height="4"><line x1="0" y1="2" x2="20" y2="2" stroke="#e2e8f0" strokeWidth="1.2" strokeDasharray="4 4" /></svg>
                     <span className="text-[9px] text-foreground/60">12 M.N.</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="w-5 h-0 border-t border-dashed border-gray-500" />
+                    <svg width="20" height="4"><line x1="0" y1="2" x2="20" y2="2" stroke="#cbd5e1" strokeWidth="1.5" strokeDasharray="6 4" /></svg>
                     <span className="text-[9px] text-foreground/60">24 M.N.</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="w-5 h-0 border-t-2 border-dashed border-red-400" />
-                    <span className="text-[9px] text-foreground/60">ZEE (200 M.N.)</span>
+                    <svg width="20" height="4"><line x1="0" y1="2" x2="20" y2="2" stroke="#ef4444" strokeWidth="2.5" strokeDasharray="10 5" /></svg>
+                    <span className="text-[9px] text-foreground/60 font-semibold">ZEE (200 M.N.)</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="w-5 h-0 border-t border-dashed border-slate-500" />
+                    <svg width="20" height="4"><line x1="0" y1="2" x2="20" y2="2" stroke="#a78bfa" strokeWidth="1.8" strokeDasharray="12 6" /></svg>
                     <span className="text-[9px] text-foreground/60">350 M.N.</span>
                   </div>
                 </div>
