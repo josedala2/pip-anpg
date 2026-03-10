@@ -247,6 +247,9 @@ export const ProductionPanel = () => {
         </div>
       </ChartWrapper>
 
+      {/* Field-level breakdown */}
+      <FieldProductionBreakdown />
+
       {/* Production Table */}
       <ChartWrapper title="Produção por Bloco — Dados Actuais">
         <div className="overflow-x-auto">
