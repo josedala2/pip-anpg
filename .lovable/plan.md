@@ -1,75 +1,76 @@
 
 
-# Integração de Dados Detalhados do Bloco 0
+## Actualizar Dados de Produção e Criar Aba "Produção"
 
-## Dados Identificados nas Imagens de Referência
+### Contexto
+As imagens de referência da ANPG mostram a distribuição real de produção por bloco (2025) e previsões até 2050. Os dados actuais no sistema não reflectem estas percentagens. Total nacional: ~1,050,000 BOPD.
 
-Analisei as 9 imagens da ANPG e identifiquei as seguintes categorias de dados novos que ainda não existem no modelo:
+### 1. Actualizar `dailyProduction` em `src/data/angolaBlocks.ts`
 
-### 1. Segurança e Ambiente (HSE) — Dados Completamente Novos
-- **Indicadores de segurança** (2021-2025): FAT, LTI, RWC, MTC, FAC, NMI
-- **Taxas**: HHR, TRIR, LTIR por ano
-- **Derrames de óleo**: contagem e volume (bbl)
-- **Concentração de óleo em água** (PPM): 5.17, 5.1, 4.75, 4.66, 6.53
-- **Emissões CO2** (ton CO2eq): ~3.7M (2021) descendo para ~3.1M (2025)
-- **Gás queimado** (MMSCFD): 17.519 → 10.54, com metas
+Baseado na imagem "Distribuição da Produção por Blocos" (slide 6), recalcular para um total de ~1,050,000 BOPD:
 
-### 2. Estado das Instalações — Dados Novos
-- **Área A (Eficiência 85%)**: Takula, GIP-FOX, Mafumeira; problemas de corrosão e obsolescência
-- **Área B (Eficiência 91%)**: Sanha, Sanha LPG, Nembas, EK, WK
-- **Poços activos**: 358 OP, 78 WI, 27 GI
-- **Produção 2025**: 43.539.025 bbls, perdas 2.830.691 bbls, eficiência 88%
-- **Capacidade de produção**: 400.000 BOPD (Malongo Terminal)
-- **Produção média 4T2025**: 119.285 BOPD
-- **Reservas actuais**: 421 MMBO
-- **Início de produção**: 1968
-- **Vida útil**: até 2040 (Mafumeira Sul)
+| Bloco | % (ANPG) | BOPD (novo) | BOPD (actual) |
+|-------|----------|-------------|---------------|
+| Block 0 | 9.36% | 98,280 | 119,285 |
+| Block 2/05 | 0.89% | 9,345 | n/a (novo) |
+| Block 3/05 | 4.77% | 50,085 | 68,000 |
+| Block 3/05A | 4.90% | 51,450 | n/a (novo) |
+| Block 4/05 | 0.27% | 2,835 | 0 |
+| Block 14 | 12.86% | 135,030 | 98,000 |
+| Block 14K | 0.02% | 210 | 0 |
+| Block 15 | 30.97% | 325,185 | 185,000 |
+| Block 15/06 | 11.51% | 120,855 | 200,000 |
+| Block 17 | 17.31% | 181,755 | 320,000 |
+| Block 17/06 | 1.98% | 20,790 | n/a (novo) |
+| Block 18 | 1.44% | 15,120 | 115,000 |
+| Block 31 | 3.48% | 36,540 | 150,000 |
+| Block 32 | 0.10% | 1,050 | 45,000 |
+| FS/FST | 0.08% | 840 | n/a (novo) |
 
-### 3. Visão Económica — Dados Novos
-- **NPV Fullcycle**: GE 17% (54.410), Impostos 83% (272.177)
-- **NPV Point Forward**: GE 37% (1.840 MMUSD), Conc 63% (3.098 MMUSD)
-- **Cash flows negativos recorrentes para o GE**
-- **Observações**: bloco maduro, infraestruturas envelhecidas
+- Actualizar `dailyProduction` e `productionHistory` de cada bloco existente.
+- Adicionar blocos em falta (Block 2/05, 3/05A, 17/06, FS/FST) como novos entries no dataset ou mapear a blocos existentes onde aplicável.
+- Actualizar `OverviewSidebar` para recalcular dinamicamente as bacias em vez de usar valores hardcoded.
 
-### 4. Cenários de Revitalização — Dados Novos
-- **Cenário 1**: Continuidade do GE com incentivos fiscais
-- **Cenário 2**: Investidor âncora para exploração
-- **Cenário 3**: Novo investidor em áreas livres (modelo CPP)
+### 2. Adicionar dados de previsão a médio-longo prazo
 
-### 5. Ajustes aos Dados Existentes
-- **dailyProduction**: atualizar de 142.000 para 119.285 (dado real 4T2025)
-- **estimatedReserves**: atualizar de 890 para 421 MMBO (dado real)
-- **Produção acumulada**: 290.043.686.705 BO (até Dez 2025)
-- **investmentPlan**: adicionar categorias "Administração e Serviços" e linha "Cash Call Sonangol"
-- **Prospects**: atualizar com tabela real (105-B, 131-A, 107-C, 83-N, 71-T, 70-G, 95-I, 79-F, 68-D, 80-J) com distâncias ao FPSO
+Novo campo opcional na interface `OilBlock`:
+```typescript
+productionForecast?: { year: number; base: number; withFID: number; withoutFID: number }[];
+```
 
-## Plano de Implementação
+Dados agregados nacionais (da imagem 2-3) para uso no painel:
+- Previsão 2026-2050, pico 1.6 MMbopd @ 2037
+- Médias: 2025-2030: 1.0 MMbopd; 2031-2040: 1.4 MMbopd; 2041-2050: 0.8 MMbopd
 
-### Ficheiro 1: `src/data/angolaBlocks.ts` — Novos tipos e dados
+### 3. Criar componente `ProductionPanel` (`src/components/dashboard/ProductionPanel.tsx`)
 
-**Novas interfaces**:
-- `HSEData` — indicadores de segurança por ano (FAT, LTI, RWC, MTC, FAC, NMI, HHR, TRIR, LTIR)
-- `EnvironmentalData` — derrames, óleo em água, emissões, gás queimado por ano
-- `FacilityData` — eficiência por área, plataformas, poços activos, capacidades
-- `EconomicVision` — NPV fullcycle, point forward, observações estratégicas
-- `RevitalizationScenario` — cenários com propostas, incentivos e compromissos
+Novo painel com as seguintes secções:
 
-**Actualizar `OilBlock`** com campos opcionais: `hseData?`, `environmentalData?`, `facilityData?`, `economicVision?`, `revitalizationScenarios?`
+**A. KPIs de Produção** -- Total nacional BOPD, variação YoY, meta 2026, taxa de cumprimento.
 
-**Actualizar Block 0**:
-- Corrigir `dailyProduction` para 119.285
-- Corrigir `estimatedReserves` para 421
-- Adicionar production acumulada
-- Substituir prospects pela tabela real da ANPG
-- Popular todos os novos campos com dados das imagens
+**B. Distribuição por Blocos (Pie Chart)** -- Replicar o gráfico da ANPG com percentagens por bloco. Recharts `PieChart` com labels externas.
 
-### Ficheiro 2: `src/pages/BlockPage.tsx` — Novas secções de visualização
+**C. Distribuição por Campo/Instalação (Treemap ou Pie)** -- Dados dos campos dentro de cada bloco (usando `fields` existentes).
 
-Adicionar novas abas ou secções nas abas existentes:
-- **Aba "Visão Geral"**: integrar dados de instalações (eficiência, poços, plataformas)
-- **Aba "Financeiro"**: adicionar NPV charts (pie charts), cash flow projection
-- **Nova aba "HSE & Ambiente"**: tabela de indicadores de segurança, gráficos de derrames/emissões/gás queimado
-- **Aba "Exploração"**: adicionar secção de Desafios e Cenários de Revitalização
+**D. Histórico e Previsão de Produção (Stacked Bar)** -- Gráfico stacked bar inspirado no slide 1 da ANPG, mostrando contribuição por bloco ao longo dos anos (histórico + projecção).
 
-### Estimativa: 4 ficheiros, ~500 linhas novas
+**E. Previsão Médio-Longo Prazo** -- Gráfico com 3 layers: Produção de Base, Oportunidades com FID, Oportunidades sem FID (inspirado nos slides 2-3). Referência line a 1M BOPD. Notas de pressupostos.
+
+**F. Tabela de Produção por Bloco** -- Tabela detalhada com: Bloco, Operador, Produção Actual, % Total, Bacia, Fase. Ordenável e filtrável.
+
+### 4. Registar aba na navegação (`src/pages/Index.tsx`)
+
+- Adicionar "Produção" ao array `panels` (posição 2, entre "Blocos & Concessões" e "Exploração").
+- Renderizar `<ProductionPanel />` quando `activePanel === 2`.
+- Ajustar índices dos painéis seguintes.
+
+### 5. Actualizar `OverviewSidebar`
+
+- Substituir dados hardcoded de `basins` e `trendData` por cálculos dinâmicos a partir de `oilBlocks`.
+
+### Ficheiros a modificar/criar:
+- `src/data/angolaBlocks.ts` -- actualizar dailyProduction, adicionar blocos em falta
+- `src/components/dashboard/ProductionPanel.tsx` -- novo componente
+- `src/pages/Index.tsx` -- adicionar aba
+- `src/components/dashboard/OverviewSidebar.tsx` -- dados dinâmicos
 
