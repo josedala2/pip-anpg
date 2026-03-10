@@ -155,7 +155,7 @@ export const ProductionPanel = () => {
       {/* Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Pie Distribution */}
-        <ChartWrapper title="Distribuição da Produção por Blocos" subtitle="Percentagem sobre total nacional · 2025">
+        <ChartWrapper title="Distribuição da Produção por Blocos · 2025">
           <ResponsiveContainer width="100%" height={380}>
             <PieChart>
               <Pie
