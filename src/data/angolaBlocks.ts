@@ -1555,7 +1555,7 @@ export const oilBlocks: OilBlock[] = [
       { name: "NIS-NAFTASGAS", share: 5.0 },
       { name: "INA", share: 4.0 },
     ],
-    dailyProduction: 68000,
+    dailyProduction: 50085,
     estimatedReserves: 350,
     accumulatedInvestment: 2200,
     plannedInvestment: 2400,
