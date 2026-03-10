@@ -394,19 +394,22 @@ export const ConcessionMap = ({
           </>
         )}
 
-        {/* Landmass */}
-        <path
-          d={`${toSvgPath(coastlinePoints)} ${toSvgPath(borderPoints.slice().reverse())} Z`}
-          fill="hsl(var(--secondary) / 0.3)"
-          stroke="hsl(var(--border))"
-          strokeWidth="0.5"
-        />
-
-        {/* Cabinda enclave */}
-        <path d={toSvgPath(cabindaPoints)} fill="hsl(var(--secondary) / 0.35)" stroke="hsl(var(--border))" strokeWidth="0.4" />
-
-        {/* Coastline highlight */}
-        <path d={toSvgPath(coastlinePoints)} fill="none" stroke="hsl(var(--primary) / 0.3)" strokeWidth="0.7" />
+        {/* Landmass — hidden on satellite */}
+        {!showSatellite && (
+          <>
+            <path
+              d={`${toSvgPath(coastlinePoints)} ${toSvgPath(borderPoints.slice().reverse())} Z`}
+              fill="hsl(var(--secondary) / 0.3)"
+              stroke="hsl(var(--border))"
+              strokeWidth="0.5"
+            />
+            <path d={toSvgPath(cabindaPoints)} fill="hsl(var(--secondary) / 0.35)" stroke="hsl(var(--border))" strokeWidth="0.4" />
+            <path d={toSvgPath(coastlinePoints)} fill="none" stroke="hsl(var(--primary) / 0.3)" strokeWidth="0.7" />
+          </>
+        )}
+        {showSatellite && (
+          <path d={toSvgPath(coastlinePoints)} fill="none" stroke="white" strokeWidth="0.5" opacity="0.4" />
+        )}
 
         {/* Natural reserves */}
         {showReserves && naturalReserves.map(r => {
