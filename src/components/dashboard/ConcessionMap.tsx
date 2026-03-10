@@ -1,6 +1,8 @@
 import { useState, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { type OilBlock, type BlockPhase } from "@/data/angolaBlocks";
+import { Layers, Map, Satellite, Mountain, Waves, TreePine, ChevronDown, ChevronUp } from "lucide-react";
+import angolaSatellite from "@/assets/angola-satellite.jpg";
 
 interface ConcessionMapProps {
   blocks: OilBlock[];
@@ -309,7 +311,13 @@ export const ConcessionMap = ({
   const [tooltip, setTooltip] = useState<{ block: OilBlock; x: number; y: number } | null>(null);
   const [showLimits, setShowLimits] = useState(true);
   const [showReserves, setShowReserves] = useState(true);
+  const [showCities, setShowCities] = useState(true);
+  const [showBasins, setShowBasins] = useState(true);
+  const [showGrid, setShowGrid] = useState(true);
+  const [showBlocks, setShowBlocks] = useState(true);
+  const [showSatellite, setShowSatellite] = useState(false);
   const [colorMode, setColorMode] = useState<"phase" | "bidding">("phase");
+  const [layersPanelOpen, setLayersPanelOpen] = useState(false);
 
   const blockPositions = useMemo(() => {
     const positions: Record<string, { x: number; y: number }> = {};
@@ -345,8 +353,24 @@ export const ConcessionMap = ({
           <pattern id="reserve-hatch" patternUnits="userSpaceOnUse" width="4" height="4">
             <path d="M0,4 l4,-4" stroke="hsl(var(--muted-foreground))" strokeWidth="0.5" opacity="0.3" />
           </pattern>
+          <clipPath id="map-clip">
+            <rect x="-10" y="-5" width={VB_W + 20} height={VB_H + 10} />
+          </clipPath>
         </defs>
-        <rect x="-10" y="-5" width={VB_W + 20} height={VB_H + 10} fill="url(#ocean-grad)" />
+
+        {/* Background: satellite or gradient */}
+        {showSatellite ? (
+          <image
+            href={angolaSatellite}
+            x="-10" y="-5"
+            width={VB_W + 20} height={VB_H + 10}
+            preserveAspectRatio="xMidYMid slice"
+            opacity="0.85"
+            clipPath="url(#map-clip)"
+          />
+        ) : (
+          <rect x="-10" y="-5" width={VB_W + 20} height={VB_H + 10} fill="url(#ocean-grad)" />
+        )}
 
         {/* Maritime limits */}
         {showLimits && (
@@ -370,19 +394,22 @@ export const ConcessionMap = ({
           </>
         )}
 
-        {/* Landmass */}
-        <path
-          d={`${toSvgPath(coastlinePoints)} ${toSvgPath(borderPoints.slice().reverse())} Z`}
-          fill="hsl(var(--secondary) / 0.3)"
-          stroke="hsl(var(--border))"
-          strokeWidth="0.5"
-        />
-
-        {/* Cabinda enclave */}
-        <path d={toSvgPath(cabindaPoints)} fill="hsl(var(--secondary) / 0.35)" stroke="hsl(var(--border))" strokeWidth="0.4" />
-
-        {/* Coastline highlight */}
-        <path d={toSvgPath(coastlinePoints)} fill="none" stroke="hsl(var(--primary) / 0.3)" strokeWidth="0.7" />
+        {/* Landmass — hidden on satellite */}
+        {!showSatellite && (
+          <>
+            <path
+              d={`${toSvgPath(coastlinePoints)} ${toSvgPath(borderPoints.slice().reverse())} Z`}
+              fill="hsl(var(--secondary) / 0.3)"
+              stroke="hsl(var(--border))"
+              strokeWidth="0.5"
+            />
+            <path d={toSvgPath(cabindaPoints)} fill="hsl(var(--secondary) / 0.35)" stroke="hsl(var(--border))" strokeWidth="0.4" />
+            <path d={toSvgPath(coastlinePoints)} fill="none" stroke="hsl(var(--primary) / 0.3)" strokeWidth="0.7" />
+          </>
+        )}
+        {showSatellite && (
+          <path d={toSvgPath(coastlinePoints)} fill="none" stroke="white" strokeWidth="0.5" opacity="0.4" />
+        )}
 
         {/* Natural reserves */}
         {showReserves && naturalReserves.map(r => {
@@ -401,13 +428,15 @@ export const ConcessionMap = ({
         })}
 
         {/* Cities */}
-        {cities.map(city => {
+        {showCities && cities.map(city => {
           const p = geoToSvg(city.lon, city.lat);
           const isMajor = city.size === "major";
+          const textColor = showSatellite ? "white" : "hsl(var(--foreground))";
           return (
             <g key={city.name}>
-              <circle cx={p.x} cy={p.y} r={isMajor ? 1.5 : 0.8} fill="hsl(var(--foreground))" opacity={isMajor ? 0.5 : 0.3} />
-              <text x={p.x + 2.5} y={p.y + 1} fill="hsl(var(--foreground))" fontSize={isMajor ? 4.5 : 3} fontWeight={isMajor ? "600" : "400"} opacity={isMajor ? 0.6 : 0.4}>
+              <circle cx={p.x} cy={p.y} r={isMajor ? 1.5 : 0.8} fill={textColor} opacity={isMajor ? 0.7 : 0.5} />
+              <text x={p.x + 2.5} y={p.y + 1} fill={textColor} fontSize={isMajor ? 4.5 : 3} fontWeight={isMajor ? "600" : "400"} opacity={isMajor ? 0.8 : 0.6}
+                stroke={showSatellite ? "rgba(0,0,0,0.5)" : "none"} strokeWidth={showSatellite ? "0.3" : "0"}>
                 {city.name}
               </text>
             </g>
@@ -415,26 +444,26 @@ export const ConcessionMap = ({
         })}
 
         {/* Basin labels */}
-        {basins.map(b => {
+        {showBasins && basins.map(b => {
           const p = geoToSvg(b.lon, b.lat);
           return b.name.split("\n").map((line, i) => (
-            <text key={`${b.name}-${i}`} x={p.x} y={p.y + i * 5} fill="hsl(var(--primary))" fontSize="4" fontWeight="600" opacity="0.2" textAnchor="middle">
+            <text key={`${b.name}-${i}`} x={p.x} y={p.y + i * 5} fill={showSatellite ? "white" : "hsl(var(--primary))"} fontSize="4" fontWeight="600" opacity={showSatellite ? 0.5 : 0.2} textAnchor="middle">
               {line}
             </text>
           ));
         })}
 
         {/* Depth zone labels */}
-        {depthZones.map(z => {
+        {showBasins && depthZones.map(z => {
           const p = geoToSvg(z.lon, z.lat);
           return (
-            <text key={z.name} x={p.x} y={p.y} fill="hsl(var(--muted-foreground))" fontSize="3.5" fontWeight="500" opacity="0.2" textAnchor="middle"
+            <text key={z.name} x={p.x} y={p.y} fill={showSatellite ? "white" : "hsl(var(--muted-foreground))"} fontSize="3.5" fontWeight="500" opacity={showSatellite ? 0.4 : 0.2} textAnchor="middle"
               transform={`rotate(-90, ${p.x}, ${p.y})`}>{z.name}</text>
           );
         })}
 
         {/* Block markers — all rendered as rectangles matching PDF */}
-        {blocks.map((block) => {
+        {showBlocks && blocks.map((block) => {
           const pos = blockPositions[block.id];
           if (!pos) return null;
 
@@ -522,26 +551,30 @@ export const ConcessionMap = ({
         })}
 
         {/* Grid lines (graticule) */}
-        {[8, 9, 10, 11, 12, 13, 14, 15].map(lon => {
-          const p1 = geoToSvg(lon, LAT_MIN);
-          const p2 = geoToSvg(lon, LAT_MAX);
-          return <line key={`lon-${lon}`} x1={p1.x} y1={p1.y} x2={p2.x} y2={p2.y} stroke="hsl(var(--border))" strokeWidth="0.15" opacity="0.3" />;
-        })}
-        {[-5, -6, -7, -8, -9, -10, -11, -12, -13, -14, -15, -16, -17].map(lat => {
-          const p1 = geoToSvg(LON_MIN, lat);
-          const p2 = geoToSvg(LON_MAX, lat);
-          return <line key={`lat-${lat}`} x1={p1.x} y1={p1.y} x2={p2.x} y2={p2.y} stroke="hsl(var(--border))" strokeWidth="0.15" opacity="0.3" />;
-        })}
+        {showGrid && (
+          <>
+            {[8, 9, 10, 11, 12, 13, 14, 15].map(lon => {
+              const p1 = geoToSvg(lon, LAT_MIN);
+              const p2 = geoToSvg(lon, LAT_MAX);
+              return <line key={`lon-${lon}`} x1={p1.x} y1={p1.y} x2={p2.x} y2={p2.y} stroke={showSatellite ? "white" : "hsl(var(--border))"} strokeWidth="0.15" opacity="0.25" />;
+            })}
+            {[-5, -6, -7, -8, -9, -10, -11, -12, -13, -14, -15, -16, -17].map(lat => {
+              const p1 = geoToSvg(LON_MIN, lat);
+              const p2 = geoToSvg(LON_MAX, lat);
+              return <line key={`lat-${lat}`} x1={p1.x} y1={p1.y} x2={p2.x} y2={p2.y} stroke={showSatellite ? "white" : "hsl(var(--border))"} strokeWidth="0.15" opacity="0.25" />;
+            })}
 
-        {/* Coordinate labels */}
-        {[8, 10, 12, 14].map(lon => {
-          const p = geoToSvg(lon, LAT_MIN);
-          return <text key={`lon-l-${lon}`} x={p.x} y={-1} fill="hsl(var(--muted-foreground))" fontSize="3" textAnchor="middle" opacity="0.4">{lon}°E</text>;
-        })}
-        {[-5, -7.5, -10, -12.5, -15, -17].map(lat => {
-          const p = geoToSvg(LON_MAX, lat);
-          return <text key={`lat-l-${lat}`} x={p.x + 8} y={p.y + 1} fill="hsl(var(--muted-foreground))" fontSize="3" opacity="0.4">{Math.abs(lat)}°S</text>;
-        })}
+            {/* Coordinate labels */}
+            {[8, 10, 12, 14].map(lon => {
+              const p = geoToSvg(lon, LAT_MIN);
+              return <text key={`lon-l-${lon}`} x={p.x} y={-1} fill={showSatellite ? "white" : "hsl(var(--muted-foreground))"} fontSize="3" textAnchor="middle" opacity="0.5">{lon}°E</text>;
+            })}
+            {[-5, -7.5, -10, -12.5, -15, -17].map(lat => {
+              const p = geoToSvg(LON_MAX, lat);
+              return <text key={`lat-l-${lat}`} x={p.x + 8} y={p.y + 1} fill={showSatellite ? "white" : "hsl(var(--muted-foreground))"} fontSize="3" opacity="0.5">{Math.abs(lat)}°S</text>;
+            })}
+          </>
+        )}
 
         {/* Scale bar */}
         {(() => {
@@ -611,55 +644,112 @@ export const ConcessionMap = ({
         </div>
       )}
 
-      {/* Legend */}
-      <div className="absolute top-3 left-3 3xl:top-4 3xl:left-4 glass-card p-2.5 3xl:p-3 rounded-lg z-20 max-w-[220px]">
-        {/* Color mode toggle */}
-        <div className="flex gap-1 mb-2">
-          <button
-            onClick={() => setColorMode("phase")}
-            className={`text-[8px] px-1.5 py-0.5 rounded transition-colors ${colorMode === "phase" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-secondary"}`}
-          >
-            Fase
-          </button>
-          <button
-            onClick={() => setColorMode("bidding")}
-            className={`text-[8px] px-1.5 py-0.5 rounded transition-colors ${colorMode === "bidding" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-secondary"}`}
-          >
-            Licitação
-          </button>
-        </div>
+      {/* Layers Panel */}
+      <div className="absolute top-3 left-3 3xl:top-4 3xl:left-4 z-20 flex flex-col gap-2">
+        {/* Layer toggle button */}
+        <button
+          onClick={() => setLayersPanelOpen(!layersPanelOpen)}
+          className="glass-card p-2 rounded-lg flex items-center gap-1.5 hover:bg-secondary/60 transition-colors"
+          title="Camadas"
+        >
+          <Layers className="w-4 h-4 text-foreground" />
+          <span className="text-[10px] font-semibold text-foreground">Camadas</span>
+          {layersPanelOpen ? <ChevronUp className="w-3 h-3 text-muted-foreground" /> : <ChevronDown className="w-3 h-3 text-muted-foreground" />}
+        </button>
 
-        {colorMode === "phase" ? (
-          <div className="flex flex-wrap gap-x-3 gap-y-1">
-            {(["Production", "Development", "Exploration", "Bidding", "Suspended"] as BlockPhase[]).map(phase => (
-              <div key={phase} className="flex items-center gap-1">
-                <span className="w-2 h-2 rounded-full" style={{ backgroundColor: phaseColorMap[phase] }} />
-                <span className="text-[9px] text-muted-foreground">{phase}</span>
+        {layersPanelOpen && (
+          <div className="glass-card p-3 rounded-lg min-w-[200px] space-y-3 animate-in fade-in slide-in-from-top-2 duration-200">
+            {/* Base map */}
+            <div>
+              <div className="text-[9px] font-bold text-muted-foreground uppercase tracking-wider mb-1.5">Mapa Base</div>
+              <div className="flex gap-1">
+                <button
+                  onClick={() => setShowSatellite(false)}
+                  className={`flex items-center gap-1.5 px-2 py-1.5 rounded text-[10px] transition-colors ${!showSatellite ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-secondary"}`}
+                >
+                  <Map className="w-3 h-3" />
+                  Vectorial
+                </button>
+                <button
+                  onClick={() => setShowSatellite(true)}
+                  className={`flex items-center gap-1.5 px-2 py-1.5 rounded text-[10px] transition-colors ${showSatellite ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-secondary"}`}
+                >
+                  <Satellite className="w-3 h-3" />
+                  Satélite
+                </button>
               </div>
-            ))}
-          </div>
-        ) : (
-          <div className="flex flex-wrap gap-x-3 gap-y-1">
-            {([2019, 2020, 2021, 2023, 2025] as BiddingYear[]).map(year => (
-              <div key={year} className="flex items-center gap-1">
-                <span className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: biddingYearColors[year] }} />
-                <span className="text-[9px] text-muted-foreground">{year}</span>
+            </div>
+
+            {/* Color mode */}
+            <div>
+              <div className="text-[9px] font-bold text-muted-foreground uppercase tracking-wider mb-1.5">Coloração</div>
+              <div className="flex gap-1">
+                <button
+                  onClick={() => setColorMode("phase")}
+                  className={`text-[10px] px-2 py-1 rounded transition-colors ${colorMode === "phase" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-secondary"}`}
+                >
+                  Fase
+                </button>
+                <button
+                  onClick={() => setColorMode("bidding")}
+                  className={`text-[10px] px-2 py-1 rounded transition-colors ${colorMode === "bidding" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-secondary"}`}
+                >
+                  Licitação
+                </button>
               </div>
-            ))}
+            </div>
+
+            {/* Layer toggles */}
+            <div>
+              <div className="text-[9px] font-bold text-muted-foreground uppercase tracking-wider mb-1.5">Camadas</div>
+              <div className="flex flex-col gap-1.5">
+                {([
+                  { key: "blocks", label: "Blocos", icon: <Mountain className="w-3 h-3" />, checked: showBlocks, set: setShowBlocks },
+                  { key: "limits", label: "Limites Offshore", icon: <Waves className="w-3 h-3" />, checked: showLimits, set: setShowLimits },
+                  { key: "cities", label: "Cidades", icon: <Map className="w-3 h-3" />, checked: showCities, set: setShowCities },
+                  { key: "basins", label: "Bacias & Zonas", icon: <Mountain className="w-3 h-3" />, checked: showBasins, set: setShowBasins },
+                  { key: "reserves", label: "Reservas Naturais", icon: <TreePine className="w-3 h-3" />, checked: showReserves, set: setShowReserves },
+                  { key: "grid", label: "Grelha (Graticule)", icon: <Layers className="w-3 h-3" />, checked: showGrid, set: setShowGrid },
+                ] as const).map(layer => (
+                  <label key={layer.key} className="flex items-center gap-2 text-[10px] text-foreground cursor-pointer hover:bg-secondary/40 rounded px-1 py-0.5 transition-colors">
+                    <input
+                      type="checkbox"
+                      checked={layer.checked}
+                      onChange={e => layer.set(e.target.checked)}
+                      className="w-3 h-3 rounded accent-primary"
+                    />
+                    {layer.icon}
+                    <span>{layer.label}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            {/* Legend */}
+            <div className="pt-1.5 border-t border-border/30">
+              <div className="text-[9px] font-bold text-muted-foreground uppercase tracking-wider mb-1.5">Legenda</div>
+              {colorMode === "phase" ? (
+                <div className="flex flex-wrap gap-x-3 gap-y-1">
+                  {(["Production", "Development", "Exploration", "Bidding", "Suspended"] as BlockPhase[]).map(phase => (
+                    <div key={phase} className="flex items-center gap-1">
+                      <span className="w-2 h-2 rounded-full" style={{ backgroundColor: phaseColorMap[phase] }} />
+                      <span className="text-[9px] text-muted-foreground">{phase}</span>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="flex flex-wrap gap-x-3 gap-y-1">
+                  {([2019, 2020, 2021, 2023, 2025] as BiddingYear[]).map(year => (
+                    <div key={year} className="flex items-center gap-1">
+                      <span className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: biddingYearColors[year] }} />
+                      <span className="text-[9px] text-muted-foreground">{year}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         )}
-
-        {/* Layer toggles */}
-        <div className="mt-2 pt-1.5 border-t border-border/30 flex flex-col gap-1">
-          <label className="flex items-center gap-1.5 text-[9px] text-muted-foreground cursor-pointer">
-            <input type="checkbox" checked={showLimits} onChange={e => setShowLimits(e.target.checked)} className="w-2.5 h-2.5 rounded" />
-            Limites Offshore
-          </label>
-          <label className="flex items-center gap-1.5 text-[9px] text-muted-foreground cursor-pointer">
-            <input type="checkbox" checked={showReserves} onChange={e => setShowReserves(e.target.checked)} className="w-2.5 h-2.5 rounded" />
-            Reservas Naturais
-          </label>
-        </div>
       </div>
 
       {/* Attribution */}
