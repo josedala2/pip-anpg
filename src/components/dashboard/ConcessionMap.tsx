@@ -428,13 +428,15 @@ export const ConcessionMap = ({
         })}
 
         {/* Cities */}
-        {cities.map(city => {
+        {showCities && cities.map(city => {
           const p = geoToSvg(city.lon, city.lat);
           const isMajor = city.size === "major";
+          const textColor = showSatellite ? "white" : "hsl(var(--foreground))";
           return (
             <g key={city.name}>
-              <circle cx={p.x} cy={p.y} r={isMajor ? 1.5 : 0.8} fill="hsl(var(--foreground))" opacity={isMajor ? 0.5 : 0.3} />
-              <text x={p.x + 2.5} y={p.y + 1} fill="hsl(var(--foreground))" fontSize={isMajor ? 4.5 : 3} fontWeight={isMajor ? "600" : "400"} opacity={isMajor ? 0.6 : 0.4}>
+              <circle cx={p.x} cy={p.y} r={isMajor ? 1.5 : 0.8} fill={textColor} opacity={isMajor ? 0.7 : 0.5} />
+              <text x={p.x + 2.5} y={p.y + 1} fill={textColor} fontSize={isMajor ? 4.5 : 3} fontWeight={isMajor ? "600" : "400"} opacity={isMajor ? 0.8 : 0.6}
+                stroke={showSatellite ? "rgba(0,0,0,0.5)" : "none"} strokeWidth={showSatellite ? "0.3" : "0"}>
                 {city.name}
               </text>
             </g>
@@ -442,26 +444,26 @@ export const ConcessionMap = ({
         })}
 
         {/* Basin labels */}
-        {basins.map(b => {
+        {showBasins && basins.map(b => {
           const p = geoToSvg(b.lon, b.lat);
           return b.name.split("\n").map((line, i) => (
-            <text key={`${b.name}-${i}`} x={p.x} y={p.y + i * 5} fill="hsl(var(--primary))" fontSize="4" fontWeight="600" opacity="0.2" textAnchor="middle">
+            <text key={`${b.name}-${i}`} x={p.x} y={p.y + i * 5} fill={showSatellite ? "white" : "hsl(var(--primary))"} fontSize="4" fontWeight="600" opacity={showSatellite ? 0.5 : 0.2} textAnchor="middle">
               {line}
             </text>
           ));
         })}
 
         {/* Depth zone labels */}
-        {depthZones.map(z => {
+        {showBasins && depthZones.map(z => {
           const p = geoToSvg(z.lon, z.lat);
           return (
-            <text key={z.name} x={p.x} y={p.y} fill="hsl(var(--muted-foreground))" fontSize="3.5" fontWeight="500" opacity="0.2" textAnchor="middle"
+            <text key={z.name} x={p.x} y={p.y} fill={showSatellite ? "white" : "hsl(var(--muted-foreground))"} fontSize="3.5" fontWeight="500" opacity={showSatellite ? 0.4 : 0.2} textAnchor="middle"
               transform={`rotate(-90, ${p.x}, ${p.y})`}>{z.name}</text>
           );
         })}
 
         {/* Block markers — all rendered as rectangles matching PDF */}
-        {blocks.map((block) => {
+        {showBlocks && blocks.map((block) => {
           const pos = blockPositions[block.id];
           if (!pos) return null;
 
