@@ -551,26 +551,30 @@ export const ConcessionMap = ({
         })}
 
         {/* Grid lines (graticule) */}
-        {[8, 9, 10, 11, 12, 13, 14, 15].map(lon => {
-          const p1 = geoToSvg(lon, LAT_MIN);
-          const p2 = geoToSvg(lon, LAT_MAX);
-          return <line key={`lon-${lon}`} x1={p1.x} y1={p1.y} x2={p2.x} y2={p2.y} stroke="hsl(var(--border))" strokeWidth="0.15" opacity="0.3" />;
-        })}
-        {[-5, -6, -7, -8, -9, -10, -11, -12, -13, -14, -15, -16, -17].map(lat => {
-          const p1 = geoToSvg(LON_MIN, lat);
-          const p2 = geoToSvg(LON_MAX, lat);
-          return <line key={`lat-${lat}`} x1={p1.x} y1={p1.y} x2={p2.x} y2={p2.y} stroke="hsl(var(--border))" strokeWidth="0.15" opacity="0.3" />;
-        })}
+        {showGrid && (
+          <>
+            {[8, 9, 10, 11, 12, 13, 14, 15].map(lon => {
+              const p1 = geoToSvg(lon, LAT_MIN);
+              const p2 = geoToSvg(lon, LAT_MAX);
+              return <line key={`lon-${lon}`} x1={p1.x} y1={p1.y} x2={p2.x} y2={p2.y} stroke={showSatellite ? "white" : "hsl(var(--border))"} strokeWidth="0.15" opacity="0.25" />;
+            })}
+            {[-5, -6, -7, -8, -9, -10, -11, -12, -13, -14, -15, -16, -17].map(lat => {
+              const p1 = geoToSvg(LON_MIN, lat);
+              const p2 = geoToSvg(LON_MAX, lat);
+              return <line key={`lat-${lat}`} x1={p1.x} y1={p1.y} x2={p2.x} y2={p2.y} stroke={showSatellite ? "white" : "hsl(var(--border))"} strokeWidth="0.15" opacity="0.25" />;
+            })}
 
-        {/* Coordinate labels */}
-        {[8, 10, 12, 14].map(lon => {
-          const p = geoToSvg(lon, LAT_MIN);
-          return <text key={`lon-l-${lon}`} x={p.x} y={-1} fill="hsl(var(--muted-foreground))" fontSize="3" textAnchor="middle" opacity="0.4">{lon}°E</text>;
-        })}
-        {[-5, -7.5, -10, -12.5, -15, -17].map(lat => {
-          const p = geoToSvg(LON_MAX, lat);
-          return <text key={`lat-l-${lat}`} x={p.x + 8} y={p.y + 1} fill="hsl(var(--muted-foreground))" fontSize="3" opacity="0.4">{Math.abs(lat)}°S</text>;
-        })}
+            {/* Coordinate labels */}
+            {[8, 10, 12, 14].map(lon => {
+              const p = geoToSvg(lon, LAT_MIN);
+              return <text key={`lon-l-${lon}`} x={p.x} y={-1} fill={showSatellite ? "white" : "hsl(var(--muted-foreground))"} fontSize="3" textAnchor="middle" opacity="0.5">{lon}°E</text>;
+            })}
+            {[-5, -7.5, -10, -12.5, -15, -17].map(lat => {
+              const p = geoToSvg(LON_MAX, lat);
+              return <text key={`lat-l-${lat}`} x={p.x + 8} y={p.y + 1} fill={showSatellite ? "white" : "hsl(var(--muted-foreground))"} fontSize="3" opacity="0.5">{Math.abs(lat)}°S</text>;
+            })}
+          </>
+        )}
 
         {/* Scale bar */}
         {(() => {
