@@ -1792,7 +1792,7 @@ export const oilBlocks: OilBlock[] = [
     operator: "Ranger",
     partners: ["Sonangol UEE", "BHP Petroleum Pty Lda"],
     basin: "Kwanza",
-    phase: "Suspended",
+    phase: "Production",
     waterDepth: "Shallow Water",
     contractDate: "1991-09-10",
     concession: [
@@ -1800,7 +1800,7 @@ export const oilBlocks: OilBlock[] = [
       { name: "SONANGOL UEE", share: 35.0 },
       { name: "BHP PETROLEUM PTY LDA", share: 20.0 },
     ],
-    dailyProduction: 0,
+    dailyProduction: 2835,
     estimatedReserves: 60,
     accumulatedInvestment: 290,
     plannedInvestment: 420,
