@@ -359,13 +359,31 @@ export const ConcessionMap = ({
       >
         <TileSwitch showSatellite={showSatellite} />
 
+        {/* Angola land borders */}
+        <Polyline
+          positions={angolaBorder}
+          pathOptions={{ color: "#fbbf24", weight: 2, opacity: 0.8, dashArray: undefined }}
+        />
+        <Polyline
+          positions={cabindaBorder}
+          pathOptions={{ color: "#fbbf24", weight: 2, opacity: 0.8, dashArray: undefined }}
+        />
+
         {/* Maritime limits — 12M, 24M, 200M (ZEE), 350M */}
         {showLimits && (
           <>
-            <Polyline positions={limit12M} pathOptions={{ color: "#94a3b8", weight: 0.8, dashArray: "2 3", opacity: 0.4 }} />
-            <Polyline positions={limit24M} pathOptions={{ color: "#94a3b8", weight: 0.8, dashArray: "4 3", opacity: 0.4 }} />
-            <Polyline positions={limit200M} pathOptions={{ color: "#f4323f", weight: 1.5, dashArray: "8 4", opacity: 0.5 }} />
-            <Polyline positions={limit350M} pathOptions={{ color: "#64748b", weight: 1, dashArray: "10 5", opacity: 0.3 }} />
+            <Polyline positions={limit12M} pathOptions={{ color: "#e2e8f0", weight: 1.2, dashArray: "4 4", opacity: 0.6 }}>
+              <LeafletTooltip sticky className="leaflet-depth-label"><span className="text-[9px]">12 M.N.</span></LeafletTooltip>
+            </Polyline>
+            <Polyline positions={limit24M} pathOptions={{ color: "#cbd5e1", weight: 1.5, dashArray: "6 4", opacity: 0.65 }}>
+              <LeafletTooltip sticky className="leaflet-depth-label"><span className="text-[9px]">24 M.N.</span></LeafletTooltip>
+            </Polyline>
+            <Polyline positions={limit200M} pathOptions={{ color: "#ef4444", weight: 2.5, dashArray: "10 5", opacity: 0.75 }}>
+              <LeafletTooltip sticky className="leaflet-depth-label"><span className="text-[9px] font-bold">ZEE (200 M.N.)</span></LeafletTooltip>
+            </Polyline>
+            <Polyline positions={limit350M} pathOptions={{ color: "#a78bfa", weight: 1.8, dashArray: "12 6", opacity: 0.55 }}>
+              <LeafletTooltip sticky className="leaflet-depth-label"><span className="text-[9px]">350 M.N.</span></LeafletTooltip>
+            </Polyline>
           </>
         )}
 
