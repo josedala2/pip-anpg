@@ -293,10 +293,11 @@ export const ConcessionMap = ({
           </CircleMarker>
         ))}
 
-        {/* Block markers */}
+        {/* Block polygons */}
         {showBlocks && blocks.map(block => {
-          const geo = blockGeoPositions[block.id];
-          if (!geo) return null;
+          const polygon = getBlockPolygon(block);
+          if (!polygon) return null;
+          const geo = blockGeoPositions[block.id]!;
           const [lon, lat] = geo;
           const isSelected = selectedBlockId === block.id;
           const isHovered = hoveredBlockId === block.id;
@@ -305,19 +306,26 @@ export const ConcessionMap = ({
           const hasBiddingYear = !!blockBiddingYear[block.id];
           const isExistingConcession = !hasBiddingYear && (block.phase === "Production" || block.phase === "Development");
 
-          const icon = createBlockIcon(block, color, isHighlighted, isExistingConcession, showConcessions);
-
           return (
-            <Marker
+            <Polygon
               key={block.id}
-              position={[lat, lon]}
-              icon={icon}
+              positions={polygon}
+              pathOptions={{
+                color: isHighlighted ? "white" : color,
+                weight: isHighlighted ? 2.5 : 1,
+                fillColor: color,
+                fillOpacity: isHighlighted ? 0.7 : isExistingConcession ? 0.35 : 0.5,
+                dashArray: isExistingConcession && showConcessions ? "4 3" : undefined,
+              }}
               eventHandlers={{
                 click: () => onBlockClick(block),
                 mouseover: () => onBlockHover(block.id),
                 mouseout: () => onBlockHover(null),
               }}
             >
+              <LeafletTooltip permanent direction="center" className="leaflet-block-label">
+                <span className="font-bold">{block.name}</span>
+              </LeafletTooltip>
               <Popup className="leaflet-block-popup" maxWidth={280} minWidth={200}>
                 <div className="p-1">
                   <div className="font-bold text-sm mb-0.5">{block.name}</div>
@@ -353,7 +361,7 @@ export const ConcessionMap = ({
                   </button>
                 </div>
               </Popup>
-            </Marker>
+            </Polygon>
           );
         })}
       </MapContainer>
