@@ -360,6 +360,14 @@ export const ConcessionMap = ({
           <pattern id="reserve-hatch" patternUnits="userSpaceOnUse" width="4" height="4">
             <path d="M0,4 l4,-4" stroke="hsl(var(--muted-foreground))" strokeWidth="0.5" opacity="0.3" />
           </pattern>
+          {/* Concession hatching — diagonal lines matching PDF legend */}
+          <pattern id="concession-hatch" patternUnits="userSpaceOnUse" width="3" height="3" patternTransform="rotate(45)">
+            <line x1="0" y1="0" x2="0" y2="3" stroke="hsl(var(--foreground))" strokeWidth="0.6" opacity="0.35" />
+          </pattern>
+          <pattern id="concession-hatch-cross" patternUnits="userSpaceOnUse" width="3" height="3">
+            <line x1="0" y1="0" x2="3" y2="3" stroke="hsl(var(--foreground))" strokeWidth="0.5" opacity="0.3" />
+            <line x1="3" y1="0" x2="0" y2="3" stroke="hsl(var(--foreground))" strokeWidth="0.5" opacity="0.15" />
+          </pattern>
           <clipPath id="map-clip">
             <rect x="-10" y="-5" width={VB_W + 20} height={VB_H + 10} />
           </clipPath>
