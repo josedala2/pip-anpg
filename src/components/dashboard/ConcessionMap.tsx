@@ -70,113 +70,120 @@ const geoToSvg = (lon: number, lat: number) => ({
   y: ((lat - LAT_MIN) / (LAT_MAX - LAT_MIN)) * VB_H,
 });
 
-// ── Corrected block positions matching ANPG PDF map ──
+// ── Corrected block positions matching ANPG PDF map (WGS84) ──
+// Calibrated against grid: 7°30'E–15°E, 5°S–17°S
 const blockGeoPositions: Record<string, [number, number]> = {
-  // Cabinda onshore
-  // Cabinda onshore
-  "cabinda-norte":  [12.40, -5.10],
-  "cabinda-centro": [12.35, -5.35],
-  "cabinda-sul":    [12.25, -5.55],
-  "fs-associacoes": [12.20, -5.20],
-  "fst-associacoes":[12.22, -5.40],
-  // Congo onshore (CON blocks) — near Soyo, per PDF grid
-  "block-con1":     [12.65, -5.85],
-  "block-con2":     [12.85, -5.85],
-  "block-con3":     [13.05, -5.85],
-  "block-con4":     [12.70, -6.05],
-  "block-con5":     [12.90, -6.05],
-  "block-con6":     [13.10, -6.10],
+  // Cabinda onshore — clustered near 12.3°E, 5.0-5.5°S
+  "cabinda-norte":  [12.40, -5.00],
+  "cabinda-centro": [12.30, -5.20],
+  "cabinda-sul":    [12.20, -5.40],
+  "fs-associacoes": [12.15, -5.10],
+  "fst-associacoes":[12.18, -5.30],
+
+  // Congo onshore (CON blocks) — east of Soyo, ~12.5-13.5°E
+  "block-con1":     [12.55, -5.80],
+  "block-con2":     [12.70, -5.80],
+  "block-con3":     [12.90, -5.80],
+  "block-con4":     [12.60, -6.00],
+  "block-con5":     [12.80, -5.80],
+  "block-con6":     [13.05, -6.10],
   "block-con7":     [13.25, -6.10],
-  "block-con8":     [13.35, -6.25],
-  "block-con9":     [13.50, -6.25],
-  "block-con10":    [13.55, -7.20],
-  // Kwanza onshore (KON blocks) — tight grid near Luanda/Dondo per PDF
-  "block-kon1":     [13.45, -9.05],
-  "block-kon2":     [13.60, -9.05],
-  "block-kon3":     [13.75, -9.05],
-  "block-kon4":     [13.25, -9.25],
-  "block-kon5":     [13.42, -9.25],
-  "block-kon6":     [13.58, -9.25],
-  "block-kon7":     [13.75, -9.25],
-  "block-kon8":     [13.42, -9.48],
-  "block-kon9":     [13.58, -9.48],
-  "block-kon10":    [13.75, -9.48],
-  "block-kon11":    [13.30, -9.70],
-  "block-kon12":    [13.47, -9.70],
-  "block-kon13":    [13.63, -9.70],
-  "block-kon14":    [13.80, -9.70],
-  "block-kon15":    [13.25, -9.92],
-  "block-kon16":    [13.42, -10.05],
-  "block-kon17":    [13.62, -10.05],
-  "block-kon18":    [13.85, -10.10],
-  "block-kon19":    [13.42, -10.28],
-  "block-kon20":    [13.62, -10.28],
-  "block-kon21":    [13.95, -10.55],
-  "block-kon22":    [14.15, -10.55],
-  "block-kon23":    [14.35, -11.00],
-  // Shallow water — along coast, matching PDF BL labels
-  "block-0":        [11.50, -5.90],   // BL0
-  "block-1":        [12.00, -6.05],   // BL1, next to BL15
-  "block-2-05":     [12.20, -6.50],   // BL2
-  "block-3":        [12.00, -7.00],   // BL3
-  "block-3-05a":    [12.15, -7.20],
-  "block-3-24":     [12.00, -7.40],
-  "block-3-15":     [12.00, -7.70],
-  "block-2-15":     [11.80, -7.30],
-  "block-4-05":     [12.20, -7.50],   // BL4
-  "block-5-06":     [12.10, -8.80],   // BL5
-  "block-6-24":     [12.00, -9.30],   // BL6
-  "block-7":        [12.05, -9.90],   // BL7
-  "block-8":        [12.25, -10.80],  // BL8
-  "block-9":        [12.45, -11.30],  // BL9
-  "block-10":       [12.10, -12.50],  // BL10
+  "block-con8":     [13.05, -6.30],
+  "block-con9":     [13.25, -6.30],
+  "block-con10":    [13.45, -7.20],
+
+  // Kwanza onshore (KON blocks) — grid near Luanda/Dondo, ~9-10.5°S
+  "block-kon1":     [13.40, -8.95],
+  "block-kon2":     [13.55, -8.95],
+  "block-kon3":     [13.70, -8.95],
+  "block-kon4":     [13.20, -9.15],
+  "block-kon5":     [13.35, -9.20],
+  "block-kon6":     [13.50, -9.20],
+  "block-kon7":     [13.65, -9.20],
+  "block-kon8":     [13.35, -9.42],
+  "block-kon9":     [13.50, -9.42],
+  "block-kon10":    [13.65, -9.42],
+  "block-kon11":    [13.25, -9.62],
+  "block-kon12":    [13.40, -9.62],
+  "block-kon13":    [13.55, -9.62],
+  "block-kon14":    [13.70, -9.62],
+  "block-kon15":    [13.15, -9.82],
+  "block-kon16":    [13.35, -9.92],
+  "block-kon17":    [13.55, -9.92],
+  "block-kon18":    [13.80, -10.00],
+  "block-kon19":    [13.35, -10.15],
+  "block-kon20":    [13.55, -10.15],
+  "block-kon21":    [13.80, -10.55],
+  "block-kon22":    [14.00, -10.55],
+  "block-kon23":    [14.25, -11.00],
+
+  // Shallow water — coastal strip, matching PDF block adjacencies
+  "block-0":        [11.50, -5.85],   // BL0 — north of BL15, west of Soyo
+  "block-1":        [12.05, -5.95],   // BL1 — adjacent east of BL15
+  "block-2-05":     [12.30, -6.45],   // BL2
+  "block-3":        [12.20, -7.00],   // BL3
+  "block-3-05a":    [12.10, -6.70],   // Between BL2 and BL3
+  "block-3-24":     [12.10, -7.30],
+  "block-3-15":     [12.05, -7.60],
+  "block-2-15":     [11.85, -7.20],
+  "block-4-05":     [12.30, -7.50],   // BL4
+  "block-5-06":     [12.15, -8.70],   // BL5
+  "block-6-24":     [12.05, -9.30],   // BL6
+  "block-7":        [12.10, -9.95],   // BL7
+  "block-8":        [12.30, -10.80],  // BL8
+  "block-9":        [12.50, -11.30],  // BL9
+  "block-10":       [12.15, -12.50],  // BL10
   "block-11":       [12.00, -14.00],  // BL11
-  "block-12":       [11.55, -15.55],  // BL12
-  "block-13":       [11.35, -16.25],  // BL13
-  // Deep water — per PDF positions
-  "block-14":       [10.85, -6.20],   // BL14
-  "block-15":       [11.75, -6.05],   // BL15, adjacent to BL1
-  "block-15-06":    [11.20, -6.80],
-  "block-15-14":    [11.50, -6.50],
-  "block-16":       [10.75, -6.85],   // BL16
-  "block-17":       [11.20, -7.35],   // BL17
-  "block-18":       [10.80, -8.40],   // BL18
-  "block-19":       [10.50, -9.35],   // BL19
-  "block-20":       [11.00, -9.85],   // BL20
-  "block-21":       [11.00, -10.55],  // BL21
-  // Ultra-deep water — per PDF
-  "block-31":       [9.25, -6.55],    // BL31
-  "block-31-21":    [9.40, -7.10],
-  "block-32":       [9.50, -7.30],    // BL32
-  "block-46":       [8.35, -6.10],    // BL46
-  "block-47":       [8.55, -6.80],    // BL47
-  "block-48":       [8.90, -7.40],    // BL48
-  "block-49":       [8.95, -8.10],    // BL49
-  "block-50":       [9.20, -8.90],    // BL50
-  // Bidding blocks — deep water column
-  "block-22":       [11.00, -11.20],  // BL22
-  "block-23":       [11.30, -11.70],  // BL23
-  "block-24":       [11.50, -12.35],  // BL24
-  "block-25":       [11.25, -12.85],  // BL25
-  "block-26":       [11.00, -13.35],  // BL26
-  "block-27":       [11.00, -14.10],  // BL27
+  "block-12":       [11.60, -15.65],  // BL12
+  "block-13":       [11.40, -16.30],  // BL13
+
+  // Deep water — second column from coast
+  "block-14":       [10.90, -6.10],   // BL14 — west of BL0
+  "block-15":       [11.70, -5.95],   // BL15 — between BL14 and BL1
+  "block-15-06":    [11.25, -6.80],   // BL15/06
+  "block-15-14":    [11.50, -6.45],   // BL15/14
+  "block-16":       [10.70, -6.85],   // BL16
+  "block-17":       [11.25, -7.30],   // BL17
+  "block-18":       [10.85, -8.40],   // BL18
+  "block-19":       [10.55, -9.30],   // BL19
+  "block-20":       [11.05, -9.85],   // BL20
+  "block-21":       [11.05, -10.55],  // BL21
+
+  // Ultra-deep water — western column
+  "block-46":       [8.30, -6.15],    // BL46 — far west
+  "block-31":       [9.20, -6.50],    // BL31
+  "block-47":       [8.55, -6.70],    // BL47
+  "block-48":       [9.05, -7.20],    // BL48
+  "block-31-21":    [9.35, -7.00],    // BL31/21
+  "block-32":       [9.50, -7.15],    // BL32
+  "block-49":       [9.00, -8.00],    // BL49
+  "block-50":       [9.25, -8.90],    // BL50
+
+  // Bidding — deep water column (east of ultra-deep)
+  "block-22":       [11.05, -11.15],  // BL22
+  "block-23":       [11.30, -11.55],  // BL23
+  "block-24":       [11.45, -12.30],  // BL24
+  "block-25":       [11.25, -12.75],  // BL25
+  "block-26":       [11.00, -13.25],  // BL26
+  "block-27":       [11.00, -14.05],  // BL27
   "block-28":       [11.15, -14.70],  // BL28
-  "block-29":       [11.00, -15.25],  // BL29
-  "block-30":       [10.80, -15.85],  // BL30
-  // Bidding blocks — ultra-deep column
-  "block-33":       [10.00, -8.50],   // BL33
-  "block-34":       [10.50, -9.00],   // BL34
-  "block-35":       [10.00, -9.70],   // BL35
-  "block-36":       [10.00, -10.25],  // BL36
-  "block-37":       [9.80, -10.75],   // BL37
-  "block-38":       [10.00, -11.25],  // BL38
-  "block-39":       [10.15, -11.85],  // BL39
-  "block-40":       [10.75, -12.25],  // BL40
-  "block-41":       [10.50, -13.05],  // BL41
-  "block-42":       [10.30, -13.55],  // BL42
-  "block-43":       [10.30, -14.40],  // BL43
-  "block-44":       [10.50, -15.35],  // BL44
-  "block-45":       [10.00, -16.25],  // BL45
+  "block-29":       [11.00, -15.20],  // BL29
+  "block-30":       [10.80, -15.90],  // BL30
+
+  // Bidding — ultra-deep column (Namibe/Benguela)
+  "block-33":       [10.05, -8.50],   // BL33
+  "block-34":       [10.45, -9.00],   // BL34
+  "block-35":       [10.05, -9.65],   // BL35
+  "block-36":       [10.05, -10.20],  // BL36
+  "block-37":       [9.85, -10.70],   // BL37
+  "block-38":       [10.05, -11.15],  // BL38
+  "block-39":       [10.25, -11.75],  // BL39
+  "block-40":       [10.75, -12.20],  // BL40
+  "block-41":       [10.50, -13.00],  // BL41
+  "block-42":       [10.35, -13.55],  // BL42
+  "block-43":       [10.30, -14.35],  // BL43
+  "block-44":       [10.50, -15.30],  // BL44
+  "block-45":       [10.00, -16.20],  // BL45
 };
 
 const getBlockSvgPos = (block: OilBlock) => {
