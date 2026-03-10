@@ -115,10 +115,11 @@ export const ProductionPanel = () => {
     [producingBlocks]
   );
 
+  const isFiltered = filterOperator !== "all" || filterBasin !== "all";
   const prevYearTotal = 1080000;
-  const yoyChange = ((totalProduction - prevYearTotal) / prevYearTotal) * 100;
+  const yoyChange = ((nationalTotal - prevYearTotal) / prevYearTotal) * 100;
   const target2026 = 1100000;
-  const targetCompliance = (totalProduction / target2026) * 100;
+  const targetCompliance = (nationalTotal / target2026) * 100;
 
   const handleSort = (key: SortKey) => {
     if (sortKey === key) setSortAsc(!sortAsc);
