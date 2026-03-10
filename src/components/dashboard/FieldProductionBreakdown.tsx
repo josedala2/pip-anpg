@@ -59,13 +59,23 @@ const CustomTreemapContent = ({ x, y, width, height, name, blockName, fill }: Tr
   );
 };
 
-export const FieldProductionBreakdown = () => {
+interface FieldProductionBreakdownProps {
+  filterOperator?: string;
+  filterBasin?: string;
+}
+
+export const FieldProductionBreakdown = ({ filterOperator = "all", filterBasin = "all" }: FieldProductionBreakdownProps) => {
   const [expandedBlocks, setExpandedBlocks] = useState<Set<string>>(new Set());
   const totalProduction = useMemo(() => getTotalProduction(), []);
 
   const blocksWithFields = useMemo(() =>
     oilBlocks
-      .filter(b => b.dailyProduction > 0 && b.fields && b.fields.length > 0)
+      .filter(b => {
+        if (b.dailyProduction <= 0 || !b.fields || b.fields.length === 0) return false;
+        if (filterOperator !== "all" && b.operator !== filterOperator) return false;
+        if (filterBasin !== "all" && b.basin !== filterBasin) return false;
+        return true;
+      })
       .map(b => {
         const producingFields = b.fields!.filter(f => f.status === "Producing" && f.peakProduction && f.peakProduction > 0);
         const otherFields = b.fields!.filter(f => f.status !== "Producing" || !f.peakProduction);
