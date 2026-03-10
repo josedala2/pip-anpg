@@ -322,6 +322,7 @@ export const ConcessionMap = ({
   const [showBasins, setShowBasins] = useState(true);
   const [showGrid, setShowGrid] = useState(true);
   const [showBlocks, setShowBlocks] = useState(true);
+  const [showConcessions, setShowConcessions] = useState(true);
   const [showSatellite, setShowSatellite] = useState(false);
   const [colorMode, setColorMode] = useState<"phase" | "bidding">("phase");
   const [layersPanelOpen, setLayersPanelOpen] = useState(false);
@@ -359,6 +360,14 @@ export const ConcessionMap = ({
           </linearGradient>
           <pattern id="reserve-hatch" patternUnits="userSpaceOnUse" width="4" height="4">
             <path d="M0,4 l4,-4" stroke="hsl(var(--muted-foreground))" strokeWidth="0.5" opacity="0.3" />
+          </pattern>
+          {/* Concession hatching — diagonal lines matching PDF legend */}
+          <pattern id="concession-hatch" patternUnits="userSpaceOnUse" width="3" height="3" patternTransform="rotate(45)">
+            <line x1="0" y1="0" x2="0" y2="3" stroke="hsl(var(--foreground))" strokeWidth="0.6" opacity="0.35" />
+          </pattern>
+          <pattern id="concession-hatch-cross" patternUnits="userSpaceOnUse" width="3" height="3">
+            <line x1="0" y1="0" x2="3" y2="3" stroke="hsl(var(--foreground))" strokeWidth="0.5" opacity="0.3" />
+            <line x1="3" y1="0" x2="0" y2="3" stroke="hsl(var(--foreground))" strokeWidth="0.5" opacity="0.15" />
           </pattern>
           <clipPath id="map-clip">
             <rect x="-10" y="-5" width={VB_W + 20} height={VB_H + 10} />
@@ -531,12 +540,12 @@ export const ConcessionMap = ({
                 className="transition-all duration-200"
               />
 
-              {/* Hatching for existing concessions */}
-              {isExistingConcession && colorMode === "bidding" && (
+              {/* Hatching overlay for existing concessions (Concessões Petrolíferas) */}
+              {isExistingConcession && showConcessions && (
                 <rect
                   x={pos.x - w} y={pos.y - h}
                   width={w * 2} height={h * 2}
-                  fill="url(#reserve-hatch)" opacity="0.3" rx="0.3"
+                  fill="url(#concession-hatch)" opacity="0.7" rx="0.3"
                 />
               )}
 
@@ -712,6 +721,7 @@ export const ConcessionMap = ({
               <div className="flex flex-col gap-1.5">
                 {([
                   { key: "blocks", label: "Blocos", icon: <Mountain className="w-3 h-3" />, checked: showBlocks, set: setShowBlocks },
+                  { key: "concessions", label: "Concessões Petrolíferas", icon: <Layers className="w-3 h-3" />, checked: showConcessions, set: setShowConcessions },
                   { key: "limits", label: "Limites Offshore", icon: <Waves className="w-3 h-3" />, checked: showLimits, set: setShowLimits },
                   { key: "cities", label: "Cidades", icon: <Map className="w-3 h-3" />, checked: showCities, set: setShowCities },
                   { key: "basins", label: "Bacias & Zonas", icon: <Mountain className="w-3 h-3" />, checked: showBasins, set: setShowBasins },
@@ -754,6 +764,19 @@ export const ConcessionMap = ({
                   ))}
                 </div>
               )}
+              {/* Concession hatch legend */}
+              <div className="flex items-center gap-1.5 mt-1.5 pt-1 border-t border-border/20">
+                <svg width="12" height="12" className="shrink-0">
+                  <defs>
+                    <pattern id="legend-hatch" patternUnits="userSpaceOnUse" width="3" height="3" patternTransform="rotate(45)">
+                      <line x1="0" y1="0" x2="0" y2="3" stroke="currentColor" strokeWidth="0.6" opacity="0.5" />
+                    </pattern>
+                  </defs>
+                  <rect width="12" height="12" fill="hsl(var(--muted-foreground) / 0.15)" rx="1" />
+                  <rect width="12" height="12" fill="url(#legend-hatch)" rx="1" className="text-foreground" />
+                </svg>
+                <span className="text-[9px] text-muted-foreground">Concessão Petrolífera Existente</span>
+              </div>
             </div>
           </div>
         )}
