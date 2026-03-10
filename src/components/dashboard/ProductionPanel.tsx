@@ -69,12 +69,14 @@ type SortKey = "name" | "dailyProduction" | "pct" | "operator" | "basin";
 
 const operators = [...new Set(oilBlocks.filter(b => b.dailyProduction > 0).map(b => b.operator))].sort();
 const basins = [...new Set(oilBlocks.filter(b => b.dailyProduction > 0).map(b => b.basin))].sort();
+const producingBlockNames = oilBlocks.filter(b => b.dailyProduction > 0).sort((a, b) => a.name.localeCompare(b.name));
 
 export const ProductionPanel = () => {
   const [sortKey, setSortKey] = useState<SortKey>("dailyProduction");
   const [sortAsc, setSortAsc] = useState(false);
   const [filterOperator, setFilterOperator] = useState("all");
   const [filterBasin, setFilterBasin] = useState("all");
+  const [filterBlock, setFilterBlock] = useState("all");
 
   const filteredBlocks = useMemo(() =>
     oilBlocks.filter(b => {
