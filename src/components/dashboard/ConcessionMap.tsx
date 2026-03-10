@@ -322,6 +322,7 @@ export const ConcessionMap = ({
   const [showBasins, setShowBasins] = useState(true);
   const [showGrid, setShowGrid] = useState(true);
   const [showBlocks, setShowBlocks] = useState(true);
+  const [showConcessions, setShowConcessions] = useState(true);
   const [showSatellite, setShowSatellite] = useState(false);
   const [colorMode, setColorMode] = useState<"phase" | "bidding">("phase");
   const [layersPanelOpen, setLayersPanelOpen] = useState(false);
