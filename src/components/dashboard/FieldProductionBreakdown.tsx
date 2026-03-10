@@ -85,7 +85,7 @@ export const FieldProductionBreakdown = ({ filterOperator = "all", filterBasin =
       })
       .filter(b => b.producingFields.length > 0)
       .sort((a, b) => b.dailyProduction - a.dailyProduction),
-    [filterOperator, filterBasin]
+    [filterOperator, filterBasin, filterBlock]
   );
 
   const treemapData = useMemo(() =>
