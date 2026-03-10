@@ -62,6 +62,14 @@ const computeBasins = () => {
 const trendData = computeTrendData();
 const basins = computeBasins();
 
+const phases = [
+  { phase: "Production", count: getBlocksByPhase("Production").length, color: "hsl(var(--success))" },
+  { phase: "Development", count: getBlocksByPhase("Development").length, color: "hsl(var(--warning))" },
+  { phase: "Exploration", count: getBlocksByPhase("Exploration").length, color: "hsl(var(--primary))" },
+  { phase: "Bidding", count: getBlocksByPhase("Bidding").length, color: "hsl(var(--bidding))" },
+  { phase: "Suspended", count: getBlocksByPhase("Suspended").length, color: "hsl(var(--danger))" },
+];
+
 const investData = [
   { year: "2020", value: 8200 },
   { year: "2021", value: 12500 },
