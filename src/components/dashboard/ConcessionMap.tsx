@@ -173,39 +173,18 @@ const TileSwitch = ({ showSatellite }: { showSatellite: boolean }) => {
   );
 };
 
-// ── Custom SVG block marker ──
-const createBlockIcon = (
-  block: OilBlock,
-  color: string,
-  isHighlighted: boolean,
-  isExistingConcession: boolean,
-  showConcessions: boolean
-) => {
-  const isSmall = block.id.startsWith("block-kon") || block.id.startsWith("block-con") ||
-    block.id.startsWith("cabinda") || block.id.startsWith("fs");
-  const size = isSmall ? 28 : (block.areaKm2 && block.areaKm2 > 4000) ? 48 : 40;
-  const hatchId = `hatch-${block.id.replace(/[^a-z0-9]/g, "")}`;
-
-  const hatchPattern = isExistingConcession && showConcessions
-    ? `<defs><pattern id="${hatchId}" patternUnits="userSpaceOnUse" width="4" height="4" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="4" stroke="rgba(0,0,0,0.4)" stroke-width="1"/></pattern></defs>
-       <rect x="2" y="2" width="${size - 4}" height="${size - 4}" fill="url(#${hatchId})" rx="3"/>`
-    : "";
-
-  const svg = `
-    <svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}">
-      ${isHighlighted ? `<rect x="0" y="0" width="${size}" height="${size}" fill="none" stroke="${color}" stroke-width="2.5" rx="4" opacity="0.7"/>` : ""}
-      <rect x="2" y="2" width="${size - 4}" height="${size - 4}" fill="${color}" opacity="${isHighlighted ? 0.85 : 0.65}" stroke="${isHighlighted ? color : 'rgba(255,255,255,0.5)'}" stroke-width="${isHighlighted ? '1.5' : '0.8'}" rx="3"
-        ${isHighlighted ? `filter="drop-shadow(0 0 6px ${color})"` : ""}/>
-      ${hatchPattern}
-      <text x="${size / 2}" y="${size / 2 + (isSmall ? 3 : 4)}" text-anchor="middle" fill="white" font-size="${isSmall ? 7 : 10}" font-weight="700" font-family="Inter, sans-serif" style="text-shadow: 0 1px 3px rgba(0,0,0,0.8)">${block.name}</text>
-    </svg>`;
-
-  return L.divIcon({
-    html: svg,
-    className: "leaflet-block-marker",
-    iconSize: [size, size],
-    iconAnchor: [size / 2, size / 2],
-  });
+// Generate polygon bounds from center + half-size
+const getBlockPolygon = (block: OilBlock): [number, number][] | null => {
+  const geo = blockGeoPositions[block.id];
+  if (!geo) return null;
+  const [lon, lat] = geo;
+  const [hw, hh] = getBlockSize(block);
+  return [
+    [lat - hh, lon - hw],
+    [lat - hh, lon + hw],
+    [lat + hh, lon + hw],
+    [lat + hh, lon - hw],
+  ];
 };
 
 export const ConcessionMap = ({
