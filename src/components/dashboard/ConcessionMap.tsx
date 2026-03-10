@@ -331,14 +331,7 @@ export const ConcessionMap = ({
     return phaseColorMap[block.phase];
   }, [colorMode]);
 
-  // Block size based on area/production
-  const getBlockSize = (block: OilBlock) => {
-    if (block.areaKm2 && block.areaKm2 > 5000) return 8;
-    if (block.areaKm2 && block.areaKm2 > 3000) return 6;
-    if (block.dailyProduction > 100000) return 5;
-    if (block.dailyProduction > 0) return 4;
-    return 3.5;
-  };
+
 
   return (
     <div className="relative w-full h-full min-h-[500px]">
