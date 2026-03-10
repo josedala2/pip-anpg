@@ -166,9 +166,9 @@ const TileSwitch = ({ showSatellite }: { showSatellite: boolean }) => {
     />
   ) : (
     <TileLayer
-      url="https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}"
-      attribution="Tiles &copy; Esri &mdash; Sources: GEBCO, NOAA"
-      maxZoom={13}
+      url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+      attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      maxZoom={19}
     />
   );
 };
