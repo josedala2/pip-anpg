@@ -1048,7 +1048,7 @@ export const oilBlocks: OilBlock[] = [
       { name: "ESSO (ExxonMobil)", share: 13.33 },
       { name: "Azule Energy Ang B.V.", share: 13.33 },
     ],
-    dailyProduction: 320000,
+    dailyProduction: 181755,
     estimatedReserves: 2100,
     accumulatedInvestment: 12500,
     plannedInvestment: 13000,
