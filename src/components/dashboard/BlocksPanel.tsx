@@ -337,13 +337,15 @@ export const BlocksPanel = () => {
             </CardTitle>
           </CardHeader>
           <CardContent className="p-2 3xl:p-4">
-            <ConcessionMap
-              blocks={filteredBlocks}
-              selectedBlockId={selectedBlockId}
-              hoveredBlockId={hoveredBlockId}
-              onBlockClick={handleBlockClick}
-              onBlockHover={handleBlockHover}
-            />
+            <div className="h-[500px] 2xl:h-[600px] 3xl:h-[700px] rounded-lg overflow-hidden">
+              <ConcessionMap
+                blocks={filteredBlocks}
+                selectedBlockId={selectedBlockId}
+                hoveredBlockId={hoveredBlockId}
+                onBlockClick={handleBlockClick}
+                onBlockHover={handleBlockHover}
+              />
+            </div>
           </CardContent>
         </Card>
 
