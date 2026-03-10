@@ -166,7 +166,7 @@ export const ProductionPanel = () => {
         </Select>
         {isFiltered && (
           <button
-            onClick={() => { setFilterOperator("all"); setFilterBasin("all"); }}
+            onClick={() => { setFilterOperator("all"); setFilterBasin("all"); setFilterBlock("all"); }}
             className="text-[10px] text-primary hover:underline"
           >
             Limpar filtros
