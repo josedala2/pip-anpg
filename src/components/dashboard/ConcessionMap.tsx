@@ -456,9 +456,15 @@ export const ConcessionMap = ({
           const textColor = showSatellite ? "white" : "hsl(var(--foreground))";
           return (
             <g key={city.name}>
-              <circle cx={p.x} cy={p.y} r={isMajor ? 1.5 : 0.8} fill={textColor} opacity={isMajor ? 0.7 : 0.5} />
-              <text x={p.x + 2.5} y={p.y + 1} fill={textColor} fontSize={isMajor ? 4.5 : 3} fontWeight={isMajor ? "600" : "400"} opacity={isMajor ? 0.8 : 0.6}
-                stroke={showSatellite ? "rgba(0,0,0,0.5)" : "none"} strokeWidth={showSatellite ? "0.3" : "0"}>
+              {/* Background halo for readability */}
+              <circle cx={p.x} cy={p.y} r={isMajor ? 2.5 : 1.5} fill={showSatellite ? "rgba(0,0,0,0.4)" : "hsl(var(--background))"} opacity="0.5" />
+              <circle cx={p.x} cy={p.y} r={isMajor ? 1.8 : 1} fill={textColor} opacity={isMajor ? 0.85 : 0.65} />
+              {/* Text shadow/outline for contrast */}
+              {showSatellite && (
+                <text x={p.x + 3} y={p.y + 1.2} fill="black" fontSize={isMajor ? 5 : 3.5} fontWeight={isMajor ? "700" : "500"} opacity="0.5"
+                  stroke="black" strokeWidth="0.8" strokeLinejoin="round">{city.name}</text>
+              )}
+              <text x={p.x + 3} y={p.y + 1.2} fill={textColor} fontSize={isMajor ? 5 : 3.5} fontWeight={isMajor ? "700" : "500"} opacity={isMajor ? 0.95 : 0.8}>
                 {city.name}
               </text>
             </g>
