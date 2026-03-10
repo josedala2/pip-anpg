@@ -67,11 +67,27 @@ const stackColors = [COLORS[0], COLORS[1], COLORS[2], COLORS[3], COLORS[4], COLO
 
 type SortKey = "name" | "dailyProduction" | "pct" | "operator" | "basin";
 
+const operators = [...new Set(oilBlocks.filter(b => b.dailyProduction > 0).map(b => b.operator))].sort();
+const basins = [...new Set(oilBlocks.filter(b => b.dailyProduction > 0).map(b => b.basin))].sort();
+
 export const ProductionPanel = () => {
   const [sortKey, setSortKey] = useState<SortKey>("dailyProduction");
   const [sortAsc, setSortAsc] = useState(false);
+  const [filterOperator, setFilterOperator] = useState("all");
+  const [filterBasin, setFilterBasin] = useState("all");
 
-  const totalProduction = useMemo(() => getTotalProduction(), []);
+  const filteredBlocks = useMemo(() =>
+    oilBlocks.filter(b => {
+      if (b.dailyProduction <= 0) return false;
+      if (filterOperator !== "all" && b.operator !== filterOperator) return false;
+      if (filterBasin !== "all" && b.basin !== filterBasin) return false;
+      return true;
+    }),
+    [filterOperator, filterBasin]
+  );
+
+  const totalProduction = useMemo(() => filteredBlocks.reduce((s, b) => s + b.dailyProduction, 0), [filteredBlocks]);
+  const nationalTotal = useMemo(() => getTotalProduction(), []);
 
   const producingBlocks = useMemo(() =>
     oilBlocks
