@@ -540,12 +540,12 @@ export const ConcessionMap = ({
                 className="transition-all duration-200"
               />
 
-              {/* Hatching for existing concessions */}
-              {isExistingConcession && colorMode === "bidding" && (
+              {/* Hatching overlay for existing concessions (Concessões Petrolíferas) */}
+              {isExistingConcession && showConcessions && (
                 <rect
                   x={pos.x - w} y={pos.y - h}
                   width={w * 2} height={h * 2}
-                  fill="url(#reserve-hatch)" opacity="0.3" rx="0.3"
+                  fill="url(#concession-hatch)" opacity="0.7" rx="0.3"
                 />
               )}
 
