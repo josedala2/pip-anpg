@@ -15,16 +15,23 @@ import { Maximize2, Minimize2, ChevronLeft, ChevronRight, Sun, Moon, FileText, L
 import { Link } from "react-router-dom";
 import { useTheme } from "@/components/ThemeProvider";
 import { useAuth } from "@/components/AuthProvider";
+import { useUserRole } from "@/hooks/useUserRole";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import anpgLogoColor from "@/assets/anpg-logo-color.svg";
 import anpgLogoWhite from "@/assets/anpg-logo-white.svg";
 import { InstitutionalFooter } from "@/components/InstitutionalFooter";
 
-const panels = ["Overview", "Blocos & Concessões", "Produção", "Exploração & Sísmica", "Risk & Performance", "Strategic Forecast"];
+const allPanels = ["Overview", "Blocos & Concessões", "Produção", "Exploração & Sísmica", "Risk & Performance", "Strategic Forecast"];
 
 const Index = () => {
   const { theme, toggleTheme } = useTheme();
   const { user, signOut } = useAuth();
+  const { role, roleLabel, allowedPanels, loading: roleLoading } = useUserRole();
+
+  const panels = useMemo(() =>
+    allPanels.filter(p => allowedPanels.includes(p)),
+    [allowedPanels]
+  );
   const [activePanel, setActivePanel] = useState(0);
   const [slideDirection, setSlideDirection] = useState<"left" | "right">("right");
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -132,7 +139,12 @@ const Index = () => {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48">
                 <div className="px-3 py-2 text-xs text-muted-foreground truncate border-b border-border">
-                  {user?.email}
+                  <div>{user?.email}</div>
+                  {roleLabel && (
+                    <span className="inline-block mt-1 px-1.5 py-0.5 text-[10px] font-semibold rounded bg-primary/10 text-primary">
+                      {roleLabel}
+                    </span>
+                  )}
                 </div>
                 <DropdownMenuItem onClick={signOut} className="gap-2 text-danger cursor-pointer">
                   <LogOut className="w-4 h-4" /> Terminar sessão
@@ -178,7 +190,7 @@ const Index = () => {
               : "opacity-100 translate-x-0"
           }`}
         >
-          {activePanel === 0 && (
+          {panels[activePanel] === "Overview" && (
             <div className="flex flex-col md:flex-row" style={{ height: "calc(100vh - 110px)" }}>
               <div className="flex-1 md:flex-[6] min-w-0 relative h-[45vh] md:h-full">
                 <ConcessionMap
@@ -201,11 +213,11 @@ const Index = () => {
           )}
 
           <div className="p-4 md:p-6 2xl:p-8 3xl:p-10 max-w-[1920px] 3xl:max-w-[2400px] mx-auto">
-          {activePanel === 1 && <BlocksPanel />}
-          {activePanel === 2 && <ProductionPanel />}
-          {activePanel === 3 && <ExplorationPanel />}
-          {activePanel === 4 && <RiskPerformance />}
-          {activePanel === 5 && <StrategicForecast />}
+          {panels[activePanel] === "Blocos & Concessões" && <BlocksPanel />}
+          {panels[activePanel] === "Produção" && <ProductionPanel />}
+          {panels[activePanel] === "Exploração & Sísmica" && <ExplorationPanel />}
+          {panels[activePanel] === "Risk & Performance" && <RiskPerformance />}
+          {panels[activePanel] === "Strategic Forecast" && <StrategicForecast />}
           </div>
         </div>
       </main>

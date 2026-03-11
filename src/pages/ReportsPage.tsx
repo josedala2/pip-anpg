@@ -11,11 +11,13 @@ import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { oilBlocks } from "@/data/angolaBlocks";
 import { InstitutionalFooter } from "@/components/InstitutionalFooter";
+import { useUserRole } from "@/hooks/useUserRole";
 import anpgLogoColor from "@/assets/anpg-logo-color.svg";
 import anpgLogoWhite from "@/assets/anpg-logo-white.svg";
 
 const ReportsPage = () => {
   const { theme } = useTheme();
+  const { allowedReportTypes } = useUserRole();
   const [generated, setGenerated] = useState(false);
   const [copied, setCopied] = useState(false);
   const [aiNarrative, setAiNarrative] = useState<string | null>(null);
@@ -170,7 +172,7 @@ const ReportsPage = () => {
       <div className="flex flex-col lg:flex-row">
         {/* Sidebar configurator — hidden on print */}
         <aside className="w-full lg:w-80 xl:w-96 border-r border-border/50 p-4 md:p-6 lg:sticky lg:top-[57px] lg:h-[calc(100vh-57px)] lg:overflow-y-auto print:hidden">
-          <ReportConfigurator config={config} onChange={setConfig} onGenerate={handleGenerate} />
+          <ReportConfigurator config={config} onChange={setConfig} onGenerate={handleGenerate} allowedReportTypes={allowedReportTypes} />
         </aside>
 
         {/* Preview area */}
