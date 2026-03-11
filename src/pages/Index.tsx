@@ -21,11 +21,17 @@ import anpgLogoColor from "@/assets/anpg-logo-color.svg";
 import anpgLogoWhite from "@/assets/anpg-logo-white.svg";
 import { InstitutionalFooter } from "@/components/InstitutionalFooter";
 
-const panels = ["Overview", "Blocos & Concessões", "Produção", "Exploração & Sísmica", "Risk & Performance", "Strategic Forecast"];
+const allPanels = ["Overview", "Blocos & Concessões", "Produção", "Exploração & Sísmica", "Risk & Performance", "Strategic Forecast"];
 
 const Index = () => {
   const { theme, toggleTheme } = useTheme();
   const { user, signOut } = useAuth();
+  const { role, roleLabel, allowedPanels, loading: roleLoading } = useUserRole();
+
+  const panels = useMemo(() =>
+    allPanels.filter(p => allowedPanels.includes(p)),
+    [allowedPanels]
+  );
   const [activePanel, setActivePanel] = useState(0);
   const [slideDirection, setSlideDirection] = useState<"left" | "right">("right");
   const [isTransitioning, setIsTransitioning] = useState(false);
