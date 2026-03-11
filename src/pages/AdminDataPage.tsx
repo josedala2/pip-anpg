@@ -259,7 +259,7 @@ const AdminDataPage = () => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {filtered.filter(b => b.dailyProduction > 0).sort((a, b) => b.dailyProduction - a.dailyProduction).map(block => (
+                    {paginatedProdBlocks.map(block => (
                       <>
                         <TableRow key={block.id} className="cursor-pointer hover:bg-muted/30" onClick={() => setExpandedBlock(expandedBlock === block.id ? null : block.id)}>
                           <TableCell className="font-medium">
