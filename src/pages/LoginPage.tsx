@@ -1,20 +1,32 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Navigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { useAuth } from "@/components/AuthProvider";
-import { Navigate } from "react-router-dom";
 import anpgLogo from "@/assets/anpg-logo-color-v2.svg";
-import { Eye, EyeOff, LogIn, Shield, BarChart3, Briefcase } from "lucide-react";
+import anpgLogoWhite from "@/assets/anpg-logo-white.svg";
+import angolaSatellite from "@/assets/angola-satellite.jpg";
+import {
+  Eye, EyeOff, LogIn, Shield, Factory, Search,
+  Handshake, Scale, Crown, Fuel, Globe, BarChart3
+} from "lucide-react";
 
 const TEST_ACCOUNTS = [
-  { role: "Administrador", email: "admin@anpg.co.ao", password: "admin123", icon: Shield, color: "text-red-500" },
-  { role: "Analista", email: "analista@anpg.co.ao", password: "analista123", icon: BarChart3, color: "text-blue-500" },
-  { role: "Gestor", email: "gestor@anpg.co.ao", password: "gestor123", icon: Briefcase, color: "text-emerald-500" },
+  { role: "Administrador", email: "admin@anpg.co.ao", password: "admin123", icon: Shield, color: "bg-red-500/10 text-red-400" },
+  { role: "Técnico DPRO", email: "dpro@anpg.co.ao", password: "dpro123", icon: Factory, color: "bg-amber-500/10 text-amber-400" },
+  { role: "Técnico DEX", email: "dex@anpg.co.ao", password: "dex123", icon: Search, color: "bg-cyan-500/10 text-cyan-400" },
+  { role: "Técnico DNEG", email: "dneg@anpg.co.ao", password: "dneg123", icon: Handshake, color: "bg-emerald-500/10 text-emerald-400" },
+  { role: "Técnico DEC", email: "dec@anpg.co.ao", password: "dec123", icon: Scale, color: "bg-violet-500/10 text-violet-400" },
+  { role: "Conselho de Adm.", email: "conselho@anpg.co.ao", password: "conselho123", icon: Crown, color: "bg-yellow-500/10 text-yellow-400" },
+];
+
+const STATS = [
+  { icon: Fuel, value: "1.1M", label: "Barris/dia" },
+  { icon: Globe, value: "50+", label: "Blocos" },
+  { icon: BarChart3, value: "15", label: "Operadoras" },
 ];
 
 const LoginPage = () => {
@@ -26,10 +38,9 @@ const LoginPage = () => {
   const [submitting, setSubmitting] = useState(false);
   const [seeding, setSeeding] = useState(false);
 
-  // Seed test accounts on first load
   useEffect(() => {
     const seedTestAccounts = async () => {
-      const seeded = sessionStorage.getItem("test_accounts_seeded");
+      const seeded = sessionStorage.getItem("test_accounts_seeded_v2");
       if (seeded) return;
       setSeeding(true);
       for (const account of TEST_ACCOUNTS) {
@@ -39,9 +50,8 @@ const LoginPage = () => {
           options: { data: { full_name: account.role, cargo: account.role } },
         });
       }
-      // Sign out any session created by seeding
       await supabase.auth.signOut();
-      sessionStorage.setItem("test_accounts_seeded", "true");
+      sessionStorage.setItem("test_accounts_seeded_v2", "true");
       setSeeding(false);
     };
     seedTestAccounts();
@@ -84,91 +94,131 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4">
-      <div className="w-full max-w-md space-y-4">
-        <Card className="glass-card">
-          <CardHeader className="text-center space-y-4">
-            <img src={anpgLogo} alt="ANPG" className="h-12 mx-auto" />
-            <CardTitle className="text-xl">Iniciar Sessão</CardTitle>
+    <div className="min-h-screen flex flex-col lg:flex-row">
+      {/* Left Hero Panel */}
+      <div className="relative lg:w-[60%] min-h-[220px] lg:min-h-screen flex flex-col justify-end overflow-hidden">
+        <img
+          src={angolaSatellite}
+          alt=""
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-black/40" />
+        {/* Decorative dots */}
+        <div className="absolute inset-0 opacity-[0.03]" style={{
+          backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)',
+          backgroundSize: '24px 24px',
+        }} />
+
+        <div className="relative z-10 p-8 lg:p-16 space-y-6">
+          <img src={anpgLogoWhite} alt="ANPG" className="h-10 lg:h-14" />
+          <div className="space-y-3 max-w-lg">
+            <h1 className="text-2xl lg:text-4xl font-bold text-white leading-tight tracking-tight">
+              Sistema de Gestão de Concessões Petrolíferas
+            </h1>
+            <p className="text-white/60 text-sm lg:text-base">
+              Monitorização integrada de blocos, produção, exploração e indicadores estratégicos do sector petrolífero angolano.
+            </p>
+          </div>
+          <div className="flex gap-8 pt-4 border-t border-white/10">
+            {STATS.map((stat) => (
+              <div key={stat.label} className="flex items-center gap-3">
+                <stat.icon className="w-5 h-5 text-white/40" />
+                <div>
+                  <p className="text-xl lg:text-2xl font-bold text-white">{stat.value}</p>
+                  <p className="text-xs text-white/50">{stat.label}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Right Login Panel */}
+      <div className="lg:w-[40%] flex flex-col justify-center bg-background">
+        <div className="w-full max-w-md mx-auto px-6 py-10 lg:px-12 space-y-8">
+          <div className="space-y-1">
+            <img src={anpgLogo} alt="ANPG" className="h-10 mb-6" />
+            <h2 className="text-xl font-semibold text-foreground">Iniciar Sessão</h2>
             <p className="text-sm text-muted-foreground">
               Aceda ao painel de concessões da ANPG
             </p>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleLogin} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+          </div>
+
+          <form onSubmit={handleLogin} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="nome@anpg.co.ao"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                autoComplete="email"
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="password">Palavra-passe</Label>
+              <div className="relative">
                 <Input
-                  id="email"
-                  type="email"
-                  placeholder="nome@anpg.co.ao"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  autoComplete="email"
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  autoComplete="current-password"
                   required
                 />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="password">Palavra-passe</Label>
-                <div className="relative">
-                  <Input
-                    id="password"
-                    type={showPassword ? "text" : "password"}
-                    placeholder="••••••••"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    autoComplete="current-password"
-                    required
-                  />
-                  <button
-                    type="button"
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                    onClick={() => setShowPassword(!showPassword)}
-                    tabIndex={-1}
-                  >
-                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                  </button>
-                </div>
-              </div>
-              <Button type="submit" className="w-full gap-2" disabled={submitting || seeding}>
-                <LogIn className="w-4 h-4" />
-                {submitting ? "A entrar..." : "Entrar"}
-              </Button>
-            </form>
-          </CardContent>
-        </Card>
-
-        <Card className="glass-card">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Contas de Teste — Acesso Rápido
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-2">
-            {TEST_ACCOUNTS.map((account) => {
-              const Icon = account.icon;
-              return (
                 <button
-                  key={account.email}
                   type="button"
-                  onClick={() => handleUseTestAccount(account)}
-                  className="w-full flex items-center gap-3 p-3 rounded-lg border border-border/50 hover:bg-accent/50 transition-colors text-left group"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                  onClick={() => setShowPassword(!showPassword)}
+                  tabIndex={-1}
                 >
-                  <div className={`p-2 rounded-md bg-muted ${account.color}`}>
-                    <Icon className="w-4 h-4" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium">{account.role}</p>
-                    <p className="text-xs text-muted-foreground truncate">{account.email}</p>
-                  </div>
-                  <span className="text-xs text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity">
-                    Usar
-                  </span>
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
-              );
-            })}
-          </CardContent>
-        </Card>
+              </div>
+            </div>
+            <Button type="submit" className="w-full gap-2" disabled={submitting || seeding}>
+              <LogIn className="w-4 h-4" />
+              {submitting ? "A entrar..." : "Entrar"}
+            </Button>
+          </form>
+
+          {/* Test Accounts */}
+          <div className="space-y-3">
+            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+              Acesso Rápido — Contas de Teste
+            </p>
+            <div className="grid grid-cols-2 gap-2">
+              {TEST_ACCOUNTS.map((account) => {
+                const Icon = account.icon;
+                const isSelected = email === account.email;
+                return (
+                  <button
+                    key={account.email}
+                    type="button"
+                    onClick={() => handleUseTestAccount(account)}
+                    className={`flex items-center gap-2.5 p-2.5 rounded-lg border text-left transition-all text-sm
+                      ${isSelected
+                        ? 'border-primary bg-primary/5 ring-1 ring-primary/20'
+                        : 'border-border/50 hover:border-border hover:bg-accent/50'
+                      }`}
+                  >
+                    <div className={`p-1.5 rounded-md ${account.color}`}>
+                      <Icon className="w-3.5 h-3.5" />
+                    </div>
+                    <span className="font-medium text-xs truncate">{account.role}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <p className="text-[11px] text-muted-foreground/60 text-center pt-4 border-t border-border/30">
+            © 2025 ANPG — Agência Nacional de Petróleo, Gás e Biocombustíveis
+          </p>
+        </div>
       </div>
     </div>
   );
