@@ -369,4 +369,43 @@ function SummaryCard({ icon: Icon, label, value, sub }: { icon: any; label: stri
   );
 }
 
+function PaginationBar({ current, total, count, onPage }: { current: number; total: number; count: number; onPage: (p: number) => void }) {
+  if (total <= 1) return null;
+  return (
+    <div className="flex items-center justify-between px-4 py-3 border-t border-border/50">
+      <span className="text-xs text-muted-foreground">{count} registos · Página {current} de {total}</span>
+      <div className="flex items-center gap-1">
+        <Button variant="ghost" size="sm" disabled={current <= 1} onClick={() => onPage(current - 1)} className="h-8 w-8 p-0">
+          <ChevronLeft className="w-4 h-4" />
+        </Button>
+        {Array.from({ length: total }, (_, i) => i + 1)
+          .filter(p => p === 1 || p === total || Math.abs(p - current) <= 1)
+          .reduce<(number | "...")[]>((acc, p, idx, arr) => {
+            if (idx > 0 && p - (arr[idx - 1]) > 1) acc.push("...");
+            acc.push(p);
+            return acc;
+          }, [])
+          .map((p, i) =>
+            p === "..." ? (
+              <span key={`e${i}`} className="px-1 text-xs text-muted-foreground">…</span>
+            ) : (
+              <Button
+                key={p}
+                variant={p === current ? "default" : "ghost"}
+                size="sm"
+                className="h-8 w-8 p-0 text-xs"
+                onClick={() => onPage(p as number)}
+              >
+                {p}
+              </Button>
+            )
+          )}
+        <Button variant="ghost" size="sm" disabled={current >= total} onClick={() => onPage(current + 1)} className="h-8 w-8 p-0">
+          <ChevronRight className="w-4 h-4" />
+        </Button>
+      </div>
+    </div>
+  );
+}
+
 export default AdminDataPage;
