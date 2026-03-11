@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -9,7 +9,13 @@ import { toast } from "sonner";
 import { useAuth } from "@/components/AuthProvider";
 import { Navigate } from "react-router-dom";
 import anpgLogo from "@/assets/anpg-logo-color-v2.svg";
-import { Eye, EyeOff, LogIn } from "lucide-react";
+import { Eye, EyeOff, LogIn, Shield, BarChart3, Briefcase } from "lucide-react";
+
+const TEST_ACCOUNTS = [
+  { role: "Administrador", email: "admin@anpg.co.ao", password: "admin123", icon: Shield, color: "text-red-500" },
+  { role: "Analista", email: "analista@anpg.co.ao", password: "analista123", icon: BarChart3, color: "text-blue-500" },
+  { role: "Gestor", email: "gestor@anpg.co.ao", password: "gestor123", icon: Briefcase, color: "text-emerald-500" },
+];
 
 const LoginPage = () => {
   const { user, loading } = useAuth();
@@ -18,6 +24,28 @@ const LoginPage = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [seeding, setSeeding] = useState(false);
+
+  // Seed test accounts on first load
+  useEffect(() => {
+    const seedTestAccounts = async () => {
+      const seeded = sessionStorage.getItem("test_accounts_seeded");
+      if (seeded) return;
+      setSeeding(true);
+      for (const account of TEST_ACCOUNTS) {
+        await supabase.auth.signUp({
+          email: account.email,
+          password: account.password,
+          options: { data: { full_name: account.role, cargo: account.role } },
+        });
+      }
+      // Sign out any session created by seeding
+      await supabase.auth.signOut();
+      sessionStorage.setItem("test_accounts_seeded", "true");
+      setSeeding(false);
+    };
+    seedTestAccounts();
+  }, []);
 
   if (loading) {
     return (
@@ -39,74 +67,109 @@ const LoginPage = () => {
     const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
     setSubmitting(false);
     if (error) {
-      toast.error(error.message === "Invalid login credentials"
-        ? "Credenciais inválidas. Verifique o email e a palavra-passe."
-        : error.message);
+      toast.error(
+        error.message === "Invalid login credentials"
+          ? "Credenciais inválidas. Verifique o email e a palavra-passe."
+          : error.message
+      );
     } else {
       toast.success("Sessão iniciada com sucesso");
       navigate("/");
     }
   };
 
+  const handleUseTestAccount = (account: typeof TEST_ACCOUNTS[0]) => {
+    setEmail(account.email);
+    setPassword(account.password);
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
-      <Card className="w-full max-w-md glass-card">
-        <CardHeader className="text-center space-y-4">
-          <img src={anpgLogo} alt="ANPG" className="h-12 mx-auto" />
-          <CardTitle className="text-xl">Iniciar Sessão</CardTitle>
-          <p className="text-sm text-muted-foreground">
-            Aceda ao painel de concessões da ANPG
-          </p>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleLogin} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="nome@anpg.co.ao"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                autoComplete="email"
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Palavra-passe</Label>
-              <div className="relative">
+      <div className="w-full max-w-md space-y-4">
+        <Card className="glass-card">
+          <CardHeader className="text-center space-y-4">
+            <img src={anpgLogo} alt="ANPG" className="h-12 mx-auto" />
+            <CardTitle className="text-xl">Iniciar Sessão</CardTitle>
+            <p className="text-sm text-muted-foreground">
+              Aceda ao painel de concessões da ANPG
+            </p>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleLogin} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
                 <Input
-                  id="password"
-                  type={showPassword ? "text" : "password"}
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={e => setPassword(e.target.value)}
-                  autoComplete="current-password"
+                  id="email"
+                  type="email"
+                  placeholder="nome@anpg.co.ao"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  autoComplete="email"
                   required
                 />
-                <button
-                  type="button"
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                  onClick={() => setShowPassword(!showPassword)}
-                  tabIndex={-1}
-                >
-                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                </button>
               </div>
-            </div>
-            <Button type="submit" className="w-full gap-2" disabled={submitting}>
-              <LogIn className="w-4 h-4" />
-              {submitting ? "A entrar..." : "Entrar"}
-            </Button>
-          </form>
-          <div className="mt-6 text-center text-sm text-muted-foreground">
-            Não tem conta?{" "}
-            <Link to="/signup" className="text-primary hover:underline font-medium">
-              Criar conta
-            </Link>
-          </div>
-        </CardContent>
-      </Card>
+              <div className="space-y-2">
+                <Label htmlFor="password">Palavra-passe</Label>
+                <div className="relative">
+                  <Input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    placeholder="••••••••"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    autoComplete="current-password"
+                    required
+                  />
+                  <button
+                    type="button"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                    onClick={() => setShowPassword(!showPassword)}
+                    tabIndex={-1}
+                  >
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
+              </div>
+              <Button type="submit" className="w-full gap-2" disabled={submitting || seeding}>
+                <LogIn className="w-4 h-4" />
+                {submitting ? "A entrar..." : "Entrar"}
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
+
+        <Card className="glass-card">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-medium text-muted-foreground">
+              Contas de Teste — Acesso Rápido
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            {TEST_ACCOUNTS.map((account) => {
+              const Icon = account.icon;
+              return (
+                <button
+                  key={account.email}
+                  type="button"
+                  onClick={() => handleUseTestAccount(account)}
+                  className="w-full flex items-center gap-3 p-3 rounded-lg border border-border/50 hover:bg-accent/50 transition-colors text-left group"
+                >
+                  <div className={`p-2 rounded-md bg-muted ${account.color}`}>
+                    <Icon className="w-4 h-4" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium">{account.role}</p>
+                    <p className="text-xs text-muted-foreground truncate">{account.email}</p>
+                  </div>
+                  <span className="text-xs text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity">
+                    Usar
+                  </span>
+                </button>
+              );
+            })}
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 };
