@@ -11,9 +11,11 @@ import { BlocksPanel } from "@/components/dashboard/BlocksPanel";
 import { ExplorationPanel } from "@/components/dashboard/ExplorationPanel";
 import { ProductionPanel } from "@/components/dashboard/ProductionPanel";
 import { type OilBlock, oilBlocks } from "@/data/angolaBlocks";
-import { Maximize2, Minimize2, ChevronLeft, ChevronRight, Sun, Moon, FileText } from "lucide-react";
+import { Maximize2, Minimize2, ChevronLeft, ChevronRight, Sun, Moon, FileText, LogOut, User } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useTheme } from "@/components/ThemeProvider";
+import { useAuth } from "@/components/AuthProvider";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import anpgLogoColor from "@/assets/anpg-logo-color.svg";
 import anpgLogoWhite from "@/assets/anpg-logo-white.svg";
 import { InstitutionalFooter } from "@/components/InstitutionalFooter";
@@ -22,6 +24,7 @@ const panels = ["Overview", "Blocos & Concessões", "Produção", "Exploração 
 
 const Index = () => {
   const { theme, toggleTheme } = useTheme();
+  const { user, signOut } = useAuth();
   const [activePanel, setActivePanel] = useState(0);
   const [slideDirection, setSlideDirection] = useState<"left" | "right">("right");
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -121,6 +124,21 @@ const Index = () => {
             >
               {isPresentation ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
             </button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="p-2 rounded-lg hover:bg-secondary transition-colors" title="Conta">
+                  <User className="w-4 h-4" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <div className="px-3 py-2 text-xs text-muted-foreground truncate border-b border-border">
+                  {user?.email}
+                </div>
+                <DropdownMenuItem onClick={signOut} className="gap-2 text-danger cursor-pointer">
+                  <LogOut className="w-4 h-4" /> Terminar sessão
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
 
