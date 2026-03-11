@@ -11,6 +11,7 @@ import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { oilBlocks } from "@/data/angolaBlocks";
 import { InstitutionalFooter } from "@/components/InstitutionalFooter";
+import { useUserRole } from "@/hooks/useUserRole";
 import anpgLogoColor from "@/assets/anpg-logo-color.svg";
 import anpgLogoWhite from "@/assets/anpg-logo-white.svg";
 
