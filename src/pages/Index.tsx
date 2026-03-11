@@ -24,6 +24,7 @@ const panels = ["Overview", "Blocos & Concessões", "Produção", "Exploração 
 
 const Index = () => {
   const { theme, toggleTheme } = useTheme();
+  const { user, signOut } = useAuth();
   const [activePanel, setActivePanel] = useState(0);
   const [slideDirection, setSlideDirection] = useState<"left" | "right">("right");
   const [isTransitioning, setIsTransitioning] = useState(false);
