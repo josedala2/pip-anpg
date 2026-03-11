@@ -1144,9 +1144,9 @@ export const oilBlocks: OilBlock[] = [
       cumulativeProductionBO: 0,
       platformSpecs: [],
       documents: [
-        { title: "Relatório de Avaliação — Lianzi JDZ", type: "relatorio", date: "2024-03-15", description: "Avaliação da descoberta Lianzi na Zona de Desenvolvimento Conjunto Angola-Congo." },
-        { title: "Relatório Exploratório — Matala-1", type: "relatorio", date: "2024-06-20", description: "Avaliação da descoberta Matala-1 e potencial de desenvolvimento." },
-        { title: "Estudo de Plays Cretáceos", type: "estudo", date: "2023-12-01", description: "Avaliação do potencial em plays Cretáceos profundos do Bloco 14K." },
+        { title: "Relatório de Avaliação — Lianzi JDZ", type: "outro", date: "2024-03-15", description: "Avaliação da descoberta Lianzi na Zona de Desenvolvimento Conjunto Angola-Congo." },
+        { title: "Relatório Exploratório — Matala-1", type: "outro", date: "2024-06-20", description: "Avaliação da descoberta Matala-1 e potencial de desenvolvimento." },
+        { title: "Estudo de Plays Cretáceos", type: "outro", date: "2023-12-01", description: "Avaliação do potencial em plays Cretáceos profundos do Bloco 14K." },
       ],
       maintenancePlan: [],
     },
