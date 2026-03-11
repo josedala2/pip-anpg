@@ -35,6 +35,7 @@ interface Props {
   config: ReportConfig;
   onChange: (config: ReportConfig) => void;
   onGenerate: () => void;
+  allowedReportTypes?: string[];
 }
 
 export const ReportConfigurator = ({ config, onChange, onGenerate }: Props) => {
