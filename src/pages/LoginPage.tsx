@@ -114,11 +114,11 @@ const LoginPage = () => {
                 República de Angola
               </p>
               <h1 className="text-3xl lg:text-5xl font-bold text-white leading-[1.1] tracking-tight">
-                Sistema de Gestão
+                ANPG
                 <br />
-                <span className="text-primary">de Concessões</span>
+                <span className="text-primary">Concession</span>
                 <br />
-                Petrolíferas
+                Vision
               </h1>
               <p className="text-white/50 text-sm lg:text-base max-w-md leading-relaxed">
                 Monitorização integrada de blocos, produção, exploração e indicadores estratégicos.
