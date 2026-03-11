@@ -2346,7 +2346,7 @@ export const oilBlocks: OilBlock[] = [
       endOfLifeField: "Mavinga/Kwanza Rift",
       cumulativeProductionBO: 15000000,
       platformSpecs: [
-        { name: "Kaminho FPSO", type: "FPSO", installationYear: 2027, waterDepthM: 2200, capacity: "120.000 BOPD", status: "Em Construção", lastInspection: "N/A", nextMaintenance: "2028-Q1" },
+        { name: "Kaminho FPSO", type: "FPSO", installationYear: 2027, waterDepthM: 2200, capacity: "120.000 BOPD", status: "Suspensa", lastInspection: "N/A", nextMaintenance: "2028-Q1" },
       ],
       documents: [
         { title: "Ficha Técnica — FPSO Kaminho", type: "ficha-tecnica", date: "2024-12-01", description: "FPSO de nova geração para o desenvolvimento Kaminho Pre-Salt. Capacidade de 120.000 BOPD." },
