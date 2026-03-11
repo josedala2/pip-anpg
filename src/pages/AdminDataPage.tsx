@@ -290,6 +290,7 @@ const AdminDataPage = () => {
                 </Table>
               </div>
             </div>
+            <PaginationBar current={prodPage} total={prodTotalPages} count={productionBlocks.length} onPage={setPage} />
           </TabsContent>
 
           {/* Concessions Tab */}
