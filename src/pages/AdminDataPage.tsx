@@ -309,7 +309,7 @@ const AdminDataPage = () => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {filtered.map(block => (
+                    {paginatedConcBlocks.map(block => (
                       <>
                         <TableRow key={block.id} className="cursor-pointer hover:bg-muted/30" onClick={() => setExpandedBlock(expandedBlock === block.id ? null : block.id)}>
                           <TableCell className="font-medium">
