@@ -207,7 +207,7 @@ const AdminDataPage = () => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {filtered.map(block => (
+                    {paginatedBlocks.map(block => (
                       <>
                         <TableRow
                           key={block.id}
