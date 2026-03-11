@@ -124,6 +124,21 @@ const Index = () => {
             >
               {isPresentation ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
             </button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="p-2 rounded-lg hover:bg-secondary transition-colors" title="Conta">
+                  <User className="w-4 h-4" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <div className="px-3 py-2 text-xs text-muted-foreground truncate border-b border-border">
+                  {user?.email}
+                </div>
+                <DropdownMenuItem onClick={signOut} className="gap-2 text-danger cursor-pointer">
+                  <LogOut className="w-4 h-4" /> Terminar sessão
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
 
