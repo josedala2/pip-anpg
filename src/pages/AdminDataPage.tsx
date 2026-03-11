@@ -41,6 +41,8 @@ const AdminDataPage = () => {
   const [sortField, setSortField] = useState<keyof OilBlock>("name");
   const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
   const [expandedBlock, setExpandedBlock] = useState<string | null>(null);
+  const [page, setPage] = useState(1);
+  const pageSize = 15;
 
   const basins = useMemo(() => [...new Set(oilBlocks.map(b => b.basin))].sort(), []);
   const phases = useMemo(() => [...new Set(oilBlocks.map(b => b.phase))].sort(), []);
