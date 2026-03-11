@@ -281,6 +281,17 @@
   display: none !important;
 }
 
+
+.leaflet-production-label {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+.leaflet-production-label::before {
+  display: none !important;
+}
+
 .leaflet-block-marker {
   background: transparent !important;
   border: none !important;

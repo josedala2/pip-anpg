@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { MapContainer, TileLayer, Polygon, Polyline, Popup, CircleMarker, Tooltip as LeafletTooltip, Rectangle } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { type OilBlock, type BlockPhase } from "@/data/angolaBlocks";
-import { Layers, Map as MapIcon, Satellite, Mountain, Waves, TreePine, ChevronDown, ChevronUp } from "lucide-react";
+import { Layers, Map as MapIcon, Satellite, Mountain, Waves, TreePine, ChevronDown, ChevronUp, Droplets } from "lucide-react";
 
 interface ConcessionMapProps {
   blocks: OilBlock[];
@@ -295,6 +295,7 @@ export const ConcessionMap = ({
   const [showBasins, setShowBasins] = useState(true);
   const [showBlocks, setShowBlocks] = useState(true);
   const [showConcessions, setShowConcessions] = useState(true);
+  const [showProduction, setShowProduction] = useState(true);
   const [showSatellite, setShowSatellite] = useState(true);
   const [colorMode, setColorMode] = useState<"phase" | "bidding">("phase");
   const [layersPanelOpen, setLayersPanelOpen] = useState(false);
@@ -396,6 +397,33 @@ export const ConcessionMap = ({
             </LeafletTooltip>
           </CircleMarker>
         ))}
+
+        {/* Production indicators */}
+        {showProduction && showBlocks && blocks.filter(b => b.dailyProduction > 0).map(block => {
+          const polygon = blockPolygons[block.id];
+          if (!polygon) return null;
+          const center = getPolygonCenter(polygon);
+          const radius = Math.max(6, Math.min(18, Math.sqrt(block.dailyProduction / 1000) * 4));
+          return (
+            <CircleMarker
+              key={`prod-${block.id}`}
+              center={center}
+              radius={radius}
+              pathOptions={{
+                color: "#22c55e",
+                weight: 1.5,
+                fillColor: "#22c55e",
+                fillOpacity: 0.8,
+              }}
+            >
+              <LeafletTooltip permanent direction="center" className="leaflet-production-label">
+                <span className="text-[8px] font-bold text-white drop-shadow-md">
+                  {(block.dailyProduction / 1000).toFixed(0)}k
+                </span>
+              </LeafletTooltip>
+            </CircleMarker>
+          );
+        })}
 
         {/* Block polygons */}
         {showBlocks && blocks.map(block => {
@@ -534,7 +562,8 @@ export const ConcessionMap = ({
                   { key: "limits", label: "Limites Marítimos", icon: <Waves className="w-3 h-3" />, checked: showLimits, set: setShowLimits },
                   { key: "cities", label: "Cidades", icon: <MapIcon className="w-3 h-3" />, checked: showCities, set: setShowCities },
                   { key: "basins", label: "Bacias & Zonas", icon: <Mountain className="w-3 h-3" />, checked: showBasins, set: setShowBasins },
-                  { key: "reserves", label: "Reservas Naturais", icon: <TreePine className="w-3 h-3" />, checked: showReserves, set: setShowReserves },
+                   { key: "production", label: "Produções", icon: <Droplets className="w-3 h-3" />, checked: showProduction, set: setShowProduction },
+                   { key: "reserves", label: "Reservas Naturais", icon: <TreePine className="w-3 h-3" />, checked: showReserves, set: setShowReserves },
                 ] as const).map(layer => (
                   <label key={layer.key} className="flex items-center gap-2 text-[10px] text-foreground cursor-pointer hover:bg-secondary/40 rounded px-1.5 py-1 transition-colors">
                     <input
