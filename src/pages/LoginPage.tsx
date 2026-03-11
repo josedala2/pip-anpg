@@ -94,22 +94,23 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col lg:flex-row">
-      {/* Left Hero Panel */}
-      <div className="relative lg:w-[60%] min-h-[220px] lg:min-h-screen flex flex-col justify-end overflow-hidden">
-        <img
-          src={angolaSatellite}
-          alt=""
-          className="absolute inset-0 w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-black/40" />
-        {/* Decorative dots */}
-        <div className="absolute inset-0 opacity-[0.03]" style={{
-          backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)',
-          backgroundSize: '24px 24px',
-        }} />
+    <div className="min-h-screen flex flex-col lg:flex-row relative">
+      {/* Full-screen background image */}
+      <img
+        src={angolaSatellite}
+        alt=""
+        className="absolute inset-0 w-full h-full object-cover"
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-black/40" />
+      {/* Decorative dots */}
+      <div className="absolute inset-0 opacity-[0.03]" style={{
+        backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)',
+        backgroundSize: '24px 24px',
+      }} />
 
-        <div className="relative z-10 p-8 lg:p-16 space-y-6">
+      {/* Left Hero Panel */}
+      <div className="relative lg:w-[60%] min-h-[220px] lg:min-h-screen flex flex-col justify-end z-10">
+        <div className="p-8 lg:p-16 space-y-6">
           <img src={anpgLogoWhite} alt="ANPG" className="h-10 lg:h-14" />
           <div className="space-y-3 max-w-lg">
             <h1 className="text-2xl lg:text-4xl font-bold text-white leading-tight tracking-tight">
@@ -134,7 +135,7 @@ const LoginPage = () => {
       </div>
 
       {/* Right Login Panel */}
-      <div className="lg:w-[40%] flex flex-col justify-center bg-background">
+      <div className="relative lg:w-[40%] flex flex-col justify-center z-10 bg-gradient-to-r from-transparent via-background/80 to-background backdrop-blur-md">
         <div className="w-full max-w-md mx-auto px-6 py-10 lg:px-12 space-y-8">
           <div className="space-y-1">
             <img src={anpgLogo} alt="ANPG" className="h-10 mb-6" />
