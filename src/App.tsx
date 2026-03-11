@@ -10,7 +10,6 @@ import Index from "./pages/Index";
 import BlockPage from "./pages/BlockPage";
 import ReportsPage from "./pages/ReportsPage";
 import LoginPage from "./pages/LoginPage";
-import SignupPage from "./pages/SignupPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
