@@ -3234,8 +3234,8 @@ export const oilBlocks: OilBlock[] = [
       cumulativeProductionBO: 0,
       platformSpecs: [],
       documents: [
-        { title: "Relatório Exploratório — Bacia do Namibe", type: "relatorio", date: "2024-06-15", description: "Resultados da campanha sísmica 3D de 2022 e avaliação de plays Pre-Salt." },
-        { title: "Estudo Ambiental de Base — Bloco 48", type: "ambiental", date: "2023-12-01", description: "Estudo de linha de base ambiental para a área do Bloco 48 no Namibe." },
+        { title: "Relatório Exploratório — Bacia do Namibe", type: "outro", date: "2024-06-15", description: "Resultados da campanha sísmica 3D de 2022 e avaliação de plays Pre-Salt." },
+        { title: "Estudo Ambiental de Base — Bloco 48", type: "outro", date: "2023-12-01", description: "Estudo de linha de base ambiental para a área do Bloco 48 no Namibe." },
       ],
       maintenancePlan: [],
     },
