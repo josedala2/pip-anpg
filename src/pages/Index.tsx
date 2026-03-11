@@ -213,11 +213,11 @@ const Index = () => {
           )}
 
           <div className="p-4 md:p-6 2xl:p-8 3xl:p-10 max-w-[1920px] 3xl:max-w-[2400px] mx-auto">
-          {activePanel === 1 && <BlocksPanel />}
-          {activePanel === 2 && <ProductionPanel />}
-          {activePanel === 3 && <ExplorationPanel />}
-          {activePanel === 4 && <RiskPerformance />}
-          {activePanel === 5 && <StrategicForecast />}
+          {panels[activePanel] === "Blocos & Concessões" && <BlocksPanel />}
+          {panels[activePanel] === "Produção" && <ProductionPanel />}
+          {panels[activePanel] === "Exploração & Sísmica" && <ExplorationPanel />}
+          {panels[activePanel] === "Risk & Performance" && <RiskPerformance />}
+          {panels[activePanel] === "Strategic Forecast" && <StrategicForecast />}
           </div>
         </div>
       </main>
