@@ -511,7 +511,7 @@ export const ConcessionMap = ({
         </button>
 
         {layersPanelOpen && (
-          <div className="bg-background/95 backdrop-blur-xl border border-border shadow-xl p-3.5 rounded-lg min-w-[220px] space-y-3 animate-in fade-in slide-in-from-top-2 duration-200">
+          <div className="bg-background/95 backdrop-blur-xl border border-border shadow-xl p-3.5 rounded-lg min-w-[220px] max-h-[70vh] overflow-y-auto space-y-3 animate-in fade-in slide-in-from-top-2 duration-200">
             {/* Base map */}
             <div>
               <div className="text-[9px] font-bold text-muted-foreground uppercase tracking-wider mb-1.5">Mapa Base</div>
