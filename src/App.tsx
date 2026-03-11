@@ -10,6 +10,7 @@ import Index from "./pages/Index";
 import BlockPage from "./pages/BlockPage";
 import ReportsPage from "./pages/ReportsPage";
 import AdminUsersPage from "./pages/AdminUsersPage";
+import AdminDataPage from "./pages/AdminDataPage";
 import LoginPage from "./pages/LoginPage";
 import NotFound from "./pages/NotFound";
 
