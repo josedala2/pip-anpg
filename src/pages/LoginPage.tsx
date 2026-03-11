@@ -111,7 +111,7 @@ const LoginPage = () => {
           <div className="space-y-6 max-w-xl mt-auto">
             <div className="space-y-3">
               <p className="text-xs font-semibold uppercase tracking-[0.2em] text-white/40">
-                República de Angola
+                Inteligência Petrolífera
               </p>
               <h1 className="text-3xl lg:text-5xl font-bold text-white leading-[1.1] tracking-tight">
                 ANPG
