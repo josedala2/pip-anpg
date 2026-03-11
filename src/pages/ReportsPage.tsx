@@ -17,6 +17,7 @@ import anpgLogoWhite from "@/assets/anpg-logo-white.svg";
 
 const ReportsPage = () => {
   const { theme } = useTheme();
+  const { allowedReportTypes } = useUserRole();
   const [generated, setGenerated] = useState(false);
   const [copied, setCopied] = useState(false);
   const [aiNarrative, setAiNarrative] = useState<string | null>(null);
