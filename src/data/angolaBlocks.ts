@@ -3427,7 +3427,7 @@ export const oilBlocks: OilBlock[] = [
       endOfLifeField: "Caco Gazela Phase 2",
       cumulativeProductionBO: 22000000,
       platformSpecs: [
-        { name: "Caco Gazela FPSO", type: "FPSO", installationYear: 2022, waterDepthM: 120, capacity: "80.000 BOPD", status: "Em Ramp-up", lastInspection: "2024-09", nextMaintenance: "2025-Q3" },
+        { name: "Caco Gazela FPSO", type: "FPSO", installationYear: 2022, waterDepthM: 120, capacity: "80.000 BOPD", status: "Operacional", lastInspection: "2024-09", nextMaintenance: "2025-Q3" },
       ],
       documents: [
         { title: "Ficha Técnica — FPSO Caco Gazela", type: "ficha-tecnica", date: "2024-09-10", description: "FPSO para o desenvolvimento Caco Gazela em águas rasas. Capacidade de 80.000 BOPD." },
