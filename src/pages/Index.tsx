@@ -190,7 +190,7 @@ const Index = () => {
               : "opacity-100 translate-x-0"
           }`}
         >
-          {activePanel === 0 && (
+          {panels[activePanel] === "Overview" && (
             <div className="flex flex-col md:flex-row" style={{ height: "calc(100vh - 110px)" }}>
               <div className="flex-1 md:flex-[6] min-w-0 relative h-[45vh] md:h-full">
                 <ConcessionMap
