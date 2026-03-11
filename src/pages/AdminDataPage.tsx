@@ -239,6 +239,7 @@ const AdminDataPage = () => {
                 </Table>
               </div>
             </div>
+            <PaginationBar current={safePage} total={totalPages} count={filteredLen} onPage={setPage} />
           </TabsContent>
 
           {/* Production Tab */}
