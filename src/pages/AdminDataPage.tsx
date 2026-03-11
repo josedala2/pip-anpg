@@ -244,21 +244,31 @@ const AdminDataPage = () => {
                   </TableHeader>
                   <TableBody>
                     {filtered.filter(b => b.dailyProduction > 0).sort((a, b) => b.dailyProduction - a.dailyProduction).map(block => (
-                      <TableRow key={block.id} className="hover:bg-muted/30">
-                        <TableCell className="font-medium">{block.name}</TableCell>
-                        <TableCell>{block.operator}</TableCell>
-                        <TableCell>
-                          <Badge variant="outline" className={phaseColors[block.phase] || ""}>{block.phase}</Badge>
-                        </TableCell>
-                        <TableCell className="text-right font-mono">{block.dailyProduction.toLocaleString()}</TableCell>
-                        <TableCell className="text-right font-mono">{block.estimatedReserves.toLocaleString()}</TableCell>
-                        <TableCell className="text-right">{block.fields?.filter(f => f.status === "Producing").length ?? 0}</TableCell>
-                        <TableCell className="text-right">
-                          {block.facilityData?.overallEfficiency
-                            ? `${block.facilityData.overallEfficiency}%`
-                            : "—"}
-                        </TableCell>
-                      </TableRow>
+                      <>
+                        <TableRow key={block.id} className="cursor-pointer hover:bg-muted/30" onClick={() => setExpandedBlock(expandedBlock === block.id ? null : block.id)}>
+                          <TableCell className="font-medium">
+                            <span className="flex items-center gap-1.5">
+                              <ChevronRight className={`w-3.5 h-3.5 transition-transform duration-200 ${expandedBlock === block.id ? "rotate-90" : ""}`} />
+                              {block.name}
+                            </span>
+                          </TableCell>
+                          <TableCell>{block.operator}</TableCell>
+                          <TableCell>
+                            <Badge variant="outline" className={phaseColors[block.phase] || ""}>{block.phase}</Badge>
+                          </TableCell>
+                          <TableCell className="text-right font-mono">{block.dailyProduction.toLocaleString()}</TableCell>
+                          <TableCell className="text-right font-mono">{block.estimatedReserves.toLocaleString()}</TableCell>
+                          <TableCell className="text-right">{block.fields?.filter(f => f.status === "Producing").length ?? 0}</TableCell>
+                          <TableCell className="text-right">
+                            {block.facilityData?.overallEfficiency
+                              ? `${block.facilityData.overallEfficiency}%`
+                              : "—"}
+                          </TableCell>
+                        </TableRow>
+                        {expandedBlock === block.id && (
+                          <BlockDetailRow block={block} colSpan={7} />
+                        )}
+                      </>
                     ))}
                   </TableBody>
                 </Table>
