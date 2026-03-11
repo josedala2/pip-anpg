@@ -3431,7 +3431,7 @@ export const oilBlocks: OilBlock[] = [
       ],
       documents: [
         { title: "Ficha Técnica — FPSO Caco Gazela", type: "ficha-tecnica", date: "2024-09-10", description: "FPSO para o desenvolvimento Caco Gazela em águas rasas. Capacidade de 80.000 BOPD." },
-        { title: "Plano de Desenvolvimento Caco Gazela Phase 2", type: "plano", date: "2025-01-20", description: "Plano de desenvolvimento da segunda fase com 12 poços adicionais." },
+        { title: "Plano de Desenvolvimento Caco Gazela Phase 2", type: "outro", date: "2025-01-20", description: "Plano de desenvolvimento da segunda fase com 12 poços adicionais." },
       ],
       maintenancePlan: [
         { period: "2025-Q3", scope: "Primeira manutenção programada — Caco Gazela FPSO", status: "Planeado" },
