@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useTheme } from "@/components/ThemeProvider";
 import { useAuth } from "@/components/AuthProvider";
@@ -16,8 +16,9 @@ import {
 } from "@/components/ui/select";
 import {
   ArrowLeft, Search, Database, BarChart3, Users2, FileText,
-  Sun, Moon, ChevronDown, ChevronUp, ChevronRight,
+  Sun, Moon, ChevronDown, ChevronUp, ChevronRight, ChevronLeft,
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { BlockDetailRow } from "@/components/admin/BlockDetailRow";
 import anpgLogoColor from "@/assets/anpg-logo-color.svg";
 import anpgLogoWhite from "@/assets/anpg-logo-white.svg";
@@ -41,6 +42,8 @@ const AdminDataPage = () => {
   const [sortField, setSortField] = useState<keyof OilBlock>("name");
   const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
   const [expandedBlock, setExpandedBlock] = useState<string | null>(null);
+  const [page, setPage] = useState(1);
+  const pageSize = 15;
 
   const basins = useMemo(() => [...new Set(oilBlocks.map(b => b.basin))].sort(), []);
   const phases = useMemo(() => [...new Set(oilBlocks.map(b => b.phase))].sort(), []);
@@ -69,6 +72,21 @@ const AdminDataPage = () => {
 
     return list;
   }, [search, phaseFilter, basinFilter, sortField, sortDir]);
+
+  // Reset page when filters change
+  const filteredLen = filtered.length;
+  const totalPages = Math.max(1, Math.ceil(filteredLen / pageSize));
+  const safePage = Math.min(page, totalPages);
+  const paginatedBlocks = useMemo(() => filtered.slice((safePage - 1) * pageSize, safePage * pageSize), [filtered, safePage, pageSize]);
+  const productionBlocks = useMemo(() => filtered.filter(b => b.dailyProduction > 0).sort((a, b) => b.dailyProduction - a.dailyProduction), [filtered]);
+  const prodTotalPages = Math.max(1, Math.ceil(productionBlocks.length / pageSize));
+  const prodPage = Math.min(page, prodTotalPages);
+  const paginatedProdBlocks = useMemo(() => productionBlocks.slice((prodPage - 1) * pageSize, prodPage * pageSize), [productionBlocks, prodPage, pageSize]);
+  const concTotalPages = totalPages;
+  const paginatedConcBlocks = paginatedBlocks;
+
+  // Reset to page 1 when filters change
+  useEffect(() => { setPage(1); }, [search, phaseFilter, basinFilter]);
 
   const toggleSort = (field: keyof OilBlock) => {
     if (sortField === field) setSortDir(d => d === "asc" ? "desc" : "asc");
@@ -192,7 +210,7 @@ const AdminDataPage = () => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {filtered.map(block => (
+                    {paginatedBlocks.map(block => (
                       <>
                         <TableRow
                           key={block.id}
@@ -224,6 +242,7 @@ const AdminDataPage = () => {
                 </Table>
               </div>
             </div>
+            <PaginationBar current={safePage} total={totalPages} count={filteredLen} onPage={setPage} />
           </TabsContent>
 
           {/* Production Tab */}
@@ -243,7 +262,7 @@ const AdminDataPage = () => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {filtered.filter(b => b.dailyProduction > 0).sort((a, b) => b.dailyProduction - a.dailyProduction).map(block => (
+                    {paginatedProdBlocks.map(block => (
                       <>
                         <TableRow key={block.id} className="cursor-pointer hover:bg-muted/30" onClick={() => setExpandedBlock(expandedBlock === block.id ? null : block.id)}>
                           <TableCell className="font-medium">
@@ -274,6 +293,7 @@ const AdminDataPage = () => {
                 </Table>
               </div>
             </div>
+            <PaginationBar current={prodPage} total={prodTotalPages} count={productionBlocks.length} onPage={setPage} />
           </TabsContent>
 
           {/* Concessions Tab */}
@@ -292,7 +312,7 @@ const AdminDataPage = () => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {filtered.map(block => (
+                    {paginatedConcBlocks.map(block => (
                       <>
                         <TableRow key={block.id} className="cursor-pointer hover:bg-muted/30" onClick={() => setExpandedBlock(expandedBlock === block.id ? null : block.id)}>
                           <TableCell className="font-medium">
@@ -329,6 +349,7 @@ const AdminDataPage = () => {
                 </Table>
               </div>
             </div>
+            <PaginationBar current={safePage} total={concTotalPages} count={filteredLen} onPage={setPage} />
           </TabsContent>
         </Tabs>
       </main>
@@ -347,6 +368,45 @@ function SummaryCard({ icon: Icon, label, value, sub }: { icon: any; label: stri
       </div>
       <p className="text-2xl font-bold">{value}</p>
       <p className="text-xs text-muted-foreground">{sub}</p>
+    </div>
+  );
+}
+
+function PaginationBar({ current, total, count, onPage }: { current: number; total: number; count: number; onPage: (p: number) => void }) {
+  if (total <= 1) return null;
+  return (
+    <div className="flex items-center justify-between px-4 py-3 border-t border-border/50">
+      <span className="text-xs text-muted-foreground">{count} registos · Página {current} de {total}</span>
+      <div className="flex items-center gap-1">
+        <Button variant="ghost" size="sm" disabled={current <= 1} onClick={() => onPage(current - 1)} className="h-8 w-8 p-0">
+          <ChevronLeft className="w-4 h-4" />
+        </Button>
+        {Array.from({ length: total }, (_, i) => i + 1)
+          .filter(p => p === 1 || p === total || Math.abs(p - current) <= 1)
+          .reduce<(number | "...")[]>((acc, p, idx, arr) => {
+            if (idx > 0 && p - (arr[idx - 1]) > 1) acc.push("...");
+            acc.push(p);
+            return acc;
+          }, [])
+          .map((p, i) =>
+            p === "..." ? (
+              <span key={`e${i}`} className="px-1 text-xs text-muted-foreground">…</span>
+            ) : (
+              <Button
+                key={p}
+                variant={p === current ? "default" : "ghost"}
+                size="sm"
+                className="h-8 w-8 p-0 text-xs"
+                onClick={() => onPage(p as number)}
+              >
+                {p}
+              </Button>
+            )
+          )}
+        <Button variant="ghost" size="sm" disabled={current >= total} onClick={() => onPage(current + 1)} className="h-8 w-8 p-0">
+          <ChevronRight className="w-4 h-4" />
+        </Button>
+      </div>
     </div>
   );
 }
