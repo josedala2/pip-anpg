@@ -535,7 +535,8 @@ export const ConcessionMap = ({
                   { key: "limits", label: "Limites Marítimos", icon: <Waves className="w-3 h-3" />, checked: showLimits, set: setShowLimits },
                   { key: "cities", label: "Cidades", icon: <MapIcon className="w-3 h-3" />, checked: showCities, set: setShowCities },
                   { key: "basins", label: "Bacias & Zonas", icon: <Mountain className="w-3 h-3" />, checked: showBasins, set: setShowBasins },
-                  { key: "reserves", label: "Reservas Naturais", icon: <TreePine className="w-3 h-3" />, checked: showReserves, set: setShowReserves },
+                   { key: "production", label: "Produções", icon: <Droplets className="w-3 h-3" />, checked: showProduction, set: setShowProduction },
+                   { key: "reserves", label: "Reservas Naturais", icon: <TreePine className="w-3 h-3" />, checked: showReserves, set: setShowReserves },
                 ] as const).map(layer => (
                   <label key={layer.key} className="flex items-center gap-2 text-[10px] text-foreground cursor-pointer hover:bg-secondary/40 rounded px-1.5 py-1 transition-colors">
                     <input
