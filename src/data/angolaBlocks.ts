@@ -2350,7 +2350,7 @@ export const oilBlocks: OilBlock[] = [
       ],
       documents: [
         { title: "Ficha Técnica — FPSO Kaminho", type: "ficha-tecnica", date: "2024-12-01", description: "FPSO de nova geração para o desenvolvimento Kaminho Pre-Salt. Capacidade de 120.000 BOPD." },
-        { title: "Relatório de Progresso Kaminho", type: "relatorio", date: "2025-01-15", description: "Estado de construção do FPSO e instalação de sistemas subsea." },
+        { title: "Relatório de Progresso Kaminho", type: "outro", date: "2025-01-15", description: "Estado de construção do FPSO e instalação de sistemas subsea." },
       ],
       maintenancePlan: [
         { period: "2027-Q3", scope: "Comissionamento do FPSO Kaminho", status: "Planeado" },
