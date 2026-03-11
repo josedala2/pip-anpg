@@ -2597,7 +2597,7 @@ export const oilBlocks: OilBlock[] = [
       documents: [
         { title: "Ficha Técnica — FPSO Ngoma", type: "ficha-tecnica", date: "2024-09-15", description: "FPSO principal do Bloco 15/06 com capacidade de 200.000 BOPD. Opera desde 2008." },
         { title: "Ficha Técnica — FPSOs Kaombo", type: "ficha-tecnica", date: "2024-10-20", description: "Dois FPSOs gémeos com capacidade combinada de 230.000 BOPD." },
-        { title: "Relatório Agogo Early Production", type: "relatorio", date: "2025-01-10", description: "Resultados da produção antecipada de Agogo via tieback ao FPSO Ngoma." },
+        { title: "Relatório Agogo Early Production", type: "outro", date: "2025-01-10", description: "Resultados da produção antecipada de Agogo via tieback ao FPSO Ngoma." },
         { title: "Plano de Manutenção 2025", type: "manutencao", date: "2025-01-15", description: "Cronograma de manutenção preventiva para os 3 FPSOs." },
       ],
       maintenancePlan: [
