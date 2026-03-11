@@ -72,6 +72,18 @@ const AdminDataPage = () => {
     return list;
   }, [search, phaseFilter, basinFilter, sortField, sortDir]);
 
+  // Reset page when filters change
+  const filteredLen = filtered.length;
+  const totalPages = Math.max(1, Math.ceil(filteredLen / pageSize));
+  const safePage = Math.min(page, totalPages);
+  const paginatedBlocks = useMemo(() => filtered.slice((safePage - 1) * pageSize, safePage * pageSize), [filtered, safePage, pageSize]);
+  const productionBlocks = useMemo(() => filtered.filter(b => b.dailyProduction > 0).sort((a, b) => b.dailyProduction - a.dailyProduction), [filtered]);
+  const prodTotalPages = Math.max(1, Math.ceil(productionBlocks.length / pageSize));
+  const prodPage = Math.min(page, prodTotalPages);
+  const paginatedProdBlocks = useMemo(() => productionBlocks.slice((prodPage - 1) * pageSize, prodPage * pageSize), [productionBlocks, prodPage, pageSize]);
+  const concTotalPages = totalPages;
+  const paginatedConcBlocks = paginatedBlocks;
+
   const toggleSort = (field: keyof OilBlock) => {
     if (sortField === field) setSortDir(d => d === "asc" ? "desc" : "asc");
     else { setSortField(field); setSortDir("asc"); }
