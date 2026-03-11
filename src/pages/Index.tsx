@@ -110,6 +110,15 @@ const Index = () => {
             </div>
           </div>
           <div className="flex items-center gap-2 3xl:gap-3">
+            {role === "admin" && (
+              <Link
+                to="/admin/users"
+                className="p-2 3xl:p-2.5 rounded-lg hover:bg-secondary transition-colors"
+                title="Gestão de Utilizadores"
+              >
+                <Users className="w-4 h-4 3xl:w-5 3xl:h-5" />
+              </Link>
+            )}
             <Link
               to="/reports"
               className="p-2 3xl:p-2.5 rounded-lg hover:bg-secondary transition-colors"
