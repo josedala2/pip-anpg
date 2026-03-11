@@ -346,6 +346,7 @@ const AdminDataPage = () => {
                 </Table>
               </div>
             </div>
+            <PaginationBar current={safePage} total={concTotalPages} count={filteredLen} onPage={setPage} />
           </TabsContent>
         </Tabs>
       </main>
