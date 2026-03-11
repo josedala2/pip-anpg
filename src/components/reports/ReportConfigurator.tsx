@@ -77,7 +77,7 @@ export const ReportConfigurator = ({ config, onChange, onGenerate, allowedReport
       <div>
         <h3 className="text-sm font-semibold text-foreground mb-3">Tipo de Relatório</h3>
         <div className="grid gap-2">
-          {(Object.entries(reportTypeLabels) as [ReportType, typeof reportTypeLabels.executive][]).map(([key, val]) => (
+          {(Object.entries(reportTypeLabels) as [ReportType, typeof reportTypeLabels.executive][]).filter(([key]) => !allowedReportTypes || allowedReportTypes.includes(key)).map(([key, val]) => (
             <label
               key={key}
               className={`flex items-start gap-3 p-3 rounded-lg border cursor-pointer transition-all ${
