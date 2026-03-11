@@ -9,6 +9,7 @@ import { ProtectedRoute } from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
 import BlockPage from "./pages/BlockPage";
 import ReportsPage from "./pages/ReportsPage";
+import AdminUsersPage from "./pages/AdminUsersPage";
 import LoginPage from "./pages/LoginPage";
 import NotFound from "./pages/NotFound";
 
