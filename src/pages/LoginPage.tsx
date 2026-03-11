@@ -121,7 +121,7 @@ const LoginPage = () => {
                 Vision
               </h1>
               <p className="text-white/50 text-sm lg:text-base max-w-md leading-relaxed">
-                Monitorização integrada de blocos, produção, exploração e indicadores estratégicos.
+                Monitoria integrada de blocos, produção, exploração e indicadores estratégicos.
               </p>
             </div>
             <div className="flex gap-10 pt-6 border-t border-white/10">
