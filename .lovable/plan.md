@@ -1,75 +1,95 @@
 
 
-# Integração de Dados Detalhados do Bloco 0
+## Plan: Role-Based Access Control (RBAC)
 
-## Dados Identificados nas Imagens de Referência
+### Roles & Permissions Matrix
 
-Analisei as 9 imagens da ANPG e identifiquei as seguintes categorias de dados novos que ainda não existem no modelo:
+| Panel/Feature | Administrador | Técnico DPRO | Técnico DEX | Técnico DNEG | Técnico DEC | Conselho Adm. |
+|---|---|---|---|---|---|---|
+| Overview | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| Blocos & Concessões | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| Produção | ✓ | ✓ | ✗ | ✗ | ✗ | ✓ |
+| Exploração & Sísmica | ✓ | ✗ | ✓ | ✗ | ✗ | ✓ |
+| Risk & Performance | ✓ | ✗ | ✗ | ✗ | ✓ | ✓ |
+| Strategic Forecast | ✓ | ✗ | ✗ | ✓ | ✓ | ✓ |
+| Relatórios (export) | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 
-### 1. Segurança e Ambiente (HSE) — Dados Completamente Novos
-- **Indicadores de segurança** (2021-2025): FAT, LTI, RWC, MTC, FAC, NMI
-- **Taxas**: HHR, TRIR, LTIR por ano
-- **Derrames de óleo**: contagem e volume (bbl)
-- **Concentração de óleo em água** (PPM): 5.17, 5.1, 4.75, 4.66, 6.53
-- **Emissões CO2** (ton CO2eq): ~3.7M (2021) descendo para ~3.1M (2025)
-- **Gás queimado** (MMSCFD): 17.519 → 10.54, com metas
+*Administrador and Conselho see everything. Each Técnico sees Overview + Blocos + their departmental panels.*
 
-### 2. Estado das Instalações — Dados Novos
-- **Área A (Eficiência 85%)**: Takula, GIP-FOX, Mafumeira; problemas de corrosão e obsolescência
-- **Área B (Eficiência 91%)**: Sanha, Sanha LPG, Nembas, EK, WK
-- **Poços activos**: 358 OP, 78 WI, 27 GI
-- **Produção 2025**: 43.539.025 bbls, perdas 2.830.691 bbls, eficiência 88%
-- **Capacidade de produção**: 400.000 BOPD (Malongo Terminal)
-- **Produção média 4T2025**: 119.285 BOPD
-- **Reservas actuais**: 421 MMBO
-- **Início de produção**: 1968
-- **Vida útil**: até 2040 (Mafumeira Sul)
+### Database Changes
 
-### 3. Visão Económica — Dados Novos
-- **NPV Fullcycle**: GE 17% (54.410), Impostos 83% (272.177)
-- **NPV Point Forward**: GE 37% (1.840 MMUSD), Conc 63% (3.098 MMUSD)
-- **Cash flows negativos recorrentes para o GE**
-- **Observações**: bloco maduro, infraestruturas envelhecidas
+1. **Create `user_roles` table** with `app_role` enum matching the 6 roles
+2. **Create `has_role()` security definer function**
+3. **Seed roles** for existing test accounts via a trigger on `profiles` that maps `cargo` to role, or a direct seed migration
 
-### 4. Cenários de Revitalização — Dados Novos
-- **Cenário 1**: Continuidade do GE com incentivos fiscais
-- **Cenário 2**: Investidor âncora para exploração
-- **Cenário 3**: Novo investidor em áreas livres (modelo CPP)
+```sql
+CREATE TYPE public.app_role AS ENUM (
+  'admin', 'tecnico_dpro', 'tecnico_dex', 'tecnico_dneg', 'tecnico_dec', 'conselho'
+);
 
-### 5. Ajustes aos Dados Existentes
-- **dailyProduction**: atualizar de 142.000 para 119.285 (dado real 4T2025)
-- **estimatedReserves**: atualizar de 890 para 421 MMBO (dado real)
-- **Produção acumulada**: 290.043.686.705 BO (até Dez 2025)
-- **investmentPlan**: adicionar categorias "Administração e Serviços" e linha "Cash Call Sonangol"
-- **Prospects**: atualizar com tabela real (105-B, 131-A, 107-C, 83-N, 71-T, 70-G, 95-I, 79-F, 68-D, 80-J) com distâncias ao FPSO
+CREATE TABLE public.user_roles (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id uuid REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
+  role app_role NOT NULL,
+  UNIQUE (user_id, role)
+);
 
-## Plano de Implementação
+ALTER TABLE public.user_roles ENABLE ROW LEVEL SECURITY;
 
-### Ficheiro 1: `src/data/angolaBlocks.ts` — Novos tipos e dados
+-- Security definer function
+CREATE OR REPLACE FUNCTION public.has_role(_user_id uuid, _role app_role)
+RETURNS boolean LANGUAGE sql STABLE SECURITY DEFINER SET search_path = public AS $$
+  SELECT EXISTS (SELECT 1 FROM public.user_roles WHERE user_id = _user_id AND role = _role);
+$$;
 
-**Novas interfaces**:
-- `HSEData` — indicadores de segurança por ano (FAT, LTI, RWC, MTC, FAC, NMI, HHR, TRIR, LTIR)
-- `EnvironmentalData` — derrames, óleo em água, emissões, gás queimado por ano
-- `FacilityData` — eficiência por área, plataformas, poços activos, capacidades
-- `EconomicVision` — NPV fullcycle, point forward, observações estratégicas
-- `RevitalizationScenario` — cenários com propostas, incentivos e compromissos
+-- RLS: users can read their own roles
+CREATE POLICY "Users can view own roles" ON public.user_roles
+  FOR SELECT TO authenticated USING (auth.uid() = user_id);
 
-**Actualizar `OilBlock`** com campos opcionais: `hseData?`, `environmentalData?`, `facilityData?`, `economicVision?`, `revitalizationScenarios?`
+-- Trigger: auto-assign role on profile creation based on cargo
+CREATE OR REPLACE FUNCTION public.assign_role_on_profile()
+RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $$
+BEGIN
+  INSERT INTO public.user_roles (user_id, role) VALUES (
+    NEW.user_id,
+    CASE NEW.cargo
+      WHEN 'Administrador' THEN 'admin'
+      WHEN 'Técnico DPRO' THEN 'tecnico_dpro'
+      WHEN 'Técnico DEX' THEN 'tecnico_dex'
+      WHEN 'Técnico DNEG' THEN 'tecnico_dneg'
+      WHEN 'Técnico DEC' THEN 'tecnico_dec'
+      WHEN 'Conselho de Adm.' THEN 'conselho'
+      ELSE 'tecnico_dpro'
+    END::app_role
+  ) ON CONFLICT (user_id, role) DO NOTHING;
+  RETURN NEW;
+END;
+$$;
 
-**Actualizar Block 0**:
-- Corrigir `dailyProduction` para 119.285
-- Corrigir `estimatedReserves` para 421
-- Adicionar production acumulada
-- Substituir prospects pela tabela real da ANPG
-- Popular todos os novos campos com dados das imagens
+CREATE TRIGGER on_profile_created
+  AFTER INSERT ON public.profiles
+  FOR EACH ROW EXECUTE FUNCTION public.assign_role_on_profile();
 
-### Ficheiro 2: `src/pages/BlockPage.tsx` — Novas secções de visualização
+-- Seed roles for existing profiles
+INSERT INTO public.user_roles (user_id, role)
+SELECT p.user_id, (CASE p.cargo ... END)::app_role FROM public.profiles p
+ON CONFLICT DO NOTHING;
+```
 
-Adicionar novas abas ou secções nas abas existentes:
-- **Aba "Visão Geral"**: integrar dados de instalações (eficiência, poços, plataformas)
-- **Aba "Financeiro"**: adicionar NPV charts (pie charts), cash flow projection
-- **Nova aba "HSE & Ambiente"**: tabela de indicadores de segurança, gráficos de derrames/emissões/gás queimado
-- **Aba "Exploração"**: adicionar secção de Desafios e Cenários de Revitalização
+### Frontend Changes
 
-### Estimativa: 4 ficheiros, ~500 linhas novas
+1. **Create `src/hooks/useUserRole.ts`** — fetches the user's role from `user_roles` table, exposes `role` and a `hasAccess(panelName)` helper with the permissions matrix above.
+
+2. **Update `src/components/AuthProvider.tsx`** — expose `role` in auth context (fetched after login).
+
+3. **Update `src/pages/Index.tsx`**:
+   - Filter `panels` array based on role permissions — hide tabs the user cannot access.
+   - Show a subtle badge with the user's role in the header dropdown.
+
+4. **Update `src/pages/ReportsPage.tsx`** — filter available report types based on role (e.g. Técnico DEX can only generate exploration reports).
+
+### Files to Create/Modify
+- **Migration**: 1 SQL migration (user_roles table + trigger + seed)
+- **Create**: `src/hooks/useUserRole.ts`
+- **Modify**: `src/components/AuthProvider.tsx`, `src/pages/Index.tsx`, `src/pages/ReportsPage.tsx`
 
