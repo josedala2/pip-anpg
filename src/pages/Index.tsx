@@ -28,10 +28,7 @@ const Index = () => {
   const { user, signOut } = useAuth();
   const { role, roleLabel, allowedPanels, loading: roleLoading } = useUserRole();
 
-  const panels = useMemo(() =>
-    allPanels.filter(p => allowedPanels.includes(p)),
-    [allowedPanels]
-  );
+  const panels = allPanels;
   const [activePanel, setActivePanel] = useState(0);
   const [slideDirection, setSlideDirection] = useState<"left" | "right">("right");
   const [isTransitioning, setIsTransitioning] = useState(false);
