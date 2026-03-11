@@ -85,6 +85,9 @@ const AdminDataPage = () => {
   const concTotalPages = totalPages;
   const paginatedConcBlocks = paginatedBlocks;
 
+  // Reset to page 1 when filters change
+  useEffect(() => { setPage(1); }, [search, phaseFilter, basinFilter]);
+
   const toggleSort = (field: keyof OilBlock) => {
     if (sortField === field) setSortDir(d => d === "asc" ? "desc" : "asc");
     else { setSortField(field); setSortDir("asc"); }
