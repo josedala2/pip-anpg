@@ -1,43 +1,75 @@
 
 
-## Criar estrutura completa para Bloco 3/05 e Bloco 15
+# Integração de Dados Detalhados do Bloco 0
 
-### Problema
-Os blocos 3/05 (`block-3`) e 15 (`block-15`) já existem em `angolaBlocks.ts` com dados básicos (produção, consórcio, sísmica, poços, campos, legislação), mas faltam-lhes os dados detalhados que o Bloco 0 possui e que alimentam as abas condicionais na `BlockPage`.
+## Dados Identificados nas Imagens de Referência
 
-### Dados em falta (existem apenas no Bloco 0)
-- `explorationSummary` — totais de sísmica, poços, taxa de sucesso geológico
-- `economicData` — custos históricos, plano de investimento, produção GE, abandono
-- `hseData` — indicadores de segurança (FAT, LTI, TRIR, etc.) 2021-2025
-- `environmentalData` — derrames, emissões CO2, gás queimado 2021-2025
-- `facilityData` — áreas, plataformas, poços activos, fotos, documentos, manutenção
-- `economicVision` — NPV fullcycle/point forward, observações estratégicas
-- `revitalizationScenarios` — cenários de revitalização
+Analisei as 9 imagens da ANPG e identifiquei as seguintes categorias de dados novos que ainda não existem no modelo:
 
-### Plano
+### 1. Segurança e Ambiente (HSE) — Dados Completamente Novos
+- **Indicadores de segurança** (2021-2025): FAT, LTI, RWC, MTC, FAC, NMI
+- **Taxas**: HHR, TRIR, LTIR por ano
+- **Derrames de óleo**: contagem e volume (bbl)
+- **Concentração de óleo em água** (PPM): 5.17, 5.1, 4.75, 4.66, 6.53
+- **Emissões CO2** (ton CO2eq): ~3.7M (2021) descendo para ~3.1M (2025)
+- **Gás queimado** (MMSCFD): 17.519 → 10.54, com metas
 
-**Ficheiro: `src/data/angolaBlocks.ts`**
+### 2. Estado das Instalações — Dados Novos
+- **Área A (Eficiência 85%)**: Takula, GIP-FOX, Mafumeira; problemas de corrosão e obsolescência
+- **Área B (Eficiência 91%)**: Sanha, Sanha LPG, Nembas, EK, WK
+- **Poços activos**: 358 OP, 78 WI, 27 GI
+- **Produção 2025**: 43.539.025 bbls, perdas 2.830.691 bbls, eficiência 88%
+- **Capacidade de produção**: 400.000 BOPD (Malongo Terminal)
+- **Produção média 4T2025**: 119.285 BOPD
+- **Reservas actuais**: 421 MMBO
+- **Início de produção**: 1968
+- **Vida útil**: até 2040 (Mafumeira Sul)
 
-1. **Bloco 3/05** (`block-3`, ~linha 1541) — Adicionar campos com dados placeholder realistas:
-   - `explorationSummary`: totais calculados a partir dos `seismicData`/`wellsData` existentes
-   - `economicData`: estrutura de custos e investimento adaptada à escala do bloco (produção ~50k BOPD)
-   - `hseData`: 5 anos (2021-2025) com indicadores proporcionais
-   - `environmentalData`: 5 anos com valores proporcionais
-   - `facilityData`: plataformas Palanca, Bufalo, Impala; terminal; poços activos estimados
-   - `economicVision`: NPV placeholder
-   - `revitalizationScenarios`: 2-3 cenários adaptados ao contexto CPP do bloco
+### 3. Visão Económica — Dados Novos
+- **NPV Fullcycle**: GE 17% (54.410), Impostos 83% (272.177)
+- **NPV Point Forward**: GE 37% (1.840 MMUSD), Conc 63% (3.098 MMUSD)
+- **Cash flows negativos recorrentes para o GE**
+- **Observações**: bloco maduro, infraestruturas envelhecidas
 
-2. **Bloco 15** (`block-15`, ~linha 931) — Adicionar os mesmos campos:
-   - `explorationSummary`: totais dos seismicData/wellsData existentes + taxa de sucesso
-   - `economicData`: escala deep water (~325k BOPD)
-   - `hseData`: 5 anos
-   - `environmentalData`: 5 anos
-   - `facilityData`: FPSOs Kizomba A, Kizomba B, Mondo, Saxi-Batuque
-   - `economicVision`: NPV placeholder deep water
-   - `revitalizationScenarios`: cenários adaptados ao contexto deep water
+### 4. Cenários de Revitalização — Dados Novos
+- **Cenário 1**: Continuidade do GE com incentivos fiscais
+- **Cenário 2**: Investidor âncora para exploração
+- **Cenário 3**: Novo investidor em áreas livres (modelo CPP)
 
-Nenhuma alteração é necessária na `BlockPage.tsx` — as abas (Instalações, HSE, SWOT, etc.) já são renderizadas condicionalmente e aparecerão automaticamente quando os dados existirem.
+### 5. Ajustes aos Dados Existentes
+- **dailyProduction**: atualizar de 142.000 para 119.285 (dado real 4T2025)
+- **estimatedReserves**: atualizar de 890 para 421 MMBO (dado real)
+- **Produção acumulada**: 290.043.686.705 BO (até Dez 2025)
+- **investmentPlan**: adicionar categorias "Administração e Serviços" e linha "Cash Call Sonangol"
+- **Prospects**: atualizar com tabela real (105-B, 131-A, 107-C, 83-N, 71-T, 70-G, 95-I, 79-F, 68-D, 80-J) com distâncias ao FPSO
 
-### Resultado
-Ambos os blocos terão a mesma estrutura de 10 abas que o Bloco 0: Visão Geral, Financeiro & Contratual, Consórcio, Exploração, Produção, Projecções, Instalações, HSE & Ambiente, Análise SWOT, e Documentos & Legislação.
+## Plano de Implementação
+
+### Ficheiro 1: `src/data/angolaBlocks.ts` — Novos tipos e dados
+
+**Novas interfaces**:
+- `HSEData` — indicadores de segurança por ano (FAT, LTI, RWC, MTC, FAC, NMI, HHR, TRIR, LTIR)
+- `EnvironmentalData` — derrames, óleo em água, emissões, gás queimado por ano
+- `FacilityData` — eficiência por área, plataformas, poços activos, capacidades
+- `EconomicVision` — NPV fullcycle, point forward, observações estratégicas
+- `RevitalizationScenario` — cenários com propostas, incentivos e compromissos
+
+**Actualizar `OilBlock`** com campos opcionais: `hseData?`, `environmentalData?`, `facilityData?`, `economicVision?`, `revitalizationScenarios?`
+
+**Actualizar Block 0**:
+- Corrigir `dailyProduction` para 119.285
+- Corrigir `estimatedReserves` para 421
+- Adicionar production acumulada
+- Substituir prospects pela tabela real da ANPG
+- Popular todos os novos campos com dados das imagens
+
+### Ficheiro 2: `src/pages/BlockPage.tsx` — Novas secções de visualização
+
+Adicionar novas abas ou secções nas abas existentes:
+- **Aba "Visão Geral"**: integrar dados de instalações (eficiência, poços, plataformas)
+- **Aba "Financeiro"**: adicionar NPV charts (pie charts), cash flow projection
+- **Nova aba "HSE & Ambiente"**: tabela de indicadores de segurança, gráficos de derrames/emissões/gás queimado
+- **Aba "Exploração"**: adicionar secção de Desafios e Cenários de Revitalização
+
+### Estimativa: 4 ficheiros, ~500 linhas novas
 
