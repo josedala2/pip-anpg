@@ -119,6 +119,15 @@ const Index = () => {
                 <Users className="w-4 h-4 3xl:w-5 3xl:h-5" />
               </Link>
             )}
+            {(role === "admin" || role === "conselho" || role === "tecnico_dpro" || role === "tecnico_dex" || role === "tecnico_dneg" || role === "tecnico_dec") && (
+              <Link
+                to="/admin/data"
+                className="p-2 3xl:p-2.5 rounded-lg hover:bg-secondary transition-colors"
+                title="Gestão de Dados"
+              >
+                <Database className="w-4 h-4 3xl:w-5 3xl:h-5" />
+              </Link>
+            )}
             <Link
               to="/reports"
               className="p-2 3xl:p-2.5 rounded-lg hover:bg-secondary transition-colors"
