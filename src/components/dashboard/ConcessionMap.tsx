@@ -408,16 +408,17 @@ export const ConcessionMap = ({
           const color = getBlockColor(block);
           const hasBiddingYear = !!blockBiddingYear[block.id];
           const isExistingConcession = !hasBiddingYear && (block.phase === "Production" || block.phase === "Development");
+          const isOnshore = block.waterDepth === "Onshore";
 
           return (
             <Polygon
               key={block.id}
               positions={polygon}
               pathOptions={{
-                color: isHighlighted ? "white" : color,
-                weight: isHighlighted ? 2.5 : 1,
+                color: isHighlighted ? "white" : isOnshore ? "#facc15" : color,
+                weight: isHighlighted ? 3 : isOnshore ? 2 : 1,
                 fillColor: color,
-                fillOpacity: isHighlighted ? 0.7 : isExistingConcession ? 0.35 : 0.5,
+                fillOpacity: isHighlighted ? 0.75 : isOnshore ? 0.6 : isExistingConcession ? 0.35 : 0.5,
                 dashArray: isExistingConcession && showConcessions ? "4 3" : undefined,
               }}
               eventHandlers={{
