@@ -135,7 +135,7 @@ const LoginPage = () => {
       </div>
 
       {/* Right Login Panel */}
-      <div className="relative lg:w-[40%] flex flex-col justify-center z-10 bg-gradient-to-r from-transparent via-background/80 to-background backdrop-blur-md">
+      <div className="relative lg:w-[40%] flex flex-col justify-center z-10 bg-gradient-to-r from-background/40 via-background/90 to-background backdrop-blur-xl">
         <div className="w-full max-w-md mx-auto px-6 py-10 lg:px-12 space-y-8">
           <div className="space-y-1">
             <img src={anpgLogo} alt="ANPG" className="h-10 mb-6" />
