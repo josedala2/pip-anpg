@@ -94,104 +94,116 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col lg:flex-row relative">
-      {/* Full-screen background image */}
+    <div className="min-h-screen relative overflow-hidden">
+      {/* Full background image */}
       <img
         src={angolaSatellite}
         alt=""
-        className="absolute inset-0 w-full h-full object-cover"
+        className="absolute inset-0 w-full h-full object-cover scale-105"
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-black/40" />
-      {/* Decorative dots */}
-      <div className="absolute inset-0 opacity-[0.03]" style={{
-        backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)',
-        backgroundSize: '24px 24px',
-      }} />
+      <div className="absolute inset-0 bg-gradient-to-br from-black/80 via-black/60 to-black/80" />
 
-      {/* Left Hero Panel */}
-      <div className="relative lg:w-[60%] min-h-[220px] lg:min-h-screen flex flex-col justify-end z-10">
-        <div className="p-8 lg:p-16 space-y-6">
-          <img src={anpgLogoWhite} alt="ANPG" className="h-10 lg:h-14" />
-          <div className="space-y-3 max-w-lg">
-            <h1 className="text-2xl lg:text-4xl font-bold text-white leading-tight tracking-tight">
-              Sistema de Gestão de Concessões Petrolíferas
-            </h1>
-            <p className="text-white/60 text-sm lg:text-base">
-              Monitorização integrada de blocos, produção, exploração e indicadores estratégicos do sector petrolífero angolano.
-            </p>
+      <div className="relative z-10 min-h-screen flex flex-col lg:flex-row items-stretch">
+        {/* Left Hero */}
+        <div className="lg:w-[55%] flex flex-col justify-between p-8 lg:p-14 xl:p-20">
+          <img src={anpgLogoWhite} alt="ANPG" className="h-9 lg:h-12 w-fit" />
+
+          <div className="space-y-6 max-w-xl mt-auto">
+            <div className="space-y-3">
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-white/40">
+                República de Angola
+              </p>
+              <h1 className="text-3xl lg:text-5xl font-bold text-white leading-[1.1] tracking-tight">
+                Sistema de Gestão
+                <br />
+                <span className="text-primary">de Concessões</span>
+                <br />
+                Petrolíferas
+              </h1>
+              <p className="text-white/50 text-sm lg:text-base max-w-md leading-relaxed">
+                Monitorização integrada de blocos, produção, exploração e indicadores estratégicos.
+              </p>
+            </div>
+            <div className="flex gap-10 pt-6 border-t border-white/10">
+              {STATS.map((stat) => (
+                <div key={stat.label}>
+                  <p className="text-2xl lg:text-3xl font-bold text-white">{stat.value}</p>
+                  <p className="text-[11px] uppercase tracking-wider text-white/40 mt-0.5">{stat.label}</p>
+                </div>
+              ))}
+            </div>
           </div>
-          <div className="flex gap-8 pt-4 border-t border-white/10">
-            {STATS.map((stat) => (
-              <div key={stat.label} className="flex items-center gap-3">
-                <stat.icon className="w-5 h-5 text-white/40" />
-                <div>
-                  <p className="text-xl lg:text-2xl font-bold text-white">{stat.value}</p>
-                  <p className="text-xs text-white/50">{stat.label}</p>
+
+          <p className="text-[11px] text-white/25 mt-8 lg:mt-12">
+            © 2025 ANPG — Agência Nacional de Petróleo, Gás e Biocombustíveis
+          </p>
+        </div>
+
+        {/* Right Login Panel */}
+        <div className="lg:w-[45%] flex items-center justify-center p-6 lg:p-12">
+          <div className="w-full max-w-[420px] rounded-2xl border border-white/[0.08] bg-card/95 backdrop-blur-2xl shadow-2xl shadow-black/40 p-8 lg:p-10 space-y-7">
+            <div className="space-y-1.5">
+              <img src={anpgLogo} alt="ANPG" className="h-9 mb-5" />
+              <h2 className="text-lg font-semibold text-card-foreground">Iniciar Sessão</h2>
+              <p className="text-sm text-muted-foreground">
+                Aceda ao painel de concessões da ANPG
+              </p>
+            </div>
+
+            <form onSubmit={handleLogin} className="space-y-4">
+              <div className="space-y-1.5">
+                <Label htmlFor="email" className="text-xs font-medium text-muted-foreground">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="nome@anpg.co.ao"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  autoComplete="email"
+                  required
+                  className="h-11 bg-muted/50 border-border/50 focus:bg-background transition-colors"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="password" className="text-xs font-medium text-muted-foreground">Palavra-passe</Label>
+                <div className="relative">
+                  <Input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    placeholder="••••••••"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    autoComplete="current-password"
+                    required
+                    className="h-11 bg-muted/50 border-border/50 focus:bg-background transition-colors pr-10"
+                  />
+                  <button
+                    type="button"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                    onClick={() => setShowPassword(!showPassword)}
+                    tabIndex={-1}
+                  >
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
                 </div>
               </div>
-            ))}
-          </div>
-        </div>
-      </div>
+              <Button type="submit" className="w-full h-11 gap-2 font-medium mt-2" disabled={submitting || seeding}>
+                <LogIn className="w-4 h-4" />
+                {submitting ? "A entrar..." : "Entrar"}
+              </Button>
+            </form>
 
-      {/* Right Login Panel */}
-      <div className="relative lg:w-[40%] flex flex-col justify-center z-10 bg-gradient-to-r from-background/40 via-background/90 to-background backdrop-blur-xl">
-        <div className="w-full max-w-md mx-auto px-6 py-10 lg:px-12 space-y-8">
-          <div className="space-y-1">
-            <img src={anpgLogo} alt="ANPG" className="h-10 mb-6" />
-            <h2 className="text-xl font-semibold text-foreground">Iniciar Sessão</h2>
-            <p className="text-sm text-muted-foreground">
-              Aceda ao painel de concessões da ANPG
-            </p>
-          </div>
-
-          <form onSubmit={handleLogin} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="nome@anpg.co.ao"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                autoComplete="email"
-                required
-              />
+            {/* Separator */}
+            <div className="flex items-center gap-3">
+              <div className="flex-1 h-px bg-border/50" />
+              <span className="text-[10px] font-medium text-muted-foreground/60 uppercase tracking-widest">
+                Contas de Teste
+              </span>
+              <div className="flex-1 h-px bg-border/50" />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Palavra-passe</Label>
-              <div className="relative">
-                <Input
-                  id="password"
-                  type={showPassword ? "text" : "password"}
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  autoComplete="current-password"
-                  required
-                />
-                <button
-                  type="button"
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-                  onClick={() => setShowPassword(!showPassword)}
-                  tabIndex={-1}
-                >
-                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                </button>
-              </div>
-            </div>
-            <Button type="submit" className="w-full gap-2" disabled={submitting || seeding}>
-              <LogIn className="w-4 h-4" />
-              {submitting ? "A entrar..." : "Entrar"}
-            </Button>
-          </form>
 
-          {/* Test Accounts */}
-          <div className="space-y-3">
-            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-              Acesso Rápido — Contas de Teste
-            </p>
-            <div className="grid grid-cols-2 gap-2">
+            {/* Test Accounts */}
+            <div className="grid grid-cols-2 gap-1.5">
               {TEST_ACCOUNTS.map((account) => {
                 const Icon = account.icon;
                 const isSelected = email === account.email;
@@ -200,25 +212,19 @@ const LoginPage = () => {
                     key={account.email}
                     type="button"
                     onClick={() => handleUseTestAccount(account)}
-                    className={`flex items-center gap-2.5 p-2.5 rounded-lg border text-left transition-all text-sm
+                    className={`flex items-center gap-2 px-3 py-2 rounded-lg text-left transition-all text-xs
                       ${isSelected
-                        ? 'border-primary bg-primary/5 ring-1 ring-primary/20'
-                        : 'border-border/50 hover:border-border hover:bg-accent/50'
+                        ? 'bg-primary/10 text-primary ring-1 ring-primary/20'
+                        : 'hover:bg-muted/80 text-muted-foreground hover:text-foreground'
                       }`}
                   >
-                    <div className={`p-1.5 rounded-md ${account.color}`}>
-                      <Icon className="w-3.5 h-3.5" />
-                    </div>
-                    <span className="font-medium text-xs truncate">{account.role}</span>
+                    <Icon className="w-3.5 h-3.5 shrink-0" />
+                    <span className="font-medium truncate">{account.role}</span>
                   </button>
                 );
               })}
             </div>
           </div>
-
-          <p className="text-[11px] text-muted-foreground/60 text-center pt-4 border-t border-border/30">
-            © 2025 ANPG — Agência Nacional de Petróleo, Gás e Biocombustíveis
-          </p>
         </div>
       </div>
     </div>
