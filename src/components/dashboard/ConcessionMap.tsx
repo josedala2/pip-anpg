@@ -614,6 +614,28 @@ export const ConcessionMap = ({
                 </svg>
                 <span className="text-[10px] text-foreground/80 font-medium">Concessão Existente</span>
               </div>
+              {/* Production legend */}
+              {showProduction && (
+                <div className="mt-2 pt-1.5 border-t border-border/20 space-y-1.5">
+                  <div className="text-[9px] font-semibold text-foreground/70 uppercase tracking-wider">Produção (BOPD)</div>
+                  <div className="flex items-center gap-2">
+                    <svg width="10" height="10"><circle cx="5" cy="5" r="3" fill="#22c55e" opacity="0.8" /></svg>
+                    <span className="text-[9px] text-foreground/60">&lt; 5k</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <svg width="14" height="14"><circle cx="7" cy="7" r="5" fill="#22c55e" opacity="0.8" /></svg>
+                    <span className="text-[9px] text-foreground/60">5k – 50k</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <svg width="20" height="20"><circle cx="10" cy="10" r="8" fill="#22c55e" opacity="0.8" /></svg>
+                    <span className="text-[9px] text-foreground/60">50k – 200k</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <svg width="28" height="28"><circle cx="14" cy="14" r="12" fill="#22c55e" opacity="0.8" /></svg>
+                    <span className="text-[9px] text-foreground/60">&gt; 200k</span>
+                  </div>
+                </div>
+              )}
               {/* Maritime limits legend */}
               {showLimits && (
                 <div className="mt-1.5 space-y-1">
