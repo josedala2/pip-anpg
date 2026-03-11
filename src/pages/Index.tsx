@@ -139,7 +139,12 @@ const Index = () => {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48">
                 <div className="px-3 py-2 text-xs text-muted-foreground truncate border-b border-border">
-                  {user?.email}
+                  <div>{user?.email}</div>
+                  {roleLabel && (
+                    <span className="inline-block mt-1 px-1.5 py-0.5 text-[10px] font-semibold rounded bg-primary/10 text-primary">
+                      {roleLabel}
+                    </span>
+                  )}
                 </div>
                 <DropdownMenuItem onClick={signOut} className="gap-2 text-danger cursor-pointer">
                   <LogOut className="w-4 h-4" /> Terminar sessão
