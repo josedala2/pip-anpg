@@ -38,7 +38,7 @@ interface Props {
   allowedReportTypes?: string[];
 }
 
-export const ReportConfigurator = ({ config, onChange, onGenerate }: Props) => {
+export const ReportConfigurator = ({ config, onChange, onGenerate, allowedReportTypes }: Props) => {
   const [blockSearch, setBlockSearch] = useState("");
 
   const filteredBlocks = oilBlocks.filter(b =>
