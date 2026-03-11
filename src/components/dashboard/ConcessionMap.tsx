@@ -614,6 +614,11 @@ export const ConcessionMap = ({
                 </svg>
                 <span className="text-[10px] text-foreground/80 font-medium">Concessão Existente</span>
               </div>
+              {/* Onshore block legend */}
+              <div className="flex items-center gap-2 mt-1.5">
+                <span className="w-3.5 h-3.5 rounded-sm shrink-0" style={{ backgroundColor: 'hsl(var(--muted-foreground) / 0.15)', border: '2px solid #facc15' }} />
+                <span className="text-[10px] text-foreground/80 font-medium">Bloco Terrestre</span>
+              </div>
               {/* Production legend */}
               {showProduction && (
                 <div className="mt-2 pt-1.5 border-t border-border/20 space-y-1.5">
