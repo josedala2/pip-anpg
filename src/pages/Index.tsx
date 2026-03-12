@@ -127,10 +127,11 @@ const Index = () => {
             )}
             <Link
               to="/compare"
-              className="p-2 3xl:p-2.5 rounded-lg hover:bg-secondary transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors text-sm font-medium shadow-sm"
               title="Comparativo de Blocos"
             >
-              <GitCompareArrows className="w-4 h-4 3xl:w-5 3xl:h-5" />
+              <GitCompareArrows className="w-4 h-4" />
+              <span className="hidden md:inline">Comparar Blocos</span>
             </Link>
             <Link
               to="/reports"
