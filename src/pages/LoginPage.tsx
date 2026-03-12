@@ -144,13 +144,6 @@ const LoginPage = () => {
                 </div>
               ))}
             </div>
-            <Link
-              to="/compare"
-              className="inline-flex items-center gap-2 mt-6 px-5 py-2.5 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors text-sm font-semibold shadow-lg w-fit"
-            >
-              <GitCompareArrows className="w-4 h-4" />
-              Comparar Blocos — Acesso Livre
-            </Link>
           </div>
 
           <p className="text-[11px] text-white/25 mt-8 lg:mt-12">
