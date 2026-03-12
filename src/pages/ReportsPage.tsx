@@ -25,6 +25,7 @@ const ReportsPage = () => {
   const [config, setConfig] = useState<ReportConfig>({
     reportTypes: [],
     selectedBlockIds: [],
+    selectedOperators: [],
     includeCharts: false,
     includeTables: true,
     includeAiNarrative: false,
