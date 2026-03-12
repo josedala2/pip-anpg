@@ -80,6 +80,7 @@ const ReportsPage = () => {
         legislation: "Legislação & Documentos",
         financial: "Económico & Financeiro",
         operators: "Operadores",
+      };
       await exportReportPdf(
         "report-content",
         `relatorio_ANPG_${blockNames}.pdf`,
