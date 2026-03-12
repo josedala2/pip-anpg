@@ -140,15 +140,17 @@ function OperatorListView({ operators, onSelect }: { operators: OperatorSummary[
 
       {/* Chart: Quota de Produção */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <ChartWrapper title="Quota de Produção por Operador" icon={<BarChart3 className="w-4 h-4" />} height={350}>
+        <ChartWrapper title="Quota de Produção por Operador" icon={<BarChart3 className="w-4 h-4" />} height={Math.max(350, filtered.length * 38 + 60)}>
           <ResponsiveContainer width="100%" height="100%">
-             <PieChart>
-               <Pie data={pieData} dataKey="value" nameKey="name" cx="50%" cy="45%" outerRadius="55%" label={false} labelLine={false}>
-                 {pieData.map((_, i) => <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />)}
-               </Pie>
-               <Tooltip formatter={(v: number) => `${v.toLocaleString()} BOPD`} />
-               <Legend verticalAlign="bottom" iconType="circle" wrapperStyle={{ fontSize: 11, paddingTop: 8 }} formatter={(value, entry: any) => { const p = entry?.payload?.percent; return p != null ? `${value} (${(p * 100).toFixed(1)}%)` : value; }} />
-            </PieChart>
+            <BarChart data={filtered} layout="vertical" margin={{ left: 110, right: 60, top: 5, bottom: 5 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" horizontal={false} />
+              <XAxis type="number" tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} tickFormatter={(v: number) => v >= 1000 ? `${(v / 1000).toFixed(0)}k` : String(v)} />
+              <YAxis type="category" dataKey="name" tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} width={105} />
+              <Tooltip formatter={(v: number) => `${v.toLocaleString()} BOPD`} contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }} />
+              <Bar dataKey="totalProduction" name="Produção (BOPD)" radius={[0, 4, 4, 0]} label={{ position: "right", fontSize: 10, fill: "hsl(var(--muted-foreground))", formatter: (v: number) => `${((v / totalProd) * 100).toFixed(1)}%` }}>
+                {filtered.map((_, i) => <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />)}
+              </Bar>
+            </BarChart>
           </ResponsiveContainer>
         </ChartWrapper>
 
