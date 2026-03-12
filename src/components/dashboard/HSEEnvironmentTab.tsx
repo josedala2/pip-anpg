@@ -345,7 +345,7 @@ export const HSEEnvironmentTab = ({ hseData, environmentalData, facilityData, ec
                         cx="50%" cy="50%"
                         innerRadius="30%" outerRadius="50%"
                         dataKey="valueMM" nameKey="label"
-                        label={({ label, percentage }) => `${label}: ${percentage}%`}
+                        label={false} labelLine={false}
                       >
                         {economicVision.npvFullcycle.map((_, i) => (
                           <Cell key={i} fill={NPV_COLORS[i % NPV_COLORS.length]} />
