@@ -343,7 +343,7 @@ export const HSEEnvironmentTab = ({ hseData, environmentalData, facilityData, ec
                       <Pie
                         data={economicVision.npvFullcycle}
                         cx="50%" cy="50%"
-                        innerRadius={50} outerRadius={80}
+                        innerRadius="30%" outerRadius="50%"
                         dataKey="valueMM" nameKey="label"
                         label={({ label, percentage }) => `${label}: ${percentage}%`}
                       >
