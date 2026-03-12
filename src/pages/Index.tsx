@@ -10,6 +10,7 @@ import { StrategicForecast } from "@/components/dashboard/StrategicForecast";
 import { BlocksPanel } from "@/components/dashboard/BlocksPanel";
 import { ExplorationPanel } from "@/components/dashboard/ExplorationPanel";
 import { ProductionPanel } from "@/components/dashboard/ProductionPanel";
+import { OperatorsPanel } from "@/components/dashboard/OperatorsPanel";
 import { type OilBlock, oilBlocks } from "@/data/angolaBlocks";
 import { Maximize2, Minimize2, ChevronLeft, ChevronRight, Sun, Moon, FileText, LogOut, User, Users, Database, GitCompareArrows } from "lucide-react";
 import { Link } from "react-router-dom";
