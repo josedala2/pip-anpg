@@ -417,6 +417,10 @@ export default function ComparePage() {
                   <Factory className="w-3.5 h-3.5" />
                   Instalações
                 </TabsTrigger>
+                <TabsTrigger value="fiscal" className="gap-1.5 text-xs">
+                  <Scale className="w-3.5 h-3.5" />
+                  Condições Fiscais
+                </TabsTrigger>
               </TabsList>
 
               {/* Overview Tab */}
