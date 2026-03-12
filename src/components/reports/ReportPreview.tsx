@@ -827,17 +827,34 @@ export const ReportPreview = ({ config, aiNarrative, aiLoading }: Props) => {
     [config.selectedBlockIds]
   );
 
+  const operatorBlocks = useMemo(
+    () => config.selectedOperators && config.selectedOperators.length > 0
+      ? oilBlocks.filter(b => config.selectedOperators.includes(b.operator))
+      : blocks,
+    [config.selectedOperators, blocks]
+  );
+
   const title = config.reportTypes.length === 1
     ? reportTitles[config.reportTypes[0]]
     : "Relatório Consolidado";
+
+  const hasBlockTypes = config.reportTypes.some(t => t !== "operators");
+  const displayBlocks = hasBlockTypes ? blocks : operatorBlocks;
 
   return (
     <div id="report-content" className="bg-card rounded-xl border border-border p-6 md:p-8 print:p-4 print:border-none print:shadow-none print:rounded-none">
       <ReportHeader title={title} />
 
-      <p className="text-sm text-muted-foreground mb-4">
-        {blocks.length} bloco{blocks.length !== 1 ? "s" : ""} seleccionado{blocks.length !== 1 ? "s" : ""}: {blocks.map(b => b.name).join(", ")}
-      </p>
+      {hasBlockTypes && (
+        <p className="text-sm text-muted-foreground mb-4">
+          {blocks.length} bloco{blocks.length !== 1 ? "s" : ""} seleccionado{blocks.length !== 1 ? "s" : ""}: {blocks.map(b => b.name).join(", ")}
+        </p>
+      )}
+      {config.reportTypes.includes("operators") && config.selectedOperators && config.selectedOperators.length > 0 && (
+        <p className="text-sm text-muted-foreground mb-4">
+          {config.selectedOperators.length} operador{config.selectedOperators.length !== 1 ? "es" : ""} seleccionado{config.selectedOperators.length !== 1 ? "s" : ""}: {config.selectedOperators.join(", ")}
+        </p>
+      )}
 
       {/* AI Narrative at the top */}
       <AINarrativeSection narrative={aiNarrative} loading={aiLoading} />
@@ -861,7 +878,7 @@ export const ReportPreview = ({ config, aiNarrative, aiLoading }: Props) => {
         <FinancialSection blocks={blocks} showTables={config.includeTables} showCharts={config.includeCharts} />
       )}
       {config.reportTypes.includes("operators") && (
-        <OperatorsSection blocks={blocks} showTables={config.includeTables} showCharts={config.includeCharts} />
+        <OperatorsSection blocks={operatorBlocks} showTables={config.includeTables} showCharts={config.includeCharts} />
       )}
     </div>
   );
