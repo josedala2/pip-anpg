@@ -11,6 +11,7 @@ interface ConcessionMapProps {
   hoveredBlockId: string | null;
   onBlockClick: (block: OilBlock) => void;
   onBlockHover: (blockId: string | null) => void;
+  highlightOperator?: string;
 }
 
 const phaseColors: Record<BlockPhase, string> = {
