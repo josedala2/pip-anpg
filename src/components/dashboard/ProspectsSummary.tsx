@@ -151,19 +151,20 @@ export const ProspectsSummary = ({ blocks, scopeLabel }: ProspectsSummaryProps) 
             <ResponsiveContainer width="100%" height={340}>
               <PieChart>
                 <Pie
-                  data={pieData}
-                  cx="50%" cy="50%"
-                  innerRadius="30%" outerRadius="55%"
-                  paddingAngle={1}
-                  dataKey="value"
-                  label={({ name, percent }) => percent > 0.05 ? `${name.split(" ")[0]} ${(percent * 100).toFixed(0)}%` : ""}
-                  labelLine={false}
-                >
-                  {pieData.map((_, i) => (
-                    <Cell key={i} fill={COLORS[i % COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip contentStyle={tooltipStyle} formatter={(val: number) => [`${val.toLocaleString()} MMBO`]} />
+                   data={pieData}
+                   cx="50%" cy="45%"
+                   innerRadius="25%" outerRadius="45%"
+                   paddingAngle={1}
+                   dataKey="value"
+                   label={false}
+                   labelLine={false}
+                 >
+                   {pieData.map((_, i) => (
+                     <Cell key={i} fill={COLORS[i % COLORS.length]} />
+                   ))}
+                 </Pie>
+                 <Legend verticalAlign="bottom" iconType="circle" wrapperStyle={{ fontSize: 10, paddingTop: 8 }} />
+                 <Tooltip contentStyle={tooltipStyle} formatter={(val: number) => [`${val.toLocaleString()} MMBO`]} />
               </PieChart>
             </ResponsiveContainer>
             <div className="text-center text-[10px] text-muted-foreground -mt-2">Distribuição MMBO por {groupBy === "reservoir" ? "Reservatório" : "Bacia"}</div>
