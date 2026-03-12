@@ -208,9 +208,48 @@ export interface NPVBreakdown {
   percentage: number;
 }
 
+export interface NPVByPeriod {
+  period: string;
+  ge: number;       // MMUSD
+  impostos: number;  // MMUSD
+}
+
+export interface CashFlowYear {
+  year: number;
+  ge: number;
+  impostos: number;
+}
+
+export interface RevenueSharePeriod {
+  period: string;
+  gePercent: number;
+  impostosPercent: number;
+  geMMBO: number;
+  impostosMMBO: number;
+}
+
+export interface AbandonmentDetail {
+  total: number;
+  pontual: number;
+  fundeamento: number;
+  fundeado: number;
+  dividaSonangol: number;
+}
+
+export interface TechnicalCost {
+  capexPerBarrel: number;
+  opexPerBarrel: number;
+  opex2025: number;
+}
+
 export interface EconomicVision {
   npvFullcycle?: NPVBreakdown[];
   npvPointForward?: NPVBreakdown[];
+  npvByPeriod?: NPVByPeriod[];
+  cashFlowTimeSeries?: CashFlowYear[];
+  revenueShare?: RevenueSharePeriod[];
+  abandonmentDetail?: AbandonmentDetail;
+  technicalCost?: TechnicalCost;
   cashFlowNotes?: string[];
   strategicObservations?: string[];
 }
