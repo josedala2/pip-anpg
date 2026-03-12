@@ -127,11 +127,10 @@ const Index = () => {
             )}
             <Link
               to="/compare"
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors text-sm font-medium shadow-sm"
+              className="p-2 3xl:p-2.5 rounded-lg hover:bg-secondary transition-colors"
               title="Comparativo de Blocos"
             >
-              <GitCompareArrows className="w-4 h-4" />
-              <span className="hidden md:inline">Comparar Blocos</span>
+              <GitCompareArrows className="w-4 h-4 3xl:w-5 3xl:h-5" />
             </Link>
             <Link
               to="/reports"
@@ -175,6 +174,25 @@ const Index = () => {
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
+        </div>
+
+        {/* Compare Banner */}
+        <div className="px-4 md:px-6 3xl:px-8 py-2">
+          <Link
+            to="/compare"
+            className="flex items-center justify-between w-full px-4 py-2.5 rounded-lg bg-primary/10 border border-primary/20 hover:bg-primary/15 transition-colors group"
+          >
+            <div className="flex items-center gap-3">
+              <div className="p-1.5 rounded-md bg-primary/20">
+                <GitCompareArrows className="w-4 h-4 text-primary" />
+              </div>
+              <div>
+                <span className="text-sm font-semibold text-foreground">Comparar Blocos</span>
+                <span className="hidden md:inline text-xs text-muted-foreground ml-2">Análise lado a lado de até 8 blocos — KPIs, produção, financeiro e HSE</span>
+              </div>
+            </div>
+            <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
+          </Link>
         </div>
 
         <Separator className="mx-4 md:mx-6" />
