@@ -17,6 +17,7 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { SwotAnalysis } from "@/components/dashboard/SwotAnalysis";
+import { ConcessionStatusTab } from "@/components/dashboard/ConcessionStatusTab";
 import { InstitutionalFooter } from "@/components/InstitutionalFooter";
 import { HSEEnvironmentTab } from "@/components/dashboard/HSEEnvironmentTab";
 import { FacilitiesTab } from "@/components/dashboard/FacilitiesTab";
