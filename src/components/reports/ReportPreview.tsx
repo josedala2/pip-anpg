@@ -749,6 +749,9 @@ export const ReportPreview = ({ config, aiNarrative, aiLoading }: Props) => {
       {config.reportTypes.includes("financial") && (
         <FinancialSection blocks={blocks} showTables={config.includeTables} showCharts={config.includeCharts} />
       )}
+      {config.reportTypes.includes("operators") && (
+        <OperatorsSection blocks={blocks} showTables={config.includeTables} showCharts={config.includeCharts} />
+      )}
     </div>
   );
 };
