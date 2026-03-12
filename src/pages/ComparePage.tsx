@@ -189,6 +189,73 @@ export default function ComparePage() {
     });
   }, [selectedBlocks]);
 
+  // ─── Financial Data Builders ───
+
+  const npvData = useMemo(() => {
+    return selectedBlocks.map((b, i) => ({
+      name: b.name.replace("Block ", "B"),
+      "NPV (MMUSD)": b.economicVision?.npv ?? 0,
+      fill: COLORS[i % COLORS.length],
+    }));
+  }, [selectedBlocks]);
+
+  const opexBarrelData = useMemo(() => {
+    return selectedBlocks.map((b, i) => ({
+      name: b.name.replace("Block ", "B"),
+      "Opex/Barril (USD)": b.economicData?.opexPerBarrel ?? 0,
+      fill: COLORS[i % COLORS.length],
+    }));
+  }, [selectedBlocks]);
+
+  const investmentPlanData = useMemo(() => {
+    if (selectedBlocks.length === 0) return [];
+    const allYears = new Set<number>();
+    selectedBlocks.forEach((b) =>
+      b.economicData?.investmentPlan?.forEach((p) => allYears.add(p.year))
+    );
+    const years = Array.from(allYears).sort();
+    return years.map((y) => {
+      const row: Record<string, string | number> = { year: y.toString() };
+      selectedBlocks.forEach((b) => {
+        const shortName = b.name.replace("Block ", "B");
+        const plan = b.economicData?.investmentPlan?.find((p) => p.year === y);
+        row[shortName] = plan?.total ?? 0;
+      });
+      return row;
+    });
+  }, [selectedBlocks]);
+
+  const costHistoryData = useMemo(() => {
+    if (selectedBlocks.length === 0) return [];
+    const allPeriods = new Set<string>();
+    selectedBlocks.forEach((b) =>
+      b.economicData?.costHistory?.forEach((c) => allPeriods.add(c.period))
+    );
+    const periods = Array.from(allPeriods).sort();
+    return periods.map((p) => {
+      const row: Record<string, string | number> = { period: p };
+      selectedBlocks.forEach((b) => {
+        const shortName = b.name.replace("Block ", "B");
+        const cost = b.economicData?.costHistory?.find((c) => c.period === p);
+        row[`${shortName} CAPEX`] = cost?.capex ?? 0;
+        row[`${shortName} OPEX`] = cost?.opex ?? 0;
+      });
+      return row;
+    });
+  }, [selectedBlocks]);
+
+  const abandonmentData = useMemo(() => {
+    return selectedBlocks
+      .filter((b) => b.economicData?.abandonment)
+      .map((b, i) => ({
+        name: b.name.replace("Block ", "B"),
+        "Total Abandono": b.economicData!.abandonment!.total,
+        "Fundeamento Depositado": b.economicData!.abandonment!.fundingDeposited,
+        "Fundeamento Necessário": b.economicData!.abandonment!.fundingRequired,
+        fill: COLORS[i % COLORS.length],
+      }));
+  }, [selectedBlocks]);
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Header */}
