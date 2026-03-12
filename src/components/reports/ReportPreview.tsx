@@ -707,6 +707,7 @@ const reportTitles: Record<ReportType, string> = {
   consortium: "Consórcio & Participações",
   legislation: "Legislação & Documentos",
   financial: "Económico & Financeiro",
+  operators: "Operadores",
 };
 
 export const ReportPreview = ({ config, aiNarrative, aiLoading }: Props) => {
