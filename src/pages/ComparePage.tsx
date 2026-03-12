@@ -199,7 +199,7 @@ export default function ComparePage() {
   const npvData = useMemo(() => {
     return selectedBlocks.map((b, i) => ({
       name: b.name.replace("Block ", "B"),
-      "NPV (MMUSD)": b.economicVision?.npv ?? 0,
+      "NPV (MMUSD)": getNpvTotal(b),
       fill: COLORS[i % COLORS.length],
     }));
   }, [selectedBlocks]);
