@@ -373,7 +373,7 @@ function OperatorDetailView({ operator, onBack }: { operator: OperatorSummary; o
         <CardContent className="p-0">
           <div className="h-[400px] relative">
             <ConcessionMap
-              blocks={oilBlocks}
+              blocks={oilBlocks.filter(b => b.operator === operator.name)}
               selectedBlockId={selectedBlock?.id ?? null}
               hoveredBlockId={null}
               onBlockClick={(block) => setSelectedBlock(block)}
