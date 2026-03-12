@@ -1805,6 +1805,11 @@ const BlockPage = () => {
               );
             })()}
           </TabsContent>
+
+          {/* Tab: Estado da Concessão */}
+          <TabsContent value="concession-status" className="space-y-4 2xl:space-y-6">
+            <ConcessionStatusTab block={block} />
+          </TabsContent>
         </Tabs>
       </main>
       <InstitutionalFooter />
