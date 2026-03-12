@@ -12,6 +12,7 @@ interface ConcessionMapProps {
   onBlockClick: (block: OilBlock) => void;
   onBlockHover: (blockId: string | null) => void;
   highlightOperator?: string;
+  disablePopup?: boolean;
 }
 
 const phaseColors: Record<BlockPhase, string> = {
