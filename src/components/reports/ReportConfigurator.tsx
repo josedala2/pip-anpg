@@ -17,6 +17,7 @@ export type ReportType =
 export interface ReportConfig {
   reportTypes: ReportType[];
   selectedBlockIds: string[];
+  selectedOperators: string[];
   includeCharts: boolean;
   includeTables: boolean;
   includeAiNarrative: boolean;
