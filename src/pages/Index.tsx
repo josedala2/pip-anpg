@@ -126,6 +126,13 @@ const Index = () => {
               </Link>
             )}
             <Link
+              to="/compare"
+              className="p-2 3xl:p-2.5 rounded-lg hover:bg-secondary transition-colors"
+              title="Comparativo de Blocos"
+            >
+              <GitCompareArrows className="w-4 h-4 3xl:w-5 3xl:h-5" />
+            </Link>
+            <Link
               to="/reports"
               className="p-2 3xl:p-2.5 rounded-lg hover:bg-secondary transition-colors"
               title="Relatórios"
