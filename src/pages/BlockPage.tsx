@@ -312,7 +312,7 @@ const BlockPage = () => {
         <Card className="glass-card p-8 text-center max-w-md">
           <h2 className="text-xl font-bold mb-2">Bloco não encontrado</h2>
           <p className="text-muted-foreground mb-4">O bloco "{blockId}" não existe na base de dados.</p>
-          <Button onClick={() => navigate("/")} variant="outline"><ArrowLeft className="w-4 h-4 mr-2" />Voltar ao Dashboard</Button>
+          <Button onClick={() => navigate(-1)} variant="outline"><ArrowLeft className="w-4 h-4 mr-2" />Voltar</Button>
         </Card>
       </div>
     );
@@ -341,7 +341,7 @@ const BlockPage = () => {
       {/* Header */}
       <header className="sticky top-0 z-50 glass-card border-b border-border/50 border-t-4 border-t-primary px-4 py-3">
         <div className="max-w-[1920px] mx-auto flex items-center gap-4">
-          <Button onClick={() => navigate("/")} variant="ghost" size="sm" className="gap-2">
+          <Button onClick={() => navigate(-1)} variant="ghost" size="sm" className="gap-2">
             <ArrowLeft className="w-4 h-4" />
             <span className="hidden sm:inline">Dashboard</span>
           </Button>
