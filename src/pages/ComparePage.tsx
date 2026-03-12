@@ -973,6 +973,208 @@ export default function ComparePage() {
                   </CardContent>
                 </Card>
               </TabsContent>
+
+              {/* Financial Tab */}
+              <TabsContent value="financial" className="space-y-4">
+                {/* NPV & Opex/Barrel side by side */}
+                <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+                  <Card>
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-base">NPV — Valor Presente Líquido (MMUSD)</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <ResponsiveContainer width="100%" height={300}>
+                        <BarChart data={npvData}>
+                          <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                          <XAxis dataKey="name" tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} />
+                          <YAxis tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} />
+                          <Tooltip />
+                          <Bar dataKey="NPV (MMUSD)" radius={[4, 4, 0, 0]}>
+                            {npvData.map((entry, i) => (
+                              <rect key={i} fill={entry.fill} />
+                            ))}
+                          </Bar>
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-base">Opex por Barril (USD/bbl)</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <ResponsiveContainer width="100%" height={300}>
+                        <BarChart data={opexBarrelData}>
+                          <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                          <XAxis dataKey="name" tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} />
+                          <YAxis tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} />
+                          <Tooltip />
+                          <Bar dataKey="Opex/Barril (USD)" radius={[4, 4, 0, 0]}>
+                            {opexBarrelData.map((entry, i) => (
+                              <rect key={i} fill={entry.fill} />
+                            ))}
+                          </Bar>
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* Investment Plan (5-year) */}
+                <Card>
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-base">Plano de Investimento Quinquenal (MMUSD)</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <ResponsiveContainer width="100%" height={350}>
+                      <LineChart data={investmentPlanData}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                        <XAxis dataKey="year" tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} />
+                        <YAxis tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} />
+                        <Tooltip />
+                        <Legend />
+                        {selectedBlocks.map((b, i) => (
+                          <Line
+                            key={b.id}
+                            type="monotone"
+                            dataKey={b.name.replace("Block ", "B")}
+                            stroke={COLORS[i % COLORS.length]}
+                            strokeWidth={2}
+                            dot={{ r: 4 }}
+                          />
+                        ))}
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </CardContent>
+                </Card>
+
+                {/* Financial KPI Table */}
+                <Card>
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-base">Indicadores Financeiros Detalhados</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-sm">
+                        <thead>
+                          <tr className="border-b border-border">
+                            <th className="text-left py-2 px-3 text-muted-foreground font-medium">Indicador</th>
+                            {selectedBlocks.map((b, i) => (
+                              <th key={b.id} className="text-right py-2 px-3 font-semibold" style={{ color: COLORS[i % COLORS.length] }}>
+                                {b.name.replace("Block ", "B")}
+                              </th>
+                            ))}
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-border/50">
+                          <KPIRow
+                            label="NPV (MMUSD)"
+                            values={selectedBlocks.map((b) => b.economicVision?.npv ? `$${b.economicVision.npv.toLocaleString("pt-AO")}` : "—")}
+                          />
+                          <KPIRow
+                            label="Opex/Barril (USD)"
+                            values={selectedBlocks.map((b) => b.economicData?.opexPerBarrel ? `$${b.economicData.opexPerBarrel}` : "—")}
+                          />
+                          <KPIRow
+                            label="Dívida Sonangol (MMUSD)"
+                            values={selectedBlocks.map((b) => b.economicData?.sonangolDebt != null ? `$${b.economicData.sonangolDebt}` : "—")}
+                          />
+                          <KPIRow
+                            label="Custo Abandono (MMUSD)"
+                            values={selectedBlocks.map((b) => b.economicData?.abandonment?.total ? `$${b.economicData.abandonment.total}` : "—")}
+                          />
+                          <KPIRow
+                            label="Fundo Abandono Depositado"
+                            values={selectedBlocks.map((b) => b.economicData?.abandonment?.fundingDeposited ? `$${b.economicData.abandonment.fundingDeposited}` : "—")}
+                          />
+                          <KPIRow
+                            label="Capex Acumulado (MMUSD)"
+                            values={selectedBlocks.map((b) => `$${formatNum(b.accumulatedInvestment)}`)}
+                          />
+                          <KPIRow
+                            label="Capex Planeado (MMUSD)"
+                            values={selectedBlocks.map((b) => `$${formatNum(b.plannedInvestment)}`)}
+                          />
+                          <KPIRow
+                            label="Taxa de Execução (%)"
+                            values={selectedBlocks.map((b) => `${b.executionRate}%`)}
+                          />
+                          <KPIRow
+                            label="Receita Estado"
+                            values={selectedBlocks.map((b) => {
+                              const sr = b.economicData?.stateRevenueShare;
+                              return sr?.length ? `${sr[sr.length - 1].percentage}% (${sr[sr.length - 1].period})` : "—";
+                            })}
+                          />
+                        </tbody>
+                      </table>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Abandonment Fund Comparison */}
+                {abandonmentData.length > 0 && (
+                  <Card>
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-base">Fundos de Abandono (MMUSD)</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <ResponsiveContainer width="100%" height={300}>
+                        <BarChart data={abandonmentData}>
+                          <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                          <XAxis dataKey="name" tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} />
+                          <YAxis tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} />
+                          <Tooltip />
+                          <Legend />
+                          <Bar dataKey="Total Abandono" fill="hsl(var(--destructive))" radius={[4, 4, 0, 0]} />
+                          <Bar dataKey="Fundeamento Depositado" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+                          <Bar dataKey="Fundeamento Necessário" fill="hsl(var(--muted-foreground))" radius={[4, 4, 0, 0]} />
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </CardContent>
+                  </Card>
+                )}
+
+                {/* Cost History (CAPEX vs OPEX) */}
+                {costHistoryData.length > 0 && (
+                  <Card>
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-base">Histórico CAPEX vs OPEX (MMUSD)</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <ResponsiveContainer width="100%" height={350}>
+                        <BarChart data={costHistoryData}>
+                          <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                          <XAxis dataKey="period" tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} />
+                          <YAxis tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} />
+                          <Tooltip />
+                          <Legend />
+                          {selectedBlocks.map((b, i) => (
+                            <Bar
+                              key={`${b.id}-capex`}
+                              dataKey={`${b.name.replace("Block ", "B")} CAPEX`}
+                              fill={COLORS[i % COLORS.length]}
+                              radius={[4, 4, 0, 0]}
+                              stackId={b.id}
+                            />
+                          ))}
+                          {selectedBlocks.map((b, i) => (
+                            <Bar
+                              key={`${b.id}-opex`}
+                              dataKey={`${b.name.replace("Block ", "B")} OPEX`}
+                              fill={COLORS[i % COLORS.length]}
+                              opacity={0.5}
+                              radius={[4, 4, 0, 0]}
+                              stackId={b.id}
+                            />
+                          ))}
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </CardContent>
+                  </Card>
+                )}
+              </TabsContent>
             </Tabs>
           )}
         </main>
