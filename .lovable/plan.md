@@ -1,24 +1,50 @@
 
 
-## Analysis: Block 15 data vs uploaded spreadsheet
+## Plan: Aba "Estado da Concessão" na página de detalhe do Bloco
 
-After parsing the uploaded `BLOCO-15.xlsx` and comparing it against the existing `wellsData` in `src/data/angolaBlocks.ts` (lines 1254-1266), **the data already matches perfectly**:
+### Objectivo
+Adicionar uma nova aba chamada **"Estado da Concessão"** no `BlockPage.tsx` que apresenta um resumo visual e accionável do estado contratual, prazos críticos e alertas para apoiar decisões rápidas dos gestores.
 
-| Year | Pesquisa | Avaliação | Desc. Comercial | Desc. Não Comercial | Seco |
-|------|----------|-----------|-----------------|---------------------|------|
-| 1998 | 5 | 1 | 4 | 0 | 1 | ✅ |
-| 1999 | 2 | 3 | 2 | 0 | 0 | ✅ |
-| 2000 | 6 | 1 | 5 | 1 | 0 | ✅ |
-| 2001 | 1 | 1 | 1 | 0 | 0 | ✅ |
-| 2002 | 1 | 2 | 1 | 0 | 0 | ✅ |
-| 2003 | 4 | 3 | 4 | 0 | 0 | ✅ |
-| 2006 | 0 | 3 | 0 | 0 | 0 | ✅ |
-| 2008 | 0 | 2 | 0 | 0 | 0 | ✅ |
-| 2009 | 0 | 2 | 0 | 0 | 0 | ✅ |
-| 2022 | 1 | 0 | 1 | 0 | 0 | ✅ |
-| 2024 | 1 | 0 | 1 | 0 | 0 | ✅ |
+### Conteúdo da aba
 
-**No changes are needed** — the Block 15 well data is already up to date with the spreadsheet contents.
+A aba reunirá dados já existentes no modelo (`contractInfo`, `contractDate`, `phase`, `concession`, `economicData`, `fields`) e apresentará:
 
-The block also has populated `fields` (Kizomba A, Kizomba B, Mondo, Saxi-Batuque), `prospects` (20 entries), `seismicData` (17 entries), and `explorationSummary`.
+1. **Semáforo de Estado** — indicador visual (verde/amarelo/vermelho) baseado em:
+   - Proximidade do fim do contrato (`productionPeriodEnd`)
+   - Fase actual (`phase`)
+   - Taxa de execução do investimento (`executionRate`)
+   - Compliance score
+
+2. **Timeline da Concessão** — barra horizontal mostrando:
+   - Data de assinatura → Período de pesquisa → Início de produção → Fim do contrato
+   - Posição actual marcada com "hoje"
+
+3. **KPIs de Decisão** — cards compactos:
+   - Tempo restante do contrato (anos/meses)
+   - % do investimento executado vs planeado
+   - Break-even price (de `economicData`)
+   - Reservas restantes estimadas
+   - NPV point-forward (se disponível)
+
+4. **Alertas e Acções** — lista de alertas automáticos, ex.:
+   - "Contrato expira em < 3 anos"
+   - "Taxa de execução abaixo de 70%"
+   - "Compliance score abaixo de 85%"
+   - "Produção em declínio > 15% y/y"
+
+5. **Quadro Resumo Contratual** — dados do `contractInfo` (tipo de contrato, decreto-lei, bónus, condições fiscais)
+
+### Alterações técnicas
+
+**Ficheiro:** `src/pages/BlockPage.tsx`
+- Adicionar nova `TabsTrigger` com value `"concession-status"` e ícone `Landmark`, posicionada como segunda aba (após Visão Geral)
+- Adicionar `TabsContent` correspondente com o componente `ConcessionStatusTab`
+
+**Novo ficheiro:** `src/components/dashboard/ConcessionStatusTab.tsx`
+- Componente que recebe `block: OilBlock` como prop
+- Calcula alertas e semáforo a partir dos dados existentes
+- Renderiza timeline, KPIs, alertas e resumo contratual
+- Usa componentes UI existentes (Card, Badge, Progress)
+
+Nenhuma alteração ao modelo de dados — todos os campos necessários já existem nas interfaces `OilBlock`, `ContractInfo`, `EconomicData` e `FiscalConditions`.
 
