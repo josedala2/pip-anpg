@@ -143,7 +143,7 @@ function OperatorListView({ operators, onSelect }: { operators: OperatorSummary[
         <ChartWrapper title="Quota de Produção por Operador" icon={<BarChart3 className="w-4 h-4" />} height={350}>
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
-              <Pie data={pieData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={120} label={({ name, percent }) => `${name} ${(percent * 100).toFixed(1)}%`} labelLine={false}>
+              <Pie data={pieData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius="75%" label={({ name, percent }) => `${name} ${(percent * 100).toFixed(1)}%`} labelLine={false}>
                 {pieData.map((_, i) => <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />)}
               </Pie>
               <Tooltip formatter={(v: number) => `${v.toLocaleString()} BOPD`} />

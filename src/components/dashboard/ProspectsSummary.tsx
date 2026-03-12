@@ -153,7 +153,7 @@ export const ProspectsSummary = ({ blocks, scopeLabel }: ProspectsSummaryProps) 
                 <Pie
                   data={pieData}
                   cx="50%" cy="50%"
-                  innerRadius={50} outerRadius={90}
+                  innerRadius="30%" outerRadius="55%"
                   paddingAngle={1}
                   dataKey="value"
                   label={({ name, percent }) => percent > 0.05 ? `${name.split(" ")[0]} ${(percent * 100).toFixed(0)}%` : ""}
