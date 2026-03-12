@@ -14,6 +14,7 @@ import {
   Shield,
   Factory,
   TrendingUp,
+  DollarSign,
   X,
   Sun,
   Moon,
