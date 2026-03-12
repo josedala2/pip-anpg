@@ -317,7 +317,7 @@ export const ReportConfigurator = ({ config, onChange, onGenerate, allowedReport
       <Button onClick={onGenerate} disabled={!isValid} className="w-full gap-2">
         <FileText className="w-4 h-4" />
         Gerar Relatório
-        {!isValid && <span className="text-xs opacity-70">(seleccione tipo e blocos)</span>}
+        {!isValid && <span className="text-xs opacity-70">(seleccione tipo e {hasOperatorsType && !hasBlockTypes ? "operadores" : "blocos"})</span>}
       </Button>
     </div>
   );
