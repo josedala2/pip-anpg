@@ -14,7 +14,7 @@ import {
   PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend, CartesianGrid, LineChart, Line,
 } from "recharts";
 import {
-  Search, ArrowLeft, Building2, Layers, BarChart3, Droplets, FileText, ShieldCheck, Factory, TrendingUp,
+  Search, ArrowLeft, Building2, Layers, BarChart3, Droplets, FileText, ShieldCheck, Factory, TrendingUp, MapPin,
   ChevronUp, ChevronDown, Minus,
 } from "lucide-react";
 
