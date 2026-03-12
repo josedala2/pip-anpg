@@ -1,6 +1,7 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { MapContainer, TileLayer, Polygon, Polyline, Popup, CircleMarker, Tooltip as LeafletTooltip, Rectangle } from "react-leaflet";
+import { MapContainer, TileLayer, Polygon, Polyline, Popup, CircleMarker, Tooltip as LeafletTooltip, Rectangle, useMap } from "react-leaflet";
+import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { type OilBlock, type BlockPhase } from "@/data/angolaBlocks";
 import { Layers, Map as MapIcon, Satellite, Mountain, Waves, TreePine, ChevronDown, ChevronUp, Droplets } from "lucide-react";
@@ -13,6 +14,29 @@ interface ConcessionMapProps {
   onBlockHover: (blockId: string | null) => void;
   highlightOperator?: string;
   disablePopup?: boolean;
+  autoFitBounds?: boolean;
+}
+
+// Auto-fit map bounds to visible blocks
+function FitBounds({ blocks }: { blocks: OilBlock[] }) {
+  const map = useMap();
+  const bounds = useMemo(() => {
+    const allCoords: [number, number][] = [];
+    for (const block of blocks) {
+      const polygon = blockPolygons[block.id];
+      if (polygon) allCoords.push(...polygon);
+    }
+    if (allCoords.length === 0) return null;
+    return L.latLngBounds(allCoords.map(([lat, lng]) => L.latLng(lat, lng)));
+  }, [blocks]);
+
+  useEffect(() => {
+    if (bounds) {
+      map.fitBounds(bounds, { padding: [30, 30], maxZoom: 10 });
+    }
+  }, [map, bounds]);
+
+  return null;
 }
 
 const phaseColors: Record<BlockPhase, string> = {
@@ -291,6 +315,7 @@ export const ConcessionMap = ({
   onBlockHover,
   highlightOperator,
   disablePopup = false,
+  autoFitBounds = false,
 }: ConcessionMapProps) => {
   const navigate = useNavigate();
   const [showLimits, setShowLimits] = useState(true);
@@ -328,7 +353,7 @@ export const ConcessionMap = ({
         maxBounds={[[-20, 5], [-2, 18]]}
       >
         <TileSwitch showSatellite={showSatellite} />
-
+        {autoFitBounds && <FitBounds blocks={blocks} />}
 
 
 

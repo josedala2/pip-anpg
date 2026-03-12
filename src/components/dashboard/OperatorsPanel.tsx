@@ -378,7 +378,8 @@ function OperatorDetailView({ operator, onBack }: { operator: OperatorSummary; o
               hoveredBlockId={null}
               onBlockClick={(block) => setSelectedBlock(block)}
               onBlockHover={() => {}}
-              highlightOperator={operator.name}
+               highlightOperator={operator.name}
+               autoFitBounds
             />
           </div>
         </CardContent>
