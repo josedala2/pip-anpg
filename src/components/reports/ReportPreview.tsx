@@ -738,9 +738,10 @@ const OperatorsSection = ({ blocks, showTables, showCharts }: { blocks: OilBlock
         <ChartCard title="Quota de Produção por Operador (BOPD)">
           <ResponsiveContainer width="100%" height={280}>
             <PieChart>
-              <Pie data={pieData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={100} label={({ name, percent }) => `${name} (${(percent * 100).toFixed(0)}%)`} labelLine={false} style={{ fontSize: 10 }}>
+              <Pie data={pieData} dataKey="value" nameKey="name" cx="50%" cy="45%" outerRadius="50%" label={false} labelLine={false} style={{ fontSize: 10 }}>
                 {pieData.map((_, i) => <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />)}
               </Pie>
+              <Legend verticalAlign="bottom" iconType="circle" wrapperStyle={{ fontSize: 10, paddingTop: 8 }} />
               <Tooltip formatter={(v: number) => formatNumber(v)} contentStyle={{ background: "hsl(var(--popover))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }} />
             </PieChart>
           </ResponsiveContainer>
