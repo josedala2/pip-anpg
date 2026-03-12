@@ -13,7 +13,7 @@ import {
   Eye, EyeOff, LogIn, Shield, Factory, Search,
   Handshake, Scale, Crown, Fuel, Globe, BarChart3, GitCompareArrows
 } from "lucide-react";
-import { Link } from "react-router-dom";
+
 
 const TEST_ACCOUNTS = [
   { role: "Administrador", email: "admin@anpg.co.ao", password: "admin123", icon: Shield, color: "bg-red-500/10 text-red-400" },
