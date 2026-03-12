@@ -67,6 +67,11 @@ const formatNum = (n: number) => {
   return n.toLocaleString("pt-AO");
 };
 
+const getNpvTotal = (b: OilBlock): number => {
+  const ge = b.economicVision?.npvFullcycle?.find((e) => e.label === "GE");
+  return ge?.valueMM ?? 0;
+};
+
 export default function ComparePage() {
   const { theme, toggleTheme } = useTheme();
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
