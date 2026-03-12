@@ -6,12 +6,12 @@ export type AppRole = "admin" | "tecnico_dpro" | "tecnico_dex" | "tecnico_dneg" 
 
 // Permissions matrix: which panels each role can access
 const PANEL_PERMISSIONS: Record<AppRole, string[]> = {
-  admin: ["Overview", "Blocos & Concessões", "Produção", "Exploração & Sísmica", "Risk & Performance", "Strategic Forecast"],
-  tecnico_dpro: ["Overview", "Blocos & Concessões", "Produção"],
-  tecnico_dex: ["Overview", "Blocos & Concessões", "Exploração & Sísmica"],
-  tecnico_dneg: ["Overview", "Blocos & Concessões", "Strategic Forecast"],
-  tecnico_dec: ["Overview", "Blocos & Concessões", "Risk & Performance", "Strategic Forecast"],
-  conselho: ["Overview", "Blocos & Concessões", "Produção", "Exploração & Sísmica", "Risk & Performance", "Strategic Forecast"],
+  admin: ["Overview", "Blocos & Concessões", "Produção", "Exploração & Sísmica", "Operadores", "Risk & Performance", "Strategic Forecast"],
+  tecnico_dpro: ["Overview", "Blocos & Concessões", "Produção", "Operadores"],
+  tecnico_dex: ["Overview", "Blocos & Concessões", "Exploração & Sísmica", "Operadores"],
+  tecnico_dneg: ["Overview", "Blocos & Concessões", "Operadores", "Strategic Forecast"],
+  tecnico_dec: ["Overview", "Blocos & Concessões", "Operadores", "Risk & Performance", "Strategic Forecast"],
+  conselho: ["Overview", "Blocos & Concessões", "Produção", "Exploração & Sísmica", "Operadores", "Risk & Performance", "Strategic Forecast"],
 };
 
 // Report types each role can access
