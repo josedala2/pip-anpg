@@ -312,7 +312,7 @@ const BlockPage = () => {
         <Card className="glass-card p-8 text-center max-w-md">
           <h2 className="text-xl font-bold mb-2">Bloco não encontrado</h2>
           <p className="text-muted-foreground mb-4">O bloco "{blockId}" não existe na base de dados.</p>
-          <Button onClick={() => navigate("/")} variant="outline"><ArrowLeft className="w-4 h-4 mr-2" />Voltar ao Dashboard</Button>
+          <Button onClick={() => navigate(-1)} variant="outline"><ArrowLeft className="w-4 h-4 mr-2" />Voltar</Button>
         </Card>
       </div>
     );
