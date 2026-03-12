@@ -43,13 +43,27 @@ interface Props {
 
 export const ReportConfigurator = ({ config, onChange, onGenerate, allowedReportTypes }: Props) => {
   const [blockSearch, setBlockSearch] = useState("");
+  const [operatorSearch, setOperatorSearch] = useState("");
 
   const filteredBlocks = oilBlocks.filter(b =>
     b.name.toLowerCase().includes(blockSearch.toLowerCase()) ||
     b.operator.toLowerCase().includes(blockSearch.toLowerCase())
   );
 
+  const uniqueOperators = useMemo(() =>
+    [...new Set(oilBlocks.map(b => b.operator))].sort(),
+    []
+  );
+
+  const filteredOperators = uniqueOperators.filter(o =>
+    o.toLowerCase().includes(operatorSearch.toLowerCase())
+  );
+
   const allSelected = config.selectedBlockIds.length === oilBlocks.length;
+  const allOperatorsSelected = config.selectedOperators.length === uniqueOperators.length;
+
+  const hasOperatorsType = config.reportTypes.includes("operators");
+  const hasBlockTypes = config.reportTypes.some(t => t !== "operators");
 
   const toggleAllBlocks = () => {
     onChange({
@@ -65,6 +79,20 @@ export const ReportConfigurator = ({ config, onChange, onGenerate, allowedReport
     onChange({ ...config, selectedBlockIds: ids });
   };
 
+  const toggleOperator = (name: string) => {
+    const ops = config.selectedOperators.includes(name)
+      ? config.selectedOperators.filter(o => o !== name)
+      : [...config.selectedOperators, name];
+    onChange({ ...config, selectedOperators: ops });
+  };
+
+  const toggleAllOperators = () => {
+    onChange({
+      ...config,
+      selectedOperators: allOperatorsSelected ? [] : [...uniqueOperators],
+    });
+  };
+
   const toggleReportType = (type: ReportType) => {
     const types = config.reportTypes.includes(type)
       ? config.reportTypes.filter(t => t !== type)
@@ -72,7 +100,9 @@ export const ReportConfigurator = ({ config, onChange, onGenerate, allowedReport
     onChange({ ...config, reportTypes: types });
   };
 
-  const isValid = config.reportTypes.length > 0 && config.selectedBlockIds.length > 0;
+  const blockTypesValid = !hasBlockTypes || config.selectedBlockIds.length > 0;
+  const operatorsTypeValid = !hasOperatorsType || config.selectedOperators.length > 0;
+  const isValid = config.reportTypes.length > 0 && blockTypesValid && operatorsTypeValid;
 
   return (
     <div className="space-y-6">
