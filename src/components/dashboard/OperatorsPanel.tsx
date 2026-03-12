@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { oilBlocks, type OilBlock } from "@/data/angolaBlocks";
+import { ConcessionMap } from "./ConcessionMap";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -13,7 +14,7 @@ import {
   PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend, CartesianGrid, LineChart, Line,
 } from "recharts";
 import {
-  Search, ArrowLeft, Building2, Layers, BarChart3, Droplets, FileText, ShieldCheck, Factory, TrendingUp,
+  Search, ArrowLeft, Building2, Layers, BarChart3, Droplets, FileText, ShieldCheck, Factory, TrendingUp, MapPin,
   ChevronUp, ChevronDown, Minus,
 } from "lucide-react";
 
@@ -328,6 +329,28 @@ function OperatorDetailView({ operator, onBack }: { operator: OperatorSummary; o
           </Card>
         ))}
       </div>
+
+      {/* Operator Map */}
+      <Card className="glass-card overflow-hidden">
+        <CardHeader className="p-4 pb-2">
+          <CardTitle className="text-sm flex items-center gap-2">
+            <MapPin className="w-4 h-4 text-primary" />
+            Blocos Operados — {operator.name}
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-0">
+          <div className="h-[400px] relative">
+            <ConcessionMap
+              blocks={oilBlocks}
+              selectedBlockId={null}
+              hoveredBlockId={null}
+              onBlockClick={() => {}}
+              onBlockHover={() => {}}
+              highlightOperator={operator.name}
+            />
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Detail Tabs */}
       <Tabs defaultValue="blocks" className="w-full">
