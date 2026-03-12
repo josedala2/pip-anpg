@@ -19,6 +19,7 @@ import {
   Sun,
   Moon,
   Search,
+  Scale,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useTheme } from "@/components/ThemeProvider";
@@ -415,6 +416,10 @@ export default function ComparePage() {
                 <TabsTrigger value="facilities" className="gap-1.5 text-xs">
                   <Factory className="w-3.5 h-3.5" />
                   Instalações
+                </TabsTrigger>
+                <TabsTrigger value="fiscal" className="gap-1.5 text-xs">
+                  <Scale className="w-3.5 h-3.5" />
+                  Condições Fiscais
                 </TabsTrigger>
               </TabsList>
 
@@ -1181,6 +1186,158 @@ export default function ComparePage() {
                     </CardContent>
                   </Card>
                 )}
+              </TabsContent>
+
+              {/* Fiscal Conditions Tab */}
+              <TabsContent value="fiscal" className="space-y-4">
+                <Card>
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-base flex items-center gap-2">
+                      <Scale className="w-4 h-4 text-primary" />
+                      Comparativo de Condições Fiscais
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-sm">
+                        <thead>
+                          <tr className="border-b border-border">
+                            <th className="text-left py-2 px-3 text-muted-foreground font-medium">
+                              Parâmetro
+                            </th>
+                            {selectedBlocks.map((b, i) => (
+                              <th
+                                key={b.id}
+                                className="text-right py-2 px-3 font-semibold"
+                                style={{ color: COLORS[i % COLORS.length] }}
+                              >
+                                {b.name.replace("Block ", "B")}
+                              </th>
+                            ))}
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-border/50">
+                          <KPIRow
+                            label="Tipo de Contrato"
+                            values={selectedBlocks.map((b) => b.contractInfo?.contractType ?? "—")}
+                          />
+                          <KPIRow
+                            label="Cost Recovery (Pré-Prod) %"
+                            values={selectedBlocks.map((b) =>
+                              b.contractInfo?.fiscalConditions?.costRecoveryPreProd != null
+                                ? `${b.contractInfo.fiscalConditions.costRecoveryPreProd}%`
+                                : "—"
+                            )}
+                          />
+                          <KPIRow
+                            label="Cost Recovery (Pós-Prod) %"
+                            values={selectedBlocks.map((b) =>
+                              b.contractInfo?.fiscalConditions?.costRecoveryPostProd != null
+                                ? `${b.contractInfo.fiscalConditions.costRecoveryPostProd}%`
+                                : "—"
+                            )}
+                          />
+                          <KPIRow
+                            label="IRP %"
+                            values={selectedBlocks.map((b) =>
+                              b.contractInfo?.fiscalConditions?.irp != null
+                                ? `${b.contractInfo.fiscalConditions.irp}%`
+                                : "—"
+                            )}
+                          />
+                          <KPIRow
+                            label="IPP %"
+                            values={selectedBlocks.map((b) =>
+                              b.contractInfo?.fiscalConditions?.ipp != null
+                                ? `${b.contractInfo.fiscalConditions.ipp}%`
+                                : "—"
+                            )}
+                          />
+                          <KPIRow
+                            label="ITP %"
+                            values={selectedBlocks.map((b) =>
+                              b.contractInfo?.fiscalConditions?.itp != null
+                                ? `${b.contractInfo.fiscalConditions.itp}%`
+                                : "—"
+                            )}
+                          />
+                          <KPIRow
+                            label="Prémio de Produção (USD/bbl)"
+                            values={selectedBlocks.map((b) =>
+                              b.contractInfo?.fiscalConditions?.productionPremium != null
+                                ? `$${b.contractInfo.fiscalConditions.productionPremium}`
+                                : "—"
+                            )}
+                          />
+                          <KPIRow
+                            label="Bónus de Assinatura (MMUSD)"
+                            values={selectedBlocks.map((b) =>
+                              b.contractInfo?.signatureBonus != null
+                                ? `$${b.contractInfo.signatureBonus}`
+                                : "—"
+                            )}
+                          />
+                          <KPIRow
+                            label="Bónus Social (MMUSD)"
+                            values={selectedBlocks.map((b) =>
+                              b.contractInfo?.socialBonus != null
+                                ? `$${b.contractInfo.socialBonus}`
+                                : "—"
+                            )}
+                          />
+                          <KPIRow
+                            label="Período de Produção"
+                            values={selectedBlocks.map((b) => {
+                              const ci = b.contractInfo;
+                              if (ci?.productionPeriodStart && ci?.productionPeriodEnd) {
+                                return `${new Date(ci.productionPeriodStart).getFullYear()} — ${new Date(ci.productionPeriodEnd).getFullYear()}`;
+                              }
+                              return typeof ci?.productionPeriodStart === "string" && !ci?.productionPeriodEnd
+                                ? ci.productionPeriodStart
+                                : "—";
+                            })}
+                          />
+                          <KPIRow
+                            label="Decreto-Lei"
+                            values={selectedBlocks.map((b) => b.contractInfo?.decretoLei ?? "—")}
+                          />
+                        </tbody>
+                      </table>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Visual bar comparison for key fiscal rates */}
+                <Card>
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-base">Taxas Fiscais Comparadas</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <ResponsiveContainer width="100%" height={300}>
+                      <BarChart
+                        data={selectedBlocks.map((b, i) => ({
+                          name: b.name.replace("Block ", "B"),
+                          "Cost Recovery Pré": b.contractInfo?.fiscalConditions?.costRecoveryPreProd ?? 0,
+                          "Cost Recovery Pós": b.contractInfo?.fiscalConditions?.costRecoveryPostProd ?? 0,
+                          IRP: b.contractInfo?.fiscalConditions?.irp ?? 0,
+                          IPP: b.contractInfo?.fiscalConditions?.ipp ?? 0,
+                          ITP: b.contractInfo?.fiscalConditions?.itp ?? 0,
+                        }))}
+                      >
+                        <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                        <XAxis dataKey="name" tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} />
+                        <YAxis tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} unit="%" />
+                        <Tooltip />
+                        <Legend />
+                        <Bar dataKey="Cost Recovery Pré" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+                        <Bar dataKey="Cost Recovery Pós" fill="hsl(199, 89%, 48%)" radius={[4, 4, 0, 0]} />
+                        <Bar dataKey="IRP" fill="hsl(38, 92%, 50%)" radius={[4, 4, 0, 0]} />
+                        <Bar dataKey="IPP" fill="hsl(152, 69%, 40%)" radius={[4, 4, 0, 0]} />
+                        <Bar dataKey="ITP" fill="hsl(280, 65%, 60%)" radius={[4, 4, 0, 0]} />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </CardContent>
+                </Card>
               </TabsContent>
             </Tabs>
           )}
