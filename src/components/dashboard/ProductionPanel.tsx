@@ -248,6 +248,7 @@ export const ProductionPanel = () => {
                 verticalAlign="bottom"
                 iconType="circle"
                 wrapperStyle={{ fontSize: 10, color: "hsl(var(--muted-foreground))" }}
+                formatter={(value, entry: any) => { const p = entry?.payload?.percent; return p != null ? `${value} (${(p * 100).toFixed(1)}%)` : value; }}
               />
             </PieChart>
           </ResponsiveContainer>

@@ -163,7 +163,7 @@ export const ProspectsSummary = ({ blocks, scopeLabel }: ProspectsSummaryProps) 
                      <Cell key={i} fill={COLORS[i % COLORS.length]} />
                    ))}
                  </Pie>
-                 <Legend verticalAlign="bottom" iconType="circle" wrapperStyle={{ fontSize: 10, paddingTop: 8 }} />
+                 <Legend verticalAlign="bottom" iconType="circle" wrapperStyle={{ fontSize: 10, paddingTop: 8 }} formatter={(value, entry: any) => { const p = entry?.payload?.percent; return p != null ? `${value} (${(p * 100).toFixed(0)}%)` : value; }} />
                  <Tooltip contentStyle={tooltipStyle} formatter={(val: number) => [`${val.toLocaleString()} MMBO`]} />
               </PieChart>
             </ResponsiveContainer>
