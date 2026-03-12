@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate, Navigate } from "react-router-dom";
+import { useNavigate, Navigate, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,7 +13,7 @@ import {
   Eye, EyeOff, LogIn, Shield, Factory, Search,
   Handshake, Scale, Crown, Fuel, Globe, BarChart3, GitCompareArrows
 } from "lucide-react";
-import { Link } from "react-router-dom";
+
 
 const TEST_ACCOUNTS = [
   { role: "Administrador", email: "admin@anpg.co.ao", password: "admin123", icon: Shield, color: "bg-red-500/10 text-red-400" },
@@ -104,6 +104,17 @@ const LoginPage = () => {
       />
       <div className="absolute inset-0 bg-gradient-to-br from-black/80 via-black/60 to-black/80" />
 
+      <div className="absolute top-4 right-4 lg:top-6 lg:right-6 z-20">
+        <Link
+          to="/compare"
+          className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors text-sm font-semibold shadow-lg"
+          title="Comparar Blocos"
+        >
+          <GitCompareArrows className="w-4 h-4" />
+          <span className="hidden sm:inline">Comparar</span>
+        </Link>
+      </div>
+
       <div className="relative z-10 min-h-screen flex flex-col lg:flex-row items-stretch">
         {/* Left Hero */}
         <div className="lg:w-[55%] flex flex-col justify-between p-8 lg:p-14 xl:p-20">
@@ -133,13 +144,6 @@ const LoginPage = () => {
                 </div>
               ))}
             </div>
-            <Link
-              to="/compare"
-              className="inline-flex items-center gap-2 mt-6 px-5 py-2.5 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors text-sm font-semibold shadow-lg w-fit"
-            >
-              <GitCompareArrows className="w-4 h-4" />
-              Comparar Blocos — Acesso Livre
-            </Link>
           </div>
 
           <p className="text-[11px] text-white/25 mt-8 lg:mt-12">
