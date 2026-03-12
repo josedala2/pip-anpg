@@ -133,64 +133,127 @@ export const ReportConfigurator = ({ config, onChange, onGenerate, allowedReport
         </div>
       </div>
 
-      {/* Block Selection */}
-      <div>
-        <div className="flex items-center justify-between mb-3">
-          <h3 className="text-sm font-semibold text-foreground">Blocos</h3>
-          <button onClick={toggleAllBlocks} className="text-xs text-primary hover:underline">
-            {allSelected ? "Desseleccionar Todos" : "Seleccionar Todos"}
-          </button>
-        </div>
+      {/* Operator Selection — shown when operators type is selected */}
+      {hasOperatorsType && (
+        <div>
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-sm font-semibold text-foreground">Operadores</h3>
+            <button onClick={toggleAllOperators} className="text-xs text-primary hover:underline">
+              {allOperatorsSelected ? "Desseleccionar Todos" : "Seleccionar Todos"}
+            </button>
+          </div>
 
-        {config.selectedBlockIds.length > 0 && (
-          <div className="flex flex-wrap gap-1.5 mb-3">
-            {config.selectedBlockIds.slice(0, 8).map(id => {
-              const block = oilBlocks.find(b => b.id === id);
-              return (
-                <Badge key={id} variant="secondary" className="text-xs gap-1 pr-1">
-                  {block?.name}
-                  <button onClick={() => toggleBlock(id)} className="hover:text-destructive">
+          {config.selectedOperators.length > 0 && (
+            <div className="flex flex-wrap gap-1.5 mb-3">
+              {config.selectedOperators.slice(0, 6).map(name => (
+                <Badge key={name} variant="secondary" className="text-xs gap-1 pr-1">
+                  {name}
+                  <button onClick={() => toggleOperator(name)} className="hover:text-destructive">
                     <X className="w-3 h-3" />
                   </button>
                 </Badge>
+              ))}
+              {config.selectedOperators.length > 6 && (
+                <Badge variant="outline" className="text-xs">
+                  +{config.selectedOperators.length - 6} mais
+                </Badge>
+              )}
+            </div>
+          )}
+
+          <input
+            type="text"
+            placeholder="Pesquisar operadores..."
+            value={operatorSearch}
+            onChange={e => setOperatorSearch(e.target.value)}
+            className="w-full px-3 py-2 mb-2 text-sm rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+          />
+
+          <div className="max-h-48 overflow-y-auto space-y-1 rounded-lg border border-border p-2">
+            {filteredOperators.map(op => {
+              const blockCount = oilBlocks.filter(b => b.operator === op).length;
+              return (
+                <label
+                  key={op}
+                  className={`flex items-center gap-2 px-2 py-1.5 rounded cursor-pointer text-sm transition-colors ${
+                    config.selectedOperators.includes(op)
+                      ? "bg-primary/10 text-foreground"
+                      : "hover:bg-secondary text-muted-foreground"
+                  }`}
+                >
+                  <Checkbox
+                    checked={config.selectedOperators.includes(op)}
+                    onCheckedChange={() => toggleOperator(op)}
+                  />
+                  <span className="truncate">{op}</span>
+                  <span className="ml-auto text-xs text-muted-foreground">{blockCount} bloco{blockCount !== 1 ? "s" : ""}</span>
+                </label>
               );
             })}
-            {config.selectedBlockIds.length > 8 && (
-              <Badge variant="outline" className="text-xs">
-                +{config.selectedBlockIds.length - 8} mais
-              </Badge>
-            )}
           </div>
-        )}
-
-        <input
-          type="text"
-          placeholder="Pesquisar blocos..."
-          value={blockSearch}
-          onChange={e => setBlockSearch(e.target.value)}
-          className="w-full px-3 py-2 mb-2 text-sm rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
-        />
-
-        <div className="max-h-48 overflow-y-auto space-y-1 rounded-lg border border-border p-2">
-          {filteredBlocks.map(block => (
-            <label
-              key={block.id}
-              className={`flex items-center gap-2 px-2 py-1.5 rounded cursor-pointer text-sm transition-colors ${
-                config.selectedBlockIds.includes(block.id)
-                  ? "bg-primary/10 text-foreground"
-                  : "hover:bg-secondary text-muted-foreground"
-              }`}
-            >
-              <Checkbox
-                checked={config.selectedBlockIds.includes(block.id)}
-                onCheckedChange={() => toggleBlock(block.id)}
-              />
-              <span className="truncate">{block.name}</span>
-              <span className="ml-auto text-xs text-muted-foreground">{block.operator}</span>
-            </label>
-          ))}
         </div>
-      </div>
+      )}
+
+      {/* Block Selection — hidden when ONLY operators type is selected */}
+      {hasBlockTypes && (
+        <div>
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-sm font-semibold text-foreground">Blocos</h3>
+            <button onClick={toggleAllBlocks} className="text-xs text-primary hover:underline">
+              {allSelected ? "Desseleccionar Todos" : "Seleccionar Todos"}
+            </button>
+          </div>
+
+          {config.selectedBlockIds.length > 0 && (
+            <div className="flex flex-wrap gap-1.5 mb-3">
+              {config.selectedBlockIds.slice(0, 8).map(id => {
+                const block = oilBlocks.find(b => b.id === id);
+                return (
+                  <Badge key={id} variant="secondary" className="text-xs gap-1 pr-1">
+                    {block?.name}
+                    <button onClick={() => toggleBlock(id)} className="hover:text-destructive">
+                      <X className="w-3 h-3" />
+                    </button>
+                  </Badge>
+                );
+              })}
+              {config.selectedBlockIds.length > 8 && (
+                <Badge variant="outline" className="text-xs">
+                  +{config.selectedBlockIds.length - 8} mais
+                </Badge>
+              )}
+            </div>
+          )}
+
+          <input
+            type="text"
+            placeholder="Pesquisar blocos..."
+            value={blockSearch}
+            onChange={e => setBlockSearch(e.target.value)}
+            className="w-full px-3 py-2 mb-2 text-sm rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+          />
+
+          <div className="max-h-48 overflow-y-auto space-y-1 rounded-lg border border-border p-2">
+            {filteredBlocks.map(block => (
+              <label
+                key={block.id}
+                className={`flex items-center gap-2 px-2 py-1.5 rounded cursor-pointer text-sm transition-colors ${
+                  config.selectedBlockIds.includes(block.id)
+                    ? "bg-primary/10 text-foreground"
+                    : "hover:bg-secondary text-muted-foreground"
+                }`}
+              >
+                <Checkbox
+                  checked={config.selectedBlockIds.includes(block.id)}
+                  onCheckedChange={() => toggleBlock(block.id)}
+                />
+                <span className="truncate">{block.name}</span>
+                <span className="ml-auto text-xs text-muted-foreground">{block.operator}</span>
+              </label>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Options */}
       <div>
