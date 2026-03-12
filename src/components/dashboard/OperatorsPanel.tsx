@@ -738,6 +738,7 @@ function OperatorDetailView({ operator, onBack }: { operator: OperatorSummary; o
           </div>
         </TabsContent>
       </Tabs>
+      {selectedBlock && <BlockDetail block={selectedBlock} onClose={() => setSelectedBlock(null)} />}
     </div>
   );
 }
