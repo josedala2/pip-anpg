@@ -239,6 +239,7 @@ function OperatorListView({ operators, onSelect }: { operators: OperatorSummary[
 // ── Detail View ────────────────────────────────────────────
 function OperatorDetailView({ operator, onBack }: { operator: OperatorSummary; onBack: () => void }) {
   const { blocks } = operator;
+  const [selectedBlock, setSelectedBlock] = useState<OilBlock | null>(null);
 
   // Aggregate production history
   const aggregatedHistory = useMemo(() => {
