@@ -2859,9 +2859,9 @@ export const oilBlocks: OilBlock[] = [
     ],
     geologicalObjectives: ["Pinda Carbonates", "Vermelha Clastics", "Albian Reservoirs"],
     fields: [
-      { name: "Punja", status: "Producing", discoveryYear: 1982, peakProduction: 30000 },
-      { name: "Caco", status: "Producing", discoveryYear: 1983, peakProduction: 20000 },
-      { name: "Gazela", status: "Producing", discoveryYear: 1990, peakProduction: 15000 },
+      { name: "Punja", status: "Producing", discoveryYear: 1982, peakProduction: 25000 },
+      { name: "Caco", status: "Producing", discoveryYear: 1983, peakProduction: 18000 },
+      { name: "Gazela", status: "Producing", discoveryYear: 1990, peakProduction: 12000 },
     ],
     contractInfo: {
       decretoLei: "Decreto-Lei 73/05, 28 de Setembro",
