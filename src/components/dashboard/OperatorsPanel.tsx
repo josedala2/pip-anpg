@@ -344,9 +344,9 @@ function OperatorDetailView({ operator, onBack }: { operator: OperatorSummary; o
           <div className="h-[400px] relative">
             <ConcessionMap
               blocks={oilBlocks}
-              selectedBlockId={null}
+              selectedBlockId={selectedBlock?.id ?? null}
               hoveredBlockId={null}
-              onBlockClick={() => {}}
+              onBlockClick={(block) => setSelectedBlock(block)}
               onBlockHover={() => {}}
               highlightOperator={operator.name}
             />
