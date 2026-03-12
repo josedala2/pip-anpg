@@ -221,9 +221,10 @@ const ExecutiveSection = ({ blocks, showTables, showCharts }: { blocks: OilBlock
             <ChartCard title="Produção por Bloco (BOPD)">
               <ResponsiveContainer width="100%" height={250}>
                 <PieChart>
-                  <Pie data={productionData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={90} label={({ name, percent }) => `${name} (${(percent * 100).toFixed(0)}%)`} labelLine={false} style={{ fontSize: 10 }}>
+                  <Pie data={productionData} dataKey="value" nameKey="name" cx="50%" cy="45%" outerRadius="50%" label={false} labelLine={false} style={{ fontSize: 10 }}>
                     {productionData.map((_, i) => <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />)}
                   </Pie>
+                  <Legend verticalAlign="bottom" iconType="circle" wrapperStyle={{ fontSize: 10, paddingTop: 8 }} />
                   <Tooltip formatter={(v: number) => formatNumber(v)} contentStyle={{ background: "hsl(var(--popover))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }} />
                 </PieChart>
               </ResponsiveContainer>
