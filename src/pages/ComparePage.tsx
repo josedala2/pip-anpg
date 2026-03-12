@@ -401,6 +401,10 @@ export default function ComparePage() {
                   <Shield className="w-3.5 h-3.5" />
                   HSE & Ambiente
                 </TabsTrigger>
+                <TabsTrigger value="financial" className="gap-1.5 text-xs">
+                  <DollarSign className="w-3.5 h-3.5" />
+                  Financeiro
+                </TabsTrigger>
                 <TabsTrigger value="facilities" className="gap-1.5 text-xs">
                   <Factory className="w-3.5 h-3.5" />
                   Instalações
