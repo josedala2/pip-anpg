@@ -11,8 +11,9 @@ import anpgLogoWhite from "@/assets/anpg-logo-white.svg";
 import angolaSatellite from "@/assets/angola-coast-satellite.jpg";
 import {
   Eye, EyeOff, LogIn, Shield, Factory, Search,
-  Handshake, Scale, Crown, Fuel, Globe, BarChart3
+  Handshake, Scale, Crown, Fuel, Globe, BarChart3, GitCompareArrows
 } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const TEST_ACCOUNTS = [
   { role: "Administrador", email: "admin@anpg.co.ao", password: "admin123", icon: Shield, color: "bg-red-500/10 text-red-400" },
@@ -124,7 +125,7 @@ const LoginPage = () => {
                 Monitoria integrada de blocos, produção, exploração e indicadores estratégicos.
               </p>
             </div>
-            <div className="flex gap-10 pt-6 border-t border-white/10">
+            <div className="flex items-center gap-10 pt-6 border-t border-white/10">
               {STATS.map((stat) => (
                 <div key={stat.label}>
                   <p className="text-2xl lg:text-3xl font-bold text-white">{stat.value}</p>
@@ -132,6 +133,13 @@ const LoginPage = () => {
                 </div>
               ))}
             </div>
+            <Link
+              to="/compare"
+              className="inline-flex items-center gap-2 mt-6 px-5 py-2.5 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors text-sm font-semibold shadow-lg w-fit"
+            >
+              <GitCompareArrows className="w-4 h-4" />
+              Comparar Blocos — Acesso Livre
+            </Link>
           </div>
 
           <p className="text-[11px] text-white/25 mt-8 lg:mt-12">
