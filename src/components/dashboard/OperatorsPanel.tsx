@@ -97,6 +97,17 @@ function OperatorListView({ operators, onSelect }: { operators: OperatorSummary[
     return [...list].sort(sorters[sortBy]);
   }, [operators, search, sortBy]);
 
+  const [chartMetric, setChartMetric] = useState<"totalProduction" | "totalReserves" | "totalAccumulatedInvestment">("totalProduction");
+
+  const chartMetricConfig: Record<typeof chartMetric, { label: string; suffix: string; formatter: (v: number) => string }> = {
+    totalProduction: { label: "Produção", suffix: "BOPD", formatter: (v) => `${v.toLocaleString()} BOPD` },
+    totalReserves: { label: "Reservas", suffix: "MMbbl", formatter: (v) => `${v.toLocaleString()} MMbbl` },
+    totalAccumulatedInvestment: { label: "Investimento", suffix: "M USD", formatter: (v) => `${v.toLocaleString()} M USD` },
+  };
+
+  const currentMetric = chartMetricConfig[chartMetric];
+  const chartTotal = useMemo(() => filtered.reduce((s, o) => s + o[chartMetric], 0), [filtered, chartMetric]);
+
   const pieData = useMemo(() =>
     [...operators]
       .sort((a, b) => b.totalProduction - a.totalProduction)
@@ -140,14 +151,30 @@ function OperatorListView({ operators, onSelect }: { operators: OperatorSummary[
 
       {/* Chart: Quota de Produção */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <ChartWrapper title="Quota de Produção por Operador" icon={<BarChart3 className="w-4 h-4" />} height={Math.max(350, filtered.length * 38 + 60)}>
+        <ChartWrapper
+          title={`Ranking por ${currentMetric.label}`}
+          icon={<BarChart3 className="w-4 h-4" />}
+          height={Math.max(350, filtered.length * 38 + 60)}
+          headerExtra={
+            <Select value={chartMetric} onValueChange={(v) => setChartMetric(v as typeof chartMetric)}>
+              <SelectTrigger className="h-7 w-[130px] text-xs">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="totalProduction">Produção</SelectItem>
+                <SelectItem value="totalReserves">Reservas</SelectItem>
+                <SelectItem value="totalAccumulatedInvestment">Investimento</SelectItem>
+              </SelectContent>
+            </Select>
+          }
+        >
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={filtered} layout="vertical" margin={{ left: 110, right: 60, top: 5, bottom: 5 }}>
+            <BarChart data={filtered} layout="vertical" margin={{ left: 110, right: 70, top: 5, bottom: 5 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" horizontal={false} />
               <XAxis type="number" tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} tickFormatter={(v: number) => v >= 1000 ? `${(v / 1000).toFixed(0)}k` : String(v)} />
               <YAxis type="category" dataKey="name" tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} width={105} />
-              <Tooltip formatter={(v: number) => `${v.toLocaleString()} BOPD`} contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }} />
-              <Bar dataKey="totalProduction" name="Produção (BOPD)" radius={[0, 4, 4, 0]} label={{ position: "right", fontSize: 10, fill: "hsl(var(--muted-foreground))", formatter: (v: number) => `${((v / totalProd) * 100).toFixed(1)}%` }}>
+              <Tooltip formatter={(v: number) => currentMetric.formatter(v)} contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }} />
+              <Bar dataKey={chartMetric} name={currentMetric.label} radius={[0, 4, 4, 0]} label={{ position: "right", fontSize: 10, fill: "hsl(var(--muted-foreground))", formatter: (v: number) => chartTotal > 0 ? `${((v / chartTotal) * 100).toFixed(1)}%` : "" }}>
                 {filtered.map((_, i) => <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />)}
               </Bar>
             </BarChart>
