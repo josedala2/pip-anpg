@@ -2820,10 +2820,10 @@ export const oilBlocks: OilBlock[] = [
     complianceScore: 88,
     mapPosition: { x: 24, y: 60 },
     productionHistory: [
-      { month: "Jan", value: 66000 }, { month: "Feb", value: 66500 }, { month: "Mar", value: 67000 },
-      { month: "Apr", value: 67000 }, { month: "May", value: 67500 }, { month: "Jun", value: 68000 },
-      { month: "Jul", value: 67500 }, { month: "Aug", value: 68000 }, { month: "Sep", value: 67000 },
-      { month: "Oct", value: 67500 }, { month: "Nov", value: 68000 }, { month: "Dec", value: 68000 },
+      { month: "Jan", value: 49200 }, { month: "Fev", value: 49800 }, { month: "Mar", value: 50100 },
+      { month: "Abr", value: 50300 }, { month: "Mai", value: 50085 }, { month: "Jun", value: 49700 },
+      { month: "Jul", value: 50400 }, { month: "Ago", value: 50600 }, { month: "Set", value: 49900 },
+      { month: "Out", value: 50200 }, { month: "Nov", value: 50500 }, { month: "Dez", value: 50085 },
     ],
     capexHistory: [
       { year: "2020", planned: 420, actual: 400 }, { year: "2021", planned: 440, actual: 410 },
@@ -2831,9 +2831,9 @@ export const oilBlocks: OilBlock[] = [
       { year: "2024", planned: 500, actual: 480 },
     ],
     projections: {
-      conservative: [66000, 63000, 60000, 57000, 54000, 51000, 48000, 45000, 42000, 39000],
-      base: [68000, 66000, 64000, 62000, 60000, 58000, 56000, 54000, 52000, 50000],
-      expansion: [68000, 70000, 72000, 73000, 74000, 73000, 72000, 70000, 68000, 66000],
+      conservative: [48000, 45000, 42000, 39000, 36000, 33000, 30000, 27000, 24000, 21000],
+      base: [50000, 48000, 46000, 44000, 42000, 40000, 38000, 36000, 34000, 32000],
+      expansion: [50000, 52000, 54000, 55000, 54000, 53000, 51000, 49000, 47000, 45000],
     },
     areaKm2: 162.14,
     waterDepthRange: "15-150m",
