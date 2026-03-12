@@ -435,6 +435,8 @@ export const ConcessionMap = ({
           const isSelected = selectedBlockId === block.id;
           const isHovered = hoveredBlockId === block.id;
           const isHighlighted = isSelected || isHovered;
+          const isOpBlock = highlightOperator ? block.operator === highlightOperator : false;
+          const isDimmed = highlightOperator ? !isOpBlock : false;
           const color = getBlockColor(block);
           const hasBiddingYear = !!blockBiddingYear[block.id];
           const isExistingConcession = !hasBiddingYear && (block.phase === "Production" || block.phase === "Development");
@@ -445,10 +447,10 @@ export const ConcessionMap = ({
               key={block.id}
               positions={polygon}
               pathOptions={{
-                color: isHighlighted ? "white" : isOnshore ? "#facc15" : color,
-                weight: isHighlighted ? 3 : isOnshore ? 2 : 1,
-                fillColor: color,
-                fillOpacity: isHighlighted ? 0.75 : isOnshore ? 0.6 : isExistingConcession ? 0.35 : 0.5,
+                color: isOpBlock ? "#facc15" : isDimmed ? "#6b7280" : isHighlighted ? "white" : isOnshore ? "#facc15" : color,
+                weight: isOpBlock ? 3 : isHighlighted ? 3 : isOnshore ? 2 : 1,
+                fillColor: isOpBlock ? "#facc15" : color,
+                fillOpacity: isDimmed ? 0.08 : isOpBlock ? 0.65 : isHighlighted ? 0.75 : isOnshore ? 0.6 : isExistingConcession ? 0.35 : 0.5,
                 dashArray: isExistingConcession && showConcessions ? "4 3" : undefined,
               }}
               eventHandlers={{
