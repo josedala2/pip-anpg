@@ -330,6 +330,28 @@ function OperatorDetailView({ operator, onBack }: { operator: OperatorSummary; o
         ))}
       </div>
 
+      {/* Operator Map */}
+      <Card className="glass-card overflow-hidden">
+        <CardHeader className="p-4 pb-2">
+          <CardTitle className="text-sm flex items-center gap-2">
+            <MapPin className="w-4 h-4 text-primary" />
+            Blocos Operados — {operator.name}
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-0">
+          <div className="h-[400px] relative">
+            <ConcessionMap
+              blocks={oilBlocks}
+              selectedBlockId={null}
+              hoveredBlockId={null}
+              onBlockClick={() => {}}
+              onBlockHover={() => {}}
+              highlightOperator={operator.name}
+            />
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Detail Tabs */}
       <Tabs defaultValue="blocks" className="w-full">
         <TabsList className="flex flex-wrap h-auto gap-1 bg-muted/50 p-1">
