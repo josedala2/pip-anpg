@@ -229,12 +229,12 @@ export const ProductionPanel = () => {
                 dataKey="value"
                 nameKey="name"
                 cx="50%"
-                cy="50%"
-                outerRadius="70%"
-                innerRadius="25%"
+                cy="45%"
+                outerRadius="50%"
+                innerRadius="20%"
                 paddingAngle={1}
-                label={renderPieLabel}
-                labelLine={{ strokeWidth: 1 }}
+                label={false}
+                labelLine={false}
               >
                 {pieData.map((_, i) => (
                   <Cell key={i} fill={COLORS[i % COLORS.length]} />
