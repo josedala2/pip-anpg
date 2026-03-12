@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { oilBlocks, type OilBlock } from "@/data/angolaBlocks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -74,7 +74,9 @@ const getNpvTotal = (b: OilBlock): number => {
 
 export default function ComparePage() {
   const { theme, toggleTheme } = useTheme();
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [searchParams] = useSearchParams();
+  const initialBlocks = searchParams.get("blocks")?.split(",").filter(id => oilBlocks.some(b => b.id === id)) ?? [];
+  const [selectedIds, setSelectedIds] = useState<string[]>(initialBlocks);
   const [search, setSearch] = useState("");
 
   const filteredBlocks = useMemo(
