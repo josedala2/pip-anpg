@@ -104,7 +104,7 @@ const LoginPage = () => {
       />
       <div className="absolute inset-0 bg-gradient-to-br from-black/80 via-black/60 to-black/80" />
 
-      <div className="relative z-20 flex justify-end p-4 lg:p-6">
+      <div className="absolute top-4 right-4 lg:top-6 lg:right-6 z-20">
         <Link
           to="/compare"
           className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors text-sm font-semibold shadow-lg"
