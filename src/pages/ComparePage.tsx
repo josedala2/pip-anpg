@@ -1075,7 +1075,7 @@ export default function ComparePage() {
                         <tbody className="divide-y divide-border/50">
                           <KPIRow
                             label="NPV (MMUSD)"
-                            values={selectedBlocks.map((b) => b.economicVision?.npv ? `$${b.economicVision.npv.toLocaleString("pt-AO")}` : "—")}
+                            values={selectedBlocks.map((b) => { const v = getNpvTotal(b); return v ? `$${v.toLocaleString("pt-AO")}` : "—"; })}
                           />
                           <KPIRow
                             label="Opex/Barril (USD)"
