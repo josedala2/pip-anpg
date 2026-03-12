@@ -11,7 +11,7 @@ import { BlocksPanel } from "@/components/dashboard/BlocksPanel";
 import { ExplorationPanel } from "@/components/dashboard/ExplorationPanel";
 import { ProductionPanel } from "@/components/dashboard/ProductionPanel";
 import { type OilBlock, oilBlocks } from "@/data/angolaBlocks";
-import { Maximize2, Minimize2, ChevronLeft, ChevronRight, Sun, Moon, FileText, LogOut, User, Users, Database } from "lucide-react";
+import { Maximize2, Minimize2, ChevronLeft, ChevronRight, Sun, Moon, FileText, LogOut, User, Users, Database, GitCompareArrows } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useTheme } from "@/components/ThemeProvider";
 import { useAuth } from "@/components/AuthProvider";
@@ -125,6 +125,13 @@ const Index = () => {
                 <Database className="w-4 h-4 3xl:w-5 3xl:h-5" />
               </Link>
             )}
+            <Link
+              to="/compare"
+              className="p-2 3xl:p-2.5 rounded-lg hover:bg-secondary transition-colors"
+              title="Comparativo de Blocos"
+            >
+              <GitCompareArrows className="w-4 h-4 3xl:w-5 3xl:h-5" />
+            </Link>
             <Link
               to="/reports"
               className="p-2 3xl:p-2.5 rounded-lg hover:bg-secondary transition-colors"
