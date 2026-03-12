@@ -176,6 +176,25 @@ const Index = () => {
           </div>
         </div>
 
+        {/* Compare Banner */}
+        <div className="px-4 md:px-6 3xl:px-8 py-2">
+          <Link
+            to="/compare"
+            className="flex items-center justify-between w-full px-4 py-2.5 rounded-lg bg-primary/10 border border-primary/20 hover:bg-primary/15 transition-colors group"
+          >
+            <div className="flex items-center gap-3">
+              <div className="p-1.5 rounded-md bg-primary/20">
+                <GitCompareArrows className="w-4 h-4 text-primary" />
+              </div>
+              <div>
+                <span className="text-sm font-semibold text-foreground">Comparar Blocos</span>
+                <span className="hidden md:inline text-xs text-muted-foreground ml-2">Análise lado a lado de até 8 blocos — KPIs, produção, financeiro e HSE</span>
+              </div>
+            </div>
+            <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
+          </Link>
+        </div>
+
         <Separator className="mx-4 md:mx-6" />
 
         {/* Panel Tabs */}
