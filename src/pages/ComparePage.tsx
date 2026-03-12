@@ -19,6 +19,7 @@ import {
   Sun,
   Moon,
   Search,
+  Scale,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useTheme } from "@/components/ThemeProvider";
