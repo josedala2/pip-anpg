@@ -14,6 +14,7 @@ import {
   Shield,
   Factory,
   TrendingUp,
+  DollarSign,
   X,
   Sun,
   Moon,
@@ -64,6 +65,11 @@ const formatNum = (n: number) => {
   if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`;
   if (n >= 1_000) return `${(n / 1_000).toFixed(1)}k`;
   return n.toLocaleString("pt-AO");
+};
+
+const getNpvTotal = (b: OilBlock): number => {
+  const ge = b.economicVision?.npvFullcycle?.find((e) => e.label === "GE");
+  return ge?.valueMM ?? 0;
 };
 
 export default function ComparePage() {
@@ -186,6 +192,73 @@ export default function ComparePage() {
       });
       return row;
     });
+  }, [selectedBlocks]);
+
+  // ─── Financial Data Builders ───
+
+  const npvData = useMemo(() => {
+    return selectedBlocks.map((b, i) => ({
+      name: b.name.replace("Block ", "B"),
+      "NPV (MMUSD)": getNpvTotal(b),
+      fill: COLORS[i % COLORS.length],
+    }));
+  }, [selectedBlocks]);
+
+  const opexBarrelData = useMemo(() => {
+    return selectedBlocks.map((b, i) => ({
+      name: b.name.replace("Block ", "B"),
+      "Opex/Barril (USD)": b.economicData?.opexPerBarrel ?? 0,
+      fill: COLORS[i % COLORS.length],
+    }));
+  }, [selectedBlocks]);
+
+  const investmentPlanData = useMemo(() => {
+    if (selectedBlocks.length === 0) return [];
+    const allYears = new Set<number>();
+    selectedBlocks.forEach((b) =>
+      b.economicData?.investmentPlan?.forEach((p) => allYears.add(p.year))
+    );
+    const years = Array.from(allYears).sort();
+    return years.map((y) => {
+      const row: Record<string, string | number> = { year: y.toString() };
+      selectedBlocks.forEach((b) => {
+        const shortName = b.name.replace("Block ", "B");
+        const plan = b.economicData?.investmentPlan?.find((p) => p.year === y);
+        row[shortName] = plan?.total ?? 0;
+      });
+      return row;
+    });
+  }, [selectedBlocks]);
+
+  const costHistoryData = useMemo(() => {
+    if (selectedBlocks.length === 0) return [];
+    const allPeriods = new Set<string>();
+    selectedBlocks.forEach((b) =>
+      b.economicData?.costHistory?.forEach((c) => allPeriods.add(c.period))
+    );
+    const periods = Array.from(allPeriods).sort();
+    return periods.map((p) => {
+      const row: Record<string, string | number> = { period: p };
+      selectedBlocks.forEach((b) => {
+        const shortName = b.name.replace("Block ", "B");
+        const cost = b.economicData?.costHistory?.find((c) => c.period === p);
+        row[`${shortName} CAPEX`] = cost?.capex ?? 0;
+        row[`${shortName} OPEX`] = cost?.opex ?? 0;
+      });
+      return row;
+    });
+  }, [selectedBlocks]);
+
+  const abandonmentData = useMemo(() => {
+    return selectedBlocks
+      .filter((b) => b.economicData?.abandonment)
+      .map((b, i) => ({
+        name: b.name.replace("Block ", "B"),
+        "Total Abandono": b.economicData!.abandonment!.total,
+        "Fundeamento Depositado": b.economicData!.abandonment!.fundingDeposited,
+        "Fundeamento Necessário": b.economicData!.abandonment!.fundingRequired,
+        fill: COLORS[i % COLORS.length],
+      }));
   }, [selectedBlocks]);
 
   return (
@@ -332,6 +405,10 @@ export default function ComparePage() {
                 <TabsTrigger value="hse" className="gap-1.5 text-xs">
                   <Shield className="w-3.5 h-3.5" />
                   HSE & Ambiente
+                </TabsTrigger>
+                <TabsTrigger value="financial" className="gap-1.5 text-xs">
+                  <DollarSign className="w-3.5 h-3.5" />
+                  Financeiro
                 </TabsTrigger>
                 <TabsTrigger value="facilities" className="gap-1.5 text-xs">
                   <Factory className="w-3.5 h-3.5" />
@@ -900,6 +977,208 @@ export default function ComparePage() {
                     </ResponsiveContainer>
                   </CardContent>
                 </Card>
+              </TabsContent>
+
+              {/* Financial Tab */}
+              <TabsContent value="financial" className="space-y-4">
+                {/* NPV & Opex/Barrel side by side */}
+                <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+                  <Card>
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-base">NPV — Valor Presente Líquido (MMUSD)</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <ResponsiveContainer width="100%" height={300}>
+                        <BarChart data={npvData}>
+                          <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                          <XAxis dataKey="name" tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} />
+                          <YAxis tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} />
+                          <Tooltip />
+                          <Bar dataKey="NPV (MMUSD)" radius={[4, 4, 0, 0]}>
+                            {npvData.map((entry, i) => (
+                              <rect key={i} fill={entry.fill} />
+                            ))}
+                          </Bar>
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-base">Opex por Barril (USD/bbl)</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <ResponsiveContainer width="100%" height={300}>
+                        <BarChart data={opexBarrelData}>
+                          <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                          <XAxis dataKey="name" tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} />
+                          <YAxis tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} />
+                          <Tooltip />
+                          <Bar dataKey="Opex/Barril (USD)" radius={[4, 4, 0, 0]}>
+                            {opexBarrelData.map((entry, i) => (
+                              <rect key={i} fill={entry.fill} />
+                            ))}
+                          </Bar>
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* Investment Plan (5-year) */}
+                <Card>
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-base">Plano de Investimento Quinquenal (MMUSD)</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <ResponsiveContainer width="100%" height={350}>
+                      <LineChart data={investmentPlanData}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                        <XAxis dataKey="year" tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} />
+                        <YAxis tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} />
+                        <Tooltip />
+                        <Legend />
+                        {selectedBlocks.map((b, i) => (
+                          <Line
+                            key={b.id}
+                            type="monotone"
+                            dataKey={b.name.replace("Block ", "B")}
+                            stroke={COLORS[i % COLORS.length]}
+                            strokeWidth={2}
+                            dot={{ r: 4 }}
+                          />
+                        ))}
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </CardContent>
+                </Card>
+
+                {/* Financial KPI Table */}
+                <Card>
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-base">Indicadores Financeiros Detalhados</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-sm">
+                        <thead>
+                          <tr className="border-b border-border">
+                            <th className="text-left py-2 px-3 text-muted-foreground font-medium">Indicador</th>
+                            {selectedBlocks.map((b, i) => (
+                              <th key={b.id} className="text-right py-2 px-3 font-semibold" style={{ color: COLORS[i % COLORS.length] }}>
+                                {b.name.replace("Block ", "B")}
+                              </th>
+                            ))}
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-border/50">
+                          <KPIRow
+                            label="NPV (MMUSD)"
+                            values={selectedBlocks.map((b) => { const v = getNpvTotal(b); return v ? `$${v.toLocaleString("pt-AO")}` : "—"; })}
+                          />
+                          <KPIRow
+                            label="Opex/Barril (USD)"
+                            values={selectedBlocks.map((b) => b.economicData?.opexPerBarrel ? `$${b.economicData.opexPerBarrel}` : "—")}
+                          />
+                          <KPIRow
+                            label="Dívida Sonangol (MMUSD)"
+                            values={selectedBlocks.map((b) => b.economicData?.sonangolDebt != null ? `$${b.economicData.sonangolDebt}` : "—")}
+                          />
+                          <KPIRow
+                            label="Custo Abandono (MMUSD)"
+                            values={selectedBlocks.map((b) => b.economicData?.abandonment?.total ? `$${b.economicData.abandonment.total}` : "—")}
+                          />
+                          <KPIRow
+                            label="Fundo Abandono Depositado"
+                            values={selectedBlocks.map((b) => b.economicData?.abandonment?.fundingDeposited ? `$${b.economicData.abandonment.fundingDeposited}` : "—")}
+                          />
+                          <KPIRow
+                            label="Capex Acumulado (MMUSD)"
+                            values={selectedBlocks.map((b) => `$${formatNum(b.accumulatedInvestment)}`)}
+                          />
+                          <KPIRow
+                            label="Capex Planeado (MMUSD)"
+                            values={selectedBlocks.map((b) => `$${formatNum(b.plannedInvestment)}`)}
+                          />
+                          <KPIRow
+                            label="Taxa de Execução (%)"
+                            values={selectedBlocks.map((b) => `${b.executionRate}%`)}
+                          />
+                          <KPIRow
+                            label="Receita Estado"
+                            values={selectedBlocks.map((b) => {
+                              const sr = b.economicData?.stateRevenueShare;
+                              return sr?.length ? `${sr[sr.length - 1].percentage}% (${sr[sr.length - 1].period})` : "—";
+                            })}
+                          />
+                        </tbody>
+                      </table>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Abandonment Fund Comparison */}
+                {abandonmentData.length > 0 && (
+                  <Card>
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-base">Fundos de Abandono (MMUSD)</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <ResponsiveContainer width="100%" height={300}>
+                        <BarChart data={abandonmentData}>
+                          <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                          <XAxis dataKey="name" tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} />
+                          <YAxis tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} />
+                          <Tooltip />
+                          <Legend />
+                          <Bar dataKey="Total Abandono" fill="hsl(var(--destructive))" radius={[4, 4, 0, 0]} />
+                          <Bar dataKey="Fundeamento Depositado" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+                          <Bar dataKey="Fundeamento Necessário" fill="hsl(var(--muted-foreground))" radius={[4, 4, 0, 0]} />
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </CardContent>
+                  </Card>
+                )}
+
+                {/* Cost History (CAPEX vs OPEX) */}
+                {costHistoryData.length > 0 && (
+                  <Card>
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-base">Histórico CAPEX vs OPEX (MMUSD)</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <ResponsiveContainer width="100%" height={350}>
+                        <BarChart data={costHistoryData}>
+                          <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                          <XAxis dataKey="period" tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} />
+                          <YAxis tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} />
+                          <Tooltip />
+                          <Legend />
+                          {selectedBlocks.map((b, i) => (
+                            <Bar
+                              key={`${b.id}-capex`}
+                              dataKey={`${b.name.replace("Block ", "B")} CAPEX`}
+                              fill={COLORS[i % COLORS.length]}
+                              radius={[4, 4, 0, 0]}
+                              stackId={b.id}
+                            />
+                          ))}
+                          {selectedBlocks.map((b, i) => (
+                            <Bar
+                              key={`${b.id}-opex`}
+                              dataKey={`${b.name.replace("Block ", "B")} OPEX`}
+                              fill={COLORS[i % COLORS.length]}
+                              opacity={0.5}
+                              radius={[4, 4, 0, 0]}
+                              stackId={b.id}
+                            />
+                          ))}
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </CardContent>
+                  </Card>
+                )}
               </TabsContent>
             </Tabs>
           )}
