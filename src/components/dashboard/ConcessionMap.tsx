@@ -12,6 +12,7 @@ interface ConcessionMapProps {
   onBlockClick: (block: OilBlock) => void;
   onBlockHover: (blockId: string | null) => void;
   highlightOperator?: string;
+  disablePopup?: boolean;
 }
 
 const phaseColors: Record<BlockPhase, string> = {
@@ -289,6 +290,7 @@ export const ConcessionMap = ({
   onBlockClick,
   onBlockHover,
   highlightOperator,
+  disablePopup = false,
 }: ConcessionMapProps) => {
   const navigate = useNavigate();
   const [showLimits, setShowLimits] = useState(true);
@@ -462,6 +464,7 @@ export const ConcessionMap = ({
               <LeafletTooltip permanent direction="center" className="leaflet-block-label">
                 <span className="font-bold">{block.name}</span>
               </LeafletTooltip>
+              {!disablePopup && (
               <Popup className="leaflet-block-popup" maxWidth={280} minWidth={200}>
                 <div className="p-1">
                   <div className="font-bold text-sm mb-0.5">{block.name}</div>
@@ -497,6 +500,7 @@ export const ConcessionMap = ({
                   </button>
                 </div>
               </Popup>
+              )}
             </Polygon>
           );
         })}

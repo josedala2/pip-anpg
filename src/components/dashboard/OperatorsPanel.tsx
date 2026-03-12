@@ -373,6 +373,7 @@ function OperatorDetailView({ operator, onBack }: { operator: OperatorSummary; o
         <CardContent className="p-0">
           <div className="h-[400px] relative">
             <ConcessionMap
+              disablePopup
               blocks={oilBlocks}
               selectedBlockId={selectedBlock?.id ?? null}
               hoveredBlockId={null}
