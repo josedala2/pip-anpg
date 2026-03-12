@@ -224,7 +224,7 @@ const ExecutiveSection = ({ blocks, showTables, showCharts }: { blocks: OilBlock
                   <Pie data={productionData} dataKey="value" nameKey="name" cx="50%" cy="45%" outerRadius="50%" label={false} labelLine={false} style={{ fontSize: 10 }}>
                     {productionData.map((_, i) => <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />)}
                   </Pie>
-                  <Legend verticalAlign="bottom" iconType="circle" wrapperStyle={{ fontSize: 10, paddingTop: 8 }} />
+                  <Legend verticalAlign="bottom" iconType="circle" wrapperStyle={{ fontSize: 10, paddingTop: 8 }} formatter={(value, entry: any) => { const p = entry?.payload?.percent; return p != null ? `${value} (${(p * 100).toFixed(0)}%)` : value; }} />
                   <Tooltip formatter={(v: number) => formatNumber(v)} contentStyle={{ background: "hsl(var(--popover))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }} />
                 </PieChart>
               </ResponsiveContainer>
