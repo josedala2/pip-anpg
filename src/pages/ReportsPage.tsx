@@ -79,6 +79,7 @@ const ReportsPage = () => {
         consortium: "Consórcio & Participações",
         legislation: "Legislação & Documentos",
         financial: "Económico & Financeiro",
+        operators: "Operadores",
       };
       await exportReportPdf(
         "report-content",

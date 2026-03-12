@@ -699,6 +699,117 @@ const AINarrativeSection = ({ narrative, loading }: { narrative?: string | null;
   );
 };
 
+// ─── OPERATORS SECTION ────────────────────────────────────
+const OperatorsSection = ({ blocks, showTables, showCharts }: { blocks: OilBlock[]; showTables: boolean; showCharts: boolean }) => {
+  const operators = useMemo(() => {
+    const map = new Map<string, OilBlock[]>();
+    blocks.forEach(b => {
+      const existing = map.get(b.operator) || [];
+      map.set(b.operator, [...existing, b]);
+    });
+    return Array.from(map.entries()).map(([name, opBlocks]) => ({
+      name,
+      blocks: opBlocks,
+      totalProduction: opBlocks.reduce((s, b) => s + b.dailyProduction, 0),
+      totalReserves: opBlocks.reduce((s, b) => s + b.estimatedReserves, 0),
+      totalInvestment: opBlocks.reduce((s, b) => s + b.accumulatedInvestment, 0),
+      avgCompliance: opBlocks.length > 0 ? Math.round(opBlocks.reduce((s, b) => s + b.complianceScore, 0) / opBlocks.length) : 0,
+    })).sort((a, b) => b.totalProduction - a.totalProduction);
+  }, [blocks]);
+
+  const pieData = useMemo(() =>
+    operators.filter(o => o.totalProduction > 0).map(o => ({ name: o.name, value: o.totalProduction })),
+    [operators]
+  );
+
+  const totalProd = operators.reduce((s, o) => s + o.totalProduction, 0);
+
+  return (
+    <>
+      <SectionTitle>Operadores</SectionTitle>
+      <Prose>
+        Os blocos seleccionados são geridos por {operators.length} operador{operators.length > 1 ? "es" : ""},
+        com uma produção combinada de {formatNumber(totalProd)} BOPD.
+        {operators.length > 0 && ` O operador com maior produção é a ${operators[0].name} com ${formatNumber(operators[0].totalProduction)} BOPD (${totalProd > 0 ? ((operators[0].totalProduction / totalProd) * 100).toFixed(1) : 0}%).`}
+      </Prose>
+
+      {showCharts && pieData.length > 0 && (
+        <ChartCard title="Quota de Produção por Operador (BOPD)">
+          <ResponsiveContainer width="100%" height={280}>
+            <PieChart>
+              <Pie data={pieData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={100} label={({ name, percent }) => `${name} (${(percent * 100).toFixed(0)}%)`} labelLine={false} style={{ fontSize: 10 }}>
+                {pieData.map((_, i) => <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />)}
+              </Pie>
+              <Tooltip formatter={(v: number) => formatNumber(v)} contentStyle={{ background: "hsl(var(--popover))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }} />
+            </PieChart>
+          </ResponsiveContainer>
+        </ChartCard>
+      )}
+
+      {showTables && (
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Operador</TableHead>
+              <TableHead className="text-right">Nº Blocos</TableHead>
+              <TableHead className="text-right">Produção (BOPD)</TableHead>
+              <TableHead className="text-right">Reservas (MMbbl)</TableHead>
+              <TableHead className="text-right">Investimento (M USD)</TableHead>
+              <TableHead className="text-right">Compliance (%)</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {operators.map(o => (
+              <TableRow key={o.name}>
+                <TableCell className="font-medium">{o.name}</TableCell>
+                <TableCell className="text-right">{o.blocks.length}</TableCell>
+                <TableCell className="text-right">{formatNumber(o.totalProduction)}</TableCell>
+                <TableCell className="text-right">{formatNumber(o.totalReserves)}</TableCell>
+                <TableCell className="text-right">{formatNumber(o.totalInvestment)}</TableCell>
+                <TableCell className="text-right">{o.avgCompliance}%</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      )}
+
+      {/* Detail per operator */}
+      {operators.map(o => (
+        <div key={o.name} className="mt-6 p-4 rounded-lg border border-border bg-card print:break-inside-avoid">
+          <h3 className="text-sm font-semibold text-foreground mb-2">{o.name}</h3>
+          <p className="text-xs text-muted-foreground mb-3">
+            Opera {o.blocks.length} bloco{o.blocks.length > 1 ? "s" : ""}: {o.blocks.map(b => b.name).join(", ")}
+          </p>
+          {showTables && (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Bloco</TableHead>
+                  <TableHead>Fase</TableHead>
+                  <TableHead>Bacia</TableHead>
+                  <TableHead className="text-right">Produção (BOPD)</TableHead>
+                  <TableHead className="text-right">Reservas (MMbbl)</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {o.blocks.map(b => (
+                  <TableRow key={b.id}>
+                    <TableCell className="font-medium">{b.name}</TableCell>
+                    <TableCell>{b.phase}</TableCell>
+                    <TableCell>{b.basin}</TableCell>
+                    <TableCell className="text-right">{formatNumber(b.dailyProduction)}</TableCell>
+                    <TableCell className="text-right">{formatNumber(b.estimatedReserves)}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
+        </div>
+      ))}
+    </>
+  );
+};
+
 // ─── MAIN REPORT PREVIEW ─────────────────────────────────
 const reportTitles: Record<ReportType, string> = {
   executive: "Resumo Executivo",
@@ -707,6 +818,7 @@ const reportTitles: Record<ReportType, string> = {
   consortium: "Consórcio & Participações",
   legislation: "Legislação & Documentos",
   financial: "Económico & Financeiro",
+  operators: "Operadores",
 };
 
 export const ReportPreview = ({ config, aiNarrative, aiLoading }: Props) => {
@@ -747,6 +859,9 @@ export const ReportPreview = ({ config, aiNarrative, aiLoading }: Props) => {
       )}
       {config.reportTypes.includes("financial") && (
         <FinancialSection blocks={blocks} showTables={config.includeTables} showCharts={config.includeCharts} />
+      )}
+      {config.reportTypes.includes("operators") && (
+        <OperatorsSection blocks={blocks} showTables={config.includeTables} showCharts={config.includeCharts} />
       )}
     </div>
   );

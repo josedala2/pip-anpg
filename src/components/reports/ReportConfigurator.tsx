@@ -11,7 +11,8 @@ export type ReportType =
   | "exploration"
   | "consortium"
   | "legislation"
-  | "financial";
+  | "financial"
+  | "operators";
 
 export interface ReportConfig {
   reportTypes: ReportType[];
@@ -29,6 +30,7 @@ const reportTypeLabels: Record<ReportType, { label: string; description: string 
   consortium: { label: "Consórcio & Participações", description: "Evolução GE Inicial → Actual por bloco" },
   legislation: { label: "Legislação & Documentos", description: "Lista consolidada de todos os documentos" },
   financial: { label: "Económico & Financeiro", description: "Custos, plano quinquenal, abandono, partilha de produção e exportação Excel/CSV" },
+  operators: { label: "Operadores", description: "Visão 360° por operador: blocos, produção, investimento e compliance" },
 };
 
 interface Props {

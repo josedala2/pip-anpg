@@ -16,12 +16,12 @@ const PANEL_PERMISSIONS: Record<AppRole, string[]> = {
 
 // Report types each role can access
 const REPORT_PERMISSIONS: Record<AppRole, string[]> = {
-  admin: ["executive", "contractual", "exploration", "consortium", "legislation", "financial"],
-  tecnico_dpro: ["executive", "contractual", "consortium"],
-  tecnico_dex: ["executive", "exploration"],
-  tecnico_dneg: ["executive", "contractual", "consortium", "legislation"],
-  tecnico_dec: ["executive", "financial", "contractual"],
-  conselho: ["executive", "contractual", "exploration", "consortium", "legislation", "financial"],
+  admin: ["executive", "contractual", "exploration", "consortium", "legislation", "financial", "operators"],
+  tecnico_dpro: ["executive", "contractual", "consortium", "operators"],
+  tecnico_dex: ["executive", "exploration", "operators"],
+  tecnico_dneg: ["executive", "contractual", "consortium", "legislation", "operators"],
+  tecnico_dec: ["executive", "financial", "contractual", "operators"],
+  conselho: ["executive", "contractual", "exploration", "consortium", "legislation", "financial", "operators"],
 };
 
 const ROLE_LABELS: Record<AppRole, string> = {
