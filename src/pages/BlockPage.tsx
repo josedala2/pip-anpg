@@ -1812,6 +1812,11 @@ const BlockPage = () => {
           <TabsContent value="concession-status" className="space-y-4 2xl:space-y-6">
             <ConcessionStatusTab block={block} />
           </TabsContent>
+
+          {/* Tab: Visão Económica */}
+          <TabsContent value="economic-vision" className="space-y-4 2xl:space-y-6">
+            <EconomicVisionTab block={block} />
+          </TabsContent>
         </Tabs>
       </main>
       <InstitutionalFooter />
