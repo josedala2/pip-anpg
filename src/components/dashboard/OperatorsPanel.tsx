@@ -97,6 +97,17 @@ function OperatorListView({ operators, onSelect }: { operators: OperatorSummary[
     return [...list].sort(sorters[sortBy]);
   }, [operators, search, sortBy]);
 
+  const [chartMetric, setChartMetric] = useState<"totalProduction" | "totalReserves" | "totalAccumulatedInvestment">("totalProduction");
+
+  const chartMetricConfig: Record<typeof chartMetric, { label: string; suffix: string; formatter: (v: number) => string }> = {
+    totalProduction: { label: "Produção", suffix: "BOPD", formatter: (v) => `${v.toLocaleString()} BOPD` },
+    totalReserves: { label: "Reservas", suffix: "MMbbl", formatter: (v) => `${v.toLocaleString()} MMbbl` },
+    totalAccumulatedInvestment: { label: "Investimento", suffix: "M USD", formatter: (v) => `${v.toLocaleString()} M USD` },
+  };
+
+  const currentMetric = chartMetricConfig[chartMetric];
+  const chartTotal = useMemo(() => filtered.reduce((s, o) => s + o[chartMetric], 0), [filtered, chartMetric]);
+
   const pieData = useMemo(() =>
     [...operators]
       .sort((a, b) => b.totalProduction - a.totalProduction)
