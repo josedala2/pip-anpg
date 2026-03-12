@@ -104,6 +104,17 @@ const LoginPage = () => {
       />
       <div className="absolute inset-0 bg-gradient-to-br from-black/80 via-black/60 to-black/80" />
 
+      <div className="relative z-20 flex justify-end p-4 lg:p-6">
+        <Link
+          to="/compare"
+          className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors text-sm font-semibold shadow-lg"
+          title="Comparar Blocos"
+        >
+          <GitCompareArrows className="w-4 h-4" />
+          <span className="hidden sm:inline">Comparar</span>
+        </Link>
+      </div>
+
       <div className="relative z-10 min-h-screen flex flex-col lg:flex-row items-stretch">
         {/* Left Hero */}
         <div className="lg:w-[55%] flex flex-col justify-between p-8 lg:p-14 xl:p-20">
