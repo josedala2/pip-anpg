@@ -17,6 +17,7 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { SwotAnalysis } from "@/components/dashboard/SwotAnalysis";
+import { ConcessionStatusTab } from "@/components/dashboard/ConcessionStatusTab";
 import { InstitutionalFooter } from "@/components/InstitutionalFooter";
 import { HSEEnvironmentTab } from "@/components/dashboard/HSEEnvironmentTab";
 import { FacilitiesTab } from "@/components/dashboard/FacilitiesTab";
@@ -363,8 +364,9 @@ const BlockPage = () => {
       <main className="max-w-[1920px] mx-auto p-4 2xl:p-8 space-y-4 2xl:space-y-6">
          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4 2xl:space-y-6">
            <TabsList className="glass-card p-1 2xl:p-1.5 h-auto flex-wrap">
-              <TabsTrigger value="overview" className="gap-1.5 text-xs 2xl:text-sm"><Activity className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Visão Geral</TabsTrigger>
-              <TabsTrigger value="financial" className="gap-1.5 text-xs 2xl:text-sm"><DollarSign className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Financeiro & Contratual</TabsTrigger>
+               <TabsTrigger value="overview" className="gap-1.5 text-xs 2xl:text-sm"><Activity className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Visão Geral</TabsTrigger>
+               <TabsTrigger value="concession-status" className="gap-1.5 text-xs 2xl:text-sm"><Landmark className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Estado da Concessão</TabsTrigger>
+               <TabsTrigger value="financial" className="gap-1.5 text-xs 2xl:text-sm"><DollarSign className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Financeiro & Contratual</TabsTrigger>
               <TabsTrigger value="consortium" className="gap-1.5 text-xs 2xl:text-sm"><Users className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Consórcio</TabsTrigger>
              <TabsTrigger value="exploration" className="gap-1.5 text-xs 2xl:text-sm"><Target className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Exploração</TabsTrigger>
               <TabsTrigger value="production" className="gap-1.5 text-xs 2xl:text-sm"><BarChart3 className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Produção</TabsTrigger>
@@ -1802,6 +1804,11 @@ const BlockPage = () => {
                 </>
               );
             })()}
+          </TabsContent>
+
+          {/* Tab: Estado da Concessão */}
+          <TabsContent value="concession-status" className="space-y-4 2xl:space-y-6">
+            <ConcessionStatusTab block={block} />
           </TabsContent>
         </Tabs>
       </main>
