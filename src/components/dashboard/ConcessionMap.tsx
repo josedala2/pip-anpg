@@ -290,6 +290,7 @@ export const ConcessionMap = ({
   onBlockClick,
   onBlockHover,
   highlightOperator,
+  disablePopup = false,
 }: ConcessionMapProps) => {
   const navigate = useNavigate();
   const [showLimits, setShowLimits] = useState(true);
