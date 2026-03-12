@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { oilBlocks, type OilBlock } from "@/data/angolaBlocks";
 import { ConcessionMap } from "./ConcessionMap";
+import { BlockDetail } from "./BlockDetail";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -238,6 +239,7 @@ function OperatorListView({ operators, onSelect }: { operators: OperatorSummary[
 // ── Detail View ────────────────────────────────────────────
 function OperatorDetailView({ operator, onBack }: { operator: OperatorSummary; onBack: () => void }) {
   const { blocks } = operator;
+  const [selectedBlock, setSelectedBlock] = useState<OilBlock | null>(null);
 
   // Aggregate production history
   const aggregatedHistory = useMemo(() => {
@@ -342,9 +344,9 @@ function OperatorDetailView({ operator, onBack }: { operator: OperatorSummary; o
           <div className="h-[400px] relative">
             <ConcessionMap
               blocks={oilBlocks}
-              selectedBlockId={null}
+              selectedBlockId={selectedBlock?.id ?? null}
               hoveredBlockId={null}
-              onBlockClick={() => {}}
+              onBlockClick={(block) => setSelectedBlock(block)}
               onBlockHover={() => {}}
               highlightOperator={operator.name}
             />
@@ -736,6 +738,7 @@ function OperatorDetailView({ operator, onBack }: { operator: OperatorSummary; o
           </div>
         </TabsContent>
       </Tabs>
+      {selectedBlock && <BlockDetail block={selectedBlock} onClose={() => setSelectedBlock(null)} />}
     </div>
   );
 }
