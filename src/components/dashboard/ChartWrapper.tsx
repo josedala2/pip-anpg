@@ -160,7 +160,7 @@ export const ChartWrapper = ({
                 </div>
               </div>
             </DialogHeader>
-            <div style={{ height: fullscreenHeight }}>{children}</div>
+            <div style={{ height: fullscreenHeight, minHeight: "60vh" }}>{children}</div>
             <Watermark />
           </div>
         </DialogContent>

@@ -230,8 +230,8 @@ export const ProductionPanel = () => {
                 nameKey="name"
                 cx="50%"
                 cy="50%"
-                outerRadius={130}
-                innerRadius={50}
+                outerRadius="70%"
+                innerRadius="25%"
                 paddingAngle={1}
                 label={renderPieLabel}
                 labelLine={{ strokeWidth: 1 }}
