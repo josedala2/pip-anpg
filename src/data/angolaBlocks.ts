@@ -1266,10 +1266,32 @@ export const oilBlocks: OilBlock[] = [
     ],
     geologicalObjectives: ["Miocénico", "Oligocénico"],
     fields: [
-      { name: "Kizomba A", status: "Producing", discoveryYear: 1998, peakProduction: 100000 },
-      { name: "Kizomba B", status: "Producing", discoveryYear: 1999, peakProduction: 80000 },
-      { name: "Mondo", status: "Producing", discoveryYear: 2001, peakProduction: 40000 },
-      { name: "Saxi-Batuque", status: "Producing", discoveryYear: 2003, peakProduction: 30000 },
+      // 1998 discoveries (4 commercial)
+      { name: "Hungo", status: "Producing", discoveryYear: 1998, peakProduction: 45000 },
+      { name: "Kissanje", status: "Producing", discoveryYear: 1998, peakProduction: 55000 },
+      { name: "Dikanza", status: "Producing", discoveryYear: 1998, peakProduction: 20000 },
+      { name: "Marimba", status: "Producing", discoveryYear: 1998, peakProduction: 15000 },
+      // 1999 discoveries (2 commercial)
+      { name: "Clochas", status: "Producing", discoveryYear: 1999, peakProduction: 35000 },
+      { name: "Mavacola", status: "Producing", discoveryYear: 1999, peakProduction: 25000 },
+      // 2000 discoveries (5 commercial)
+      { name: "Mondo", status: "Producing", discoveryYear: 2000, peakProduction: 40000 },
+      { name: "Saxi", status: "Producing", discoveryYear: 2000, peakProduction: 30000 },
+      { name: "Batuque", status: "Producing", discoveryYear: 2000, peakProduction: 25000 },
+      { name: "Vicango", status: "Producing", discoveryYear: 2000, peakProduction: 18000 },
+      { name: "Xicomba", status: "Producing", discoveryYear: 2000, peakProduction: 12000 },
+      // 2001 discovery (1 commercial)
+      { name: "Tombua", status: "Producing", discoveryYear: 2001, peakProduction: 20000 },
+      // 2002 discovery (1 commercial)
+      { name: "Landana", status: "Producing", discoveryYear: 2002, peakProduction: 22000 },
+      // 2003 discoveries (4 commercial)
+      { name: "Kizomba Satellites", status: "Producing", discoveryYear: 2003, peakProduction: 35000 },
+      { name: "Clochas Mavacola Ext.", status: "Development", discoveryYear: 2003, peakProduction: 15000 },
+      { name: "Mondongo", status: "Development", discoveryYear: 2003, peakProduction: 10000 },
+      // 2022 discovery (1 commercial)
+      { name: "Ndungu", status: "Development", discoveryYear: 2022, peakProduction: 30000 },
+      // 2024 discovery (1 commercial) — total: 18 commercial
+      { name: "Capaia", status: "Discovery", discoveryYear: 2024, peakProduction: 0 },
     ],
     prospects: [
       { discoveryArea: "Clochas", name: "Clochas South Aq/Oligocene", reservoir: "Oligocénico", resourcesMMBO: 76, pos: 58 },
