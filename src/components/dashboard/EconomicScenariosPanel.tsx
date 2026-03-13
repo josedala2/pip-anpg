@@ -393,7 +393,32 @@ export const EconomicScenariosPanel = () => {
         </CardContent>
       </Card>
 
-      {/* ── Custom Scenario Builder ── */}
+      {/* ── Operator Comparison Chart ── */}
+      <Card className="border-border/40">
+        <CardHeader className="pb-2">
+          <div className="flex items-center justify-between flex-wrap gap-2">
+            <CardTitle className="text-sm font-semibold flex items-center gap-2">
+              <Building2 className="w-4 h-4 text-primary" />
+              Comparação entre Operadores — NPV vs Receita Estado
+            </CardTitle>
+            <Select value={operatorCompareScenario} onValueChange={setOperatorCompareScenario}>
+              <SelectTrigger className="w-52 h-8 text-xs border-border/50">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent className="bg-card border-border">
+                {PREDEFINED_SCENARIOS.map(s => (
+                  <SelectItem key={s.id} value={s.id}>
+                    {s.icon} {s.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <OperatorComparisonChart scenarioId={operatorCompareScenario} />
+        </CardContent>
+      </Card>
       <Card className="border-border/40">
         <CardHeader className="pb-2">
           <button
