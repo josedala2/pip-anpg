@@ -53,8 +53,15 @@ const Index = () => {
   const [homeDrillDown, setHomeDrillDown] = useState<"operadores" | "alertas" | "recomendacoes" | null>(null);
 
   const alertsSummary = useMemo(() => {
-    const all = evaluateAlerts();
-    return { total: all.length, critical: all.filter(a => a.severity === "critical").length };
+    const operational = evaluateAlerts();
+    const forecast = evaluateForecastAlerts();
+    const all = [...operational, ...forecast];
+    return {
+      total: all.length,
+      critical: all.filter(a => a.severity === "critical").length,
+      forecast: forecast.length,
+      forecastCritical: forecast.filter(a => a.severity === "critical").length,
+    };
   }, []);
 
   // Simulated last update timestamp
