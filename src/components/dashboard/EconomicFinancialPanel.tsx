@@ -19,8 +19,11 @@ import {
 } from "recharts";
 import {
   DollarSign, TrendingUp, Gauge, Target, ShieldAlert, BarChart3,
-  ArrowUpDown, ChevronDown, ChevronUp, Info,
+  ArrowUpDown, ChevronDown, ChevronUp, Info, Wallet, Scale, AlertTriangle,
 } from "lucide-react";
+import { CostStructurePanel } from "./CostStructurePanel";
+import { FiscalImpactPanel } from "./FiscalImpactPanel";
+import { EconomicRiskPanel } from "./EconomicRiskPanel";
 
 const CHART_COLORS = [
   "hsl(200, 45%, 28%)", "hsl(152, 50%, 38%)", "hsl(38, 75%, 48%)",
@@ -30,7 +33,17 @@ const CHART_COLORS = [
 
 type SortKey = "totalScore" | "dailyProduction" | "opexPerBarrel" | "breakeven" | "npvTotal" | "stateRevenue";
 
+type SubTab = "dashboard" | "custos" | "fiscal" | "risco";
+
+const subTabs: { key: SubTab; label: string; icon: React.ElementType }[] = [
+  { key: "dashboard", label: "Dashboard", icon: BarChart3 },
+  { key: "custos", label: "Estrutura de Custos", icon: Wallet },
+  { key: "fiscal", label: "Impacto Fiscal", icon: Scale },
+  { key: "risco", label: "Risco Económico", icon: AlertTriangle },
+];
+
 export const EconomicFinancialPanel = () => {
+  const [activeSubTab, setActiveSubTab] = useState<SubTab>("dashboard");
   const [sortKey, setSortKey] = useState<SortKey>("totalScore");
   const [sortAsc, setSortAsc] = useState(false);
   const [expandedRow, setExpandedRow] = useState<string | null>(null);
@@ -63,6 +76,34 @@ export const EconomicFinancialPanel = () => {
 
   return (
     <div className="space-y-6">
+      {/* Sub-tab navigation */}
+      <div className="flex items-center gap-1 bg-muted/40 rounded-lg p-1 w-fit">
+        {subTabs.map(tab => {
+          const Icon = tab.icon;
+          return (
+            <button
+              key={tab.key}
+              onClick={() => setActiveSubTab(tab.key)}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
+                activeSubTab === tab.key
+                  ? "bg-primary text-primary-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
+              }`}
+            >
+              <Icon className="w-3.5 h-3.5" />
+              {tab.label}
+            </button>
+          );
+        })}
+      </div>
+
+      {activeSubTab === "custos" && <CostStructurePanel />}
+      {activeSubTab === "fiscal" && <FiscalImpactPanel />}
+      {activeSubTab === "risco" && <EconomicRiskPanel />}
+
+      {activeSubTab === "dashboard" && (
+        <>
+
       {/* ── National KPI Strip ── */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
         <KPICard
@@ -273,6 +314,8 @@ export const EconomicFinancialPanel = () => {
           </div>
         </CardContent>
       </Card>
+        </>
+      )}
     </div>
   );
 };
