@@ -23,7 +23,7 @@ import anpgLogoColor from "@/assets/anpg-logo-color.svg";
 import anpgLogoWhite from "@/assets/anpg-logo-white.svg";
 import { InstitutionalFooter } from "@/components/InstitutionalFooter";
 
-const allPanels = ["Overview", "Blocos & Concessões", "Produção", "Exploração & Sísmica", "Operadores", "Risk & Performance", "Strategic Forecast"];
+const allPanels = ["Overview", "Blocos & Concessões", "Produção", "Exploração & Sísmica", "Operadores", "Contratos & Compliance", "Risk & Performance", "Strategic Forecast"];
 
 const Index = () => {
   const { theme, toggleTheme } = useTheme();
