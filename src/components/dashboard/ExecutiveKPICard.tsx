@@ -28,10 +28,10 @@ const statusColors: Record<SemaphoreStatus, string> = {
 };
 
 const sparklineColors: Record<SemaphoreStatus, string> = {
-  healthy: "hsl(152, 50%, 38%)",
-  warning: "hsl(38, 75%, 48%)",
-  critical: "hsl(0, 65%, 42%)",
-  neutral: "hsl(200, 45%, 28%)",
+  healthy: "hsl(152, 65%, 45%)",
+  warning: "hsl(38, 90%, 55%)",
+  critical: "hsl(0, 75%, 50%)",
+  neutral: "hsl(210, 70%, 50%)",
 };
 
 export const ExecutiveKPICard = ({
@@ -98,20 +98,20 @@ export const ExecutiveKPICard = ({
               </div>
 
               {chartData.length > 0 && (
-                <div className="w-16 h-8 flex-shrink-0">
+                <div className="w-20 h-10 flex-shrink-0">
                   <ResponsiveContainer width="100%" height="100%">
                     <AreaChart data={chartData} margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
                       <defs>
                         <linearGradient id={`sparkGrad-${label}`} x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor={sparklineColors[status]} stopOpacity={0.3} />
+                          <stop offset="0%" stopColor={sparklineColors[status]} stopOpacity={0.5} />
                           <stop offset="100%" stopColor={sparklineColors[status]} stopOpacity={0} />
                         </linearGradient>
                       </defs>
                       <Area
-                        type="monotone"
+                        type="natural"
                         dataKey="v"
                         stroke={sparklineColors[status]}
-                        strokeWidth={1.5}
+                        strokeWidth={2}
                         fill={`url(#sparkGrad-${label})`}
                         dot={false}
                         isAnimationActive={false}
