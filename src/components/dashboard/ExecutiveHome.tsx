@@ -83,7 +83,7 @@ export const ExecutiveHome = ({ initialDrillDown = null }: { initialDrillDown?: 
 
       {/* Expanded drill-down panel */}
       {expandedSection && (
-        <div className="animate-counter-up">
+        <div className="animate-fade-in">
           {expandedSection === "operadores" && <OperatorsPanel />}
           {expandedSection === "alertas" && <AlertsPanel />}
           {expandedSection === "recomendacoes" && <CouncilRecommendationsPanel />}
