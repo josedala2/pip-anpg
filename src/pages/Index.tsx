@@ -16,7 +16,7 @@ import { CouncilRecommendationsPanel } from "@/components/dashboard/CouncilRecom
 import { RiskPerformance } from "@/components/dashboard/RiskPerformance";
 import { type OilBlock, oilBlocks } from "@/data/angolaBlocks";
 import { Maximize2, Minimize2, ChevronLeft, ChevronRight, Sun, Moon, FileText, LogOut, User, Users, Database, Bell, Clock, Signal } from "lucide-react";
-import { evaluateAlerts } from "@/lib/alertsEngine";
+import { evaluateAlerts, evaluateForecastAlerts } from "@/lib/alertsEngine";
 import { Link } from "react-router-dom";
 import { useTheme } from "@/components/ThemeProvider";
 import { useAuth } from "@/components/AuthProvider";
