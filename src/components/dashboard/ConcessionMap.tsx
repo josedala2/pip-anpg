@@ -4,6 +4,7 @@ import { MapContainer, TileLayer, Polygon, Polyline, Popup, CircleMarker, Toolti
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { type OilBlock, type BlockPhase } from "@/data/angolaBlocks";
+import { calculateStrategicScore } from "@/lib/strategicScoring";
 import { Layers, Map as MapIcon, Satellite, Mountain, Waves, TreePine, ChevronDown, ChevronUp, Droplets } from "lucide-react";
 
 interface ConcessionMapProps {
