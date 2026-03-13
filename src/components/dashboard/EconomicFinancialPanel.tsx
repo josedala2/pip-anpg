@@ -19,7 +19,7 @@ import {
 } from "recharts";
 import {
   DollarSign, TrendingUp, Gauge, Target, ShieldAlert, BarChart3,
-  ArrowUpDown, ChevronDown, ChevronUp, Info, Wallet, Scale, AlertTriangle,
+  ArrowUpDown, ChevronDown, ChevronUp, Info, Wallet, Scale, AlertTriangle, Layers,
 } from "lucide-react";
 import { CostStructurePanel } from "./CostStructurePanel";
 import { FiscalImpactPanel } from "./FiscalImpactPanel";
