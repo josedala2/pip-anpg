@@ -19,8 +19,11 @@ import {
 } from "recharts";
 import {
   DollarSign, TrendingUp, Gauge, Target, ShieldAlert, BarChart3,
-  ArrowUpDown, ChevronDown, ChevronUp, Info,
+  ArrowUpDown, ChevronDown, ChevronUp, Info, Wallet, Scale, AlertTriangle,
 } from "lucide-react";
+import { CostStructurePanel } from "./CostStructurePanel";
+import { FiscalImpactPanel } from "./FiscalImpactPanel";
+import { EconomicRiskPanel } from "./EconomicRiskPanel";
 
 const CHART_COLORS = [
   "hsl(200, 45%, 28%)", "hsl(152, 50%, 38%)", "hsl(38, 75%, 48%)",
