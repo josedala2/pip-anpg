@@ -188,13 +188,13 @@ export const EconomicScenariosPanel = () => {
                       <span className="font-semibold">{o.scenario.name}</span>
                     </td>
                     <td className={`py-2 text-right tabular-nums font-bold ${o.npv >= 0 ? "text-success" : "text-danger"}`}>
-                      ${(o.npv / 1000).toFixed(1)}B
+                      {fmtUSDShort(o.npv)}
                     </td>
                     <td className="py-2 text-right tabular-nums">{o.irr.toFixed(1)}%</td>
                     <td className={`py-2 text-right tabular-nums ${o.totalCashFlow >= 0 ? "text-foreground" : "text-danger"}`}>
-                      ${(o.totalCashFlow / 1000).toFixed(1)}B
+                      {fmtUSDShort(o.totalCashFlow)}
                     </td>
-                    <td className="py-2 text-right tabular-nums">${(o.totalStateRevenue / 1000).toFixed(1)}B</td>
+                    <td className="py-2 text-right tabular-nums">{fmtUSDShort(o.totalStateRevenue)}</td>
                     <td className="py-2 text-right tabular-nums">${o.avgCostPerBarrel.toFixed(1)}</td>
                     <td className="py-2 text-right tabular-nums">{o.paybackYear || "—"}</td>
                   </tr>
