@@ -24,6 +24,7 @@ import {
 import { CostStructurePanel } from "./CostStructurePanel";
 import { FiscalImpactPanel } from "./FiscalImpactPanel";
 import { EconomicRiskPanel } from "./EconomicRiskPanel";
+import { EconomicScenariosPanel } from "./EconomicScenariosPanel";
 
 const CHART_COLORS = [
   "hsl(200, 45%, 28%)", "hsl(152, 50%, 38%)", "hsl(38, 75%, 48%)",
@@ -33,13 +34,14 @@ const CHART_COLORS = [
 
 type SortKey = "totalScore" | "dailyProduction" | "opexPerBarrel" | "breakeven" | "npvTotal" | "stateRevenue";
 
-type SubTab = "dashboard" | "custos" | "fiscal" | "risco";
+type SubTab = "dashboard" | "custos" | "fiscal" | "risco" | "cenarios";
 
 const subTabs: { key: SubTab; label: string; icon: React.ElementType }[] = [
   { key: "dashboard", label: "Dashboard", icon: BarChart3 },
   { key: "custos", label: "Estrutura de Custos", icon: Wallet },
   { key: "fiscal", label: "Impacto Fiscal", icon: Scale },
   { key: "risco", label: "Risco Económico", icon: AlertTriangle },
+  { key: "cenarios", label: "Cenários", icon: TrendingUp },
 ];
 
 export const EconomicFinancialPanel = () => {
@@ -100,6 +102,7 @@ export const EconomicFinancialPanel = () => {
       {activeSubTab === "custos" && <CostStructurePanel />}
       {activeSubTab === "fiscal" && <FiscalImpactPanel />}
       {activeSubTab === "risco" && <EconomicRiskPanel />}
+      {activeSubTab === "cenarios" && <EconomicScenariosPanel />}
 
       {activeSubTab === "dashboard" && (
         <>
