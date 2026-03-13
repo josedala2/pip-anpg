@@ -52,6 +52,7 @@ export const EconomicScenariosPanel = () => {
   const [viewMode, setViewMode] = useState<ViewMode>("national");
   const [selectedBlockId, setSelectedBlockId] = useState<string>("all");
   const [selectedOperator, setSelectedOperator] = useState<string>("all");
+  const [operatorCompareScenario, setOperatorCompareScenario] = useState<string>(PREDEFINED_SCENARIOS[0].id);
 
   const selectedBlock = useMemo(
     () => viewMode === "block" && selectedBlockId !== "all" ? oilBlocks.find(b => b.id === selectedBlockId) || null : null,
