@@ -108,10 +108,10 @@ export const ExecutiveKPICard = ({
                         </linearGradient>
                       </defs>
                       <Area
-                        type="monotone"
+                        type="natural"
                         dataKey="v"
                         stroke={sparklineColors[status]}
-                        strokeWidth={1.5}
+                        strokeWidth={2}
                         fill={`url(#sparkGrad-${label})`}
                         dot={false}
                         isAnimationActive={false}
