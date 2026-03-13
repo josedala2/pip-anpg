@@ -1,13 +1,17 @@
 import { useMemo, useState } from "react";
 import {
   runAllScenarios,
+  runAllScenariosForBlock,
   runCustomScenario,
+  runScenarioForBlock,
   PREDEFINED_SCENARIOS,
   BASE_VARIABLES,
   type ScenarioVariables,
   type ScenarioOutput,
 } from "@/lib/scenarioEngine";
+import { oilBlocks } from "@/data/angolaBlocks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -16,8 +20,10 @@ import {
 } from "recharts";
 import {
   Play, Settings2, TrendingUp, DollarSign, Percent, BarChart3,
-  ChevronDown, ChevronUp,
+  ChevronDown, ChevronUp, MapPin,
 } from "lucide-react";
+
+const producingBlocks = oilBlocks.filter(b => b.dailyProduction > 0).sort((a, b) => b.dailyProduction - a.dailyProduction);
 
 export const EconomicScenariosPanel = () => {
   const [showCustom, setShowCustom] = useState(false);
@@ -25,13 +31,29 @@ export const EconomicScenariosPanel = () => {
   const [selectedScenarios, setSelectedScenarios] = useState<string[]>(
     PREDEFINED_SCENARIOS.map(s => s.id)
   );
+  const [selectedBlockId, setSelectedBlockId] = useState<string>("all");
 
-  const predefinedOutputs = useMemo(() => runAllScenarios(), []);
+  const selectedBlock = useMemo(
+    () => selectedBlockId === "all" ? null : oilBlocks.find(b => b.id === selectedBlockId) || null,
+    [selectedBlockId]
+  );
+
+  const predefinedOutputs = useMemo(
+    () => selectedBlock ? runAllScenariosForBlock(selectedBlock) : runAllScenarios(),
+    [selectedBlock]
+  );
 
   const customOutput = useMemo(() => {
     if (!showCustom) return null;
+    if (selectedBlock) {
+      const custom = {
+        id: "custom", name: "Cenário Personalizado", description: "Variáveis definidas pelo utilizador.",
+        icon: "🎯", color: "hsl(199, 70%, 45%)", variables: customVars,
+      };
+      return runScenarioForBlock(custom, selectedBlock);
+    }
     return runCustomScenario(customVars);
-  }, [showCustom, customVars]);
+  }, [showCustom, customVars, selectedBlock]);
 
   const allOutputs = useMemo(() => {
     const outputs = predefinedOutputs.filter(o => selectedScenarios.includes(o.scenario.id));
