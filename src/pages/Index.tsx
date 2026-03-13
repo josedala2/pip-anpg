@@ -9,6 +9,10 @@ import { ProductionPanel } from "@/components/dashboard/ProductionPanel";
 import { ContractCompliancePanel } from "@/components/dashboard/ContractCompliancePanel";
 import { FacilitiesIntegrityPanel } from "@/components/dashboard/FacilitiesIntegrityPanel";
 import { StrategicForecast } from "@/components/dashboard/StrategicForecast";
+import { OperatorsPanel } from "@/components/dashboard/OperatorsPanel";
+import { AlertsPanel } from "@/components/dashboard/AlertsPanel";
+import { CouncilRecommendationsPanel } from "@/components/dashboard/CouncilRecommendationsPanel";
+import { RiskPerformance } from "@/components/dashboard/RiskPerformance";
 import { type OilBlock, oilBlocks } from "@/data/angolaBlocks";
 import { Maximize2, Minimize2, ChevronLeft, ChevronRight, Sun, Moon, FileText, LogOut, User, Users, Database, Bell, Clock, Signal } from "lucide-react";
 import { evaluateAlerts } from "@/lib/alertsEngine";
@@ -44,6 +48,7 @@ const Index = () => {
   const [selectedBlock, setSelectedBlock] = useState<OilBlock | null>(null);
   const [isPresentation, setIsPresentation] = useState(false);
   const [analysisPeriod, setAnalysisPeriod] = useState<string>("actual");
+  const [homeDrillDown, setHomeDrillDown] = useState<"operadores" | "alertas" | "recomendacoes" | null>(null);
 
   const alertsSummary = useMemo(() => {
     const all = evaluateAlerts();
@@ -158,7 +163,16 @@ const Index = () => {
                 <Database className="w-4 h-4" />
               </Link>
             )}
-            <button className="relative p-2 rounded-lg hover:bg-secondary transition-colors" title="Alertas">
+            <button
+              className="relative p-2 rounded-lg hover:bg-secondary transition-colors"
+              title="Alertas"
+              onClick={() => {
+                if (activePanel !== 0) {
+                  setActivePanel(0);
+                }
+                setHomeDrillDown(prev => prev === "alertas" ? null : "alertas");
+              }}
+            >
               <Bell className="w-4 h-4" />
               {alertsSummary.total > 0 && (
                 <span className={`absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-1 rounded-full text-[9px] font-bold flex items-center justify-center ${
@@ -237,7 +251,7 @@ const Index = () => {
               : "opacity-100 translate-x-0"
           }`}
         >
-          {panels[activePanel] === "Home Executiva" && <ExecutiveHome />}
+          {panels[activePanel] === "Home Executiva" && <ExecutiveHome initialDrillDown={homeDrillDown} />}
 
           <div className="p-4 md:p-6 2xl:p-8 3xl:p-10 max-w-[1920px] 3xl:max-w-[2400px] mx-auto">
             {panels[activePanel] === "Concessões" && <BlocksPanel />}
