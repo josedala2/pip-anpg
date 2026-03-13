@@ -6,6 +6,7 @@ import {
   runCustomScenario,
   runScenarioForBlock,
   runScenarioForOperator,
+  runScenarioForOperator as runSingleOperatorScenario,
   PREDEFINED_SCENARIOS,
   BASE_VARIABLES,
   type ScenarioVariables,
