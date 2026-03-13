@@ -33,7 +33,14 @@ const CHART_COLORS = [
 
 type SortKey = "totalScore" | "dailyProduction" | "opexPerBarrel" | "breakeven" | "npvTotal" | "stateRevenue";
 
-export const EconomicFinancialPanel = () => {
+type SubTab = "dashboard" | "custos" | "fiscal" | "risco";
+
+const subTabs: { key: SubTab; label: string; icon: React.ElementType }[] = [
+  { key: "dashboard", label: "Dashboard", icon: BarChart3 },
+  { key: "custos", label: "Estrutura de Custos", icon: Wallet },
+  { key: "fiscal", label: "Impacto Fiscal", icon: Scale },
+  { key: "risco", label: "Risco Económico", icon: AlertTriangle },
+];
   const [sortKey, setSortKey] = useState<SortKey>("totalScore");
   const [sortAsc, setSortAsc] = useState(false);
   const [expandedRow, setExpandedRow] = useState<string | null>(null);
