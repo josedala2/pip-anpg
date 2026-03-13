@@ -44,7 +44,7 @@ export const ExecutiveHome = ({ initialDrillDown = null }: { initialDrillDown?: 
           />
           <DrillDownButton
             icon={Target}
-            label="Recomendações Conselho"
+            label="Recomendações"
             isOpen={expandedSection === "recomendacoes"}
             onClick={() => toggle("recomendacoes")}
           />

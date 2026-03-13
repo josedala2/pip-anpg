@@ -25,7 +25,7 @@ export const QuickRecommendations = ({ maxItems = 5 }: { maxItems?: number }) =>
     <div className="glass-card p-4">
       <div className="flex items-center gap-2 mb-3">
         <Target className="w-4 h-4 text-primary" />
-        <h3 className="text-sm font-bold text-foreground">Recomendações para o Conselho</h3>
+        <h3 className="text-sm font-bold text-foreground">Recomendações Estratégicas</h3>
         <span className="text-[10px] text-muted-foreground font-medium ml-auto">Top {top.length} acções prioritárias</span>
       </div>
       <div className="space-y-2">
