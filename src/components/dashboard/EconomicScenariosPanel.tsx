@@ -446,10 +446,10 @@ export const EconomicScenariosPanel = () => {
                   <span className="text-xs font-bold">Resultado do Cenário Personalizado</span>
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-6 gap-3">
-                  <OutputKPI label="NPV" value={`$${(customOutput.npv / 1000).toFixed(1)}B`} positive={customOutput.npv >= 0} />
+                  <OutputKPI label="NPV" value={fmtUSDShort(customOutput.npv)} positive={customOutput.npv >= 0} />
                   <OutputKPI label="IRR" value={`${customOutput.irr.toFixed(1)}%`} positive={customOutput.irr > 10} />
-                  <OutputKPI label="Cash Flow Total" value={`$${(customOutput.totalCashFlow / 1000).toFixed(1)}B`} positive={customOutput.totalCashFlow >= 0} />
-                  <OutputKPI label="Receita Estado" value={`$${(customOutput.totalStateRevenue / 1000).toFixed(1)}B`} positive />
+                  <OutputKPI label="Cash Flow Total" value={fmtUSDShort(customOutput.totalCashFlow)} positive={customOutput.totalCashFlow >= 0} />
+                  <OutputKPI label="Receita Estado" value={fmtUSDShort(customOutput.totalStateRevenue)} positive />
                   <OutputKPI label="Custo/bbl" value={`$${customOutput.avgCostPerBarrel.toFixed(1)}`} positive={customOutput.avgCostPerBarrel < 40} />
                   <OutputKPI label="Payback" value={customOutput.paybackYear ? `${customOutput.paybackYear}` : "—"} positive={!!customOutput.paybackYear} />
                 </div>
