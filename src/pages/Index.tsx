@@ -163,7 +163,16 @@ const Index = () => {
                 <Database className="w-4 h-4" />
               </Link>
             )}
-            <button className="relative p-2 rounded-lg hover:bg-secondary transition-colors" title="Alertas">
+            <button
+              className="relative p-2 rounded-lg hover:bg-secondary transition-colors"
+              title="Alertas"
+              onClick={() => {
+                if (activePanel !== 0) {
+                  setActivePanel(0);
+                }
+                setHomeDrillDown(prev => prev === "alertas" ? null : "alertas");
+              }}
+            >
               <Bell className="w-4 h-4" />
               {alertsSummary.total > 0 && (
                 <span className={`absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-1 rounded-full text-[9px] font-bold flex items-center justify-center ${
