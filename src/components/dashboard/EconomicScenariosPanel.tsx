@@ -25,6 +25,18 @@ import {
 
 const producingBlocks = oilBlocks.filter(b => b.dailyProduction > 0).sort((a, b) => b.dailyProduction - a.dailyProduction);
 
+/** Smart format: shows $B for large values, $MM for smaller */
+function fmtUSD(mmusd: number): string {
+  const abs = Math.abs(mmusd);
+  if (abs >= 1000) return `${mmusd >= 0 ? "+" : ""}$${(mmusd / 1000).toFixed(1)}B`;
+  return `${mmusd >= 0 ? "+" : ""}$${Math.round(mmusd)}MM`;
+}
+function fmtUSDShort(mmusd: number): string {
+  const abs = Math.abs(mmusd);
+  if (abs >= 1000) return `$${(mmusd / 1000).toFixed(1)}B`;
+  return `$${Math.round(mmusd)}MM`;
+}
+
 export const EconomicScenariosPanel = () => {
   const [showCustom, setShowCustom] = useState(false);
   const [customVars, setCustomVars] = useState<ScenarioVariables>({ ...BASE_VARIABLES });
