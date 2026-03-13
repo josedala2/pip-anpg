@@ -679,7 +679,22 @@ export const ConcessionMap = ({
             {/* Legend */}
             <div className="pt-2 border-t border-border/40">
               <div className="text-[10px] font-bold text-foreground uppercase tracking-wider mb-2">Legenda</div>
-              {colorMode === "phase" ? (
+              {colorMode === "strategic" ? (
+                <div className="flex flex-wrap gap-x-3 gap-y-1.5">
+                  {([
+                    { color: "#2e9e5e", label: "Saudável (≥70)" },
+                    { color: "#d69e2e", label: "Atenção (40-70)" },
+                    { color: "#c53030", label: "Crítico (<40)" },
+                    { color: "#2d8ac7", label: "Exploratório" },
+                    { color: "#6b7280", label: "Inactivo" },
+                  ]).map(({ color, label }) => (
+                    <div key={label} className="flex items-center gap-1.5">
+                      <span className="w-3 h-3 rounded-sm border border-border/30" style={{ backgroundColor: color }} />
+                      <span className="text-[10px] text-foreground/80 font-medium">{label}</span>
+                    </div>
+                  ))}
+                </div>
+              ) : colorMode === "phase" ? (
                 <div className="flex flex-wrap gap-x-3 gap-y-1.5">
                   {([
                     { phase: "Production" as BlockPhase, label: "Produção" },
