@@ -86,7 +86,33 @@ export const EconomicScenariosPanel = () => {
     <div className="space-y-5">
       {/* ── Scenario Selector ── */}
       <div className="space-y-2">
-        <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Cenários Económicos</h3>
+        <div className="flex items-center justify-between flex-wrap gap-2">
+          <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Cenários Económicos</h3>
+          <div className="flex items-center gap-2">
+            <MapPin className="w-3.5 h-3.5 text-muted-foreground" />
+            <Select value={selectedBlockId} onValueChange={setSelectedBlockId}>
+              <SelectTrigger className="w-56 h-8 text-xs border-border/50">
+                <SelectValue placeholder="Seleccionar concessão" />
+              </SelectTrigger>
+              <SelectContent className="bg-card border-border">
+                <SelectItem value="all">🌍 Visão Nacional (Todos os Blocos)</SelectItem>
+                {producingBlocks.map(b => (
+                  <SelectItem key={b.id} value={b.id}>
+                    {b.name} — {(b.dailyProduction / 1000).toFixed(0)}k BOPD
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+        {selectedBlock && (
+          <div className="flex items-center gap-3 p-2.5 rounded-lg bg-primary/5 border border-primary/20">
+            <span className="text-xs font-semibold text-primary">{selectedBlock.name}</span>
+            <Badge variant="outline" className="text-[10px]">{selectedBlock.operator}</Badge>
+            <Badge variant="outline" className="text-[10px]">{(selectedBlock.dailyProduction / 1000).toFixed(1)}k BOPD</Badge>
+            <Badge variant="outline" className="text-[10px]">{selectedBlock.basin}</Badge>
+          </div>
+        )}
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-2">
           {PREDEFINED_SCENARIOS.map(s => {
             const output = predefinedOutputs.find(o => o.scenario.id === s.id)!;
