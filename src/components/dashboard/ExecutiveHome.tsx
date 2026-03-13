@@ -30,26 +30,37 @@ export const ExecutiveHome = ({ initialDrillDown = null }: { initialDrillDown?: 
         <div className="flex items-center gap-1.5 mb-1">
           <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Painéis Detalhados</span>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
-          <DrillDownButton
-            icon={Users}
-            label="Operadores"
-            isOpen={expandedSection === "operadores"}
-            onClick={() => toggle("operadores")}
-          />
-          <DrillDownButton
-            icon={Bell}
-            label="Alertas Completos"
-            isOpen={expandedSection === "alertas"}
-            onClick={() => toggle("alertas")}
-          />
-          <DrillDownButton
-            icon={Target}
-            label="Recomendações"
-            isOpen={expandedSection === "recomendacoes"}
-            onClick={() => toggle("recomendacoes")}
-          />
-        </div>
+        <TooltipProvider>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+            <DrillDownButton
+              icon={Users}
+              label="Operadores"
+              isOpen={expandedSection === "operadores"}
+              onClick={() => toggle("operadores")}
+            />
+            <DrillDownButton
+              icon={Bell}
+              label="Alertas Completos"
+              isOpen={expandedSection === "alertas"}
+              onClick={() => toggle("alertas")}
+            />
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div>
+                  <DrillDownButton
+                    icon={Target}
+                    label="Recomendações"
+                    isOpen={expandedSection === "recomendacoes"}
+                    onClick={() => toggle("recomendacoes")}
+                  />
+                </div>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" className="max-w-[260px] text-xs">
+                Acções estratégicas priorizadas para decisão, baseadas na análise de produção, contratos e risco de cada concessão.
+              </TooltipContent>
+            </Tooltip>
+          </div>
+        </TooltipProvider>
       </div>
 
       {/* Expanded drill-down panel */}
