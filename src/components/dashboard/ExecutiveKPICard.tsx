@@ -28,10 +28,10 @@ const statusColors: Record<SemaphoreStatus, string> = {
 };
 
 const sparklineColors: Record<SemaphoreStatus, string> = {
-  healthy: "hsl(152, 50%, 38%)",
-  warning: "hsl(38, 75%, 48%)",
-  critical: "hsl(0, 65%, 42%)",
-  neutral: "hsl(200, 45%, 28%)",
+  healthy: "hsl(152, 65%, 45%)",
+  warning: "hsl(38, 90%, 55%)",
+  critical: "hsl(0, 75%, 50%)",
+  neutral: "hsl(210, 70%, 50%)",
 };
 
 export const ExecutiveKPICard = ({
