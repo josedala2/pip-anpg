@@ -1,39 +1,50 @@
+## Roteiro de Evolução — Plataforma Nacional de Inteligência Petrolífera
 
+### Estado actual vs Visão
 
-## Substituir Sparklines por Indicador Visual de Tendência
+| Capacidade | Estado |
+|---|---|
+| Mapa de concessões | ✅ Existe |
+| KPIs nacionais (prod, reservas, receita estado, variações) | ✅ Completo |
+| Painel de Blocos & Concessões | ✅ Existe |
+| Painel de Produção | ✅ Existe |
+| Painel de Exploração | ✅ Existe |
+| Painel de Operadores | ✅ Existe |
+| Risk & Performance | ✅ Existe |
+| Strategic Forecast | ✅ Existe |
+| Detalhe do bloco (12 abas) | ✅ Existe |
+| Visão Económica (Bloco 0) | ✅ Existe |
+| Comparativo de blocos | ✅ Existe |
+| Relatórios configuráveis | ✅ Existe |
+| Auth + roles | ✅ Existe |
+| **Branding "Inteligência Petrolífera"** | ✅ **Fase 1 concluída** |
+| **KPIs executivos completos** | ✅ **Fase 1 concluída** |
+| **Dashboard Contratual/Negocial** | ✅ **Fase 2 concluída** |
+| Dashboard Integridade Instalações | ✅ **Fase 3 concluída** |
+| Motor de Scoring Estratégico | ✅ **Fase 4 concluída** |
+| Dashboard Recomendação Conselho | ✅ **Fase 4 concluída** |
+| Sistema de Alertas Centrais | ✅ **Fase 5 concluída** |
 
-Os sparklines baseados em Recharts `AreaChart` não renderizam bem no tamanho pequeno dos KPI cards. A alternativa é substituí-los por uma **barra de tendência CSS pura** — uma mini progress bar horizontal que mostra a direcção da tendência dos últimos meses, sem dependência de SVG/Recharts.
+### Fases concluídas
 
-### Abordagem: Mini Trend Bar com CSS
+**Fase 1** — Rebranding + KPIs Executivos
+- Header: "Inteligência Petrolífera" + "Sistema Integrado de Monitorização, Análise e Apoio à Decisão"
+- KPIs primários: Produção Total, Reservas, Blocos Activos, CAPEX, Taxa de Execução
+- KPIs secundários: Em Produção, Em Exploração, Sem Produção, Risco Crítico, Receita Estado
+- Variações m/m e a/a na produção
+- Título HTML e meta tags actualizados
 
-Para os dois cards que têm dados de tendência (Produção Nacional e Reservas Estimadas), substituir o sparkline por:
+**Fase 2** — Dashboard Contratual e Negocial
+- Painel "Contratos & Compliance" adicionado à navegação
+- KPIs: contratos a expirar em 12/24/36 meses, compliance < 80%, blocos com dados contratuais
+- 4 sub-abas: Calendário Contratual, Semáforo por Operador, Matriz de Urgência, Lista Completa
+- Gráfico de barras de expiração por ano com cores por urgência
+- Scatter plot meses restantes vs compliance (tamanho = produção)
+- Semáforo verde/amarelo/vermelho por operador (compliance + execução)
+- Lista ordenada por urgência com badges de estado
 
-- **6 barras verticais finas** lado a lado (como um mini bar chart), cada uma representando um mês
-- Altura proporcional ao valor (normalizada entre min/max dos dados)
-- Cor baseada no `status` do card
-- Tudo em CSS/HTML puro — sem Recharts, sem SVG, sem problemas de gradientes
+### Próximas fases
 
-### Alterações
-
-**`src/components/dashboard/ExecutiveKPICard.tsx`**:
-1. Remover imports de `Area`, `AreaChart`, `ResponsiveContainer` do Recharts
-2. Remover toda a lógica de `gradientId` e `sparklineColors`
-3. Substituir o bloco do `AreaChart` por um componente inline de mini barras:
-   - Container `flex items-end gap-0.5 h-10 w-20`
-   - Cada barra: `div` com `width: 3px`, `border-radius`, altura calculada como percentagem entre min e max dos dados
-   - Cor via classes Tailwind baseadas no status (`bg-primary`, `bg-success`, etc.)
-
-**`src/components/dashboard/KPICards.tsx`**:
-- Sem alterações — os dados `sparkline` continuam a ser passados normalmente
-
-### Resultado Visual
-
-```text
-  ▌       ▌
-  ▌   ▌   ▌
-  ▌ ▌ ▌ ▌ ▌
-  ▌ ▌ ▌ ▌ ▌ ▌
-```
-
-Barras verticais minimalistas, 100% CSS, sem problemas de renderização SVG.
-
+**Fase 3** — Dashboard de Integridade de Instalações
+**Fase 4** — Motor de Scoring Estratégico + Dashboard de Recomendação ao Conselho
+**Fase 5** — Sistema de Alertas Centrais
