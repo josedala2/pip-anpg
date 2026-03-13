@@ -9,6 +9,7 @@ import { ProductionPanel } from "@/components/dashboard/ProductionPanel";
 import { ContractCompliancePanel } from "@/components/dashboard/ContractCompliancePanel";
 import { FacilitiesIntegrityPanel } from "@/components/dashboard/FacilitiesIntegrityPanel";
 import { StrategicForecast } from "@/components/dashboard/StrategicForecast";
+import { EconomicFinancialPanel } from "@/components/dashboard/EconomicFinancialPanel";
 import { OperatorsPanel } from "@/components/dashboard/OperatorsPanel";
 import { AlertsPanel } from "@/components/dashboard/AlertsPanel";
 import { CouncilRecommendationsPanel } from "@/components/dashboard/CouncilRecommendationsPanel";
@@ -33,6 +34,7 @@ const allPanels = [
   "Exploração",
   "Instalações",
   "Contratos",
+  "Económico",
   "Cenários",
 ];
 
@@ -259,6 +261,7 @@ const Index = () => {
             {panels[activePanel] === "Exploração" && <ExplorationPanel />}
             {panels[activePanel] === "Instalações" && <FacilitiesIntegrityPanel />}
             {panels[activePanel] === "Contratos" && <ContractCompliancePanel />}
+            {panels[activePanel] === "Económico" && <EconomicFinancialPanel />}
             {panels[activePanel] === "Cenários" && <StrategicForecast />}
           </div>
         </div>
