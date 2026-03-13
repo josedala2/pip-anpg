@@ -34,6 +34,7 @@ const allPanels = [
   "Exploração",
   "Instalações",
   "Contratos",
+  "Económico",
   "Cenários",
 ];
 
