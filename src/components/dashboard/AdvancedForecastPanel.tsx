@@ -11,10 +11,17 @@ import {
   type StrategicScore,
   type StrategicClassification,
 } from "@/lib/strategicScoring";
+import {
+  evaluateForecastAlerts,
+  severityStyles,
+  severityLabels,
+  type ForecastAlert,
+} from "@/lib/alertsEngine";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid,
   ResponsiveContainer, Tooltip as RechartsTooltip, Legend,
@@ -23,7 +30,7 @@ import {
 } from "recharts";
 import {
   TrendingUp, TrendingDown, Target, Activity, Gauge,
-  AlertTriangle, ShieldCheck, Calendar, Layers, Info,
+  AlertTriangle, ShieldCheck, Calendar, Layers, Info, Bell,
 } from "lucide-react";
 
 // ── Helpers ──
