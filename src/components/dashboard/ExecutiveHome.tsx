@@ -32,18 +32,36 @@ export const ExecutiveHome = ({ initialDrillDown = null }: { initialDrillDown?: 
         </div>
         <TooltipProvider>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
-            <DrillDownButton
-              icon={Users}
-              label="Operadores"
-              isOpen={expandedSection === "operadores"}
-              onClick={() => toggle("operadores")}
-            />
-            <DrillDownButton
-              icon={Bell}
-              label="Alertas Completos"
-              isOpen={expandedSection === "alertas"}
-              onClick={() => toggle("alertas")}
-            />
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div>
+                  <DrillDownButton
+                    icon={Users}
+                    label="Operadores"
+                    isOpen={expandedSection === "operadores"}
+                    onClick={() => toggle("operadores")}
+                  />
+                </div>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" className="max-w-[260px] text-xs">
+                Visão consolidada do desempenho de cada operador, incluindo produção, participação e indicadores-chave.
+              </TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div>
+                  <DrillDownButton
+                    icon={Bell}
+                    label="Alertas Completos"
+                    isOpen={expandedSection === "alertas"}
+                    onClick={() => toggle("alertas")}
+                  />
+                </div>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" className="max-w-[260px] text-xs">
+                Alertas gerados automaticamente por regras de negócio parametrizáveis, cobrindo contratos, integridade, declínio e conformidade.
+              </TooltipContent>
+            </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
                 <div>
