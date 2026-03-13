@@ -583,7 +583,7 @@ export const ConcessionMap = ({
                   </button>
                 </div>
               </Popup>
-              )
+              )}
             </Polygon>
           );
         })}
