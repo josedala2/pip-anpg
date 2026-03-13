@@ -36,9 +36,10 @@ const CHART_COLORS = [
 
 type SortKey = "totalScore" | "dailyProduction" | "opexPerBarrel" | "breakeven" | "npvTotal" | "stateRevenue";
 
-type SubTab = "dashboard" | "custos" | "fiscal" | "risco" | "cenarios" | "previsao";
+type SubTab = "executivo" | "dashboard" | "custos" | "fiscal" | "risco" | "cenarios" | "previsao";
 
 const subTabs: { key: SubTab; label: string; icon: React.ElementType }[] = [
+  { key: "executivo", label: "Conselho", icon: Crown },
   { key: "dashboard", label: "Dashboard", icon: BarChart3 },
   { key: "custos", label: "Estrutura de Custos", icon: Wallet },
   { key: "fiscal", label: "Impacto Fiscal", icon: Scale },
