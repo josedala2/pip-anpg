@@ -144,14 +144,13 @@ export const EconomicScenariosPanel = () => {
                   <span className={`text-lg font-bold tabular-nums ${output.npv >= 0 ? "text-success" : "text-danger"}`}>
                     {fmtUSD(output.npv)}
                   </span>
-                  </span>
                 </div>
                 <div className="text-xs font-semibold text-foreground">{s.name}</div>
                 <div className="text-[10px] text-muted-foreground mt-0.5 line-clamp-2">{s.description}</div>
                 <div className="flex items-center gap-2 mt-2">
                   <span className="text-[10px] text-muted-foreground">IRR: {output.irr.toFixed(1)}%</span>
                   <span className="text-[10px] text-muted-foreground">·</span>
-                  <span className="text-[10px] text-muted-foreground">Estado: ${(output.totalStateRevenue / 1000).toFixed(1)}B</span>
+                  <span className="text-[10px] text-muted-foreground">Estado: {fmtUSDShort(output.totalStateRevenue)}</span>
                 </div>
               </button>
             );
