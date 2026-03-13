@@ -14,8 +14,10 @@ import { OperatorsPanel } from "@/components/dashboard/OperatorsPanel";
 import { ContractCompliancePanel } from "@/components/dashboard/ContractCompliancePanel";
 import { FacilitiesIntegrityPanel } from "@/components/dashboard/FacilitiesIntegrityPanel";
 import { CouncilRecommendationsPanel } from "@/components/dashboard/CouncilRecommendationsPanel";
+import { AlertsPanel } from "@/components/dashboard/AlertsPanel";
 import { type OilBlock, oilBlocks } from "@/data/angolaBlocks";
-import { Maximize2, Minimize2, ChevronLeft, ChevronRight, Sun, Moon, FileText, LogOut, User, Users, Database, GitCompareArrows } from "lucide-react";
+import { Maximize2, Minimize2, ChevronLeft, ChevronRight, Sun, Moon, FileText, LogOut, User, Users, Database, GitCompareArrows, Bell } from "lucide-react";
+import { evaluateAlerts } from "@/lib/alertsEngine";
 import { Link } from "react-router-dom";
 import { useTheme } from "@/components/ThemeProvider";
 import { useAuth } from "@/components/AuthProvider";
@@ -25,7 +27,7 @@ import anpgLogoColor from "@/assets/anpg-logo-color.svg";
 import anpgLogoWhite from "@/assets/anpg-logo-white.svg";
 import { InstitutionalFooter } from "@/components/InstitutionalFooter";
 
-const allPanels = ["Overview", "Blocos & Concessões", "Produção", "Exploração & Sísmica", "Operadores", "Contratos & Compliance", "Integridade Instalações", "Risk & Performance", "Recomendações Conselho", "Strategic Forecast"];
+const allPanels = ["Overview", "Blocos & Concessões", "Produção", "Exploração & Sísmica", "Operadores", "Contratos & Compliance", "Integridade Instalações", "Risk & Performance", "Recomendações Conselho", "Strategic Forecast", "Alertas"];
 
 const Index = () => {
   const { theme, toggleTheme } = useTheme();
@@ -40,6 +42,10 @@ const Index = () => {
   const [filteredIds, setFilteredIds] = useState<string[]>(oilBlocks.map(b => b.id));
   const [hoveredBlockId, setHoveredBlockId] = useState<string | null>(null);
   const [isPresentation, setIsPresentation] = useState(false);
+  const alertsSummary = useMemo(() => {
+    const all = evaluateAlerts();
+    return { total: all.length, critical: all.filter(a => a.severity === "critical").length };
+  }, []);
 
   const filteredBlocks = useMemo(() =>
     oilBlocks.filter(b => filteredIds.includes(b.id)),
@@ -129,6 +135,20 @@ const Index = () => {
                 <Database className="w-4 h-4 3xl:w-5 3xl:h-5" />
               </Link>
             )}
+            <button
+              onClick={() => switchPanel(panels.indexOf("Alertas"))}
+              className="relative p-2 3xl:p-2.5 rounded-lg hover:bg-secondary transition-colors"
+              title="Alertas Centrais"
+            >
+              <Bell className="w-4 h-4 3xl:w-5 3xl:h-5" />
+              {alertsSummary.total > 0 && (
+                <span className={`absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-1 rounded-full text-[9px] font-bold flex items-center justify-center ${
+                  alertsSummary.critical > 0 ? "bg-danger text-white animate-pulse" : "bg-warning text-warning-foreground"
+                }`}>
+                  {alertsSummary.total}
+                </span>
+              )}
+            </button>
             <Link
               to="/compare"
               className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-primary/10 border border-primary/20 text-primary hover:bg-primary/20 transition-colors"
@@ -249,6 +269,7 @@ const Index = () => {
           {panels[activePanel] === "Risk & Performance" && <RiskPerformance />}
           {panels[activePanel] === "Recomendações Conselho" && <CouncilRecommendationsPanel />}
           {panels[activePanel] === "Strategic Forecast" && <StrategicForecast />}
+          {panels[activePanel] === "Alertas" && <AlertsPanel />}
           </div>
         </div>
       </main>
