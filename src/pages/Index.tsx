@@ -13,6 +13,7 @@ import { ProductionPanel } from "@/components/dashboard/ProductionPanel";
 import { OperatorsPanel } from "@/components/dashboard/OperatorsPanel";
 import { ContractCompliancePanel } from "@/components/dashboard/ContractCompliancePanel";
 import { FacilitiesIntegrityPanel } from "@/components/dashboard/FacilitiesIntegrityPanel";
+import { CouncilRecommendationsPanel } from "@/components/dashboard/CouncilRecommendationsPanel";
 import { type OilBlock, oilBlocks } from "@/data/angolaBlocks";
 import { Maximize2, Minimize2, ChevronLeft, ChevronRight, Sun, Moon, FileText, LogOut, User, Users, Database, GitCompareArrows } from "lucide-react";
 import { Link } from "react-router-dom";
