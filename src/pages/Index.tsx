@@ -141,18 +141,13 @@ const Index = () => {
               title="Alertas Centrais"
             >
               <Bell className="w-4 h-4 3xl:w-5 3xl:h-5" />
-              {(() => {
-                const critCount = evaluateAlerts().filter(a => a.severity === "critical").length;
-                const totalCount = evaluateAlerts().length;
-                if (totalCount === 0) return null;
-                return (
-                  <span className={`absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-1 rounded-full text-[9px] font-bold flex items-center justify-center ${
-                    critCount > 0 ? "bg-danger text-white animate-pulse" : "bg-warning text-warning-foreground"
-                  }`}>
-                    {totalCount}
-                  </span>
-                );
-              })()}
+              {alertsSummary.total > 0 && (
+                <span className={`absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-1 rounded-full text-[9px] font-bold flex items-center justify-center ${
+                  alertsSummary.critical > 0 ? "bg-danger text-white animate-pulse" : "bg-warning text-warning-foreground"
+                }`}>
+                  {alertsSummary.total}
+                </span>
+              )}
             </button>
             <Link
               to="/compare"
