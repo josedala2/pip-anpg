@@ -631,7 +631,13 @@ export const ConcessionMap = ({
             {/* Color mode */}
             <div>
               <div className="text-[9px] font-bold text-muted-foreground uppercase tracking-wider mb-1.5">Coloração</div>
-              <div className="flex gap-1">
+              <div className="flex gap-1 flex-wrap">
+                <button
+                  onClick={() => setColorMode("strategic")}
+                  className={`text-[10px] px-2.5 py-1.5 rounded-md font-medium transition-colors ${colorMode === "strategic" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-secondary"}`}
+                >
+                  Estratégico
+                </button>
                 <button
                   onClick={() => setColorMode("phase")}
                   className={`text-[10px] px-2.5 py-1.5 rounded-md font-medium transition-colors ${colorMode === "phase" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-secondary"}`}
