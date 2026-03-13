@@ -10,6 +10,7 @@ import { ContractCompliancePanel } from "@/components/dashboard/ContractComplian
 import { FacilitiesIntegrityPanel } from "@/components/dashboard/FacilitiesIntegrityPanel";
 import { StrategicForecast } from "@/components/dashboard/StrategicForecast";
 import { EconomicFinancialPanel } from "@/components/dashboard/EconomicFinancialPanel";
+import { GeneralForecastPanel } from "@/components/dashboard/GeneralForecastPanel";
 import { OperatorsPanel } from "@/components/dashboard/OperatorsPanel";
 import { AlertsPanel } from "@/components/dashboard/AlertsPanel";
 import { CouncilRecommendationsPanel } from "@/components/dashboard/CouncilRecommendationsPanel";
@@ -36,6 +37,7 @@ const allPanels = [
   "Contratos",
   "Económico",
   "Cenários",
+  "Previsão Geral",
 ];
 
 const Index = () => {
@@ -270,6 +272,7 @@ const Index = () => {
             {panels[activePanel] === "Contratos" && <ContractCompliancePanel />}
             {panels[activePanel] === "Económico" && <EconomicFinancialPanel />}
             {panels[activePanel] === "Cenários" && <StrategicForecast />}
+            {panels[activePanel] === "Previsão Geral" && <GeneralForecastPanel />}
           </div>
         </div>
       </main>
