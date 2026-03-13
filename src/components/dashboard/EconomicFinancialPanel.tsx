@@ -19,13 +19,14 @@ import {
 } from "recharts";
 import {
   DollarSign, TrendingUp, Gauge, Target, ShieldAlert, BarChart3,
-  ArrowUpDown, ChevronDown, ChevronUp, Info, Wallet, Scale, AlertTriangle, Layers,
+  ArrowUpDown, ChevronDown, ChevronUp, Info, Wallet, Scale, AlertTriangle, Layers, Crown,
 } from "lucide-react";
 import { CostStructurePanel } from "./CostStructurePanel";
 import { FiscalImpactPanel } from "./FiscalImpactPanel";
 import { EconomicRiskPanel } from "./EconomicRiskPanel";
 import { EconomicScenariosPanel } from "./EconomicScenariosPanel";
 import { AdvancedForecastPanel } from "./AdvancedForecastPanel";
+import { ExecutiveBoardPanel } from "./ExecutiveBoardPanel";
 
 const CHART_COLORS = [
   "hsl(200, 45%, 28%)", "hsl(152, 50%, 38%)", "hsl(38, 75%, 48%)",
@@ -35,9 +36,10 @@ const CHART_COLORS = [
 
 type SortKey = "totalScore" | "dailyProduction" | "opexPerBarrel" | "breakeven" | "npvTotal" | "stateRevenue";
 
-type SubTab = "dashboard" | "custos" | "fiscal" | "risco" | "cenarios" | "previsao";
+type SubTab = "executivo" | "dashboard" | "custos" | "fiscal" | "risco" | "cenarios" | "previsao";
 
 const subTabs: { key: SubTab; label: string; icon: React.ElementType }[] = [
+  { key: "executivo", label: "Conselho", icon: Crown },
   { key: "dashboard", label: "Dashboard", icon: BarChart3 },
   { key: "custos", label: "Estrutura de Custos", icon: Wallet },
   { key: "fiscal", label: "Impacto Fiscal", icon: Scale },
@@ -47,7 +49,7 @@ const subTabs: { key: SubTab; label: string; icon: React.ElementType }[] = [
 ];
 
 export const EconomicFinancialPanel = () => {
-  const [activeSubTab, setActiveSubTab] = useState<SubTab>("dashboard");
+  const [activeSubTab, setActiveSubTab] = useState<SubTab>("executivo");
   const [sortKey, setSortKey] = useState<SortKey>("totalScore");
   const [sortAsc, setSortAsc] = useState(false);
   const [expandedRow, setExpandedRow] = useState<string | null>(null);
@@ -101,6 +103,7 @@ export const EconomicFinancialPanel = () => {
         })}
       </div>
 
+      {activeSubTab === "executivo" && <ExecutiveBoardPanel />}
       {activeSubTab === "custos" && <CostStructurePanel />}
       {activeSubTab === "fiscal" && <FiscalImpactPanel />}
       {activeSubTab === "risco" && <EconomicRiskPanel />}
