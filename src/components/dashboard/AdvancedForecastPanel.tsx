@@ -244,6 +244,71 @@ export const AdvancedForecastPanel = () => {
         />
       </div>
 
+      {/* ── Forecast Alerts ── */}
+      {forecastAlerts.length > 0 && (
+        <Card className="border-danger/30 bg-danger/5">
+          <CardHeader className="pb-2">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                <Bell className="w-4 h-4 text-danger" />
+                Alertas de Previsão
+                <Badge variant="outline" className="text-[10px] text-danger border-danger/30">
+                  {criticalAlerts.length} críticos · {highAlerts.length} elevados
+                </Badge>
+              </CardTitle>
+              <button
+                onClick={() => setShowAllAlerts(!showAllAlerts)}
+                className="text-[10px] font-semibold text-primary hover:underline"
+              >
+                {showAllAlerts ? "Mostrar menos" : `Ver todos (${forecastAlerts.length})`}
+              </button>
+            </div>
+          </CardHeader>
+          <CardContent className="pt-0">
+            <ScrollArea className={showAllAlerts ? "max-h-[400px]" : "max-h-[220px]"}>
+              <div className="space-y-2">
+                {(showAllAlerts ? forecastAlerts : forecastAlerts.slice(0, 5)).map(alert => (
+                  <div
+                    key={alert.id}
+                    className={`flex items-start gap-3 p-2.5 rounded-lg border ${severityStyles[alert.severity].bg}`}
+                  >
+                    <AlertTriangle className={`w-4 h-4 mt-0.5 shrink-0 ${severityStyles[alert.severity].color}`} />
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="text-xs font-bold text-foreground">{alert.title}</span>
+                        <Badge variant="outline" className={`text-[9px] ${severityStyles[alert.severity].color}`}>
+                          {severityLabels[alert.severity]}
+                        </Badge>
+                        {alert.blockName !== "Nacional" && (
+                          <Badge variant="outline" className="text-[9px]">{alert.blockName}</Badge>
+                        )}
+                        {alert.scenarioName && (
+                          <Badge variant="outline" className="text-[9px] text-muted-foreground">{alert.scenarioName}</Badge>
+                        )}
+                      </div>
+                      <p className="text-[10px] text-muted-foreground mt-0.5">{alert.description}</p>
+                      <div className="flex items-center gap-3 mt-1">
+                        {alert.metric && (
+                          <span className="text-[10px] font-semibold text-foreground">
+                            Valor: {alert.metric}
+                          </span>
+                        )}
+                        {alert.threshold && (
+                          <span className="text-[10px] text-muted-foreground">
+                            Limiar: {alert.threshold}
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-[10px] text-primary font-medium mt-1">⚡ {alert.actionRequired}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </ScrollArea>
+          </CardContent>
+        </Card>
+      )}
+
       {/* ── Production Outlook Chart ── */}
       <Card className="border-border/40">
         <CardHeader className="pb-2">
