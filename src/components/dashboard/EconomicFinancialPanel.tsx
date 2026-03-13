@@ -41,6 +41,9 @@ const subTabs: { key: SubTab; label: string; icon: React.ElementType }[] = [
   { key: "fiscal", label: "Impacto Fiscal", icon: Scale },
   { key: "risco", label: "Risco Económico", icon: AlertTriangle },
 ];
+
+export const EconomicFinancialPanel = () => {
+  const [activeSubTab, setActiveSubTab] = useState<SubTab>("dashboard");
   const [sortKey, setSortKey] = useState<SortKey>("totalScore");
   const [sortAsc, setSortAsc] = useState(false);
   const [expandedRow, setExpandedRow] = useState<string | null>(null);
@@ -73,6 +76,34 @@ const subTabs: { key: SubTab; label: string; icon: React.ElementType }[] = [
 
   return (
     <div className="space-y-6">
+      {/* Sub-tab navigation */}
+      <div className="flex items-center gap-1 bg-muted/40 rounded-lg p-1 w-fit">
+        {subTabs.map(tab => {
+          const Icon = tab.icon;
+          return (
+            <button
+              key={tab.key}
+              onClick={() => setActiveSubTab(tab.key)}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
+                activeSubTab === tab.key
+                  ? "bg-primary text-primary-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
+              }`}
+            >
+              <Icon className="w-3.5 h-3.5" />
+              {tab.label}
+            </button>
+          );
+        })}
+      </div>
+
+      {activeSubTab === "custos" && <CostStructurePanel />}
+      {activeSubTab === "fiscal" && <FiscalImpactPanel />}
+      {activeSubTab === "risco" && <EconomicRiskPanel />}
+
+      {activeSubTab === "dashboard" && (
+        <>
+
       {/* ── National KPI Strip ── */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
         <KPICard
