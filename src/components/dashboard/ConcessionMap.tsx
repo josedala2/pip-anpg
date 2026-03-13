@@ -327,16 +327,36 @@ export const ConcessionMap = ({
   const [showConcessions, setShowConcessions] = useState(true);
   const [showProduction, setShowProduction] = useState(true);
   const [showSatellite, setShowSatellite] = useState(true);
-  const [colorMode, setColorMode] = useState<"phase" | "bidding">("phase");
+  const [colorMode, setColorMode] = useState<"phase" | "bidding" | "strategic">("strategic");
   const [layersPanelOpen, setLayersPanelOpen] = useState(false);
 
+  // Pre-compute strategic scores for all blocks
+  const blockScores = useMemo(() => {
+    const map = new Map<string, number>();
+    blocks.forEach(b => {
+      const score = calculateStrategicScore(b);
+      map.set(b.id, score.totalScore);
+    });
+    return map;
+  }, [blocks]);
+
+  const getStrategicColor = useCallback((block: OilBlock) => {
+    if (block.phase === "Exploration") return "#2d8ac7"; // petrol blue for exploration
+    if (block.phase === "Suspended") return "#6b7280"; // grey for suspended
+    const score = blockScores.get(block.id) || 50;
+    if (score >= 70) return "#2e9e5e"; // green — healthy
+    if (score >= 40) return "#d69e2e"; // amber — attention
+    return "#c53030"; // red — critical
+  }, [blockScores]);
+
   const getBlockColor = useCallback((block: OilBlock) => {
+    if (colorMode === "strategic") return getStrategicColor(block);
     if (colorMode === "bidding") {
       const year = blockBiddingYear[block.id];
       if (year) return biddingYearColors[year];
     }
     return phaseColors[block.phase];
-  }, [colorMode]);
+  }, [colorMode, getStrategicColor]);
 
   const center: [number, number] = [-10.5, 11.5];
 
