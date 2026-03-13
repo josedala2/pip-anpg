@@ -35,13 +35,14 @@ const CHART_COLORS = [
 
 type SortKey = "totalScore" | "dailyProduction" | "opexPerBarrel" | "breakeven" | "npvTotal" | "stateRevenue";
 
-type SubTab = "dashboard" | "custos" | "fiscal" | "risco";
+type SubTab = "dashboard" | "custos" | "fiscal" | "risco" | "cenarios";
 
 const subTabs: { key: SubTab; label: string; icon: React.ElementType }[] = [
   { key: "dashboard", label: "Dashboard", icon: BarChart3 },
   { key: "custos", label: "Estrutura de Custos", icon: Wallet },
   { key: "fiscal", label: "Impacto Fiscal", icon: Scale },
   { key: "risco", label: "Risco Económico", icon: AlertTriangle },
+  { key: "cenarios", label: "Cenários", icon: TrendingUp },
 ];
 
 export const EconomicFinancialPanel = () => {
