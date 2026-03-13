@@ -2,8 +2,10 @@ import { useMemo, useState } from "react";
 import {
   runAllScenarios,
   runAllScenariosForBlock,
+  runAllScenariosForOperator,
   runCustomScenario,
   runScenarioForBlock,
+  runScenarioForOperator,
   PREDEFINED_SCENARIOS,
   BASE_VARIABLES,
   type ScenarioVariables,
