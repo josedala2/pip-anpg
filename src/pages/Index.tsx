@@ -11,6 +11,7 @@ import { BlocksPanel } from "@/components/dashboard/BlocksPanel";
 import { ExplorationPanel } from "@/components/dashboard/ExplorationPanel";
 import { ProductionPanel } from "@/components/dashboard/ProductionPanel";
 import { OperatorsPanel } from "@/components/dashboard/OperatorsPanel";
+import { ContractCompliancePanel } from "@/components/dashboard/ContractCompliancePanel";
 import { type OilBlock, oilBlocks } from "@/data/angolaBlocks";
 import { Maximize2, Minimize2, ChevronLeft, ChevronRight, Sun, Moon, FileText, LogOut, User, Users, Database, GitCompareArrows } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -22,7 +23,7 @@ import anpgLogoColor from "@/assets/anpg-logo-color.svg";
 import anpgLogoWhite from "@/assets/anpg-logo-white.svg";
 import { InstitutionalFooter } from "@/components/InstitutionalFooter";
 
-const allPanels = ["Overview", "Blocos & Concessões", "Produção", "Exploração & Sísmica", "Operadores", "Risk & Performance", "Strategic Forecast"];
+const allPanels = ["Overview", "Blocos & Concessões", "Produção", "Exploração & Sísmica", "Operadores", "Contratos & Compliance", "Risk & Performance", "Strategic Forecast"];
 
 const Index = () => {
   const { theme, toggleTheme } = useTheme();
@@ -101,10 +102,10 @@ const Index = () => {
             />
             <div>
               <h1 className="text-lg md:text-xl 2xl:text-2xl 3xl:text-3xl font-bold tracking-tight">
-                <span className="text-primary">ANPG Concession</span>
-                <span className="text-foreground font-light ml-2">Vision</span>
+                <span className="text-primary">Inteligência</span>
+                <span className="text-foreground font-light ml-1.5">Petrolífera</span>
               </h1>
-              <p className="text-xs md:text-xs 2xl:text-sm 3xl:text-base text-muted-foreground font-medium">Plataforma de Inteligência Petrolífera • Q4 2024</p>
+              <p className="text-xs md:text-xs 2xl:text-sm 3xl:text-base text-muted-foreground font-medium">Sistema Integrado de Monitorização, Análise e Apoio à Decisão</p>
             </div>
           </div>
           <div className="flex items-center gap-2 3xl:gap-3">
@@ -241,6 +242,7 @@ const Index = () => {
           {panels[activePanel] === "Produção" && <ProductionPanel />}
           {panels[activePanel] === "Exploração & Sísmica" && <ExplorationPanel />}
           {panels[activePanel] === "Operadores" && <OperatorsPanel />}
+          {panels[activePanel] === "Contratos & Compliance" && <ContractCompliancePanel />}
           {panels[activePanel] === "Risk & Performance" && <RiskPerformance />}
           {panels[activePanel] === "Strategic Forecast" && <StrategicForecast />}
           </div>
