@@ -1,22 +1,16 @@
 import { useState, useCallback, useEffect, useMemo } from "react";
 import { Separator } from "@/components/ui/separator";
 
-import { ConcessionMap } from "@/components/dashboard/ConcessionMap";
-import { applyFilters, type FilterState } from "@/components/dashboard/FilterBar";
+import { ExecutiveHome } from "@/components/dashboard/ExecutiveHome";
 import { BlockDetail } from "@/components/dashboard/BlockDetail";
-import { OverviewSidebar } from "@/components/dashboard/OverviewSidebar";
-import { RiskPerformance } from "@/components/dashboard/RiskPerformance";
-import { StrategicForecast } from "@/components/dashboard/StrategicForecast";
 import { BlocksPanel } from "@/components/dashboard/BlocksPanel";
 import { ExplorationPanel } from "@/components/dashboard/ExplorationPanel";
 import { ProductionPanel } from "@/components/dashboard/ProductionPanel";
-import { OperatorsPanel } from "@/components/dashboard/OperatorsPanel";
 import { ContractCompliancePanel } from "@/components/dashboard/ContractCompliancePanel";
 import { FacilitiesIntegrityPanel } from "@/components/dashboard/FacilitiesIntegrityPanel";
-import { CouncilRecommendationsPanel } from "@/components/dashboard/CouncilRecommendationsPanel";
-import { AlertsPanel } from "@/components/dashboard/AlertsPanel";
+import { StrategicForecast } from "@/components/dashboard/StrategicForecast";
 import { type OilBlock, oilBlocks } from "@/data/angolaBlocks";
-import { Maximize2, Minimize2, ChevronLeft, ChevronRight, Sun, Moon, FileText, LogOut, User, Users, Database, GitCompareArrows, Bell } from "lucide-react";
+import { Maximize2, Minimize2, ChevronLeft, ChevronRight, Sun, Moon, FileText, LogOut, User, Users, Database, Bell, Clock, Signal } from "lucide-react";
 import { evaluateAlerts } from "@/lib/alertsEngine";
 import { Link } from "react-router-dom";
 import { useTheme } from "@/components/ThemeProvider";
@@ -26,35 +20,41 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import anpgLogoColor from "@/assets/anpg-logo-color.svg";
 import anpgLogoWhite from "@/assets/anpg-logo-white.svg";
 import { InstitutionalFooter } from "@/components/InstitutionalFooter";
+import { Badge } from "@/components/ui/badge";
 
-const allPanels = ["Overview", "Blocos & Concessões", "Produção", "Exploração & Sísmica", "Operadores", "Contratos & Compliance", "Integridade Instalações", "Risk & Performance", "Recomendações Conselho", "Strategic Forecast", "Alertas"];
+const allPanels = [
+  "Home Executiva",
+  "Concessões",
+  "Produção & Declínio",
+  "Exploração",
+  "Instalações",
+  "Contratos",
+  "Cenários",
+];
 
 const Index = () => {
   const { theme, toggleTheme } = useTheme();
   const { user, signOut } = useAuth();
-  const { role, roleLabel, allowedPanels, loading: roleLoading } = useUserRole();
+  const { role, roleLabel, loading: roleLoading } = useUserRole();
 
   const panels = allPanels;
   const [activePanel, setActivePanel] = useState(0);
   const [slideDirection, setSlideDirection] = useState<"left" | "right">("right");
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [selectedBlock, setSelectedBlock] = useState<OilBlock | null>(null);
-  const [filteredIds, setFilteredIds] = useState<string[]>(oilBlocks.map(b => b.id));
-  const [hoveredBlockId, setHoveredBlockId] = useState<string | null>(null);
   const [isPresentation, setIsPresentation] = useState(false);
+  const [analysisPeriod, setAnalysisPeriod] = useState<string>("actual");
+
   const alertsSummary = useMemo(() => {
     const all = evaluateAlerts();
     return { total: all.length, critical: all.filter(a => a.severity === "critical").length };
   }, []);
 
-  const filteredBlocks = useMemo(() =>
-    oilBlocks.filter(b => filteredIds.includes(b.id)),
-    [filteredIds]
-  );
-
-  const handleFilterChange = useCallback((filters: FilterState) => {
-    const filtered = applyFilters(filters);
-    setFilteredIds(filtered.map(b => b.id));
+  // Simulated last update timestamp
+  const lastUpdate = useMemo(() => {
+    const d = new Date();
+    d.setHours(d.getHours() - 2);
+    return d.toLocaleString("pt-AO", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" });
   }, []);
 
   const switchPanel = useCallback((newPanel: number) => {
@@ -70,7 +70,6 @@ const Index = () => {
   const nextPanel = () => switchPanel(Math.min(activePanel + 1, panels.length - 1));
   const prevPanel = () => switchPanel(Math.max(activePanel - 1, 0));
 
-  // Keyboard nav for presentation
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.key === "ArrowRight") nextPanel();
@@ -81,7 +80,6 @@ const Index = () => {
     return () => window.removeEventListener("keydown", handler);
   }, []);
 
-  // Touch swipe
   useEffect(() => {
     let startX = 0;
     const onStart = (e: TouchEvent) => { startX = e.touches[0].clientX; };
@@ -99,9 +97,10 @@ const Index = () => {
 
   return (
     <div className={`min-h-screen bg-background text-foreground ${isPresentation ? "fixed inset-0 z-[100]" : ""}`}>
-      {/* Header */}
-      <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-border/50 border-t-4 border-t-primary">
-        <div className="flex items-center justify-between px-4 md:px-6 3xl:px-8 py-3 3xl:py-4">
+      {/* Header — Zone A: Strategic Header */}
+      <header className="sticky top-0 z-40 bg-background/95 backdrop-blur-md border-b border-border/60 border-t-[3px] border-t-primary">
+        <div className="flex items-center justify-between px-4 md:px-6 3xl:px-8 py-2.5 3xl:py-3">
+          {/* Left: Logo + Title */}
           <div className="flex items-center gap-3 3xl:gap-4">
             <img
               src={theme === "dark" ? anpgLogoWhite : anpgLogoColor}
@@ -109,73 +108,73 @@ const Index = () => {
               className="h-8 md:h-10 3xl:h-12"
             />
             <div>
-              <h1 className="text-lg md:text-xl 2xl:text-2xl 3xl:text-3xl font-bold tracking-tight">
-                <span className="text-primary">Inteligência</span>
-                <span className="text-foreground font-light ml-1.5">Petrolífera</span>
+              <h1 className="text-base md:text-lg 2xl:text-xl 3xl:text-2xl font-bold tracking-tight text-foreground">
+                Plataforma Nacional de Inteligência Petrolífera
               </h1>
-              <p className="text-xs md:text-xs 2xl:text-sm 3xl:text-base text-muted-foreground font-medium">Sistema Integrado de Monitorização, Análise e Apoio à Decisão</p>
+              <div className="flex items-center gap-3 mt-0.5">
+                <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
+                  <Clock className="w-3 h-3" />
+                  <span>Última actualização: {lastUpdate}</span>
+                </div>
+                <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
+                  <Signal className="w-3 h-3 text-success" />
+                  <span>Qualidade dados: 94%</span>
+                </div>
+              </div>
             </div>
           </div>
-          <div className="flex items-center gap-2 3xl:gap-3">
-            {role === "admin" && (
-              <Link
-                to="/admin/users"
-                className="p-2 3xl:p-2.5 rounded-lg hover:bg-secondary transition-colors"
-                title="Gestão de Utilizadores"
+
+          {/* Center: Period selector */}
+          <div className="hidden md:flex items-center gap-1 bg-muted/60 rounded-lg p-0.5">
+            {[
+              { value: "actual", label: "Actual" },
+              { value: "6m", label: "6M" },
+              { value: "12m", label: "12M" },
+              { value: "24m", label: "24M" },
+            ].map((period) => (
+              <button
+                key={period.value}
+                onClick={() => setAnalysisPeriod(period.value)}
+                className={`px-2.5 py-1 rounded-md text-[10px] font-semibold transition-colors ${
+                  analysisPeriod === period.value
+                    ? "bg-primary text-primary-foreground"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
               >
-                <Users className="w-4 h-4 3xl:w-5 3xl:h-5" />
+                {period.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Right: Actions */}
+          <div className="flex items-center gap-1.5 3xl:gap-2">
+            {role === "admin" && (
+              <Link to="/admin/users" className="p-2 rounded-lg hover:bg-secondary transition-colors" title="Gestão de Utilizadores">
+                <Users className="w-4 h-4" />
               </Link>
             )}
             {(role === "admin" || role === "conselho" || role === "tecnico_dpro" || role === "tecnico_dex" || role === "tecnico_dneg" || role === "tecnico_dec") && (
-              <Link
-                to="/admin/data"
-                className="p-2 3xl:p-2.5 rounded-lg hover:bg-secondary transition-colors"
-                title="Gestão de Dados"
-              >
-                <Database className="w-4 h-4 3xl:w-5 3xl:h-5" />
+              <Link to="/admin/data" className="p-2 rounded-lg hover:bg-secondary transition-colors" title="Gestão de Dados">
+                <Database className="w-4 h-4" />
               </Link>
             )}
-            <button
-              onClick={() => switchPanel(panels.indexOf("Alertas"))}
-              className="relative p-2 3xl:p-2.5 rounded-lg hover:bg-secondary transition-colors"
-              title="Alertas Centrais"
-            >
-              <Bell className="w-4 h-4 3xl:w-5 3xl:h-5" />
+            <button className="relative p-2 rounded-lg hover:bg-secondary transition-colors" title="Alertas">
+              <Bell className="w-4 h-4" />
               {alertsSummary.total > 0 && (
                 <span className={`absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-1 rounded-full text-[9px] font-bold flex items-center justify-center ${
-                  alertsSummary.critical > 0 ? "bg-danger text-white animate-pulse" : "bg-warning text-warning-foreground"
+                  alertsSummary.critical > 0 ? "bg-danger text-white animate-pulse-subtle" : "bg-warning text-warning-foreground"
                 }`}>
                   {alertsSummary.total}
                 </span>
               )}
             </button>
-            <Link
-              to="/compare"
-              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-primary/10 border border-primary/20 text-primary hover:bg-primary/20 transition-colors"
-              title="Comparativo de Blocos"
-            >
-              <GitCompareArrows className="w-4 h-4" />
-              <span className="hidden md:inline text-xs font-semibold">Comparar</span>
+            <Link to="/reports" className="p-2 rounded-lg hover:bg-secondary transition-colors" title="Relatórios">
+              <FileText className="w-4 h-4" />
             </Link>
-            <Link
-              to="/reports"
-              className="p-2 3xl:p-2.5 rounded-lg hover:bg-secondary transition-colors"
-              title="Relatórios"
-            >
-              <FileText className="w-4 h-4 3xl:w-5 3xl:h-5" />
-            </Link>
-            <button
-              onClick={toggleTheme}
-              className="p-2 3xl:p-2.5 rounded-lg hover:bg-secondary transition-colors"
-              title={theme === "dark" ? "Modo Claro" : "Modo Escuro"}
-            >
-              {theme === "dark" ? <Sun className="w-4 h-4 3xl:w-5 3xl:h-5" /> : <Moon className="w-4 h-4 3xl:w-5 3xl:h-5" />}
+            <button onClick={toggleTheme} className="p-2 rounded-lg hover:bg-secondary transition-colors" title={theme === "dark" ? "Modo Claro" : "Modo Escuro"}>
+              {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
             </button>
-            <button
-              onClick={() => setIsPresentation(!isPresentation)}
-              className="p-2 rounded-lg hover:bg-secondary transition-colors"
-              title={isPresentation ? "Exit Presentation" : "Presentation Mode"}
-            >
+            <button onClick={() => setIsPresentation(!isPresentation)} className="p-2 rounded-lg hover:bg-secondary transition-colors" title={isPresentation ? "Sair" : "Apresentação"}>
               {isPresentation ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
             </button>
             <DropdownMenu>
@@ -193,6 +192,11 @@ const Index = () => {
                     </span>
                   )}
                 </div>
+                <DropdownMenuItem asChild>
+                  <Link to="/compare" className="gap-2 cursor-pointer">
+                    Comparar Blocos
+                  </Link>
+                </DropdownMenuItem>
                 <DropdownMenuItem onClick={signOut} className="gap-2 text-danger cursor-pointer">
                   <LogOut className="w-4 h-4" /> Terminar sessão
                 </DropdownMenuItem>
@@ -201,26 +205,22 @@ const Index = () => {
           </div>
         </div>
 
-        <Separator className="mx-4 md:mx-6" />
-
-        {/* Panel Tabs */}
-        <div className="flex items-center px-4 md:px-6 3xl:px-8 py-2 3xl:py-3 gap-1 3xl:gap-2">
+        {/* Panel Tabs — Simplified */}
+        <div className="flex items-center px-4 md:px-6 3xl:px-8 py-1.5 gap-0.5">
           {panels.map((panel, i) => (
             <button
               key={panel}
               onClick={() => switchPanel(i)}
-              className={`relative px-3 py-1.5 2xl:px-4 2xl:py-2 3xl:px-5 3xl:py-2.5 rounded-lg text-xs 2xl:text-sm 3xl:text-base font-semibold transition-all group ${
+              className={`relative px-3 py-1.5 2xl:px-4 2xl:py-2 rounded-md text-xs 2xl:text-sm font-semibold transition-all ${
                 activePanel === i
                   ? "text-primary bg-accent"
-                  : "text-muted-foreground hover:text-foreground hover:bg-secondary/60"
+                  : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
               }`}
             >
               {panel}
-              <span
-                className={`absolute bottom-0 left-1/2 -translate-x-1/2 h-0.5 rounded-full bg-primary transition-all duration-300 ${
-                  activePanel === i ? "w-3/4 opacity-100" : "w-0 opacity-0 group-hover:w-1/2 group-hover:opacity-50"
-                }`}
-              />
+              {activePanel === i && (
+                <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-2/3 h-0.5 rounded-full bg-primary" />
+              )}
             </button>
           ))}
         </div>
@@ -237,44 +237,20 @@ const Index = () => {
               : "opacity-100 translate-x-0"
           }`}
         >
-          {panels[activePanel] === "Overview" && (
-            <div className="flex flex-col md:flex-row" style={{ height: "calc(100vh - 110px)" }}>
-              <div className="flex-1 md:flex-[6] min-w-0 relative h-[45vh] md:h-full">
-                <ConcessionMap
-                  blocks={filteredBlocks}
-                  selectedBlockId={selectedBlock?.id ?? null}
-                  hoveredBlockId={hoveredBlockId}
-                  onBlockClick={() => {}}
-                  onBlockHover={setHoveredBlockId}
-                />
-              </div>
-              <div className="flex-1 md:flex-[4] md:min-w-[340px] md:max-w-[520px] h-[55vh] md:h-full overflow-hidden">
-                <OverviewSidebar
-                  filteredIds={filteredIds}
-                  selectedBlock={selectedBlock}
-                  onBlockSelect={setSelectedBlock}
-                  onFilterChange={handleFilterChange}
-                />
-              </div>
-            </div>
-          )}
+          {panels[activePanel] === "Home Executiva" && <ExecutiveHome />}
 
           <div className="p-4 md:p-6 2xl:p-8 3xl:p-10 max-w-[1920px] 3xl:max-w-[2400px] mx-auto">
-          {panels[activePanel] === "Blocos & Concessões" && <BlocksPanel />}
-          {panels[activePanel] === "Produção" && <ProductionPanel />}
-          {panels[activePanel] === "Exploração & Sísmica" && <ExplorationPanel />}
-          {panels[activePanel] === "Operadores" && <OperatorsPanel />}
-          {panels[activePanel] === "Contratos & Compliance" && <ContractCompliancePanel />}
-          {panels[activePanel] === "Integridade Instalações" && <FacilitiesIntegrityPanel />}
-          {panels[activePanel] === "Risk & Performance" && <RiskPerformance />}
-          {panels[activePanel] === "Recomendações Conselho" && <CouncilRecommendationsPanel />}
-          {panels[activePanel] === "Strategic Forecast" && <StrategicForecast />}
-          {panels[activePanel] === "Alertas" && <AlertsPanel />}
+            {panels[activePanel] === "Concessões" && <BlocksPanel />}
+            {panels[activePanel] === "Produção & Declínio" && <ProductionPanel />}
+            {panels[activePanel] === "Exploração" && <ExplorationPanel />}
+            {panels[activePanel] === "Instalações" && <FacilitiesIntegrityPanel />}
+            {panels[activePanel] === "Contratos" && <ContractCompliancePanel />}
+            {panels[activePanel] === "Cenários" && <StrategicForecast />}
           </div>
         </div>
       </main>
 
-      {/* Presentation nav arrows */}
+      {/* Presentation nav */}
       {isPresentation && (
         <>
           <button onClick={prevPanel} disabled={activePanel === 0} className="fixed left-4 top-1/2 -translate-y-1/2 z-[101] p-3 glass-card rounded-full disabled:opacity-20">
@@ -288,34 +264,17 @@ const Index = () => {
               {activePanel + 1}/{panels.length}
             </span>
             {panels.map((label, i) => (
-              <button
-                key={i}
-                onClick={() => switchPanel(i)}
-                title={label}
-                className="relative group"
-              >
-                <span
-                  className={`block rounded-full transition-all duration-300 ${
-                    i === activePanel
-                      ? "w-8 h-2 bg-primary"
-                      : i < activePanel
-                        ? "w-2 h-2 bg-primary/50"
-                        : "w-2 h-2 bg-muted-foreground/30"
-                  }`}
-                />
-                <span className="absolute -top-7 left-1/2 -translate-x-1/2 text-[9px] text-foreground bg-popover px-2 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none border border-border">
-                  {label}
-                </span>
+              <button key={i} onClick={() => switchPanel(i)} title={label} className="relative group">
+                <span className={`block rounded-full transition-all duration-300 ${
+                  i === activePanel ? "w-8 h-2 bg-primary" : i < activePanel ? "w-2 h-2 bg-primary/50" : "w-2 h-2 bg-muted-foreground/30"
+                }`} />
               </button>
             ))}
           </div>
         </>
       )}
 
-      {/* Block Detail Slide-in */}
       {selectedBlock && <BlockDetail block={selectedBlock} onClose={() => setSelectedBlock(null)} />}
-
-      {/* Footer — hidden in presentation mode */}
       {!isPresentation && activePanel !== 0 && <InstitutionalFooter />}
     </div>
   );

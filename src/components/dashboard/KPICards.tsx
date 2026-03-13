@@ -1,163 +1,66 @@
-import { Card, CardContent } from "@/components/ui/card";
-import { AnimatedCounter } from "./AnimatedCounter";
+import { ExecutiveKPICard, type SemaphoreStatus } from "./ExecutiveKPICard";
 import { getTotalProduction, getTotalReserves, getActiveBlocks, getTotalCapex, getAvgExecutionRate, oilBlocks, getBlocksByPhase } from "@/data/angolaBlocks";
-import { Activity, BarChart3, Boxes, DollarSign, TrendingUp, AlertTriangle, Landmark, ArrowUpRight, ArrowDownRight, Pickaxe, Search } from "lucide-react";
+import { Activity, BarChart3, Boxes, DollarSign, TrendingUp, AlertTriangle, Landmark, Pickaxe, Search, Wrench } from "lucide-react";
 
-// Derived KPIs
 const blocksInProduction = () => getBlocksByPhase("Production").length;
 const blocksInExploration = () => getBlocksByPhase("Exploration").length;
 const blocksNoProduction = () => oilBlocks.filter(b => b.dailyProduction === 0).length;
 const blocksCriticalRisk = () => oilBlocks.filter(b => b.riskScore >= 7).length;
+const criticalFacilities = () => oilBlocks.filter(b => b.facilityData && b.facilityData.overallEfficiency < 70).length;
 const estimatedStateRevenue = () => {
-  // Simplified: sum production * 365 * $75/bbl * ~60% state take
   const totalBOPD = getTotalProduction();
-  return Math.round((totalBOPD * 365 * 75 * 0.6) / 1e6); // MMUSD
+  return Math.round((totalBOPD * 365 * 75 * 0.6) / 1e6);
 };
-// Simulated variations (would be real in production)
-const prodVariationMoM = -2.1;
-const prodVariationYoY = -4.8;
+const contractsExpiring = () => {
+  const now = Date.now();
+  return oilBlocks.filter(b => {
+    if (!b.contractInfo?.productionPeriodEnd) return false;
+    const months = Math.round((new Date(b.contractInfo.productionPeriodEnd).getTime() - now) / (1000 * 60 * 60 * 24 * 30));
+    return months > 0 && months <= 24;
+  }).length;
+};
 
-const primaryKpis = [
-  {
-    label: "Produção Total",
-    value: getTotalProduction(),
-    suffix: " BOPD",
-    icon: Activity,
-    color: "text-primary",
-  },
-  {
-    label: "Reservas Estimadas",
-    value: getTotalReserves(),
-    suffix: " Mb",
-    icon: BarChart3,
-    color: "text-success",
-  },
-  {
-    label: "Blocos Activos",
-    value: getActiveBlocks(),
-    suffix: "",
-    icon: Boxes,
-    color: "text-warning",
-  },
-  {
-    label: "CAPEX em Curso",
-    value: getTotalCapex(),
-    prefix: "$",
-    suffix: "M",
-    icon: DollarSign,
-    color: "text-primary",
-  },
-  {
-    label: "Taxa de Execução",
-    value: getAvgExecutionRate(),
-    suffix: "%",
-    icon: TrendingUp,
-    color: "text-success",
-  },
+// Simulated sparkline data (6 months)
+const prodSpark = [1120, 1105, 1098, 1085, 1070, 1065];
+const reservesSpark = [9200, 9180, 9150, 9120, 9100, 9080];
+
+const getStatus = (label: string, value: number): SemaphoreStatus => {
+  if (label === "Risco Crítico" || label === "Instalações Críticas") return value > 0 ? "critical" : "healthy";
+  if (label === "Sem Produção") return value > 5 ? "warning" : "healthy";
+  if (label === "Contratos a Expirar") return value > 3 ? "warning" : value > 0 ? "warning" : "healthy";
+  return "neutral";
+};
+
+const kpis = [
+  { label: "Produção Nacional", value: getTotalProduction(), suffix: " BOPD", icon: Activity, variation: -2.1, variationLabel: "m/m", sparkline: prodSpark, status: "neutral" as SemaphoreStatus, drill: "Produção agregada de todos os blocos activos" },
+  { label: "Reservas Estimadas", value: getTotalReserves(), suffix: " Mb", icon: BarChart3, sparkline: reservesSpark, status: "neutral" as SemaphoreStatus, drill: "Soma de reservas P1+P2 de todas as concessões" },
+  { label: "Variação Produção", value: -4.8, suffix: "%", icon: TrendingUp, status: "warning" as SemaphoreStatus, drill: "Variação anual da produção nacional" },
+  { label: "Concessões Activas", value: getActiveBlocks(), suffix: "", icon: Boxes, status: "neutral" as SemaphoreStatus, drill: "Total de blocos com actividade operacional" },
+  { label: "Blocos em Produção", value: blocksInProduction(), suffix: "", icon: Pickaxe, status: "healthy" as SemaphoreStatus, drill: "Blocos com produção de hidrocarbonetos activa" },
+  { label: "Sem Produção", value: blocksNoProduction(), suffix: "", icon: Boxes, status: getStatus("Sem Produção", blocksNoProduction()), drill: "Blocos sem produção activa" },
+  { label: "Risco Crítico", value: blocksCriticalRisk(), suffix: "", icon: AlertTriangle, status: getStatus("Risco Crítico", blocksCriticalRisk()), drill: "Blocos com score de risco ≥ 7" },
+  { label: "Instalações Críticas", value: criticalFacilities(), suffix: "", icon: Wrench, status: getStatus("Instalações Críticas", criticalFacilities()), drill: "Instalações com eficiência < 70%" },
+  { label: "Receita Estado", value: estimatedStateRevenue(), prefix: "$", suffix: "M", icon: Landmark, status: "neutral" as SemaphoreStatus, drill: "Estimativa anual de receita fiscal petrolífera" },
+  { label: "Contratos a Expirar", value: contractsExpiring(), suffix: "", icon: DollarSign, status: getStatus("Contratos a Expirar", contractsExpiring()), drill: "Contratos com vencimento em < 24 meses" },
 ];
-
-const secondaryKpis = [
-  {
-    label: "Em Produção",
-    value: blocksInProduction(),
-    suffix: "",
-    icon: Pickaxe,
-    color: "text-success",
-  },
-  {
-    label: "Em Exploração",
-    value: blocksInExploration(),
-    suffix: "",
-    icon: Search,
-    color: "text-[hsl(var(--exploration))]",
-  },
-  {
-    label: "Sem Produção",
-    value: blocksNoProduction(),
-    suffix: "",
-    icon: Boxes,
-    color: "text-muted-foreground",
-  },
-  {
-    label: "Risco Crítico",
-    value: blocksCriticalRisk(),
-    suffix: "",
-    icon: AlertTriangle,
-    color: "text-danger",
-  },
-  {
-    label: "Receita Estado",
-    value: estimatedStateRevenue(),
-    prefix: "$",
-    suffix: "M",
-    icon: Landmark,
-    color: "text-primary",
-  },
-];
-
-const VariationBadge = ({ value, label }: { value: number; label: string }) => (
-  <div className="flex items-center gap-1">
-    {value >= 0 ? (
-      <ArrowUpRight className="w-3 h-3 text-success" />
-    ) : (
-      <ArrowDownRight className="w-3 h-3 text-danger" />
-    )}
-    <span className={`text-[10px] font-semibold ${value >= 0 ? "text-success" : "text-danger"}`}>
-      {value > 0 ? "+" : ""}{value}%
-    </span>
-    <span className="text-[9px] text-muted-foreground">{label}</span>
-  </div>
-);
 
 export const KPICards = ({ compact = false }: { compact?: boolean }) => (
-  <div className="space-y-3">
-    {/* Primary KPIs */}
-    <div className={compact ? "grid grid-cols-2 gap-2" : "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-4 2xl:gap-5 3xl:gap-6"}>
-      {primaryKpis.map((kpi, i) => (
-        <Card key={kpi.label} className="glass-card glow-primary overflow-hidden animate-counter-up" style={{ animationDelay: `${i * 100}ms` }}>
-          <CardContent className={compact ? "p-2.5" : "p-4 md:p-5 2xl:p-6 3xl:p-8"}>
-            <div className="flex items-center gap-1.5 mb-1 2xl:mb-2 3xl:mb-3">
-              <kpi.icon className={`w-3.5 h-3.5 2xl:w-5 2xl:h-5 3xl:w-6 3xl:h-6 ${kpi.color}`} />
-              <span className={`text-muted-foreground uppercase tracking-wider font-semibold ${compact ? "text-[10px]" : "text-xs 2xl:text-sm 3xl:text-base"}`}>{kpi.label}</span>
-            </div>
-            <AnimatedCounter
-              target={kpi.value}
-              prefix={kpi.prefix || ""}
-              suffix={kpi.suffix}
-              className={`font-bold ${kpi.color} ${compact ? "text-lg" : "text-2xl md:text-3xl 2xl:text-4xl 3xl:text-5xl"}`}
-            />
-            {/* Show variation badges on production card */}
-            {kpi.label === "Produção Total" && !compact && (
-              <div className="flex gap-3 mt-1.5">
-                <VariationBadge value={prodVariationMoM} label="m/m" />
-                <VariationBadge value={prodVariationYoY} label="a/a" />
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      ))}
-    </div>
-
-    {/* Secondary KPIs row */}
-    {!compact && (
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 md:gap-3">
-        {secondaryKpis.map((kpi, i) => (
-          <Card key={kpi.label} className="border-border/50 bg-card/60 backdrop-blur-sm overflow-hidden animate-counter-up" style={{ animationDelay: `${(i + 5) * 80}ms` }}>
-            <CardContent className="p-3 md:p-4">
-              <div className="flex items-center gap-1.5 mb-0.5">
-                <kpi.icon className={`w-3 h-3 2xl:w-4 2xl:h-4 ${kpi.color}`} />
-                <span className="text-muted-foreground uppercase tracking-wider font-semibold text-[10px] 2xl:text-xs">{kpi.label}</span>
-              </div>
-              <AnimatedCounter
-                target={kpi.value}
-                prefix={kpi.prefix || ""}
-                suffix={kpi.suffix}
-                className={`font-bold ${kpi.color} text-xl md:text-2xl 2xl:text-3xl`}
-              />
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-    )}
+  <div className={compact ? "grid grid-cols-2 gap-2" : "grid grid-cols-2 md:grid-cols-5 gap-2.5 md:gap-3"}>
+    {kpis.map((kpi, i) => (
+      <ExecutiveKPICard
+        key={kpi.label}
+        label={kpi.label}
+        value={kpi.value}
+        prefix={kpi.prefix}
+        suffix={kpi.suffix}
+        icon={kpi.icon}
+        variation={kpi.variation}
+        variationLabel={kpi.variationLabel}
+        status={kpi.status}
+        sparklineData={kpi.sparkline}
+        drillDownInfo={kpi.drill}
+        delay={i * 60}
+      />
+    ))}
   </div>
 );

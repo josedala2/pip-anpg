@@ -6,121 +6,121 @@
 
 @layer base {
   :root {
-    --background: 210 18% 96%;
-    --foreground: 220 30% 10%;
+    --background: 220 14% 96%;
+    --foreground: 210 30% 12%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 220 30% 10%;
+    --card: 210 20% 99%;
+    --card-foreground: 210 30% 12%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 220 30% 10%;
+    --popover-foreground: 210 30% 12%;
 
-    --primary: 355 90% 58%;
+    --primary: 200 45% 28%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 18% 90%;
-    --secondary-foreground: 220 30% 10%;
+    --secondary: 210 14% 90%;
+    --secondary-foreground: 210 30% 12%;
 
-    --muted: 210 18% 92%;
-    --muted-foreground: 215 16% 40%;
+    --muted: 210 14% 92%;
+    --muted-foreground: 215 12% 50%;
 
-    --accent: 355 60% 94%;
-    --accent-foreground: 355 70% 35%;
+    --accent: 200 30% 92%;
+    --accent-foreground: 200 40% 22%;
 
-    --destructive: 0 72% 45%;
+    --destructive: 0 65% 42%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 214 20% 85%;
-    --input: 214 20% 85%;
-    --ring: 355 90% 58%;
+    --border: 214 18% 84%;
+    --input: 214 18% 84%;
+    --ring: 200 45% 28%;
 
-    --radius: 0.75rem;
+    --radius: 0.625rem;
 
-    --success: 152 69% 40%;
+    --success: 152 50% 38%;
     --success-foreground: 210 40% 98%;
-    --warning: 38 92% 50%;
-    --warning-foreground: 220 30% 6%;
-    --danger: 0 72% 45%;
+    --warning: 38 75% 48%;
+    --warning-foreground: 220 30% 8%;
+    --danger: 0 65% 42%;
     --danger-foreground: 210 40% 98%;
 
-    --chart-1: 355 90% 58%;
-    --chart-2: 152 69% 40%;
-    --chart-3: 38 92% 50%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 199 89% 48%;
+    --chart-1: 200 45% 28%;
+    --chart-2: 152 50% 38%;
+    --chart-3: 38 75% 48%;
+    --chart-4: 280 50% 55%;
+    --chart-5: 199 70% 45%;
 
-    --exploration: 199 89% 48%;
-    --development: 38 92% 50%;
-    --production: 152 69% 40%;
-    --suspended: 0 72% 45%;
-    --bidding: 280 65% 60%;
+    --exploration: 199 70% 45%;
+    --development: 38 75% 48%;
+    --production: 152 50% 38%;
+    --suspended: 215 12% 50%;
+    --bidding: 280 50% 55%;
 
     --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 220 30% 10%;
-    --sidebar-primary: 355 90% 58%;
+    --sidebar-foreground: 210 30% 12%;
+    --sidebar-primary: 200 45% 28%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 355 60% 94%;
-    --sidebar-accent-foreground: 355 70% 35%;
-    --sidebar-border: 214 20% 85%;
-    --sidebar-ring: 355 90% 58%;
+    --sidebar-accent: 200 30% 92%;
+    --sidebar-accent-foreground: 200 40% 22%;
+    --sidebar-border: 214 18% 84%;
+    --sidebar-ring: 200 45% 28%;
   }
 
   .dark {
-    --background: 220 30% 6%;
-    --foreground: 210 30% 95%;
+    --background: 210 35% 8%;
+    --foreground: 210 25% 92%;
 
-    --card: 220 30% 9%;
-    --card-foreground: 210 30% 95%;
+    --card: 210 30% 11%;
+    --card-foreground: 210 25% 92%;
 
-    --popover: 220 30% 9%;
-    --popover-foreground: 210 30% 95%;
+    --popover: 210 30% 11%;
+    --popover-foreground: 210 25% 92%;
 
-    --primary: 355 90% 58%;
+    --primary: 200 50% 40%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 220 25% 14%;
-    --secondary-foreground: 210 30% 90%;
+    --secondary: 210 25% 16%;
+    --secondary-foreground: 210 25% 88%;
 
-    --muted: 220 25% 14%;
-    --muted-foreground: 215 18% 58%;
+    --muted: 210 25% 16%;
+    --muted-foreground: 215 15% 55%;
 
-    --accent: 355 50% 18%;
-    --accent-foreground: 355 60% 80%;
+    --accent: 200 30% 18%;
+    --accent-foreground: 200 40% 75%;
 
-    --destructive: 0 72% 45%;
+    --destructive: 0 65% 42%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 220 25% 18%;
-    --input: 220 25% 18%;
-    --ring: 355 90% 58%;
+    --border: 210 20% 20%;
+    --input: 210 20% 20%;
+    --ring: 200 50% 40%;
 
-    --success: 152 69% 40%;
+    --success: 152 50% 38%;
     --success-foreground: 210 40% 98%;
-    --warning: 38 92% 50%;
-    --warning-foreground: 220 30% 6%;
-    --danger: 0 72% 45%;
+    --warning: 38 75% 48%;
+    --warning-foreground: 220 30% 8%;
+    --danger: 0 65% 42%;
     --danger-foreground: 210 40% 98%;
 
-    --chart-1: 355 90% 58%;
-    --chart-2: 152 69% 40%;
-    --chart-3: 38 92% 50%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 199 89% 48%;
+    --chart-1: 200 50% 40%;
+    --chart-2: 152 50% 38%;
+    --chart-3: 38 75% 48%;
+    --chart-4: 280 50% 55%;
+    --chart-5: 199 70% 45%;
 
-    --exploration: 199 89% 48%;
-    --development: 38 92% 50%;
-    --production: 152 69% 40%;
-    --suspended: 0 72% 45%;
-    --bidding: 280 65% 60%;
+    --exploration: 199 70% 45%;
+    --development: 38 75% 48%;
+    --production: 152 50% 38%;
+    --suspended: 215 15% 55%;
+    --bidding: 280 50% 55%;
 
-    --sidebar-background: 220 30% 6%;
-    --sidebar-foreground: 210 30% 95%;
-    --sidebar-primary: 355 90% 58%;
+    --sidebar-background: 210 35% 8%;
+    --sidebar-foreground: 210 25% 92%;
+    --sidebar-primary: 200 50% 40%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 355 50% 18%;
-    --sidebar-accent-foreground: 355 60% 80%;
-    --sidebar-border: 220 25% 18%;
-    --sidebar-ring: 355 90% 58%;
+    --sidebar-accent: 200 30% 18%;
+    --sidebar-accent-foreground: 200 40% 75%;
+    --sidebar-border: 210 20% 20%;
+    --sidebar-ring: 200 50% 40%;
   }
 }
 
@@ -134,7 +134,6 @@
     font-family: 'Inter', system-ui, sans-serif;
   }
 
-  /* Scale base font for ultra-wide / 4K screens */
   @media (min-width: 1920px) {
     html { font-size: 18px; }
   }
@@ -143,8 +142,8 @@
   }
 
   ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+    width: 5px;
+    height: 5px;
   }
   ::-webkit-scrollbar-track {
     background: hsl(var(--background));
@@ -159,40 +158,56 @@
 }
 
 @layer utilities {
+  /* Institutional card — clean, minimal shadow */
   .glass-card {
-    @apply bg-card/80 backdrop-blur-xl border border-border/50 rounded-xl;
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    @apply bg-card border border-border/60 rounded-lg;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
   }
 
   .dark .glass-card {
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
   }
 
-  .glow-primary {
-    box-shadow: 0 0 20px hsl(var(--primary) / 0.15), 0 0 60px hsl(var(--primary) / 0.05);
+  /* Executive KPI card with left semaphore border */
+  .executive-card {
+    @apply bg-card border border-border/50 rounded-lg;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    border-left: 3px solid hsl(var(--border));
   }
 
-  .glow-success {
-    box-shadow: 0 0 20px hsl(var(--success) / 0.2);
+  .executive-card[data-status="healthy"] {
+    border-left-color: hsl(var(--success));
+  }
+  .executive-card[data-status="warning"] {
+    border-left-color: hsl(var(--warning));
+  }
+  .executive-card[data-status="critical"] {
+    border-left-color: hsl(var(--danger));
+  }
+  .executive-card[data-status="neutral"] {
+    border-left-color: hsl(var(--primary));
   }
 
-  .glow-warning {
-    box-shadow: 0 0 20px hsl(var(--warning) / 0.2);
+  /* Threat panel — dark background for alerts */
+  .threat-panel {
+    @apply rounded-lg border border-border/40;
+    background: hsl(210 30% 6% / 0.95);
+    color: hsl(210 25% 90%);
   }
 
-  .glow-danger {
-    box-shadow: 0 0 20px hsl(var(--danger) / 0.2);
+  .dark .threat-panel {
+    background: hsl(210 30% 5% / 0.95);
   }
 
   .accent-border-card {
-    @apply bg-card/90 backdrop-blur-sm rounded-lg p-2.5 border border-border/40;
+    @apply bg-card/90 rounded-lg p-2.5 border border-border/40;
     border-left: 3px solid hsl(var(--primary));
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
   }
 
   .dark .accent-border-card {
     @apply bg-card/70;
-    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
   }
 
   .overview-panel {
@@ -205,7 +220,7 @@
 
   .text-gradient {
     @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--chart-4)));
+    background-image: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--chart-5)));
   }
 
   .kpi-value {
@@ -219,35 +234,24 @@
 }
 
 @keyframes counter-up {
-  from { opacity: 0; transform: translateY(12px); }
+  from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 8px hsl(var(--primary) / 0.3); }
-  50% { box-shadow: 0 0 20px hsl(var(--primary) / 0.6); }
-}
-
-@keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+@keyframes pulse-subtle {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
 }
 
 .animate-counter-up {
-  animation: counter-up 0.6s ease-out forwards;
+  animation: counter-up 0.5s ease-out forwards;
 }
 
-.animate-pulse-glow {
-  animation: pulse-glow 2s ease-in-out infinite;
+.animate-pulse-subtle {
+  animation: pulse-subtle 2s ease-in-out infinite;
 }
 
-.animate-shimmer {
-  background: linear-gradient(90deg, transparent 0%, hsl(var(--primary) / 0.1) 50%, transparent 100%);
-  background-size: 200% 100%;
-  animation: shimmer 3s infinite;
-}
-
-/* Print styles for reports */
+/* Print styles */
 @media print {
   body { background: white !important; color: black !important; }
   header, aside, .print\\:hidden { display: none !important; }
@@ -264,7 +268,7 @@
   @page { margin: 1.5cm; }
 }
 
-/* ── Leaflet custom styles ── */
+/* Leaflet custom styles */
 .leaflet-block-label {
   background: transparent !important;
   border: none !important;
@@ -277,10 +281,7 @@
   font-family: 'Inter', sans-serif;
   white-space: nowrap;
 }
-.leaflet-block-label::before {
-  display: none !important;
-}
-
+.leaflet-block-label::before { display: none !important; }
 
 .leaflet-production-label {
   background: transparent !important;
@@ -288,9 +289,7 @@
   box-shadow: none !important;
   padding: 0 !important;
 }
-.leaflet-production-label::before {
-  display: none !important;
-}
+.leaflet-production-label::before { display: none !important; }
 
 .leaflet-block-marker {
   background: transparent !important;
@@ -306,9 +305,7 @@
   text-shadow: 0 1px 4px rgba(0,0,0,0.8), 0 0 2px rgba(0,0,0,0.5);
   font-family: 'Inter', sans-serif;
 }
-.leaflet-city-label::before {
-  display: none !important;
-}
+.leaflet-city-label::before { display: none !important; }
 
 .leaflet-basin-label {
   background: transparent !important;
@@ -320,9 +317,7 @@
   font-family: 'Inter', sans-serif;
   letter-spacing: 2px;
 }
-.leaflet-basin-label::before {
-  display: none !important;
-}
+.leaflet-basin-label::before { display: none !important; }
 
 .leaflet-reserve-label {
   background: transparent !important;
@@ -332,9 +327,7 @@
   color: rgba(255,255,255,0.5);
   font-family: 'Inter', sans-serif;
 }
-.leaflet-reserve-label::before {
-  display: none !important;
-}
+.leaflet-reserve-label::before { display: none !important; }
 
 .leaflet-block-popup .leaflet-popup-content-wrapper {
   border-radius: 10px;
@@ -355,6 +348,4 @@
   font-family: 'Inter', sans-serif;
   letter-spacing: 3px;
 }
-.leaflet-depth-label::before {
-  display: none !important;
-}
+.leaflet-depth-label::before { display: none !important; }
