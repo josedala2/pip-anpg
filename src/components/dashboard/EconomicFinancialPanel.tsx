@@ -35,7 +35,7 @@ const CHART_COLORS = [
 
 type SortKey = "totalScore" | "dailyProduction" | "opexPerBarrel" | "breakeven" | "npvTotal" | "stateRevenue";
 
-type SubTab = "dashboard" | "custos" | "fiscal" | "risco" | "cenarios";
+type SubTab = "dashboard" | "custos" | "fiscal" | "risco" | "cenarios" | "previsao";
 
 const subTabs: { key: SubTab; label: string; icon: React.ElementType }[] = [
   { key: "dashboard", label: "Dashboard", icon: BarChart3 },
