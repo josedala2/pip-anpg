@@ -48,6 +48,7 @@ const Index = () => {
   const [selectedBlock, setSelectedBlock] = useState<OilBlock | null>(null);
   const [isPresentation, setIsPresentation] = useState(false);
   const [analysisPeriod, setAnalysisPeriod] = useState<string>("actual");
+  const [homeDrillDown, setHomeDrillDown] = useState<"operadores" | "alertas" | "recomendacoes" | null>(null);
 
   const alertsSummary = useMemo(() => {
     const all = evaluateAlerts();
