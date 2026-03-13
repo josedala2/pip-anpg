@@ -105,6 +105,7 @@ export const EconomicFinancialPanel = () => {
       {activeSubTab === "fiscal" && <FiscalImpactPanel />}
       {activeSubTab === "risco" && <EconomicRiskPanel />}
       {activeSubTab === "cenarios" && <EconomicScenariosPanel />}
+      {activeSubTab === "previsao" && <AdvancedForecastPanel />}
 
       {activeSubTab === "dashboard" && (
         <>
