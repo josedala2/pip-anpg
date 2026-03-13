@@ -310,6 +310,151 @@ export const defaultRules: AlertRule[] = [
   },
 ];
 
+// ── Forecast-specific alerts (national + per-block) ──
+
+export interface ForecastAlert extends Alert {
+  scenarioId?: string;
+  scenarioName?: string;
+  yearHorizon?: number;
+}
+
+export function evaluateForecastAlerts(): ForecastAlert[] {
+  const alerts: ForecastAlert[] = [];
+  const nationalOutputs = runAllScenarios();
+  const baseScenario = nationalOutputs.find(o => o.scenario.id === "continuidade")!;
+  const optimScenario = nationalOutputs.find(o => o.scenario.id === "optimizacao")!;
+
+  // ── National-level alerts ──
+
+  // 1. NPV negativo em qualquer cenário
+  nationalOutputs.forEach(o => {
+    if (o.npv < 0) {
+      alerts.push({
+        id: `forecast-nat-npv-neg-${o.scenario.id}`,
+        blockId: "national", blockName: "Nacional", operator: "—",
+        category: "forecast", severity: "critical",
+        title: `NPV Nacional negativo — ${o.scenario.name}`,
+        description: `O cenário "${o.scenario.name}" resulta em NPV de $${(o.npv / 1000).toFixed(1)}B, indicando destruição de valor a nível nacional.`,
+        metric: `$${(o.npv / 1000).toFixed(1)}B`,
+        threshold: "< $0",
+        actionRequired: "Avaliar medidas urgentes de optimização ou revisão de regime fiscal.",
+        scenarioId: o.scenario.id,
+        scenarioName: o.scenario.name,
+      });
+    }
+  });
+
+  // 2. Produção nacional cai abaixo de 800k BOPD (limiar estratégico)
+  const PROD_THRESHOLD = 800000;
+  nationalOutputs.forEach(o => {
+    const belowYears = o.projections.filter(p => p.production < PROD_THRESHOLD);
+    if (belowYears.length > 0) {
+      const firstYear = belowYears[0].year;
+      alerts.push({
+        id: `forecast-nat-prod-low-${o.scenario.id}`,
+        blockId: "national", blockName: "Nacional", operator: "—",
+        category: "forecast",
+        severity: firstYear <= 2030 ? "critical" : firstYear <= 2035 ? "high" : "medium",
+        title: `Produção nacional < 800k BOPD em ${firstYear}`,
+        description: `No cenário "${o.scenario.name}", a produção cai para ${(belowYears[0].production / 1000).toFixed(0)}k BOPD em ${firstYear}.`,
+        metric: `${(belowYears[0].production / 1000).toFixed(0)}k BOPD`,
+        threshold: "< 800k BOPD",
+        actionRequired: "Intensificar programas de revitalização e acelerar licenciamento de novos blocos.",
+        scenarioId: o.scenario.id,
+        scenarioName: o.scenario.name,
+        yearHorizon: firstYear,
+      });
+    }
+  });
+
+  // 3. Receita do Estado cai > 40% face ao primeiro ano
+  nationalOutputs.forEach(o => {
+    const firstYearRevenue = o.projections[0]?.stateRevenue || 1;
+    const droppedYears = o.projections.filter(p => p.stateRevenue < firstYearRevenue * 0.6);
+    if (droppedYears.length > 0) {
+      const firstDrop = droppedYears[0];
+      const dropPct = ((firstYearRevenue - firstDrop.stateRevenue) / firstYearRevenue * 100).toFixed(0);
+      alerts.push({
+        id: `forecast-nat-revenue-drop-${o.scenario.id}`,
+        blockId: "national", blockName: "Nacional", operator: "—",
+        category: "forecast",
+        severity: parseInt(dropPct) > 60 ? "critical" : "high",
+        title: `Receita Estado cai ${dropPct}% em ${firstDrop.year}`,
+        description: `No cenário "${o.scenario.name}", a receita do Estado baixa de $${firstYearRevenue}MM para $${firstDrop.stateRevenue}MM em ${firstDrop.year}.`,
+        metric: `-${dropPct}%`,
+        threshold: "> -40%",
+        actionRequired: "Rever política fiscal e avaliar impacto no Orçamento Geral do Estado.",
+        scenarioId: o.scenario.id,
+        scenarioName: o.scenario.name,
+        yearHorizon: firstDrop.year,
+      });
+    }
+  });
+
+  // ── Per-block alerts ──
+  const producing = oilBlocks.filter(b => b.dailyProduction > 0);
+  producing.forEach(block => {
+    const blockOutputs = runAllScenariosForBlock(block);
+
+    // 4. Bloco com NPV negativo no cenário base (continuidade)
+    const baseCont = blockOutputs.find(o => o.scenario.id === "continuidade");
+    if (baseCont && baseCont.npv < 0) {
+      alerts.push({
+        id: `forecast-block-npv-neg-${block.id}`,
+        blockId: block.id, blockName: block.name, operator: block.operator,
+        category: "forecast", severity: "critical",
+        title: `NPV negativo no cenário Continuidade`,
+        description: `${block.name} tem NPV de $${baseCont.npv}MM no cenário base, indicando que a concessão destrói valor sem intervenção.`,
+        metric: `$${baseCont.npv}MM`,
+        threshold: "< $0",
+        actionRequired: "Avaliar viabilidade económica da concessão e considerar abandono planeado.",
+        scenarioId: "continuidade",
+        scenarioName: "Continuidade",
+      });
+    }
+
+    // 5. Produção do bloco cai > 70% em 5 anos (cenário optimização)
+    const optim = blockOutputs.find(o => o.scenario.id === "optimizacao");
+    if (optim) {
+      const prod5 = optim.projections[4]?.production || 0;
+      const decline = block.dailyProduction > 0 ? ((block.dailyProduction - prod5) / block.dailyProduction * 100) : 0;
+      if (decline > 70) {
+        alerts.push({
+          id: `forecast-block-decline70-${block.id}`,
+          blockId: block.id, blockName: block.name, operator: block.operator,
+          category: "forecast", severity: "high",
+          title: `Declínio > 70% mesmo com optimização`,
+          description: `Mesmo no cenário optimizado, ${block.name} perde ${decline.toFixed(0)}% de produção em 5 anos (${(prod5 / 1000).toFixed(1)}k BOPD).`,
+          metric: `-${decline.toFixed(0)}%`,
+          threshold: "> -70% em 5 anos",
+          actionRequired: "Priorizar programa de EOR/IOR ou iniciar planeamento de descomissionamento.",
+          scenarioId: "optimizacao",
+          scenarioName: "Optimização Operacional",
+          yearHorizon: 2031,
+        });
+      }
+    }
+
+    // 6. Break-even do bloco acima do Brent no cenário base
+    if (baseCont && baseCont.avgCostPerBarrel > 78) {
+      alerts.push({
+        id: `forecast-block-breakeven-${block.id}`,
+        blockId: block.id, blockName: block.name, operator: block.operator,
+        category: "forecast", severity: baseCont.avgCostPerBarrel > 90 ? "critical" : "high",
+        title: `Break-even acima do preço Brent`,
+        description: `${block.name} tem custo médio de $${baseCont.avgCostPerBarrel.toFixed(1)}/bbl, acima da referência de $78/bbl.`,
+        metric: `$${baseCont.avgCostPerBarrel.toFixed(1)}/bbl`,
+        threshold: "> $78/bbl",
+        actionRequired: "Rever estrutura de custos e avaliar optimização operacional urgente.",
+        scenarioId: "continuidade",
+        scenarioName: "Continuidade",
+      });
+    }
+  });
+
+  return alerts.sort((a, b) => severityOrder[a.severity] - severityOrder[b.severity]);
+}
+
 // ── Evaluate all ──
 
 export function evaluateAlerts(blocks: OilBlock[] = oilBlocks, rules: AlertRule[] = defaultRules): Alert[] {
@@ -332,6 +477,7 @@ export const categoryLabels: Record<AlertCategory, string> = {
   opex: "OPEX",
   compliance: "Compliance",
   esg: "ESG",
+  forecast: "Previsão",
 };
 
 export const severityLabels: Record<AlertSeverity, string> = {
@@ -355,4 +501,5 @@ export const categoryStyles: Record<AlertCategory, { color: string; icon: string
   opex: { color: "text-[hsl(var(--chart-5))]", icon: "DollarSign" },
   compliance: { color: "text-[hsl(var(--chart-3))]", icon: "Shield" },
   esg: { color: "text-success", icon: "Leaf" },
+  forecast: { color: "text-primary", icon: "TrendingUp" },
 };
