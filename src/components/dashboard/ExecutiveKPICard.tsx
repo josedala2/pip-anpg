@@ -28,10 +28,10 @@ const statusColors: Record<SemaphoreStatus, string> = {
 };
 
 const sparklineColors: Record<SemaphoreStatus, string> = {
-  healthy: "hsl(152, 65%, 45%)",
-  warning: "hsl(38, 90%, 55%)",
-  critical: "hsl(0, 75%, 50%)",
-  neutral: "hsl(210, 70%, 50%)",
+  healthy: "hsl(var(--success))",
+  warning: "hsl(var(--warning))",
+  critical: "hsl(var(--danger))",
+  neutral: "hsl(var(--chart-5))",
 };
 
 export const ExecutiveKPICard = ({
@@ -48,6 +48,12 @@ export const ExecutiveKPICard = ({
   delay = 0,
 }: ExecutiveKPICardProps) => {
   const chartData = sparklineData?.map((v, i) => ({ v, i })) || [];
+  const gradientId = `sparkGrad-${label
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "")}`;
 
   return (
     <TooltipProvider>
@@ -98,22 +104,22 @@ export const ExecutiveKPICard = ({
               </div>
 
               {chartData.length > 0 && (
-                <div className="w-20 h-10 flex-shrink-0">
+                <div className="w-24 h-12 flex-shrink-0">
                   <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart data={chartData} margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
+                    <AreaChart data={chartData} margin={{ top: 2, right: 0, left: 0, bottom: 2 }}>
                       <defs>
-                        <linearGradient id={`sparkGrad-${label}`} x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor={sparklineColors[status]} stopOpacity={0.5} />
-                          <stop offset="100%" stopColor={sparklineColors[status]} stopOpacity={0} />
+                        <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor={sparklineColors[status]} stopOpacity={0.65} />
+                          <stop offset="100%" stopColor={sparklineColors[status]} stopOpacity={0.08} />
                         </linearGradient>
                       </defs>
                       <Area
                         type="natural"
                         dataKey="v"
                         stroke={sparklineColors[status]}
-                        strokeWidth={2}
-                        fill={`url(#sparkGrad-${label})`}
-                        dot={false}
+                        strokeWidth={2.5}
+                        fill={`url(#${gradientId})`}
+                        dot={{ r: 1.8, fill: sparklineColors[status], strokeWidth: 0 }}
                         isAnimationActive={false}
                       />
                     </AreaChart>
