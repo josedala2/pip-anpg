@@ -244,6 +244,7 @@ const Index = () => {
           {panels[activePanel] === "Exploração & Sísmica" && <ExplorationPanel />}
           {panels[activePanel] === "Operadores" && <OperatorsPanel />}
           {panels[activePanel] === "Contratos & Compliance" && <ContractCompliancePanel />}
+          {panels[activePanel] === "Integridade Instalações" && <FacilitiesIntegrityPanel />}
           {panels[activePanel] === "Risk & Performance" && <RiskPerformance />}
           {panels[activePanel] === "Strategic Forecast" && <StrategicForecast />}
           </div>
