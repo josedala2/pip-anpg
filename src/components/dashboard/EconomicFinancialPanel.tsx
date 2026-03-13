@@ -314,6 +314,8 @@ export const EconomicFinancialPanel = () => {
           </div>
         </CardContent>
       </Card>
+        </>
+      )}
     </div>
   );
 };
