@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Slider } from "@/components/ui/slider";
 import { oilBlocks } from "@/data/angolaBlocks";
 import {
-  runAllScenarios, runScenarioForBlock, PREDEFINED_SCENARIOS,
+  runAllScenarios, runScenarioForBlock, runScenario, PREDEFINED_SCENARIOS,
   type ScenarioOutput, type ScenarioDefinition,
 } from "@/lib/scenarioEngine";
 import { getNationalEconomicKPIs } from "@/lib/economicScoring";
