@@ -1,7 +1,8 @@
 import { type OilBlock, oilBlocks } from "@/data/angolaBlocks";
+import { runAllScenarios, runAllScenariosForBlock, PREDEFINED_SCENARIOS, type ScenarioOutput } from "@/lib/scenarioEngine";
 
 export type AlertSeverity = "critical" | "high" | "medium" | "low";
-export type AlertCategory = "contract" | "integrity" | "decline" | "opex" | "compliance" | "esg";
+export type AlertCategory = "contract" | "integrity" | "decline" | "opex" | "compliance" | "esg" | "forecast";
 
 export interface Alert {
   id: string;
