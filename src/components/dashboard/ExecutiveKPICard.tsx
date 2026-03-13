@@ -98,7 +98,7 @@ export const ExecutiveKPICard = ({
               </div>
 
               {chartData.length > 0 && (
-                <div className="w-16 h-8 flex-shrink-0">
+                <div className="w-20 h-10 flex-shrink-0">
                   <ResponsiveContainer width="100%" height="100%">
                     <AreaChart data={chartData} margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
                       <defs>
