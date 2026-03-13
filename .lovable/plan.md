@@ -1,24 +1,50 @@
+## Roteiro de Evolução — Plataforma Nacional de Inteligência Petrolífera
 
+### Estado actual vs Visão
 
-## Analysis: Block 15 data vs uploaded spreadsheet
+| Capacidade | Estado |
+|---|---|
+| Mapa de concessões | ✅ Existe |
+| KPIs nacionais (prod, reservas, receita estado, variações) | ✅ Completo |
+| Painel de Blocos & Concessões | ✅ Existe |
+| Painel de Produção | ✅ Existe |
+| Painel de Exploração | ✅ Existe |
+| Painel de Operadores | ✅ Existe |
+| Risk & Performance | ✅ Existe |
+| Strategic Forecast | ✅ Existe |
+| Detalhe do bloco (12 abas) | ✅ Existe |
+| Visão Económica (Bloco 0) | ✅ Existe |
+| Comparativo de blocos | ✅ Existe |
+| Relatórios configuráveis | ✅ Existe |
+| Auth + roles | ✅ Existe |
+| **Branding "Inteligência Petrolífera"** | ✅ **Fase 1 concluída** |
+| **KPIs executivos completos** | ✅ **Fase 1 concluída** |
+| **Dashboard Contratual/Negocial** | ✅ **Fase 2 concluída** |
+| Dashboard Integridade Instalações | ❌ Fase 3 |
+| Motor de Scoring Estratégico | ❌ Fase 4 |
+| Dashboard Recomendação Conselho | ❌ Fase 4 |
+| Alertas inteligentes centrais | ❌ Fase 5 |
 
-After parsing the uploaded `BLOCO-15.xlsx` and comparing it against the existing `wellsData` in `src/data/angolaBlocks.ts` (lines 1254-1266), **the data already matches perfectly**:
+### Fases concluídas
 
-| Year | Pesquisa | Avaliação | Desc. Comercial | Desc. Não Comercial | Seco |
-|------|----------|-----------|-----------------|---------------------|------|
-| 1998 | 5 | 1 | 4 | 0 | 1 | ✅ |
-| 1999 | 2 | 3 | 2 | 0 | 0 | ✅ |
-| 2000 | 6 | 1 | 5 | 1 | 0 | ✅ |
-| 2001 | 1 | 1 | 1 | 0 | 0 | ✅ |
-| 2002 | 1 | 2 | 1 | 0 | 0 | ✅ |
-| 2003 | 4 | 3 | 4 | 0 | 0 | ✅ |
-| 2006 | 0 | 3 | 0 | 0 | 0 | ✅ |
-| 2008 | 0 | 2 | 0 | 0 | 0 | ✅ |
-| 2009 | 0 | 2 | 0 | 0 | 0 | ✅ |
-| 2022 | 1 | 0 | 1 | 0 | 0 | ✅ |
-| 2024 | 1 | 0 | 1 | 0 | 0 | ✅ |
+**Fase 1** — Rebranding + KPIs Executivos
+- Header: "Inteligência Petrolífera" + "Sistema Integrado de Monitorização, Análise e Apoio à Decisão"
+- KPIs primários: Produção Total, Reservas, Blocos Activos, CAPEX, Taxa de Execução
+- KPIs secundários: Em Produção, Em Exploração, Sem Produção, Risco Crítico, Receita Estado
+- Variações m/m e a/a na produção
+- Título HTML e meta tags actualizados
 
-**No changes are needed** — the Block 15 well data is already up to date with the spreadsheet contents.
+**Fase 2** — Dashboard Contratual e Negocial
+- Painel "Contratos & Compliance" adicionado à navegação
+- KPIs: contratos a expirar em 12/24/36 meses, compliance < 80%, blocos com dados contratuais
+- 4 sub-abas: Calendário Contratual, Semáforo por Operador, Matriz de Urgência, Lista Completa
+- Gráfico de barras de expiração por ano com cores por urgência
+- Scatter plot meses restantes vs compliance (tamanho = produção)
+- Semáforo verde/amarelo/vermelho por operador (compliance + execução)
+- Lista ordenada por urgência com badges de estado
 
-The block also has populated `fields` (Kizomba A, Kizomba B, Mondo, Saxi-Batuque), `prospects` (20 entries), `seismicData` (17 entries), and `explorationSummary`.
+### Próximas fases
 
+**Fase 3** — Dashboard de Integridade de Instalações
+**Fase 4** — Motor de Scoring Estratégico + Dashboard de Recomendação ao Conselho
+**Fase 5** — Sistema de Alertas Centrais
