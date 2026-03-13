@@ -22,10 +22,11 @@ import {
 } from "recharts";
 import {
   Play, Settings2, TrendingUp, DollarSign, Percent, BarChart3,
-  ChevronDown, ChevronUp, MapPin,
+  ChevronDown, ChevronUp, MapPin, Building2,
 } from "lucide-react";
 
 const producingBlocks = oilBlocks.filter(b => b.dailyProduction > 0).sort((a, b) => b.dailyProduction - a.dailyProduction);
+const operators = [...new Set(oilBlocks.filter(b => b.dailyProduction > 0).map(b => b.operator))].sort();
 
 /** Smart format: shows $B for large values, $MM for smaller */
 function fmtUSD(mmusd: number): string {
@@ -39,35 +40,46 @@ function fmtUSDShort(mmusd: number): string {
   return `$${Math.round(mmusd)}MM`;
 }
 
+type ViewMode = "national" | "block" | "operator";
+
 export const EconomicScenariosPanel = () => {
   const [showCustom, setShowCustom] = useState(false);
   const [customVars, setCustomVars] = useState<ScenarioVariables>({ ...BASE_VARIABLES });
   const [selectedScenarios, setSelectedScenarios] = useState<string[]>(
     PREDEFINED_SCENARIOS.map(s => s.id)
   );
+  const [viewMode, setViewMode] = useState<ViewMode>("national");
   const [selectedBlockId, setSelectedBlockId] = useState<string>("all");
+  const [selectedOperator, setSelectedOperator] = useState<string>("all");
 
   const selectedBlock = useMemo(
-    () => selectedBlockId === "all" ? null : oilBlocks.find(b => b.id === selectedBlockId) || null,
-    [selectedBlockId]
+    () => viewMode === "block" && selectedBlockId !== "all" ? oilBlocks.find(b => b.id === selectedBlockId) || null : null,
+    [viewMode, selectedBlockId]
   );
 
-  const predefinedOutputs = useMemo(
-    () => selectedBlock ? runAllScenariosForBlock(selectedBlock) : runAllScenarios(),
-    [selectedBlock]
+  const operatorBlocks = useMemo(
+    () => viewMode === "operator" && selectedOperator !== "all"
+      ? oilBlocks.filter(b => b.operator === selectedOperator && b.dailyProduction > 0)
+      : [],
+    [viewMode, selectedOperator]
   );
+
+  const predefinedOutputs = useMemo(() => {
+    if (selectedBlock) return runAllScenariosForBlock(selectedBlock);
+    if (viewMode === "operator" && selectedOperator !== "all") return runAllScenariosForOperator(selectedOperator);
+    return runAllScenarios();
+  }, [selectedBlock, viewMode, selectedOperator]);
 
   const customOutput = useMemo(() => {
     if (!showCustom) return null;
-    if (selectedBlock) {
-      const custom = {
-        id: "custom", name: "Cenário Personalizado", description: "Variáveis definidas pelo utilizador.",
-        icon: "🎯", color: "hsl(199, 70%, 45%)", variables: customVars,
-      };
-      return runScenarioForBlock(custom, selectedBlock);
-    }
+    const custom = {
+      id: "custom", name: "Cenário Personalizado", description: "Variáveis definidas pelo utilizador.",
+      icon: "🎯", color: "hsl(199, 70%, 45%)", variables: customVars,
+    };
+    if (selectedBlock) return runScenarioForBlock(custom, selectedBlock);
+    if (viewMode === "operator" && selectedOperator !== "all") return runScenarioForOperator(custom, selectedOperator);
     return runCustomScenario(customVars);
-  }, [showCustom, customVars, selectedBlock]);
+  }, [showCustom, customVars, selectedBlock, viewMode, selectedOperator]);
 
   const allOutputs = useMemo(() => {
     const outputs = predefinedOutputs.filter(o => selectedScenarios.includes(o.scenario.id));
