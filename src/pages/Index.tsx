@@ -13,6 +13,7 @@ import { ProductionPanel } from "@/components/dashboard/ProductionPanel";
 import { OperatorsPanel } from "@/components/dashboard/OperatorsPanel";
 import { ContractCompliancePanel } from "@/components/dashboard/ContractCompliancePanel";
 import { FacilitiesIntegrityPanel } from "@/components/dashboard/FacilitiesIntegrityPanel";
+import { CouncilRecommendationsPanel } from "@/components/dashboard/CouncilRecommendationsPanel";
 import { type OilBlock, oilBlocks } from "@/data/angolaBlocks";
 import { Maximize2, Minimize2, ChevronLeft, ChevronRight, Sun, Moon, FileText, LogOut, User, Users, Database, GitCompareArrows } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -24,7 +25,7 @@ import anpgLogoColor from "@/assets/anpg-logo-color.svg";
 import anpgLogoWhite from "@/assets/anpg-logo-white.svg";
 import { InstitutionalFooter } from "@/components/InstitutionalFooter";
 
-const allPanels = ["Overview", "Blocos & Concessões", "Produção", "Exploração & Sísmica", "Operadores", "Contratos & Compliance", "Integridade Instalações", "Risk & Performance", "Strategic Forecast"];
+const allPanels = ["Overview", "Blocos & Concessões", "Produção", "Exploração & Sísmica", "Operadores", "Contratos & Compliance", "Integridade Instalações", "Risk & Performance", "Recomendações Conselho", "Strategic Forecast"];
 
 const Index = () => {
   const { theme, toggleTheme } = useTheme();
@@ -246,6 +247,7 @@ const Index = () => {
           {panels[activePanel] === "Contratos & Compliance" && <ContractCompliancePanel />}
           {panels[activePanel] === "Integridade Instalações" && <FacilitiesIntegrityPanel />}
           {panels[activePanel] === "Risk & Performance" && <RiskPerformance />}
+          {panels[activePanel] === "Recomendações Conselho" && <CouncilRecommendationsPanel />}
           {panels[activePanel] === "Strategic Forecast" && <StrategicForecast />}
           </div>
         </div>
