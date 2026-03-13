@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
 import { ConcessionMap } from "./ConcessionMap";
 import { KPICards } from "./KPICards";
 import { ThreatPanel } from "./ThreatPanel";
