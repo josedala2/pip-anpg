@@ -2,8 +2,10 @@ import { useMemo, useState } from "react";
 import {
   runAllScenarios,
   runAllScenariosForBlock,
+  runAllScenariosForOperator,
   runCustomScenario,
   runScenarioForBlock,
+  runScenarioForOperator,
   PREDEFINED_SCENARIOS,
   BASE_VARIABLES,
   type ScenarioVariables,
@@ -20,10 +22,11 @@ import {
 } from "recharts";
 import {
   Play, Settings2, TrendingUp, DollarSign, Percent, BarChart3,
-  ChevronDown, ChevronUp, MapPin,
+  ChevronDown, ChevronUp, MapPin, Building2,
 } from "lucide-react";
 
 const producingBlocks = oilBlocks.filter(b => b.dailyProduction > 0).sort((a, b) => b.dailyProduction - a.dailyProduction);
+const operators = [...new Set(oilBlocks.filter(b => b.dailyProduction > 0).map(b => b.operator))].sort();
 
 /** Smart format: shows $B for large values, $MM for smaller */
 function fmtUSD(mmusd: number): string {
@@ -37,35 +40,46 @@ function fmtUSDShort(mmusd: number): string {
   return `$${Math.round(mmusd)}MM`;
 }
 
+type ViewMode = "national" | "block" | "operator";
+
 export const EconomicScenariosPanel = () => {
   const [showCustom, setShowCustom] = useState(false);
   const [customVars, setCustomVars] = useState<ScenarioVariables>({ ...BASE_VARIABLES });
   const [selectedScenarios, setSelectedScenarios] = useState<string[]>(
     PREDEFINED_SCENARIOS.map(s => s.id)
   );
+  const [viewMode, setViewMode] = useState<ViewMode>("national");
   const [selectedBlockId, setSelectedBlockId] = useState<string>("all");
+  const [selectedOperator, setSelectedOperator] = useState<string>("all");
 
   const selectedBlock = useMemo(
-    () => selectedBlockId === "all" ? null : oilBlocks.find(b => b.id === selectedBlockId) || null,
-    [selectedBlockId]
+    () => viewMode === "block" && selectedBlockId !== "all" ? oilBlocks.find(b => b.id === selectedBlockId) || null : null,
+    [viewMode, selectedBlockId]
   );
 
-  const predefinedOutputs = useMemo(
-    () => selectedBlock ? runAllScenariosForBlock(selectedBlock) : runAllScenarios(),
-    [selectedBlock]
+  const operatorBlocks = useMemo(
+    () => viewMode === "operator" && selectedOperator !== "all"
+      ? oilBlocks.filter(b => b.operator === selectedOperator && b.dailyProduction > 0)
+      : [],
+    [viewMode, selectedOperator]
   );
+
+  const predefinedOutputs = useMemo(() => {
+    if (selectedBlock) return runAllScenariosForBlock(selectedBlock);
+    if (viewMode === "operator" && selectedOperator !== "all") return runAllScenariosForOperator(selectedOperator);
+    return runAllScenarios();
+  }, [selectedBlock, viewMode, selectedOperator]);
 
   const customOutput = useMemo(() => {
     if (!showCustom) return null;
-    if (selectedBlock) {
-      const custom = {
-        id: "custom", name: "Cenário Personalizado", description: "Variáveis definidas pelo utilizador.",
-        icon: "🎯", color: "hsl(199, 70%, 45%)", variables: customVars,
-      };
-      return runScenarioForBlock(custom, selectedBlock);
-    }
+    const custom = {
+      id: "custom", name: "Cenário Personalizado", description: "Variáveis definidas pelo utilizador.",
+      icon: "🎯", color: "hsl(199, 70%, 45%)", variables: customVars,
+    };
+    if (selectedBlock) return runScenarioForBlock(custom, selectedBlock);
+    if (viewMode === "operator" && selectedOperator !== "all") return runScenarioForOperator(custom, selectedOperator);
     return runCustomScenario(customVars);
-  }, [showCustom, customVars, selectedBlock]);
+  }, [showCustom, customVars, selectedBlock, viewMode, selectedOperator]);
 
   const allOutputs = useMemo(() => {
     const outputs = predefinedOutputs.filter(o => selectedScenarios.includes(o.scenario.id));
@@ -101,28 +115,91 @@ export const EconomicScenariosPanel = () => {
         <div className="flex items-center justify-between flex-wrap gap-2">
           <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Cenários Económicos</h3>
           <div className="flex items-center gap-2">
-            <MapPin className="w-3.5 h-3.5 text-muted-foreground" />
-            <Select value={selectedBlockId} onValueChange={setSelectedBlockId}>
-              <SelectTrigger className="w-56 h-8 text-xs border-border/50">
-                <SelectValue placeholder="Seleccionar concessão" />
-              </SelectTrigger>
-              <SelectContent className="bg-card border-border">
-                <SelectItem value="all">🌍 Visão Nacional (Todos os Blocos)</SelectItem>
-                {producingBlocks.map(b => (
-                  <SelectItem key={b.id} value={b.id}>
-                    {b.name} — {(b.dailyProduction / 1000).toFixed(0)}k BOPD
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            {/* View mode tabs */}
+            <div className="flex items-center bg-muted/40 rounded-md p-0.5 gap-0.5">
+              {([
+                { mode: "national" as ViewMode, icon: "🌍", label: "Nacional" },
+                { mode: "block" as ViewMode, icon: "📍", label: "Bloco" },
+                { mode: "operator" as ViewMode, icon: "🏢", label: "Operador" },
+              ]).map(({ mode, icon, label }) => (
+                <button
+                  key={mode}
+                  onClick={() => setViewMode(mode)}
+                  className={`flex items-center gap-1 px-2.5 py-1 rounded text-[10px] font-semibold transition-all ${
+                    viewMode === mode
+                      ? "bg-primary text-primary-foreground shadow-sm"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  <span className="text-xs">{icon}</span> {label}
+                </button>
+              ))}
+            </div>
+
+            {/* Block selector */}
+            {viewMode === "block" && (
+              <Select value={selectedBlockId} onValueChange={setSelectedBlockId}>
+                <SelectTrigger className="w-56 h-8 text-xs border-border/50">
+                  <SelectValue placeholder="Seleccionar concessão" />
+                </SelectTrigger>
+                <SelectContent className="bg-card border-border">
+                  <SelectItem value="all">Todos os Blocos</SelectItem>
+                  {producingBlocks.map(b => (
+                    <SelectItem key={b.id} value={b.id}>
+                      {b.name} — {(b.dailyProduction / 1000).toFixed(0)}k BOPD
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+
+            {/* Operator selector */}
+            {viewMode === "operator" && (
+              <Select value={selectedOperator} onValueChange={setSelectedOperator}>
+                <SelectTrigger className="w-56 h-8 text-xs border-border/50">
+                  <SelectValue placeholder="Seleccionar operador" />
+                </SelectTrigger>
+                <SelectContent className="bg-card border-border">
+                  <SelectItem value="all">Todos os Operadores</SelectItem>
+                  {operators.map(op => {
+                    const opProd = oilBlocks.filter(b => b.operator === op && b.dailyProduction > 0).reduce((s, b) => s + b.dailyProduction, 0);
+                    return (
+                      <SelectItem key={op} value={op}>
+                        {op} — {(opProd / 1000).toFixed(0)}k BOPD
+                      </SelectItem>
+                    );
+                  })}
+                </SelectContent>
+              </Select>
+            )}
           </div>
         </div>
+
+        {/* Context banner: block */}
         {selectedBlock && (
           <div className="flex items-center gap-3 p-2.5 rounded-lg bg-primary/5 border border-primary/20">
+            <MapPin className="w-3.5 h-3.5 text-primary" />
             <span className="text-xs font-semibold text-primary">{selectedBlock.name}</span>
             <Badge variant="outline" className="text-[10px]">{selectedBlock.operator}</Badge>
             <Badge variant="outline" className="text-[10px]">{(selectedBlock.dailyProduction / 1000).toFixed(1)}k BOPD</Badge>
             <Badge variant="outline" className="text-[10px]">{selectedBlock.basin}</Badge>
+          </div>
+        )}
+
+        {/* Context banner: operator */}
+        {viewMode === "operator" && selectedOperator !== "all" && (
+          <div className="flex items-center gap-3 p-2.5 rounded-lg bg-primary/5 border border-primary/20">
+            <Building2 className="w-3.5 h-3.5 text-primary" />
+            <span className="text-xs font-semibold text-primary">{selectedOperator}</span>
+            <Badge variant="outline" className="text-[10px]">{operatorBlocks.length} blocos</Badge>
+            <Badge variant="outline" className="text-[10px]">
+              {(operatorBlocks.reduce((s, b) => s + b.dailyProduction, 0) / 1000).toFixed(1)}k BOPD
+            </Badge>
+            <div className="flex items-center gap-1 ml-2">
+              {operatorBlocks.map(b => (
+                <span key={b.id} className="text-[9px] text-muted-foreground bg-muted/50 px-1.5 py-0.5 rounded">{b.name}</span>
+              ))}
+            </div>
           </div>
         )}
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-2">

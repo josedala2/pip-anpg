@@ -305,6 +305,83 @@ export function runAllScenariosForBlock(block: OilBlock): ScenarioOutput[] {
   return PREDEFINED_SCENARIOS.map(s => runScenarioForBlock(s, block));
 }
 
+// ── Per-operator scenario engine ──
+
+function getOperatorBaseline(operatorName: string) {
+  const blocks = oilBlocks.filter(b => b.operator === operatorName && b.dailyProduction > 0);
+  const totalProduction = blocks.reduce((s, b) => s + b.dailyProduction, 0);
+  const totalProd = blocks.reduce((s, b) => s + b.dailyProduction, 0);
+  const avgOpex = totalProd > 0
+    ? blocks.reduce((s, b) => s + (b.economicData?.opexPerBarrel || 20) * b.dailyProduction, 0) / totalProd
+    : 20;
+  const totalAbandonment = blocks.reduce((s, b) => s + (b.economicData?.abandonment?.total || 0), 0);
+  return { totalProduction, avgOpex, totalAbandonment, blockCount: blocks.length };
+}
+
+export function runScenarioForOperator(scenario: ScenarioDefinition, operatorName: string): ScenarioOutput {
+  const vars = scenario.variables;
+  const baseline = getOperatorBaseline(operatorName);
+
+  const projections: YearProjection[] = [];
+  let cumulativeCF = 0;
+  let paybackYear: number | null = null;
+
+  for (let i = 0; i < PROJECTION_YEARS; i++) {
+    const year = 2026 + i;
+    const declineFactor = Math.pow(1 - vars.declineRate / 100, i);
+    const efficiencyFactor = 1 + (vars.efficiencyGain / 100) * Math.min(i / 3, 1);
+    const production = Math.max(baseline.totalProduction * declineFactor * efficiencyFactor, 0);
+
+    const inflationFactor = Math.pow(1 + vars.inflationRate / 100, i);
+    const annualBarrels = production * 365;
+    const revenue = annualBarrels * vars.brentPrice / 1e6;
+
+    const baseOpex = baseline.avgOpex * vars.opexMultiplier * inflationFactor;
+    const opex = annualBarrels * baseOpex / 1e6;
+
+    const netCashFlow = revenue - opex;
+    const stateShare = (vars.royaltyRate + vars.taxRate * 0.5 + vars.stateParticipation * 0.3) / 100;
+    const stateRevenue = Math.max(revenue * stateShare, 0);
+
+    cumulativeCF += netCashFlow;
+    if (paybackYear === null && cumulativeCF > 0) paybackYear = year;
+
+    projections.push({
+      year,
+      production: Math.round(production),
+      revenue: Math.round(revenue),
+      opex: Math.round(opex),
+      netCashFlow: Math.round(netCashFlow),
+      stateRevenue: Math.round(stateRevenue),
+      cumulativeCashFlow: Math.round(cumulativeCF),
+    });
+  }
+
+  const npv = projections.reduce((s, p, i) => s + p.netCashFlow / Math.pow(1 + DISCOUNT_RATE, i + 1), 0);
+  const irr = calculateIRR(projections.map(p => p.netCashFlow));
+  const totalCashFlow = projections.reduce((s, p) => s + p.netCashFlow, 0);
+  const totalStateRevenue = projections.reduce((s, p) => s + p.stateRevenue, 0);
+  const totalBarrels = projections.reduce((s, p) => s + p.production * 365, 0);
+  const totalOpex = projections.reduce((s, p) => s + p.opex, 0);
+  const avgCostPerBarrel = totalBarrels > 0 ? (totalOpex * 1e6) / totalBarrels : 0;
+
+  return {
+    scenario,
+    npv: Math.round(npv),
+    irr,
+    totalCashFlow: Math.round(totalCashFlow),
+    totalStateRevenue: Math.round(totalStateRevenue),
+    avgCostPerBarrel,
+    breakeven: avgCostPerBarrel,
+    projections,
+    paybackYear,
+  };
+}
+
+export function runAllScenariosForOperator(operatorName: string): ScenarioOutput[] {
+  return PREDEFINED_SCENARIOS.map(s => runScenarioForOperator(s, operatorName));
+}
+
 export function runCustomScenario(variables: ScenarioVariables): ScenarioOutput {
   const custom: ScenarioDefinition = {
     id: "custom",
