@@ -64,6 +64,12 @@ export const AdvancedForecastPanel = () => {
   const [horizon, setHorizon] = useState<Horizon>("10");
   const [focusScenario, setFocusScenario] = useState("optimizacao");
 
+  // ── Forecast alerts ──
+  const forecastAlerts = useMemo(() => evaluateForecastAlerts(), []);
+  const [showAllAlerts, setShowAllAlerts] = useState(false);
+  const criticalAlerts = forecastAlerts.filter(a => a.severity === "critical");
+  const highAlerts = forecastAlerts.filter(a => a.severity === "high");
+
   // ── National scenarios ──
   const nationalOutputs = useMemo(() => runAllScenarios(), []);
 
