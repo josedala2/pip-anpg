@@ -49,7 +49,7 @@ const subTabs: { key: SubTab; label: string; icon: React.ElementType }[] = [
 ];
 
 export const EconomicFinancialPanel = () => {
-  const [activeSubTab, setActiveSubTab] = useState<SubTab>("dashboard");
+  const [activeSubTab, setActiveSubTab] = useState<SubTab>("executivo");
   const [sortKey, setSortKey] = useState<SortKey>("totalScore");
   const [sortAsc, setSortAsc] = useState(false);
   const [expandedRow, setExpandedRow] = useState<string | null>(null);
