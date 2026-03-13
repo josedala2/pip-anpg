@@ -595,6 +595,110 @@ function SliderControl({ label, value, min, max, step, unit, onChange }: {
   );
 }
 
+function OperatorComparisonChart({ scenarioId }: { scenarioId: string }) {
+  const scenario = PREDEFINED_SCENARIOS.find(s => s.id === scenarioId) || PREDEFINED_SCENARIOS[0];
+
+  const data = useMemo(() => {
+    return operators.map(op => {
+      const output = runScenarioForOperator(scenario, op);
+      const opBlocks = oilBlocks.filter(b => b.operator === op && b.dailyProduction > 0);
+      const totalProd = opBlocks.reduce((s, b) => s + b.dailyProduction, 0);
+      return {
+        name: op.length > 14 ? op.slice(0, 12) + "…" : op,
+        fullName: op,
+        npv: Math.round(output.npv),
+        stateRevenue: Math.round(output.totalStateRevenue),
+        irr: output.irr,
+        production: Math.round(totalProd / 1000),
+        blocks: opBlocks.length,
+      };
+    }).sort((a, b) => b.npv - a.npv);
+  }, [scenario]);
+
+  const COLORS = {
+    npv: "hsl(var(--primary))",
+    state: "hsl(152, 50%, 38%)",
+  };
+
+  return (
+    <div className="space-y-4">
+      <div className="h-80">
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart data={data} layout="vertical" margin={{ left: 10, right: 20 }}>
+            <CartesianGrid strokeDasharray="3 3" className="stroke-border/30" horizontal={false} />
+            <XAxis
+              type="number"
+              tick={{ fontSize: 10 }}
+              className="fill-muted-foreground"
+              tickFormatter={v => {
+                const abs = Math.abs(v);
+                if (abs >= 1000) return `$${(v / 1000).toFixed(0)}B`;
+                return `$${v}MM`;
+              }}
+            />
+            <YAxis
+              type="category"
+              dataKey="name"
+              tick={{ fontSize: 10 }}
+              className="fill-muted-foreground"
+              width={110}
+            />
+            <RechartsTooltip
+              contentStyle={{
+                fontSize: 11,
+                borderRadius: 8,
+                border: "1px solid hsl(var(--border))",
+                background: "hsl(var(--card))",
+              }}
+              formatter={(v: number, name: string) => [
+                `$${Math.abs(v) >= 1000 ? (v / 1000).toFixed(1) + "B" : v.toLocaleString() + "MM"}`,
+                name === "npv" ? "NPV" : "Receita Estado",
+              ]}
+              labelFormatter={(label) => {
+                const item = data.find(d => d.name === label);
+                return item ? `${item.fullName} (${item.blocks} blocos, ${item.production}k BOPD)` : label;
+              }}
+            />
+            <Bar dataKey="npv" fill={COLORS.npv} fillOpacity={0.85} name="NPV" barSize={10} radius={[0, 3, 3, 0]} />
+            <Bar dataKey="stateRevenue" fill={COLORS.state} fillOpacity={0.85} name="Receita Estado" barSize={10} radius={[0, 3, 3, 0]} />
+            <Legend wrapperStyle={{ fontSize: 10 }} />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+
+      {/* Summary table */}
+      <div className="overflow-x-auto">
+        <table className="w-full text-xs">
+          <thead>
+            <tr className="border-b border-border/40">
+              <th className="text-left py-2 text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Operador</th>
+              <th className="text-center py-2 text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Blocos</th>
+              <th className="text-right py-2 text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Produção</th>
+              <th className="text-right py-2 text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">NPV</th>
+              <th className="text-right py-2 text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">IRR</th>
+              <th className="text-right py-2 text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Receita Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            {data.map(d => (
+              <tr key={d.fullName} className="border-b border-border/20 hover:bg-muted/20">
+                <td className="py-1.5 font-semibold">{d.fullName}</td>
+                <td className="py-1.5 text-center">{d.blocks}</td>
+                <td className="py-1.5 text-right tabular-nums">{d.production}k BOPD</td>
+                <td className={`py-1.5 text-right tabular-nums font-bold ${d.npv >= 0 ? "text-success" : "text-danger"}`}>
+                  {fmtUSDShort(d.npv)}
+                </td>
+                <td className="py-1.5 text-right tabular-nums">{d.irr.toFixed(1)}%</td>
+                <td className="py-1.5 text-right tabular-nums">{fmtUSDShort(d.stateRevenue)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
 function OutputKPI({ label, value, positive }: { label: string; value: string; positive: boolean }) {
   return (
     <div>
