@@ -142,7 +142,8 @@ export const EconomicScenariosPanel = () => {
                 <div className="flex items-center justify-between mb-1">
                   <span className="text-sm">{s.icon}</span>
                   <span className={`text-lg font-bold tabular-nums ${output.npv >= 0 ? "text-success" : "text-danger"}`}>
-                    {output.npv >= 0 ? "+" : ""}${(output.npv / 1000).toFixed(1)}B
+                    {fmtUSD(output.npv)}
+                  </span>
                   </span>
                 </div>
                 <div className="text-xs font-semibold text-foreground">{s.name}</div>
