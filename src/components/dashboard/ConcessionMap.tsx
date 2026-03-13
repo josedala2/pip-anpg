@@ -4,6 +4,7 @@ import { MapContainer, TileLayer, Polygon, Polyline, Popup, CircleMarker, Toolti
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { type OilBlock, type BlockPhase } from "@/data/angolaBlocks";
+import { calculateStrategicScore } from "@/lib/strategicScoring";
 import { Layers, Map as MapIcon, Satellite, Mountain, Waves, TreePine, ChevronDown, ChevronUp, Droplets } from "lucide-react";
 
 interface ConcessionMapProps {
@@ -326,16 +327,36 @@ export const ConcessionMap = ({
   const [showConcessions, setShowConcessions] = useState(true);
   const [showProduction, setShowProduction] = useState(true);
   const [showSatellite, setShowSatellite] = useState(true);
-  const [colorMode, setColorMode] = useState<"phase" | "bidding">("phase");
+  const [colorMode, setColorMode] = useState<"phase" | "bidding" | "strategic">("strategic");
   const [layersPanelOpen, setLayersPanelOpen] = useState(false);
 
+  // Pre-compute strategic scores for all blocks
+  const blockScores = useMemo(() => {
+    const map = new Map<string, number>();
+    blocks.forEach(b => {
+      const score = calculateStrategicScore(b);
+      map.set(b.id, score.totalScore);
+    });
+    return map;
+  }, [blocks]);
+
+  const getStrategicColor = useCallback((block: OilBlock) => {
+    if (block.phase === "Exploration") return "#2d8ac7"; // petrol blue for exploration
+    if (block.phase === "Suspended") return "#6b7280"; // grey for suspended
+    const score = blockScores.get(block.id) || 50;
+    if (score >= 70) return "#2e9e5e"; // green — healthy
+    if (score >= 40) return "#d69e2e"; // amber — attention
+    return "#c53030"; // red — critical
+  }, [blockScores]);
+
   const getBlockColor = useCallback((block: OilBlock) => {
+    if (colorMode === "strategic") return getStrategicColor(block);
     if (colorMode === "bidding") {
       const year = blockBiddingYear[block.id];
       if (year) return biddingYearColors[year];
     }
     return phaseColors[block.phase];
-  }, [colorMode]);
+  }, [colorMode, getStrategicColor]);
 
   const center: [number, number] = [-10.5, 11.5];
 
@@ -490,38 +511,75 @@ export const ConcessionMap = ({
                 <span className="font-bold">{block.name}</span>
               </LeafletTooltip>
               {!disablePopup && (
-              <Popup className="leaflet-block-popup" maxWidth={280} minWidth={200}>
-                <div className="p-1">
-                  <div className="font-bold text-sm mb-0.5">{block.name}</div>
-                  <div className="text-xs text-gray-500 mb-2">{block.operator}</div>
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="w-2.5 h-2.5 rounded-full inline-block" style={{ backgroundColor: phaseColors[block.phase] }} />
-                    <span className="text-xs">{block.phase} · {block.waterDepth}</span>
-                    {block.dailyProduction > 0 && (
-                      <span className="text-xs font-mono ml-auto font-semibold">{(block.dailyProduction / 1000).toFixed(0)}k BOPD</span>
-                    )}
+              <Popup className="leaflet-block-popup" maxWidth={320} minWidth={240}>
+                <div className="p-2">
+                  {/* Executive popup header */}
+                  <div className="flex items-center justify-between mb-1.5">
+                    <div>
+                      <div className="font-bold text-sm">{block.name}</div>
+                      <div className="text-[11px] text-gray-500">{block.operator}</div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-lg font-bold font-mono" style={{ color: getStrategicColor(block) }}>
+                        {blockScores.get(block.id) || "—"}
+                      </div>
+                      <div className="text-[9px] text-gray-400">Score</div>
+                    </div>
                   </div>
-                  {blockBiddingYear[block.id] && (
-                    <div className="text-xs flex items-center gap-1.5 mb-1">
-                      <span className="w-2.5 h-2.5 rounded-sm inline-block" style={{ backgroundColor: biddingYearColors[blockBiddingYear[block.id]] }} />
-                      <span className="text-gray-500">Licitação {blockBiddingYear[block.id]}</span>
+
+                  {/* 6 executive fields */}
+                  <div className="grid grid-cols-2 gap-x-3 gap-y-1 py-1.5 border-t border-b border-gray-100 text-[11px]">
+                    <div>
+                      <span className="text-gray-400">Fase: </span>
+                      <span className="font-medium">{block.phase}</span>
                     </div>
-                  )}
-                  {block.concession.length > 0 && (
-                    <div className="mt-1.5 pt-1.5 border-t border-gray-200">
-                      {block.concession.slice(0, 4).map((p, i) => (
-                        <div key={i} className="text-[10px] text-gray-500 flex justify-between gap-3">
-                          <span className="truncate">{p.name}{p.isOperator ? " (OP)" : ""}</span>
-                          <span className="font-mono shrink-0">{p.share.toFixed(0)}%</span>
+                    <div>
+                      <span className="text-gray-400">Produção: </span>
+                      <span className="font-mono font-semibold">{block.dailyProduction > 0 ? `${(block.dailyProduction / 1000).toFixed(1)}k` : "—"}</span>
+                    </div>
+                    <div>
+                      <span className="text-gray-400">Risco: </span>
+                      <span className={`font-semibold ${block.riskScore >= 7 ? "text-red-600" : block.riskScore >= 4 ? "text-amber-600" : "text-green-600"}`}>
+                        {block.riskScore}/10
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-gray-400">Compliance: </span>
+                      <span className="font-medium">{block.complianceScore}%</span>
+                    </div>
+                    <div>
+                      <span className="text-gray-400">Reservas: </span>
+                      <span className="font-mono">{block.estimatedReserves} Mb</span>
+                    </div>
+                    <div>
+                      <span className="text-gray-400">Contrato: </span>
+                      <span className="font-medium">{block.contractInfo?.productionPeriodEnd?.slice(0, 4) || "—"}</span>
+                    </div>
+                  </div>
+
+                  {/* Strategic recommendation */}
+                  {(() => {
+                    const score = calculateStrategicScore(block);
+                    return (
+                      <div className="mt-1.5 text-[10px]">
+                        <div className="flex items-center gap-1.5 mb-0.5">
+                          <span className="w-2 h-2 rounded-full" style={{ backgroundColor: getStrategicColor(block) }} />
+                          <span className="font-bold text-gray-700">{score.classification}</span>
+                          <span className={`ml-auto font-bold ${score.urgency === "Imediata" ? "text-red-600" : score.urgency === "Elevada" ? "text-amber-600" : "text-gray-500"}`}>
+                            {score.urgency}
+                          </span>
                         </div>
-                      ))}
-                    </div>
-                  )}
+                        <p className="text-gray-500 leading-snug line-clamp-2">{score.recommendation}</p>
+                      </div>
+                    );
+                  })()}
+
                   <button
-                    className="mt-2 w-full text-xs text-red-600 hover:text-red-500 font-semibold flex items-center justify-center gap-1 py-1.5 border border-red-200 rounded-md hover:bg-red-50 transition-colors"
+                    className="mt-2 w-full text-[11px] font-semibold flex items-center justify-center gap-1 py-1.5 rounded-md transition-colors"
+                    style={{ color: "#2d6a8a", borderColor: "#2d6a8a33", border: "1px solid" }}
                     onClick={() => navigate(`/block/${block.id}`)}
                   >
-                    Mais Detalhes →
+                    Ver Ficha Completa →
                   </button>
                 </div>
               </Popup>
@@ -569,7 +627,13 @@ export const ConcessionMap = ({
             {/* Color mode */}
             <div>
               <div className="text-[9px] font-bold text-muted-foreground uppercase tracking-wider mb-1.5">Coloração</div>
-              <div className="flex gap-1">
+              <div className="flex gap-1 flex-wrap">
+                <button
+                  onClick={() => setColorMode("strategic")}
+                  className={`text-[10px] px-2.5 py-1.5 rounded-md font-medium transition-colors ${colorMode === "strategic" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-secondary"}`}
+                >
+                  Estratégico
+                </button>
                 <button
                   onClick={() => setColorMode("phase")}
                   className={`text-[10px] px-2.5 py-1.5 rounded-md font-medium transition-colors ${colorMode === "phase" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-secondary"}`}
@@ -615,7 +679,22 @@ export const ConcessionMap = ({
             {/* Legend */}
             <div className="pt-2 border-t border-border/40">
               <div className="text-[10px] font-bold text-foreground uppercase tracking-wider mb-2">Legenda</div>
-              {colorMode === "phase" ? (
+              {colorMode === "strategic" ? (
+                <div className="flex flex-wrap gap-x-3 gap-y-1.5">
+                  {([
+                    { color: "#2e9e5e", label: "Saudável (≥70)" },
+                    { color: "#d69e2e", label: "Atenção (40-70)" },
+                    { color: "#c53030", label: "Crítico (<40)" },
+                    { color: "#2d8ac7", label: "Exploratório" },
+                    { color: "#6b7280", label: "Inactivo" },
+                  ]).map(({ color, label }) => (
+                    <div key={label} className="flex items-center gap-1.5">
+                      <span className="w-3 h-3 rounded-sm border border-border/30" style={{ backgroundColor: color }} />
+                      <span className="text-[10px] text-foreground/80 font-medium">{label}</span>
+                    </div>
+                  ))}
+                </div>
+              ) : colorMode === "phase" ? (
                 <div className="flex flex-wrap gap-x-3 gap-y-1.5">
                   {([
                     { phase: "Production" as BlockPhase, label: "Produção" },
