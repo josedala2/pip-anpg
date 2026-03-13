@@ -147,7 +147,7 @@ const LoginPage = () => {
           </div>
 
           <p className="text-[11px] text-white/25 mt-8 lg:mt-12">
-            © 2025 ANPG — Agência Nacional de Petróleo, Gás e Biocombustíveis
+            © 2026 ANPG — Agência Nacional de Petróleo, Gás e Biocombustíveis
           </p>
         </div>
 
