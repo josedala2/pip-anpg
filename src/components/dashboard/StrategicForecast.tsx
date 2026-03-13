@@ -551,9 +551,8 @@ export const StrategicForecast = () => {
   );
 };
 
-// ── Helper: run scenario with national baseline (inline) ──
+// ── Helper: run scenario with national baseline ──
 function runScenarioForNational(scenario: ScenarioDefinition): ScenarioOutput {
-  const { runScenario } = require("@/lib/scenarioEngine");
   return runScenario({ ...scenario });
 }
 
