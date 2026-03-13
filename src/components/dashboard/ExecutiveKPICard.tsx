@@ -2,7 +2,6 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { AnimatedCounter } from "./AnimatedCounter";
 import { ArrowUpRight, ArrowDownRight, Minus } from "lucide-react";
 import { type LucideIcon } from "lucide-react";
-import { Area, AreaChart, ResponsiveContainer } from "recharts";
 
 export type SemaphoreStatus = "healthy" | "warning" | "critical" | "neutral";
 
@@ -27,11 +26,33 @@ const statusColors: Record<SemaphoreStatus, string> = {
   neutral: "bg-primary",
 };
 
-const sparklineColors: Record<SemaphoreStatus, string> = {
-  healthy: "hsl(var(--success))",
-  warning: "hsl(var(--warning))",
-  critical: "hsl(var(--danger))",
-  neutral: "hsl(var(--chart-5))",
+const barColors: Record<SemaphoreStatus, string> = {
+  healthy: "bg-success",
+  warning: "bg-warning",
+  critical: "bg-danger",
+  neutral: "bg-primary",
+};
+
+const MiniTrendBars = ({ data, status }: { data: number[]; status: SemaphoreStatus }) => {
+  const min = Math.min(...data);
+  const max = Math.max(...data);
+  const range = max - min || 1;
+
+  return (
+    <div className="flex items-end gap-[3px] h-10 w-20 flex-shrink-0">
+      {data.map((v, i) => {
+        const pct = ((v - min) / range) * 100;
+        const height = Math.max(pct, 12); // minimum 12% so bars are always visible
+        return (
+          <div
+            key={i}
+            className={`flex-1 rounded-sm ${barColors[status]} transition-all duration-300`}
+            style={{ height: `${height}%`, opacity: 0.5 + (i / (data.length - 1)) * 0.5 }}
+          />
+        );
+      })}
+    </div>
+  );
 };
 
 export const ExecutiveKPICard = ({
@@ -47,14 +68,6 @@ export const ExecutiveKPICard = ({
   drillDownInfo,
   delay = 0,
 }: ExecutiveKPICardProps) => {
-  const chartData = sparklineData?.map((v, i) => ({ v, i })) || [];
-  const gradientId = `sparkGrad-${label
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/(^-|-$)/g, "")}`;
-
   return (
     <TooltipProvider>
       <Tooltip>
@@ -103,28 +116,8 @@ export const ExecutiveKPICard = ({
                 )}
               </div>
 
-              {chartData.length > 0 && (
-                <div className="w-24 h-12 flex-shrink-0">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart data={chartData} margin={{ top: 2, right: 0, left: 0, bottom: 2 }}>
-                      <defs>
-                        <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor={sparklineColors[status]} stopOpacity={0.65} />
-                          <stop offset="100%" stopColor={sparklineColors[status]} stopOpacity={0.08} />
-                        </linearGradient>
-                      </defs>
-                      <Area
-                        type="natural"
-                        dataKey="v"
-                        stroke={sparklineColors[status]}
-                        strokeWidth={2.5}
-                        fill={`url(#${gradientId})`}
-                        dot={{ r: 1.8, fill: sparklineColors[status], strokeWidth: 0 }}
-                        isAnimationActive={false}
-                      />
-                    </AreaChart>
-                  </ResponsiveContainer>
-                </div>
+              {sparklineData && sparklineData.length > 0 && (
+                <MiniTrendBars data={sparklineData} status={status} />
               )}
             </div>
           </div>
