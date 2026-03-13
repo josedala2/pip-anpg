@@ -10,7 +10,7 @@ import {
   type Alert, type AlertCategory, type AlertSeverity, type AlertRule,
 } from "@/lib/alertsEngine";
 import {
-  AlertTriangle, Bell, FileText, Wrench, TrendingDown, DollarSign, Shield, Leaf, Settings2, Filter,
+  AlertTriangle, Bell, FileText, Wrench, TrendingDown, TrendingUp, DollarSign, Shield, Leaf, Settings2, Filter,
 } from "lucide-react";
 
 const categoryIcons: Record<AlertCategory, React.ElementType> = {
@@ -20,6 +20,7 @@ const categoryIcons: Record<AlertCategory, React.ElementType> = {
   opex: DollarSign,
   compliance: Shield,
   esg: Leaf,
+  forecast: TrendingUp,
 };
 
 export const AlertsPanel = () => {
