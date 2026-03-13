@@ -19,12 +19,13 @@ import {
 } from "recharts";
 import {
   DollarSign, TrendingUp, Gauge, Target, ShieldAlert, BarChart3,
-  ArrowUpDown, ChevronDown, ChevronUp, Info, Wallet, Scale, AlertTriangle,
+  ArrowUpDown, ChevronDown, ChevronUp, Info, Wallet, Scale, AlertTriangle, Layers,
 } from "lucide-react";
 import { CostStructurePanel } from "./CostStructurePanel";
 import { FiscalImpactPanel } from "./FiscalImpactPanel";
 import { EconomicRiskPanel } from "./EconomicRiskPanel";
 import { EconomicScenariosPanel } from "./EconomicScenariosPanel";
+import { AdvancedForecastPanel } from "./AdvancedForecastPanel";
 
 const CHART_COLORS = [
   "hsl(200, 45%, 28%)", "hsl(152, 50%, 38%)", "hsl(38, 75%, 48%)",
@@ -34,7 +35,7 @@ const CHART_COLORS = [
 
 type SortKey = "totalScore" | "dailyProduction" | "opexPerBarrel" | "breakeven" | "npvTotal" | "stateRevenue";
 
-type SubTab = "dashboard" | "custos" | "fiscal" | "risco" | "cenarios";
+type SubTab = "dashboard" | "custos" | "fiscal" | "risco" | "cenarios" | "previsao";
 
 const subTabs: { key: SubTab; label: string; icon: React.ElementType }[] = [
   { key: "dashboard", label: "Dashboard", icon: BarChart3 },
@@ -42,6 +43,7 @@ const subTabs: { key: SubTab; label: string; icon: React.ElementType }[] = [
   { key: "fiscal", label: "Impacto Fiscal", icon: Scale },
   { key: "risco", label: "Risco Económico", icon: AlertTriangle },
   { key: "cenarios", label: "Cenários", icon: TrendingUp },
+  { key: "previsao", label: "Previsão", icon: Layers },
 ];
 
 export const EconomicFinancialPanel = () => {
@@ -103,6 +105,7 @@ export const EconomicFinancialPanel = () => {
       {activeSubTab === "fiscal" && <FiscalImpactPanel />}
       {activeSubTab === "risco" && <EconomicRiskPanel />}
       {activeSubTab === "cenarios" && <EconomicScenariosPanel />}
+      {activeSubTab === "previsao" && <AdvancedForecastPanel />}
 
       {activeSubTab === "dashboard" && (
         <>
