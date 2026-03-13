@@ -9,6 +9,7 @@ import { ProductionPanel } from "@/components/dashboard/ProductionPanel";
 import { ContractCompliancePanel } from "@/components/dashboard/ContractCompliancePanel";
 import { FacilitiesIntegrityPanel } from "@/components/dashboard/FacilitiesIntegrityPanel";
 import { StrategicForecast } from "@/components/dashboard/StrategicForecast";
+import { EconomicFinancialPanel } from "@/components/dashboard/EconomicFinancialPanel";
 import { OperatorsPanel } from "@/components/dashboard/OperatorsPanel";
 import { AlertsPanel } from "@/components/dashboard/AlertsPanel";
 import { CouncilRecommendationsPanel } from "@/components/dashboard/CouncilRecommendationsPanel";
