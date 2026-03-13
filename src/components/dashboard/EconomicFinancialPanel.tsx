@@ -43,6 +43,7 @@ const subTabs: { key: SubTab; label: string; icon: React.ElementType }[] = [
   { key: "fiscal", label: "Impacto Fiscal", icon: Scale },
   { key: "risco", label: "Risco Económico", icon: AlertTriangle },
   { key: "cenarios", label: "Cenários", icon: TrendingUp },
+  { key: "previsao", label: "Previsão", icon: Layers },
 ];
 
 export const EconomicFinancialPanel = () => {
