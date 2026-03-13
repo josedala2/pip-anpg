@@ -1,29 +1,50 @@
+## Roteiro de Evolução — Plataforma Nacional de Inteligência Petrolífera
 
+### Estado actual vs Visão
 
-## Plano: Filtros por Operador e Bacia no Tab Previsão Geral
+| Capacidade | Estado |
+|---|---|
+| Mapa de concessões | ✅ Existe |
+| KPIs nacionais (prod, reservas, receita estado, variações) | ✅ Completo |
+| Painel de Blocos & Concessões | ✅ Existe |
+| Painel de Produção | ✅ Existe |
+| Painel de Exploração | ✅ Existe |
+| Painel de Operadores | ✅ Existe |
+| Risk & Performance | ✅ Existe |
+| Strategic Forecast | ✅ Existe |
+| Detalhe do bloco (12 abas) | ✅ Existe |
+| Visão Económica (Bloco 0) | ✅ Existe |
+| Comparativo de blocos | ✅ Existe |
+| Relatórios configuráveis | ✅ Existe |
+| Auth + roles | ✅ Existe |
+| **Branding "Inteligência Petrolífera"** | ✅ **Fase 1 concluída** |
+| **KPIs executivos completos** | ✅ **Fase 1 concluída** |
+| **Dashboard Contratual/Negocial** | ✅ **Fase 2 concluída** |
+| Dashboard Integridade Instalações | ✅ **Fase 3 concluída** |
+| Motor de Scoring Estratégico | ✅ **Fase 4 concluída** |
+| Dashboard Recomendação Conselho | ✅ **Fase 4 concluída** |
+| Sistema de Alertas Centrais | ✅ **Fase 5 concluída** |
 
-### Objectivo
-Adicionar selectores de Operador e Bacia no topo do `GeneralForecastPanel` para que **toda a informação** (KPIs, gráficos, heatmap, tabelas, alertas, recomendações) recalcule dinamicamente com base no subconjunto de blocos seleccionado.
+### Fases concluídas
 
-### Abordagem
+**Fase 1** — Rebranding + KPIs Executivos
+- Header: "Inteligência Petrolífera" + "Sistema Integrado de Monitorização, Análise e Apoio à Decisão"
+- KPIs primários: Produção Total, Reservas, Blocos Activos, CAPEX, Taxa de Execução
+- KPIs secundários: Em Produção, Em Exploração, Sem Produção, Risco Crítico, Receita Estado
+- Variações m/m e a/a na produção
+- Título HTML e meta tags actualizados
 
-**Ficheiro a editar:** `src/components/dashboard/GeneralForecastPanel.tsx`
+**Fase 2** — Dashboard Contratual e Negocial
+- Painel "Contratos & Compliance" adicionado à navegação
+- KPIs: contratos a expirar em 12/24/36 meses, compliance < 80%, blocos com dados contratuais
+- 4 sub-abas: Calendário Contratual, Semáforo por Operador, Matriz de Urgência, Lista Completa
+- Gráfico de barras de expiração por ano com cores por urgência
+- Scatter plot meses restantes vs compliance (tamanho = produção)
+- Semáforo verde/amarelo/vermelho por operador (compliance + execução)
+- Lista ordenada por urgência com badges de estado
 
-1. **Adicionar estado de filtros** — dois `useState` para `selectedOperator` e `selectedBasin` (default: `"all"`).
+### Próximas fases
 
-2. **Barra de filtros no topo** — Dois `Select` compactos (estilo consistente com `FilterBar` existente) mostrando operadores e bacias extraídos de `oilBlocks`. Incluir badge com contagem de blocos activos e produção total filtrada.
-
-3. **Derivar `filteredBlocks`** — `useMemo` que filtra `oilBlocks` por operador/bacia seleccionados. Todas as computações downstream passam a usar `filteredBlocks` em vez de `oilBlocks`.
-
-4. **Recalcular dados derivados** — Os `useMemo` existentes (economicKPIs, strategicScores, alerts, blockSynthesis, scenarios, heatmap, multiMetric) passam a depender de `filteredBlocks`. As funções `getNationalEconomicKPIs` e `calculateAllScores` já aceitam um array de blocos como argumento, pelo que basta passar `filteredBlocks`.
-
-5. **Cenários filtrados** — Para os cenários, calcular projecções agregando apenas os blocos filtrados (somar projecções base de cada bloco filtrado, similar ao que `runScenarioForOperator` faz mas para um subconjunto arbitrário).
-
-6. **Indicador visual** — Quando há filtro activo, mostrar um banner/badge "Filtro activo: Operador X / Bacia Y — N blocos, Xk BOPD" para contexto claro.
-
-### Detalhes Técnicos
-
-- As funções `getNationalEconomicKPIs(blocks)` e `calculateAllScores(blocks)` já recebem array de blocos — sem alterações necessárias nos engines.
-- Para cenários filtrados, criar projecções agregadas localmente somando `block.projections.base[]` dos blocos filtrados (evita alterar `scenarioEngine`).
-- Alertas filtrados: filtrar `allAlerts` por `blockId` dos blocos no subconjunto.
-
+**Fase 3** — Dashboard de Integridade de Instalações
+**Fase 4** — Motor de Scoring Estratégico + Dashboard de Recomendação ao Conselho
+**Fase 5** — Sistema de Alertas Centrais

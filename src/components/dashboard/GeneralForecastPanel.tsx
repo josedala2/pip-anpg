@@ -1,10 +1,11 @@
-import { useMemo } from "react";
+import { useState, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell } from "@/components/ui/table";
 import { oilBlocks } from "@/data/angolaBlocks";
 import {
-  runAllScenarios, PREDEFINED_SCENARIOS, type ScenarioOutput,
+  runAllScenarios, runScenarioForBlock, PREDEFINED_SCENARIOS, type ScenarioOutput,
 } from "@/lib/scenarioEngine";
 import { getNationalEconomicKPIs, classificationColors, type EconomicClassification } from "@/lib/economicScoring";
 import { calculateAllScores, classificationConfig, type StrategicClassification, type StrategicScore } from "@/lib/strategicScoring";
@@ -15,25 +16,96 @@ import {
 } from "recharts";
 import {
   Activity, DollarSign, TrendingUp, TrendingDown, ShieldAlert,
-  Target, Gauge, Layers, AlertTriangle, Lightbulb, BarChart3, Clock,
+  Target, Gauge, Layers, AlertTriangle, Lightbulb, BarChart3, Clock, Filter,
 } from "lucide-react";
 
 const fmtUSD = (v: number) => v >= 1000 ? `$${(v / 1000).toFixed(1)}B` : `$${v.toFixed(0)}MM`;
 const fmtK = (v: number) => `${(v / 1000).toFixed(0)}k`;
 
+const allOperators = [...new Set(oilBlocks.map(b => b.operator))].sort();
+const allBasins = [...new Set(oilBlocks.map(b => b.basin))].sort();
+
 export const GeneralForecastPanel = () => {
-  const scenarioOutputs = useMemo(() => runAllScenarios(), []);
-  const economicKPIs = useMemo(() => getNationalEconomicKPIs(oilBlocks), []);
-  const strategicScores = useMemo(() => calculateAllScores(oilBlocks), []);
+  const [selectedOperator, setSelectedOperator] = useState("all");
+  const [selectedBasin, setSelectedBasin] = useState("all");
+
+  const isFiltered = selectedOperator !== "all" || selectedBasin !== "all";
+
+  const filteredBlocks = useMemo(() => {
+    return oilBlocks.filter(b => {
+      if (selectedOperator !== "all" && b.operator !== selectedOperator) return false;
+      if (selectedBasin !== "all" && b.basin !== selectedBasin) return false;
+      return true;
+    });
+  }, [selectedOperator, selectedBasin]);
+
+  const filteredProduction = useMemo(() => filteredBlocks.reduce((s, b) => s + b.dailyProduction, 0), [filteredBlocks]);
+
+  // Run scenarios aggregating filtered blocks
+  const scenarioOutputs = useMemo<ScenarioOutput[]>(() => {
+    if (!isFiltered) return runAllScenarios();
+    // Aggregate per-block scenarios
+    return PREDEFINED_SCENARIOS.map(scenario => {
+      const blockOutputs = filteredBlocks
+        .filter(b => b.dailyProduction > 0)
+        .map(b => runScenarioForBlock(scenario, b));
+
+      if (blockOutputs.length === 0) {
+        return {
+          scenario,
+          npv: 0, irr: 0, totalCashFlow: 0, totalStateRevenue: 0,
+          avgCostPerBarrel: 0, breakeven: 0, paybackYear: null,
+          projections: Array.from({ length: 15 }, (_, i) => ({
+            year: 2026 + i, production: 0, revenue: 0, opex: 0,
+            netCashFlow: 0, stateRevenue: 0, cumulativeCashFlow: 0,
+          })),
+        } as ScenarioOutput;
+      }
+
+      // Aggregate projections
+      const projections = Array.from({ length: 15 }, (_, i) => {
+        const year = 2026 + i;
+        const production = blockOutputs.reduce((s, o) => s + (o.projections[i]?.production || 0), 0);
+        const revenue = blockOutputs.reduce((s, o) => s + (o.projections[i]?.revenue || 0), 0);
+        const opex = blockOutputs.reduce((s, o) => s + (o.projections[i]?.opex || 0), 0);
+        const netCashFlow = blockOutputs.reduce((s, o) => s + (o.projections[i]?.netCashFlow || 0), 0);
+        const stateRevenue = blockOutputs.reduce((s, o) => s + (o.projections[i]?.stateRevenue || 0), 0);
+        const cumulativeCashFlow = blockOutputs.reduce((s, o) => s + (o.projections[i]?.cumulativeCashFlow || 0), 0);
+        return { year, production, revenue, opex, netCashFlow, stateRevenue, cumulativeCashFlow };
+      });
+
+      return {
+        scenario,
+        npv: blockOutputs.reduce((s, o) => s + o.npv, 0),
+        irr: blockOutputs.reduce((s, o) => s + o.irr, 0) / blockOutputs.length,
+        totalCashFlow: blockOutputs.reduce((s, o) => s + o.totalCashFlow, 0),
+        totalStateRevenue: blockOutputs.reduce((s, o) => s + o.totalStateRevenue, 0),
+        avgCostPerBarrel: blockOutputs.reduce((s, o) => s + o.avgCostPerBarrel, 0) / blockOutputs.length,
+        breakeven: blockOutputs.reduce((s, o) => s + o.breakeven, 0) / blockOutputs.length,
+        projections,
+        paybackYear: blockOutputs[0]?.paybackYear || null,
+      } as ScenarioOutput;
+    });
+  }, [filteredBlocks, isFiltered]);
+
+  const economicKPIs = useMemo(() => getNationalEconomicKPIs(filteredBlocks), [filteredBlocks]);
+  const strategicScores = useMemo(() => calculateAllScores(filteredBlocks), [filteredBlocks]);
   const operationalAlerts = useMemo(() => evaluateAlerts(), []);
   const forecastAlerts = useMemo(() => evaluateForecastAlerts(), []);
-  const allAlerts = useMemo(() => [...operationalAlerts, ...forecastAlerts], [operationalAlerts, forecastAlerts]);
+
+  const filteredBlockIds = useMemo(() => new Set(filteredBlocks.map(b => b.id)), [filteredBlocks]);
+
+  const allAlerts = useMemo(() => {
+    const all = [...operationalAlerts, ...forecastAlerts];
+    if (!isFiltered) return all;
+    return all.filter(a => filteredBlockIds.has(a.blockId));
+  }, [operationalAlerts, forecastAlerts, filteredBlockIds, isFiltered]);
 
   const baseScenario = scenarioOutputs.find(s => s.scenario.id === "continuidade")!;
   const bestScenario = scenarioOutputs.reduce((a, b) => a.npv > b.npv ? a : b);
   const worstScenario = scenarioOutputs.reduce((a, b) => a.npv < b.npv ? a : b);
 
-  const currentProduction = oilBlocks.reduce((s, b) => s + b.dailyProduction, 0);
+  const currentProduction = filteredProduction;
 
   // ── Temporal heatmap data (years x metrics) ──
   const heatmapYears = [2026, 2028, 2030, 2032, 2035, 2038, 2040];
@@ -55,7 +127,7 @@ export const GeneralForecastPanel = () => {
 
   // ── Multi-metric chart ──
   const multiMetricData = useMemo(() => {
-    return baseScenario.projections.map((p, i) => ({
+    return baseScenario.projections.map((p) => ({
       year: p.year,
       "Produção (kBOPD)": Math.round(p.production / 1000),
       "Receita Estado (MMUSD)": p.stateRevenue,
@@ -66,16 +138,13 @@ export const GeneralForecastPanel = () => {
 
   // ── Block synthesis table ──
   const blockSynthesis = useMemo(() => {
-    return oilBlocks
+    return filteredBlocks
       .filter(b => b.dailyProduction > 0)
       .map(b => {
         const ecoScore = economicKPIs.scores.find(s => s.blockId === b.id);
         const strScore = strategicScores.find(s => s.blockId === b.id);
         const blockAlerts = allAlerts.filter(a => a.blockId === b.id);
         const hasCritical = blockAlerts.some(a => a.severity === "critical");
-
-        // Find best/worst scenario for this block
-        const scenarioNames = PREDEFINED_SCENARIOS.map(s => s.name);
 
         return {
           id: b.id,
@@ -93,7 +162,7 @@ export const GeneralForecastPanel = () => {
         };
       })
       .sort((a, b) => b.economicScore - a.economicScore);
-  }, [economicKPIs, strategicScores, allAlerts]);
+  }, [filteredBlocks, economicKPIs, strategicScores, allAlerts]);
 
   // ── Top risks & opportunities ──
   const topRisks = useMemo(() => {
@@ -127,6 +196,37 @@ export const GeneralForecastPanel = () => {
 
   return (
     <div className="space-y-6">
+      {/* ── Filter Bar ── */}
+      <div className="flex flex-wrap items-center gap-3">
+        <div className="flex items-center gap-1.5 text-muted-foreground">
+          <Filter className="w-3.5 h-3.5" />
+          <span className="text-xs font-semibold uppercase tracking-wider">Filtrar por</span>
+        </div>
+        <Select value={selectedOperator} onValueChange={setSelectedOperator}>
+          <SelectTrigger className="w-44 h-8 text-xs border-border/50 bg-card/50">
+            <SelectValue placeholder="Operador" />
+          </SelectTrigger>
+          <SelectContent className="bg-card border-border">
+            <SelectItem value="all">Todos os Operadores</SelectItem>
+            {allOperators.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}
+          </SelectContent>
+        </Select>
+        <Select value={selectedBasin} onValueChange={setSelectedBasin}>
+          <SelectTrigger className="w-44 h-8 text-xs border-border/50 bg-card/50">
+            <SelectValue placeholder="Bacia" />
+          </SelectTrigger>
+          <SelectContent className="bg-card border-border">
+            <SelectItem value="all">Todas as Bacias</SelectItem>
+            {allBasins.map(b => <SelectItem key={b} value={b}>{b}</SelectItem>)}
+          </SelectContent>
+        </Select>
+        {isFiltered && (
+          <Badge variant="secondary" className="text-[10px] gap-1">
+            {filteredBlocks.length} blocos · {fmtK(filteredProduction)} BOPD
+          </Badge>
+        )}
+      </div>
+
       {/* ── Macro KPI Strip ── */}
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3">
         <MacroKPI icon={Activity} label="Produção Actual" value={fmtK(currentProduction)} sub="BOPD" />
@@ -145,6 +245,7 @@ export const GeneralForecastPanel = () => {
           <CardTitle className="text-sm font-semibold flex items-center gap-2">
             <BarChart3 className="w-4 h-4 text-primary" />
             Previsão Consolidada — Produção, Receita, Custos (Cenário Base, 15 Anos)
+            {isFiltered && <Badge variant="outline" className="text-[9px] ml-auto">Filtrado</Badge>}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -207,7 +308,6 @@ export const GeneralForecastPanel = () => {
 
       {/* ── Risks & Opportunities Row ── */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {/* Top Risks */}
         <Card className="border-danger/20">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-semibold flex items-center gap-2">
@@ -236,7 +336,6 @@ export const GeneralForecastPanel = () => {
           </CardContent>
         </Card>
 
-        {/* Top Opportunities */}
         <Card className="border-success/20">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-semibold flex items-center gap-2">
@@ -267,7 +366,7 @@ export const GeneralForecastPanel = () => {
         <CardHeader className="pb-2">
           <CardTitle className="text-sm font-semibold flex items-center gap-2">
             <Layers className="w-4 h-4 text-primary" />
-            Tabela Sintética — Todos os Blocos em Produção
+            Tabela Sintética — {isFiltered ? "Blocos Filtrados" : "Todos os Blocos"} em Produção
           </CardTitle>
         </CardHeader>
         <CardContent className="p-0">
