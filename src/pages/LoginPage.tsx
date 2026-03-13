@@ -123,14 +123,14 @@ const LoginPage = () => {
           <div className="space-y-6 max-w-xl mt-auto">
             <div className="space-y-3">
               <p className="text-xs font-semibold uppercase tracking-[0.2em] text-white/40">
-                Inteligência Petrolífera
+                Agência Nacional de Petróleo, Gás e Biocombustíveis
               </p>
               <h1 className="text-3xl lg:text-5xl font-bold text-white leading-[1.1] tracking-tight">
-                ANPG
+                Plataforma de
                 <br />
-                <span className="text-primary">Concession</span>
+                <span className="text-primary">Inteligência</span>
                 <br />
-                Vision
+                Petrolífera — PIP
               </h1>
               <p className="text-white/50 text-sm lg:text-base max-w-md leading-relaxed">
                 Monitoria integrada de blocos, produção, exploração e indicadores estratégicos.
@@ -147,7 +147,7 @@ const LoginPage = () => {
           </div>
 
           <p className="text-[11px] text-white/25 mt-8 lg:mt-12">
-            © 2025 ANPG — Agência Nacional de Petróleo, Gás e Biocombustíveis
+            © 2026 ANPG — Agência Nacional de Petróleo, Gás e Biocombustíveis
           </p>
         </div>
 
