@@ -251,7 +251,7 @@ const Index = () => {
               : "opacity-100 translate-x-0"
           }`}
         >
-          {panels[activePanel] === "Home Executiva" && <ExecutiveHome />}
+          {panels[activePanel] === "Home Executiva" && <ExecutiveHome initialDrillDown={homeDrillDown} />}
 
           <div className="p-4 md:p-6 2xl:p-8 3xl:p-10 max-w-[1920px] 3xl:max-w-[2400px] mx-auto">
             {panels[activePanel] === "Concessões" && <BlocksPanel />}
