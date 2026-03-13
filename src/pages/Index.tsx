@@ -42,6 +42,10 @@ const Index = () => {
   const [filteredIds, setFilteredIds] = useState<string[]>(oilBlocks.map(b => b.id));
   const [hoveredBlockId, setHoveredBlockId] = useState<string | null>(null);
   const [isPresentation, setIsPresentation] = useState(false);
+  const alertsSummary = useMemo(() => {
+    const all = evaluateAlerts();
+    return { total: all.length, critical: all.filter(a => a.severity === "critical").length };
+  }, []);
 
   const filteredBlocks = useMemo(() =>
     oilBlocks.filter(b => filteredIds.includes(b.id)),
