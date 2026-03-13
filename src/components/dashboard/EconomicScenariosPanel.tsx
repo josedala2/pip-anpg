@@ -1,13 +1,17 @@
 import { useMemo, useState } from "react";
 import {
   runAllScenarios,
+  runAllScenariosForBlock,
   runCustomScenario,
+  runScenarioForBlock,
   PREDEFINED_SCENARIOS,
   BASE_VARIABLES,
   type ScenarioVariables,
   type ScenarioOutput,
 } from "@/lib/scenarioEngine";
+import { oilBlocks } from "@/data/angolaBlocks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -16,8 +20,22 @@ import {
 } from "recharts";
 import {
   Play, Settings2, TrendingUp, DollarSign, Percent, BarChart3,
-  ChevronDown, ChevronUp,
+  ChevronDown, ChevronUp, MapPin,
 } from "lucide-react";
+
+const producingBlocks = oilBlocks.filter(b => b.dailyProduction > 0).sort((a, b) => b.dailyProduction - a.dailyProduction);
+
+/** Smart format: shows $B for large values, $MM for smaller */
+function fmtUSD(mmusd: number): string {
+  const abs = Math.abs(mmusd);
+  if (abs >= 1000) return `${mmusd >= 0 ? "+" : ""}$${(mmusd / 1000).toFixed(1)}B`;
+  return `${mmusd >= 0 ? "+" : ""}$${Math.round(mmusd)}MM`;
+}
+function fmtUSDShort(mmusd: number): string {
+  const abs = Math.abs(mmusd);
+  if (abs >= 1000) return `$${(mmusd / 1000).toFixed(1)}B`;
+  return `$${Math.round(mmusd)}MM`;
+}
 
 export const EconomicScenariosPanel = () => {
   const [showCustom, setShowCustom] = useState(false);
@@ -25,13 +43,29 @@ export const EconomicScenariosPanel = () => {
   const [selectedScenarios, setSelectedScenarios] = useState<string[]>(
     PREDEFINED_SCENARIOS.map(s => s.id)
   );
+  const [selectedBlockId, setSelectedBlockId] = useState<string>("all");
 
-  const predefinedOutputs = useMemo(() => runAllScenarios(), []);
+  const selectedBlock = useMemo(
+    () => selectedBlockId === "all" ? null : oilBlocks.find(b => b.id === selectedBlockId) || null,
+    [selectedBlockId]
+  );
+
+  const predefinedOutputs = useMemo(
+    () => selectedBlock ? runAllScenariosForBlock(selectedBlock) : runAllScenarios(),
+    [selectedBlock]
+  );
 
   const customOutput = useMemo(() => {
     if (!showCustom) return null;
+    if (selectedBlock) {
+      const custom = {
+        id: "custom", name: "Cenário Personalizado", description: "Variáveis definidas pelo utilizador.",
+        icon: "🎯", color: "hsl(199, 70%, 45%)", variables: customVars,
+      };
+      return runScenarioForBlock(custom, selectedBlock);
+    }
     return runCustomScenario(customVars);
-  }, [showCustom, customVars]);
+  }, [showCustom, customVars, selectedBlock]);
 
   const allOutputs = useMemo(() => {
     const outputs = predefinedOutputs.filter(o => selectedScenarios.includes(o.scenario.id));
@@ -64,7 +98,33 @@ export const EconomicScenariosPanel = () => {
     <div className="space-y-5">
       {/* ── Scenario Selector ── */}
       <div className="space-y-2">
-        <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Cenários Económicos</h3>
+        <div className="flex items-center justify-between flex-wrap gap-2">
+          <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Cenários Económicos</h3>
+          <div className="flex items-center gap-2">
+            <MapPin className="w-3.5 h-3.5 text-muted-foreground" />
+            <Select value={selectedBlockId} onValueChange={setSelectedBlockId}>
+              <SelectTrigger className="w-56 h-8 text-xs border-border/50">
+                <SelectValue placeholder="Seleccionar concessão" />
+              </SelectTrigger>
+              <SelectContent className="bg-card border-border">
+                <SelectItem value="all">🌍 Visão Nacional (Todos os Blocos)</SelectItem>
+                {producingBlocks.map(b => (
+                  <SelectItem key={b.id} value={b.id}>
+                    {b.name} — {(b.dailyProduction / 1000).toFixed(0)}k BOPD
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+        {selectedBlock && (
+          <div className="flex items-center gap-3 p-2.5 rounded-lg bg-primary/5 border border-primary/20">
+            <span className="text-xs font-semibold text-primary">{selectedBlock.name}</span>
+            <Badge variant="outline" className="text-[10px]">{selectedBlock.operator}</Badge>
+            <Badge variant="outline" className="text-[10px]">{(selectedBlock.dailyProduction / 1000).toFixed(1)}k BOPD</Badge>
+            <Badge variant="outline" className="text-[10px]">{selectedBlock.basin}</Badge>
+          </div>
+        )}
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-2">
           {PREDEFINED_SCENARIOS.map(s => {
             const output = predefinedOutputs.find(o => o.scenario.id === s.id)!;
@@ -82,7 +142,7 @@ export const EconomicScenariosPanel = () => {
                 <div className="flex items-center justify-between mb-1">
                   <span className="text-sm">{s.icon}</span>
                   <span className={`text-lg font-bold tabular-nums ${output.npv >= 0 ? "text-success" : "text-danger"}`}>
-                    {output.npv >= 0 ? "+" : ""}${(output.npv / 1000).toFixed(1)}B
+                    {fmtUSD(output.npv)}
                   </span>
                 </div>
                 <div className="text-xs font-semibold text-foreground">{s.name}</div>
@@ -90,7 +150,7 @@ export const EconomicScenariosPanel = () => {
                 <div className="flex items-center gap-2 mt-2">
                   <span className="text-[10px] text-muted-foreground">IRR: {output.irr.toFixed(1)}%</span>
                   <span className="text-[10px] text-muted-foreground">·</span>
-                  <span className="text-[10px] text-muted-foreground">Estado: ${(output.totalStateRevenue / 1000).toFixed(1)}B</span>
+                  <span className="text-[10px] text-muted-foreground">Estado: {fmtUSDShort(output.totalStateRevenue)}</span>
                 </div>
               </button>
             );
@@ -128,13 +188,13 @@ export const EconomicScenariosPanel = () => {
                       <span className="font-semibold">{o.scenario.name}</span>
                     </td>
                     <td className={`py-2 text-right tabular-nums font-bold ${o.npv >= 0 ? "text-success" : "text-danger"}`}>
-                      ${(o.npv / 1000).toFixed(1)}B
+                      {fmtUSDShort(o.npv)}
                     </td>
                     <td className="py-2 text-right tabular-nums">{o.irr.toFixed(1)}%</td>
                     <td className={`py-2 text-right tabular-nums ${o.totalCashFlow >= 0 ? "text-foreground" : "text-danger"}`}>
-                      ${(o.totalCashFlow / 1000).toFixed(1)}B
+                      {fmtUSDShort(o.totalCashFlow)}
                     </td>
-                    <td className="py-2 text-right tabular-nums">${(o.totalStateRevenue / 1000).toFixed(1)}B</td>
+                    <td className="py-2 text-right tabular-nums">{fmtUSDShort(o.totalStateRevenue)}</td>
                     <td className="py-2 text-right tabular-nums">${o.avgCostPerBarrel.toFixed(1)}</td>
                     <td className="py-2 text-right tabular-nums">{o.paybackYear || "—"}</td>
                   </tr>
@@ -386,10 +446,10 @@ export const EconomicScenariosPanel = () => {
                   <span className="text-xs font-bold">Resultado do Cenário Personalizado</span>
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-6 gap-3">
-                  <OutputKPI label="NPV" value={`$${(customOutput.npv / 1000).toFixed(1)}B`} positive={customOutput.npv >= 0} />
+                  <OutputKPI label="NPV" value={fmtUSDShort(customOutput.npv)} positive={customOutput.npv >= 0} />
                   <OutputKPI label="IRR" value={`${customOutput.irr.toFixed(1)}%`} positive={customOutput.irr > 10} />
-                  <OutputKPI label="Cash Flow Total" value={`$${(customOutput.totalCashFlow / 1000).toFixed(1)}B`} positive={customOutput.totalCashFlow >= 0} />
-                  <OutputKPI label="Receita Estado" value={`$${(customOutput.totalStateRevenue / 1000).toFixed(1)}B`} positive />
+                  <OutputKPI label="Cash Flow Total" value={fmtUSDShort(customOutput.totalCashFlow)} positive={customOutput.totalCashFlow >= 0} />
+                  <OutputKPI label="Receita Estado" value={fmtUSDShort(customOutput.totalStateRevenue)} positive />
                   <OutputKPI label="Custo/bbl" value={`$${customOutput.avgCostPerBarrel.toFixed(1)}`} positive={customOutput.avgCostPerBarrel < 40} />
                   <OutputKPI label="Payback" value={customOutput.paybackYear ? `${customOutput.paybackYear}` : "—"} positive={!!customOutput.paybackYear} />
                 </div>
