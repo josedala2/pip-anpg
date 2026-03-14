@@ -20,17 +20,17 @@ interface ConcessionMapProps {
 }
 
 // Auto-fit map bounds to visible blocks
-function FitBounds({ blocks }: { blocks: OilBlock[] }) {
+function FitBounds({ blocks, polygons }: { blocks: OilBlock[]; polygons: Record<string, [number, number][]> }) {
   const map = useMap();
   const bounds = useMemo(() => {
     const allCoords: [number, number][] = [];
     for (const block of blocks) {
-      const polygon = blockPolygons[block.id];
+      const polygon = polygons[block.id];
       if (polygon) allCoords.push(...polygon);
     }
     if (allCoords.length === 0) return null;
     return L.latLngBounds(allCoords.map(([lat, lng]) => L.latLng(lat, lng)));
-  }, [blocks]);
+  }, [blocks, polygons]);
 
   useEffect(() => {
     if (bounds) {
