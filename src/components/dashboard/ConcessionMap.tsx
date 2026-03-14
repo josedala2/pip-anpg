@@ -499,26 +499,8 @@ export const ConcessionMap = ({
           );
         })}
 
-        {/* Block name labels at true centroid */}
-        {showBlocks && blocks.map(block => {
-          const polygon = blockPolygons[block.id];
-          if (!polygon) return null;
-          const center = getPolygonCenter(polygon);
-          const icon = L.divIcon({
-            className: 'leaflet-block-label',
-            html: `<span class="font-bold">${block.name}</span>`,
-            iconSize: [0, 0],
-            iconAnchor: [0, 0],
-          });
-          return (
-            <Marker
-              key={`label-${block.id}`}
-              position={center}
-              icon={icon}
-              interactive={false}
-            />
-          );
-        })}
+        {/* Zoom-responsive block labels */}
+        <BlockLabels blocks={blocks} blockPolygons={blockPolygons} showBlocks={showBlocks} />
       </MapContainer>
 
       {/* Layers Panel */}
