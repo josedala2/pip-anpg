@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { MapContainer, TileLayer, Polygon, Polyline, Popup, CircleMarker, Tooltip as LeafletTooltip, Rectangle, useMap } from "react-leaflet";
+import { MapContainer, TileLayer, Polygon, Polyline, Popup, CircleMarker, Tooltip as LeafletTooltip, Rectangle, Marker, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { type OilBlock, type BlockPhase } from "@/data/angolaBlocks";
@@ -375,9 +375,6 @@ export const ConcessionMap = ({
                 mouseout: () => onBlockHover(null),
               }}
             >
-              <LeafletTooltip permanent direction="center" className="leaflet-block-label">
-                <span className="font-bold">{block.name}</span>
-              </LeafletTooltip>
               {!disablePopup && (
               <Popup className="leaflet-block-popup" maxWidth={320} minWidth={240}>
                 <div className="p-2">
@@ -453,6 +450,27 @@ export const ConcessionMap = ({
               </Popup>
               )}
             </Polygon>
+          );
+        })}
+
+        {/* Block name labels at true centroid */}
+        {showBlocks && blocks.map(block => {
+          const polygon = blockPolygons[block.id];
+          if (!polygon) return null;
+          const center = getPolygonCenter(polygon);
+          const icon = L.divIcon({
+            className: 'leaflet-block-label',
+            html: `<span class="font-bold">${block.name}</span>`,
+            iconSize: [0, 0],
+            iconAnchor: [0, 0],
+          });
+          return (
+            <Marker
+              key={`label-${block.id}`}
+              position={center}
+              icon={icon}
+              interactive={false}
+            />
           );
         })}
       </MapContainer>
