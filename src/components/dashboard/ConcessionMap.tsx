@@ -334,12 +334,24 @@ export const ConcessionMap = ({
 
   // Load real polygons from XLSX on mount
   useEffect(() => {
-    loadBlockPolygons().then(setRealPolygons);
+    loadBlockPolygons().then(data => {
+      console.log("[ConcessionMap] Real polygons loaded:", Object.keys(data).length);
+      // Debug: show first few coords of block-0
+      if (data["block-0"]) {
+        console.log("[ConcessionMap] block-0 sample coords (first 3):", data["block-0"].slice(0, 3));
+      }
+      // Debug: show first few coords of block-14
+      if (data["block-14"]) {
+        console.log("[ConcessionMap] block-14 sample coords (first 3):", data["block-14"].slice(0, 3));
+      }
+      setRealPolygons(data);
+    });
   }, []);
 
   // Merge: real polygons take priority over fallback rectangles
   const blockPolygons = useMemo(() => {
-    return { ...fallbackPolygons, ...realPolygons };
+    const merged = { ...fallbackPolygons, ...realPolygons };
+    return merged;
   }, [realPolygons]);
 
   // Pre-compute strategic scores for all blocks
