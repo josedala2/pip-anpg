@@ -211,10 +211,10 @@ const areaToPolygon = (
   ];
 };
 
-// Pre-compute all block polygons
-const blockPolygons: Record<string, [number, number][]> = {};
+// Pre-compute fallback block polygons (rectangles from area data)
+const fallbackPolygons: Record<string, [number, number][]> = {};
 for (const [id, data] of Object.entries(blockGeoData)) {
-  blockPolygons[id] = areaToPolygon(data.center, data.area, data.aspect);
+  fallbackPolygons[id] = areaToPolygon(data.center, data.area, data.aspect);
 }
 
 // Center of polygon for labels
