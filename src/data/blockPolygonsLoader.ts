@@ -1,3 +1,4 @@
+// @ts-ignore - read-excel-file types
 import readXlsxFile from "read-excel-file";
 
 // Map spreadsheet block names to app block IDs
