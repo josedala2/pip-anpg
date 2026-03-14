@@ -195,9 +195,8 @@ export const ConcessionMap = ({
   }, []);
 
   // Merge: real polygons take priority over fallback rectangles
-  const blockPolygons = useMemo(() => {
-    return { ...fallbackPolygons, ...realPolygons };
-  }, [realPolygons]);
+  // Only show blocks with real XLSX polygon data
+  const blockPolygons = useMemo(() => realPolygons, [realPolygons]);
 
   // Pre-compute strategic scores for all blocks
   const blockScores = useMemo(() => {
