@@ -1,4 +1,4 @@
-import * as XLSX from "xlsx";
+// Lazy-loaded: xlsx is only imported when loadBlockPolygons() is first called
 
 // Map spreadsheet block names to app block IDs
 const nameToId: Record<string, string> = {
