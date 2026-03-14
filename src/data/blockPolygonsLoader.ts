@@ -147,8 +147,8 @@ export async function loadBlockPolygons(): Promise<BlockPolygonMap> {
 
   loadingPromise = (async () => {
     try {
-      const [{ default: XLSX }, response] = await Promise.all([
-        import("xlsx") as Promise<{ default: typeof import("xlsx") }>,
+      const [XLSX, response] = await Promise.all([
+        import("xlsx"),
         fetch("/data/block-coordinates.xlsx"),
       ]);
       const buffer = await response.arrayBuffer();
