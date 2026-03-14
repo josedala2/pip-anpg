@@ -41,6 +41,52 @@ function FitBounds({ blocks, polygons }: { blocks: OilBlock[]; polygons: Record<
   return null;
 }
 
+// Hook to track current zoom level
+function useZoom() {
+  const map = useMap();
+  const [zoom, setZoom] = useState(map.getZoom());
+  useEffect(() => {
+    const onZoom = () => setZoom(map.getZoom());
+    map.on('zoomend', onZoom);
+    return () => { map.off('zoomend', onZoom); };
+  }, [map]);
+  return zoom;
+}
+
+// Zoom-responsive block labels
+function BlockLabels({ blocks, blockPolygons, showBlocks }: { blocks: OilBlock[]; blockPolygons: Record<string, [number, number][]>; showBlocks: boolean }) {
+  const zoom = useZoom();
+
+  const fontSize = zoom <= 4 ? 7 : zoom <= 5 ? 8 : zoom <= 6 ? 9 : zoom <= 7 ? 10 : zoom <= 8 ? 11 : 12;
+  const showLabels = zoom >= 3;
+
+  if (!showBlocks || !showLabels) return null;
+
+  return (
+    <>
+      {blocks.map(block => {
+        const polygon = blockPolygons[block.id];
+        if (!polygon) return null;
+        const center = getPolygonCenter(polygon);
+        const icon = L.divIcon({
+          className: 'leaflet-block-label',
+          html: `<span style="font-size:${fontSize}px;font-weight:700">${block.name}</span>`,
+          iconSize: [0, 0],
+          iconAnchor: [0, 0],
+        });
+        return (
+          <Marker
+            key={`label-${block.id}`}
+            position={center}
+            icon={icon}
+            interactive={false}
+          />
+        );
+      })}
+    </>
+  );
+}
+
 const phaseColors: Record<BlockPhase, string> = {
   Production: "#22c55e",
   Development: "#3b82f6",
