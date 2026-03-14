@@ -5,6 +5,7 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { type OilBlock, type BlockPhase } from "@/data/angolaBlocks";
 import { calculateStrategicScore } from "@/lib/strategicScoring";
+import { loadBlockPolygons, type BlockPolygonMap } from "@/data/blockPolygonsLoader";
 import { Layers, Map as MapIcon, Satellite, Mountain, Waves, TreePine, ChevronDown, ChevronUp, Droplets } from "lucide-react";
 
 interface ConcessionMapProps {
