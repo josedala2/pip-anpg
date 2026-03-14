@@ -1,5 +1,4 @@
-// @ts-ignore - read-excel-file types
-import readXlsxFile from "read-excel-file";
+import * as XLSX from "xlsx";
 
 // Map spreadsheet block names to app block IDs
 const nameToId: Record<string, string> = {
@@ -128,7 +127,9 @@ export async function loadBlockPolygons(): Promise<BlockPolygonMap> {
     try {
       const response = await fetch("/data/block-coordinates.xlsx");
       const buffer = await response.arrayBuffer();
-      const rows = await readXlsxFile(buffer);
+      const workbook = XLSX.read(buffer, { type: "array" });
+      const sheet = workbook.Sheets[workbook.SheetNames[0]];
+      const rows: any[][] = XLSX.utils.sheet_to_json(sheet, { header: 1 });
 
       // Group coordinates by block name
       const blockCoords: Record<string, [number, number][]> = {};
@@ -136,7 +137,7 @@ export async function loadBlockPolygons(): Promise<BlockPolygonMap> {
       for (const row of rows) {
         if (!row[0] || !row[1] || !row[2]) continue;
         const rawName = String(row[0]);
-        if (rawName === "BLOCO" || rawName.toLowerCase().includes("bloco") && rawName.toLowerCase().includes("longitude")) continue;
+        if (rawName === "BLOCO" || (rawName.toLowerCase().includes("bloco") && rawName.toLowerCase().includes("longitude"))) continue;
 
         const name = normalizeBlockName(rawName);
         const lng = Number(row[1]);
