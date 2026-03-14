@@ -1,4 +1,4 @@
-import * as XLSX from "xlsx";
+// Lazy-loaded: xlsx is only imported when loadBlockPolygons() is first called
 
 // Map spreadsheet block names to app block IDs
 const nameToId: Record<string, string> = {
@@ -125,7 +125,10 @@ export async function loadBlockPolygons(): Promise<BlockPolygonMap> {
 
   loadingPromise = (async () => {
     try {
-      const response = await fetch("/data/block-coordinates.xlsx");
+      const [{ default: XLSX }, response] = await Promise.all([
+        import("xlsx") as Promise<{ default: typeof import("xlsx") }>,
+        fetch("/data/block-coordinates.xlsx"),
+      ]);
       const buffer = await response.arrayBuffer();
       const workbook = XLSX.read(buffer, { type: "array" });
       const sheet = workbook.Sheets[workbook.SheetNames[0]];
