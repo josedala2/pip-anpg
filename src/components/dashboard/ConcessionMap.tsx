@@ -375,9 +375,6 @@ export const ConcessionMap = ({
                 mouseout: () => onBlockHover(null),
               }}
             >
-              <LeafletTooltip permanent direction="center" className="leaflet-block-label">
-                <span className="font-bold">{block.name}</span>
-              </LeafletTooltip>
               {!disablePopup && (
               <Popup className="leaflet-block-popup" maxWidth={320} minWidth={240}>
                 <div className="p-2">
