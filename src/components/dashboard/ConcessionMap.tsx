@@ -5,6 +5,7 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { type OilBlock, type BlockPhase } from "@/data/angolaBlocks";
 import { calculateStrategicScore } from "@/lib/strategicScoring";
+import { loadBlockPolygons, type BlockPolygonMap } from "@/data/blockPolygonsLoader";
 import { Layers, Map as MapIcon, Satellite, Mountain, Waves, TreePine, ChevronDown, ChevronUp, Droplets } from "lucide-react";
 
 interface ConcessionMapProps {
@@ -19,17 +20,17 @@ interface ConcessionMapProps {
 }
 
 // Auto-fit map bounds to visible blocks
-function FitBounds({ blocks }: { blocks: OilBlock[] }) {
+function FitBounds({ blocks, polygons }: { blocks: OilBlock[]; polygons: Record<string, [number, number][]> }) {
   const map = useMap();
   const bounds = useMemo(() => {
     const allCoords: [number, number][] = [];
     for (const block of blocks) {
-      const polygon = blockPolygons[block.id];
+      const polygon = polygons[block.id];
       if (polygon) allCoords.push(...polygon);
     }
     if (allCoords.length === 0) return null;
     return L.latLngBounds(allCoords.map(([lat, lng]) => L.latLng(lat, lng)));
-  }, [blocks]);
+  }, [blocks, polygons]);
 
   useEffect(() => {
     if (bounds) {
@@ -210,10 +211,10 @@ const areaToPolygon = (
   ];
 };
 
-// Pre-compute all block polygons
-const blockPolygons: Record<string, [number, number][]> = {};
+// Pre-compute fallback block polygons (rectangles from area data)
+const fallbackPolygons: Record<string, [number, number][]> = {};
 for (const [id, data] of Object.entries(blockGeoData)) {
-  blockPolygons[id] = areaToPolygon(data.center, data.area, data.aspect);
+  fallbackPolygons[id] = areaToPolygon(data.center, data.area, data.aspect);
 }
 
 // Center of polygon for labels
@@ -329,6 +330,17 @@ export const ConcessionMap = ({
   const [showSatellite, setShowSatellite] = useState(true);
   const [colorMode, setColorMode] = useState<"phase" | "bidding" | "strategic">("strategic");
   const [layersPanelOpen, setLayersPanelOpen] = useState(false);
+  const [realPolygons, setRealPolygons] = useState<BlockPolygonMap>({});
+
+  // Load real polygons from XLSX on mount
+  useEffect(() => {
+    loadBlockPolygons().then(setRealPolygons);
+  }, []);
+
+  // Merge: real polygons take priority over fallback rectangles
+  const blockPolygons = useMemo(() => {
+    return { ...fallbackPolygons, ...realPolygons };
+  }, [realPolygons]);
 
   // Pre-compute strategic scores for all blocks
   const blockScores = useMemo(() => {
@@ -374,7 +386,7 @@ export const ConcessionMap = ({
         maxBounds={[[-20, 5], [-2, 18]]}
       >
         <TileSwitch showSatellite={showSatellite} />
-        {autoFitBounds && <FitBounds blocks={blocks} />}
+        {autoFitBounds && <FitBounds blocks={blocks} polygons={blockPolygons} />}
 
 
 
