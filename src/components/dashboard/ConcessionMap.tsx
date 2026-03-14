@@ -330,6 +330,17 @@ export const ConcessionMap = ({
   const [showSatellite, setShowSatellite] = useState(true);
   const [colorMode, setColorMode] = useState<"phase" | "bidding" | "strategic">("strategic");
   const [layersPanelOpen, setLayersPanelOpen] = useState(false);
+  const [realPolygons, setRealPolygons] = useState<BlockPolygonMap>({});
+
+  // Load real polygons from XLSX on mount
+  useEffect(() => {
+    loadBlockPolygons().then(setRealPolygons);
+  }, []);
+
+  // Merge: real polygons take priority over fallback rectangles
+  const blockPolygons = useMemo(() => {
+    return { ...fallbackPolygons, ...realPolygons };
+  }, [realPolygons]);
 
   // Pre-compute strategic scores for all blocks
   const blockScores = useMemo(() => {
