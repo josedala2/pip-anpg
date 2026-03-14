@@ -386,7 +386,7 @@ export const ConcessionMap = ({
         maxBounds={[[-20, 5], [-2, 18]]}
       >
         <TileSwitch showSatellite={showSatellite} />
-        {autoFitBounds && <FitBounds blocks={blocks} />}
+        {autoFitBounds && <FitBounds blocks={blocks} polygons={blockPolygons} />}
 
 
 
