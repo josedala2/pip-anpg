@@ -653,6 +653,21 @@ export const ConcessionMap = ({
         )}
       </div>
 
+      {/* Phase Legend */}
+      <div className="absolute bottom-2 left-2 z-[1000] bg-background/85 backdrop-blur-sm px-3 py-2 rounded-lg border border-border/40 shadow-md">
+        <div className="text-[9px] font-bold text-foreground/80 mb-1.5 uppercase tracking-wider">Fases</div>
+        <div className="flex flex-col gap-1">
+          {Object.entries(phaseColors).map(([phase, color]) => (
+            <div key={phase} className="flex items-center gap-2">
+              <span className="w-3 h-3 rounded-sm border border-white/30 inline-block" style={{ backgroundColor: color }} />
+              <span className="text-[10px] text-foreground/70">
+                {phase === "Production" ? "Produção" : phase === "Development" ? "Desenvolvimento" : phase === "Exploration" ? "Exploração" : phase === "Suspended" ? "Suspenso" : "Licitação"}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+
       {/* Attribution */}
       <div className="absolute bottom-2 right-2 z-[1000] bg-background/70 backdrop-blur-sm px-2 py-1 rounded text-[9px] text-muted-foreground border border-border/30">
         DATUM WGS84 · ANPG · 3371-NOV-19-GIS-GAD
