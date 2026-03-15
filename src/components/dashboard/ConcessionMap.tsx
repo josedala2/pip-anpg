@@ -107,7 +107,7 @@ function ProductionIndicators({ blocks, blockPolygons }: { blocks: OilBlock[]; b
         return (
           <Marker
             key={`prod-label-${block.id}`}
-            position={center}
+            position={offsetCenter}
             icon={icon}
             interactive={false}
           />
