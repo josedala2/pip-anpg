@@ -296,6 +296,8 @@ const BlockPage = () => {
   const discGradId = `discGrad-${uid}`;
   const [explorationBarMode, setExplorationBarMode] = useState<"grouped" | "stacked">("grouped");
   const [activeTab, setActiveTab] = useState("overview");
+  const [fieldDecadeFilter, setFieldDecadeFilter] = useState<string | null>(null);
+  const [fieldStatusFilter, setFieldStatusFilter] = useState<string | null>(null);
 
   // Calculate averages for reference lines
   const avgProduction = useMemo(() => {
