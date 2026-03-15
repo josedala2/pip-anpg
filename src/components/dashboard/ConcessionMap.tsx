@@ -58,9 +58,11 @@ function ProductionIndicators({ blocks, blockPolygons }: { blocks: OilBlock[]; b
   const zoom = useZoom();
   const showProdLabels = zoom >= 6;
 
+  const prodBlocks = blocks.filter(b => b.dailyProduction > 0);
+
   return (
     <>
-      {blocks.filter(b => b.dailyProduction > 0).map(block => {
+      {prodBlocks.map(block => {
         const polygon = blockPolygons[block.id];
         if (!polygon) return null;
         const center = getPolygonCenter(polygon);
@@ -77,20 +79,39 @@ function ProductionIndicators({ blocks, blockPolygons }: { blocks: OilBlock[]; b
               fillOpacity: 0.8,
             }}
           >
-            <LeafletTooltip direction="top" offset={[0, -radius]} className="leaflet-block-tooltip">
-              <div className="text-xs font-semibold">{block.name}</div>
-              <div className="text-[11px] text-muted-foreground">
-                {block.dailyProduction.toLocaleString()} bbl/d
+            <LeafletTooltip direction="top" offset={[0, -radius]}>
+              <div style={{ fontWeight: 600, fontSize: 12 }}>{block.name}</div>
+              <div style={{ fontSize: 11, opacity: 0.8 }}>
+                Produção: {block.dailyProduction.toLocaleString()} bbl/d
               </div>
             </LeafletTooltip>
-            {showProdLabels && (
-              <LeafletTooltip permanent direction="center" className="leaflet-production-label">
-                <span className="text-[8px] font-bold text-white drop-shadow-md">
-                  {(block.dailyProduction / 1000).toFixed(0)}k
-                </span>
-              </LeafletTooltip>
-            )}
           </CircleMarker>
+        );
+      })}
+      {/* Permanent "Xk" labels as separate markers so they don't conflict with hover tooltip */}
+      {showProdLabels && prodBlocks.map(block => {
+        const polygon = blockPolygons[block.id];
+        if (!polygon) return null;
+        const center = getPolygonCenter(polygon);
+        const label = `${(block.dailyProduction / 1000).toFixed(0)}k`;
+        const icon = L.divIcon({
+          className: 'leaflet-production-label-icon',
+          html: `<span style="font-size:8px;font-weight:700;color:white;text-shadow:0 1px 3px rgba(0,0,0,.7)">${label}</span>`,
+          iconSize: [0, 0],
+          iconAnchor: [0, 0],
+        });
+        return (
+          <Marker
+            key={`prod-label-${block.id}`}
+            position={center}
+            icon={icon}
+            interactive={false}
+          />
+        );
+      })}
+    </>
+  );
+}
         );
       })}
     </>
