@@ -1940,8 +1940,12 @@ export const oilBlocks: OilBlock[] = [
     geologicalObjectives: ["Oligocene Turbidites", "Miocene Channels", "Pre-Salt Lacustrine Carbonates"],
     fields: [
       { name: "Greater Plutonio", status: "Producing", discoveryYear: 2001, peakProduction: 100000 },
+      { name: "Paládio", status: "Producing", discoveryYear: 2002, peakProduction: 20000 },
       { name: "Galio", status: "Producing", discoveryYear: 2003, peakProduction: 30000 },
       { name: "Cromio", status: "Producing", discoveryYear: 2005, peakProduction: 25000 },
+      { name: "Cobalto", status: "Producing", discoveryYear: 2006, peakProduction: 18000 },
+      { name: "Plutonio Phase 2", status: "Producing", discoveryYear: 2012, peakProduction: 15000 },
+      { name: "Platina", status: "Development", discoveryYear: 2015, peakProduction: 22000 },
     ],
     prospects: [
       { discoveryArea: "Plutonio", name: "Plutonio North Ext.", reservoir: "Oligoceno", resourcesMMBO: 175, resourcesBCF: 60, pos: 48 },
