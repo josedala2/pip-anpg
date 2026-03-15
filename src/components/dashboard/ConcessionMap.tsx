@@ -53,6 +53,44 @@ function useZoom() {
   return zoom;
 }
 
+// Zoom-responsive production indicators
+function ProductionIndicators({ blocks, blockPolygons }: { blocks: OilBlock[]; blockPolygons: Record<string, [number, number][]> }) {
+  const zoom = useZoom();
+  const showProdLabels = zoom >= 6;
+
+  return (
+    <>
+      {blocks.filter(b => b.dailyProduction > 0).map(block => {
+        const polygon = blockPolygons[block.id];
+        if (!polygon) return null;
+        const center = getPolygonCenter(polygon);
+        const radius = Math.max(6, Math.min(18, Math.sqrt(block.dailyProduction / 1000) * 4));
+        return (
+          <CircleMarker
+            key={`prod-${block.id}`}
+            center={center}
+            radius={radius}
+            pathOptions={{
+              color: "#22c55e",
+              weight: 1.5,
+              fillColor: "#22c55e",
+              fillOpacity: 0.8,
+            }}
+          >
+            {showProdLabels && (
+              <LeafletTooltip permanent direction="center" className="leaflet-production-label">
+                <span className="text-[8px] font-bold text-white drop-shadow-md">
+                  {(block.dailyProduction / 1000).toFixed(0)}k
+                </span>
+              </LeafletTooltip>
+            )}
+          </CircleMarker>
+        );
+      })}
+    </>
+  );
+}
+
 // Zoom-responsive block labels
 function BlockLabels({ blocks, blockPolygons, showBlocks }: { blocks: OilBlock[]; blockPolygons: Record<string, [number, number][]>; showBlocks: boolean }) {
   const zoom = useZoom();
