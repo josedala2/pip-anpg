@@ -120,8 +120,8 @@ export const FieldProductionBreakdown = ({ filterOperator = "all", filterBasin =
   return (
     <div className="space-y-6">
       {/* Treemap */}
-      <ChartWrapper title="Produção por Campo/Instalação (Pico de Produção · BOPD)">
-        <ResponsiveContainer width="100%" height={400}>
+      <ChartWrapper title="Produção por Campo/Instalação (Pico de Produção · BOPD)" height={520}>
+        <ResponsiveContainer width="100%" height={340}>
           <Treemap
             data={flatTreemap}
             dataKey="size"
