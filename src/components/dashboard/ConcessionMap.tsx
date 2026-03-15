@@ -77,6 +77,12 @@ function ProductionIndicators({ blocks, blockPolygons }: { blocks: OilBlock[]; b
               fillOpacity: 0.8,
             }}
           >
+            <LeafletTooltip direction="top" offset={[0, -radius]} className="leaflet-block-tooltip">
+              <div className="text-xs font-semibold">{block.name}</div>
+              <div className="text-[11px] text-muted-foreground">
+                {block.dailyProduction.toLocaleString()} bbl/d
+              </div>
+            </LeafletTooltip>
             {showProdLabels && (
               <LeafletTooltip permanent direction="center" className="leaflet-production-label">
                 <span className="text-[8px] font-bold text-white drop-shadow-md">
