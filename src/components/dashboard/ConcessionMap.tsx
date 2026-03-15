@@ -428,11 +428,6 @@ export const ConcessionMap = ({
           </CircleMarker>
         ))}
 
-        {/* Production indicators */}
-        {showProduction && showBlocks && (
-          <ProductionIndicators blocks={blocks} blockPolygons={blockPolygons} />
-        )}
-
         {/* Block polygons */}
         {showBlocks && blocks.map(block => {
           const polygon = blockPolygons[block.id];
@@ -542,6 +537,11 @@ export const ConcessionMap = ({
             </Polygon>
           );
         })}
+
+        {/* Production indicators — rendered AFTER polygons so they appear on top */}
+        {showProduction && showBlocks && (
+          <ProductionIndicators blocks={blocks} blockPolygons={blockPolygons} />
+        )}
 
         {/* Zoom-responsive block labels */}
         <BlockLabels blocks={blocks} blockPolygons={blockPolygons} showBlocks={showBlocks} />
