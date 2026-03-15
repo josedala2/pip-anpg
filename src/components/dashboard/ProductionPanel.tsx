@@ -320,7 +320,7 @@ export const ProductionPanel = () => {
       <ChartWrapper title="Produção por Bloco — Dados Actuais" height="auto">
         <div className="overflow-x-auto max-h-[500px] overflow-y-auto">
           <Table>
-            <TableHeader>
+            <TableHeader className="sticky top-0 z-10 bg-card">
               <TableRow>
                 <TableHead className="cursor-pointer hover:text-foreground" onClick={() => handleSort("name")}>
                   Bloco {sortKey === "name" ? (sortAsc ? "↑" : "↓") : ""}
