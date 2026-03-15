@@ -538,6 +538,11 @@ export const ConcessionMap = ({
           );
         })}
 
+        {/* Production indicators — rendered AFTER polygons so they appear on top */}
+        {showProduction && showBlocks && (
+          <ProductionIndicators blocks={blocks} blockPolygons={blockPolygons} />
+        )}
+
         {/* Zoom-responsive block labels */}
         <BlockLabels blocks={blocks} blockPolygons={blockPolygons} showBlocks={showBlocks} />
       </MapContainer>
