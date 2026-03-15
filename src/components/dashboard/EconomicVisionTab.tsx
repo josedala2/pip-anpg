@@ -126,7 +126,7 @@ export const EconomicVisionTab = ({ block }: Props) => {
 
       {/* Row 2: Revenue Share Pie Charts */}
       {revenueShare.length > 0 && (
-        <ChartWrapper title="Repartição de Receitas (MMUSD & MMBO)" icon={<PieChartIcon className="w-4 h-4 text-primary" />} height={280}>
+        <ChartWrapper title="Repartição de Receitas (MMUSD & MMBO)" icon={<PieChartIcon className="w-4 h-4 text-primary" />} height={340}>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 h-full">
             {revenueShare.map((rs) => (
               <div key={rs.period} className="flex flex-col items-center justify-center">
