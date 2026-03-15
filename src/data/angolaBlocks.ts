@@ -2163,9 +2163,14 @@ export const oilBlocks: OilBlock[] = [
     ],
     geologicalObjectives: ["Oligocene Turbidites", "Pre-Salt Lacustrine", "Miocene Deep-Water Fans", "Albian Carbonates"],
     fields: [
-      { name: "PSVM (Plutão, Saturno, Vénus, Marte)", status: "Producing", discoveryYear: 2003, peakProduction: 150000 },
+      { name: "Plutão", status: "Producing", discoveryYear: 2003, peakProduction: 40000 },
+      { name: "Saturno", status: "Producing", discoveryYear: 2004, peakProduction: 38000 },
+      { name: "Vénus", status: "Producing", discoveryYear: 2005, peakProduction: 35000 },
+      { name: "Marte", status: "Producing", discoveryYear: 2006, peakProduction: 37000 },
       { name: "Ceres", status: "Development", discoveryYear: 2012, peakProduction: 30000 },
       { name: "Urano", status: "Discovery", discoveryYear: 2015 },
+      { name: "Palas", status: "Discovery", discoveryYear: 2016 },
+      { name: "Juno", status: "Discovery", discoveryYear: 2021 },
     ],
     prospects: [
       { discoveryArea: "PSVM", name: "PSVM Satellites East", reservoir: "Oligoceno", resourcesMMBO: 230, resourcesBCF: 80, pos: 50 },
