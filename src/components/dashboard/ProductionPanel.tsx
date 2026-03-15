@@ -317,7 +317,7 @@ export const ProductionPanel = () => {
       <FieldProductionBreakdown filterOperator={filterOperator} filterBasin={filterBasin} filterBlock={filterBlock} />
 
       {/* Production Table */}
-      <ChartWrapper title="Produção por Bloco — Dados Actuais">
+      <ChartWrapper title="Produção por Bloco — Dados Actuais" height="auto">
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>

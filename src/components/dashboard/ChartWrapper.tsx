@@ -123,7 +123,7 @@ export const ChartWrapper = ({
             </div>
           </CardHeader>
           <CardContent className="p-4 pt-0">
-            <div style={{ height }}>{children}</div>
+            <div style={height === "auto" ? undefined : { height }}>{children}</div>
           </CardContent>
           <Watermark />
         </div>
