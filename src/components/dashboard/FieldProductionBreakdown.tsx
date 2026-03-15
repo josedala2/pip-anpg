@@ -150,10 +150,11 @@ export const FieldProductionBreakdown = ({ filterOperator = "all", filterBasin =
             {blocksWithFields.map((block, i) => (
               <div
                 key={block.id}
-                className="flex items-center gap-1.5 cursor-pointer rounded px-1.5 py-0.5 transition-colors hover:bg-muted/60"
+                className={`flex items-center gap-1.5 cursor-pointer rounded px-1.5 py-0.5 transition-colors hover:bg-muted/60 ${pinnedBlock === block.name ? "ring-1 ring-foreground/30 bg-muted/50" : ""}`}
                 onMouseEnter={() => setHoveredBlock(block.name)}
                 onMouseLeave={() => setHoveredBlock(null)}
-                style={{ opacity: hoveredBlock && hoveredBlock !== block.name ? 0.4 : 1, transition: "opacity 0.2s ease" }}
+                onClick={() => setPinnedBlock(prev => prev === block.name ? null : block.name)}
+                style={{ opacity: activeBlock && activeBlock !== block.name ? 0.4 : 1, transition: "opacity 0.2s ease" }}
               >
                 <span className="w-2.5 h-2.5 rounded-[3px] shrink-0" style={{ background: COLORS[i % COLORS.length] }} />
                 <span className="text-[11px] text-foreground/70">{block.name}</span>
