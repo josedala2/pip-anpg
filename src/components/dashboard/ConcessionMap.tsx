@@ -95,6 +95,8 @@ function ProductionIndicators({ blocks, blockPolygons }: { blocks: OilBlock[]; b
         const polygon = blockPolygons[block.id];
         if (!polygon) return null;
         const center = getPolygonCenter(polygon);
+        const offset = zoom <= 5 ? 0.25 : zoom <= 7 ? 0.15 : 0.08;
+        const offsetCenter: [number, number] = [center[0] - offset, center[1]];
         const label = `${(block.dailyProduction / 1000).toFixed(0)}k`;
         const icon = L.divIcon({
           className: 'leaflet-production-label-icon',
