@@ -296,6 +296,8 @@ const BlockPage = () => {
   const discGradId = `discGrad-${uid}`;
   const [explorationBarMode, setExplorationBarMode] = useState<"grouped" | "stacked">("grouped");
   const [activeTab, setActiveTab] = useState("overview");
+  const [fieldDecadeFilter, setFieldDecadeFilter] = useState<string | null>(null);
+  const [fieldStatusFilter, setFieldStatusFilter] = useState<string | null>(null);
 
   // Calculate averages for reference lines
   const avgProduction = useMemo(() => {
@@ -683,6 +685,20 @@ const BlockPage = () => {
                 Abandoned: "bg-danger/15 text-danger border-danger/30",
               };
 
+              const statuses = [...new Set(block.fields.map(f => f.status))];
+              const statusLabels: Record<string, string> = {
+                Producing: "Produção", Development: "Desenvolvimento", Discovery: "Descoberta", Abandoned: "Abandonado",
+              };
+
+              const filteredFields = sortedFields.filter(f => {
+                if (fieldDecadeFilter) {
+                  const decade = f.discoveryYear ? `${Math.floor(f.discoveryYear / 10) * 10}s` : null;
+                  if (decade !== fieldDecadeFilter) return false;
+                }
+                if (fieldStatusFilter && f.status !== fieldStatusFilter) return false;
+                return true;
+              });
+
               return (
                 <Card className="glass-card">
                   <CardHeader className="p-4 pb-2">
@@ -701,22 +717,57 @@ const BlockPage = () => {
                     </div>
                   </CardHeader>
                   <CardContent className="p-4 pt-2 space-y-4">
-                    {/* Decade summary bar */}
+                    {/* Decade filter bar */}
                     <div className="flex items-center gap-1">
                       {Object.entries(decades).sort(([a], [b]) => a.localeCompare(b)).map(([decade, count]) => {
                         const pct = Math.max((count / totalFields) * 100, 8);
+                        const isActive = fieldDecadeFilter === decade;
                         return (
-                          <div
+                          <button
                             key={decade}
-                            className="relative h-7 rounded bg-primary/15 flex items-center justify-center transition-all hover:bg-primary/25"
+                            onClick={() => setFieldDecadeFilter(isActive ? null : decade)}
+                            className={`relative h-7 rounded flex items-center justify-center transition-all cursor-pointer ${
+                              isActive ? "bg-primary/30 ring-1 ring-primary" : "bg-primary/15 hover:bg-primary/25"
+                            }`}
                             style={{ width: `${pct}%`, minWidth: 48 }}
-                            title={`${decade}: ${count} campo${count > 1 ? "s" : ""}`}
+                            title={`${decade}: ${count} campo${count > 1 ? "s" : ""}${isActive ? " (clique para limpar)" : ""}`}
                           >
                             <span className="text-[10px] font-mono font-semibold text-primary">{decade}</span>
                             <span className="absolute -top-1.5 right-1 text-[9px] font-bold bg-primary text-primary-foreground rounded-full w-4 h-4 flex items-center justify-center">{count}</span>
-                          </div>
+                          </button>
                         );
                       })}
+                    </div>
+
+                    {/* Status filter chips */}
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium">Status:</span>
+                      {statuses.map(s => {
+                        const isActive = fieldStatusFilter === s;
+                        const count = block.fields!.filter(f => f.status === s).length;
+                        return (
+                          <button
+                            key={s}
+                            onClick={() => setFieldStatusFilter(isActive ? null : s)}
+                            className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium border transition-all cursor-pointer ${
+                              isActive
+                                ? statusColor[s] + " ring-1 ring-current"
+                                : "border-border text-muted-foreground hover:text-foreground hover:border-foreground/30"
+                            }`}
+                          >
+                            {statusLabels[s] || s}
+                            <span className="font-mono">({count})</span>
+                          </button>
+                        );
+                      })}
+                      {(fieldDecadeFilter || fieldStatusFilter) && (
+                        <button
+                          onClick={() => { setFieldDecadeFilter(null); setFieldStatusFilter(null); }}
+                          className="text-[10px] text-primary hover:underline ml-1"
+                        >
+                          Limpar filtros
+                        </button>
+                      )}
                     </div>
 
                     {/* Discovery timeline chart */}
@@ -747,9 +798,18 @@ const BlockPage = () => {
                       </div>
                     )}
 
+                    {/* Filtered count indicator */}
+                    {(fieldDecadeFilter || fieldStatusFilter) && (
+                      <div className="text-xs text-muted-foreground">
+                        A mostrar <span className="font-bold text-foreground font-mono">{filteredFields.length}</span> de {totalFields} campos
+                        {fieldDecadeFilter && <span> · Década: <span className="font-semibold text-primary">{fieldDecadeFilter}</span></span>}
+                        {fieldStatusFilter && <span> · Status: <span className="font-semibold">{statusLabels[fieldStatusFilter] || fieldStatusFilter}</span></span>}
+                      </div>
+                    )}
+
                     {/* Fields grid */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 2xl:gap-3">
-                      {sortedFields.map(f => (
+                      {filteredFields.map(f => (
                         <div key={f.name} className="glass-card p-3 2xl:p-4 rounded-lg group hover:border-primary/30 transition-colors border border-transparent relative overflow-hidden">
                           <div className="absolute top-0 left-0 w-1 h-full rounded-l" style={{
                             backgroundColor: f.status === "Producing" ? "hsl(152, 69%, 40%)" :
@@ -759,7 +819,7 @@ const BlockPage = () => {
                           <div className="pl-2">
                             <div className="flex items-start justify-between gap-1">
                               <div className="font-semibold text-sm 2xl:text-base leading-tight">{f.name}</div>
-                              <Badge variant="outline" className={`text-[9px] shrink-0 ${statusColor[f.status] || "bg-muted text-muted-foreground"}`}>{f.status === "Producing" ? "Produção" : f.status === "Development" ? "Desenvolvimento" : f.status === "Discovery" ? "Descoberta" : "Abandonado"}</Badge>
+                              <Badge variant="outline" className={`text-[9px] shrink-0 ${statusColor[f.status] || "bg-muted text-muted-foreground"}`}>{statusLabels[f.status] || f.status}</Badge>
                             </div>
                             <div className="flex items-center gap-3 mt-2 text-[10px] 2xl:text-xs text-muted-foreground">
                               {f.discoveryYear && (
