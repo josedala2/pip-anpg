@@ -139,6 +139,14 @@ export const FieldProductionBreakdown = ({ filterOperator = "all", filterBasin =
             />
           </Treemap>
         </ResponsiveContainer>
+        <div className="mt-3 px-4 flex flex-wrap gap-x-4 gap-y-1.5">
+          {blocksWithFields.map((block, i) => (
+            <div key={block.id} className="flex items-center gap-1.5">
+              <span className="w-3 h-3 rounded-sm shrink-0" style={{ background: COLORS[i % COLORS.length] }} />
+              <span className="text-xs text-muted-foreground">{block.name}</span>
+            </div>
+          ))}
+        </div>
         <p className="mt-2 px-4 text-[10px] text-muted-foreground">
           Dimensão proporcional ao pico histórico de produção de cada campo. Cores agrupam campos do mesmo bloco.
         </p>
