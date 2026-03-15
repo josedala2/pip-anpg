@@ -139,16 +139,19 @@ export const FieldProductionBreakdown = ({ filterOperator = "all", filterBasin =
             />
           </Treemap>
         </ResponsiveContainer>
-        <div className="mt-3 px-4 flex flex-wrap gap-x-4 gap-y-1.5">
-          {blocksWithFields.map((block, i) => (
-            <div key={block.id} className="flex items-center gap-1.5">
-              <span className="w-3 h-3 rounded-sm shrink-0" style={{ background: COLORS[i % COLORS.length] }} />
-              <span className="text-xs text-muted-foreground">{block.name}</span>
-            </div>
-          ))}
+        <div className="mx-4 mt-4 mb-2 rounded-md border border-border/50 bg-muted/30 px-4 py-3">
+          <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider mb-2">Legenda — Blocos</p>
+          <div className="flex flex-wrap gap-x-5 gap-y-2">
+            {blocksWithFields.map((block, i) => (
+              <div key={block.id} className="flex items-center gap-1.5">
+                <span className="w-2.5 h-2.5 rounded-[3px] shrink-0" style={{ background: COLORS[i % COLORS.length] }} />
+                <span className="text-[11px] text-foreground/70">{block.name}</span>
+              </div>
+            ))}
+          </div>
         </div>
-        <p className="mt-2 px-4 text-[10px] text-muted-foreground">
-          Dimensão proporcional ao pico histórico de produção de cada campo. Cores agrupam campos do mesmo bloco.
+        <p className="px-4 pb-1 text-[10px] text-muted-foreground">
+          Dimensão proporcional ao pico histórico de produção de cada campo.
         </p>
       </ChartWrapper>
 
