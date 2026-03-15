@@ -2187,7 +2187,7 @@ export const oilBlocks: OilBlock[] = [
       totalSeismic4DKm2: 6800,
       totalWellsPesquisa: 27,
       totalWellsAvaliacao: 23,
-      commercialDiscoveries: 3,
+      commercialDiscoveries: 8,
       nonCommercialDiscoveries: 3,
       dryWells: 10,
       geologicalSuccessRate: 6,
