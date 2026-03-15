@@ -146,7 +146,13 @@ export const FieldProductionBreakdown = ({ filterOperator = "all", filterBasin =
           <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider mb-2">Legenda — Blocos</p>
           <div className="flex flex-wrap gap-x-5 gap-y-2">
             {blocksWithFields.map((block, i) => (
-              <div key={block.id} className="flex items-center gap-1.5">
+              <div
+                key={block.id}
+                className="flex items-center gap-1.5 cursor-pointer rounded px-1.5 py-0.5 transition-colors hover:bg-muted/60"
+                onMouseEnter={() => setHoveredBlock(block.name)}
+                onMouseLeave={() => setHoveredBlock(null)}
+                style={{ opacity: hoveredBlock && hoveredBlock !== block.name ? 0.4 : 1, transition: "opacity 0.2s ease" }}
+              >
                 <span className="w-2.5 h-2.5 rounded-[3px] shrink-0" style={{ background: COLORS[i % COLORS.length] }} />
                 <span className="text-[11px] text-foreground/70">{block.name}</span>
               </div>
