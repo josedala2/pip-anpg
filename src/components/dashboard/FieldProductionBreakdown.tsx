@@ -171,7 +171,7 @@ export const FieldProductionBreakdown = ({ filterOperator = "all", filterBasin =
       <ChartWrapper title="Campos por Bloco — Detalhes de Produção" height="auto">
         <div className="overflow-x-auto max-h-[500px] overflow-y-auto">
           <Table>
-            <TableHeader>
+            <TableHeader className="sticky top-0 z-10 bg-card">
               <TableRow>
                 <TableHead className="w-8" />
                 <TableHead>Bloco / Campo</TableHead>
