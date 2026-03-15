@@ -428,11 +428,6 @@ export const ConcessionMap = ({
           </CircleMarker>
         ))}
 
-        {/* Production indicators */}
-        {showProduction && showBlocks && (
-          <ProductionIndicators blocks={blocks} blockPolygons={blockPolygons} />
-        )}
-
         {/* Block polygons */}
         {showBlocks && blocks.map(block => {
           const polygon = blockPolygons[block.id];
