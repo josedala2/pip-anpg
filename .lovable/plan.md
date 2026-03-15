@@ -1,33 +1,50 @@
+## Roteiro de Evolução — Plataforma Nacional de Inteligência Petrolífera
 
+### Estado actual vs Visão
 
-## Plan: Completar dados de Campos & Descobertas do Bloco 0 (1995-2025)
+| Capacidade | Estado |
+|---|---|
+| Mapa de concessões | ✅ Existe |
+| KPIs nacionais (prod, reservas, receita estado, variações) | ✅ Completo |
+| Painel de Blocos & Concessões | ✅ Existe |
+| Painel de Produção | ✅ Existe |
+| Painel de Exploração | ✅ Existe |
+| Painel de Operadores | ✅ Existe |
+| Risk & Performance | ✅ Existe |
+| Strategic Forecast | ✅ Existe |
+| Detalhe do bloco (12 abas) | ✅ Existe |
+| Visão Económica (Bloco 0) | ✅ Existe |
+| Comparativo de blocos | ✅ Existe |
+| Relatórios configuráveis | ✅ Existe |
+| Auth + roles | ✅ Existe |
+| **Branding "Inteligência Petrolífera"** | ✅ **Fase 1 concluída** |
+| **KPIs executivos completos** | ✅ **Fase 1 concluída** |
+| **Dashboard Contratual/Negocial** | ✅ **Fase 2 concluída** |
+| Dashboard Integridade Instalações | ✅ **Fase 3 concluída** |
+| Motor de Scoring Estratégico | ✅ **Fase 4 concluída** |
+| Dashboard Recomendação Conselho | ✅ **Fase 4 concluída** |
+| Sistema de Alertas Centrais | ✅ **Fase 5 concluída** |
 
-### Problema
+### Fases concluídas
 
-O array `fields` do Block 0 em `src/data/angolaBlocks.ts` termina em 1994 (campo Minzu), mas o `wellsData` regista descobertas comerciais até 2013. Faltam ~15 campos correspondentes às descobertas comerciais de 1995-2013.
+**Fase 1** — Rebranding + KPIs Executivos
+- Header: "Inteligência Petrolífera" + "Sistema Integrado de Monitorização, Análise e Apoio à Decisão"
+- KPIs primários: Produção Total, Reservas, Blocos Activos, CAPEX, Taxa de Execução
+- KPIs secundários: Em Produção, Em Exploração, Sem Produção, Risco Crítico, Receita Estado
+- Variações m/m e a/a na produção
+- Título HTML e meta tags actualizados
 
-### Alterações
+**Fase 2** — Dashboard Contratual e Negocial
+- Painel "Contratos & Compliance" adicionado à navegação
+- KPIs: contratos a expirar em 12/24/36 meses, compliance < 80%, blocos com dados contratuais
+- 4 sub-abas: Calendário Contratual, Semáforo por Operador, Matriz de Urgência, Lista Completa
+- Gráfico de barras de expiração por ano com cores por urgência
+- Scatter plot meses restantes vs compliance (tamanho = produção)
+- Semáforo verde/amarelo/vermelho por operador (compliance + execução)
+- Lista ordenada por urgência com badges de estado
 
-**Ficheiro: `src/data/angolaBlocks.ts`** — Adicionar campos ao array `fields` do Block 0 após a entrada de Minzu (1994), baseados nas descobertas comerciais registadas no `wellsData`:
+### Próximas fases
 
-| Ano | Desc. Comerciais | Campos a adicionar |
-|-----|------------------|--------------------|
-| 1995 | 2 | Mafumeira Sul, Lianzi |
-| 1997 | 2 | Tombua, Landana |
-| 1998 | 4 | Mafumeira Norte, Benguela, Tomboco, Cinguvu |
-| 2007 | 1 | Negage |
-| 2008 | 1 | Lucapa |
-| 2009 | 1 | Mavinga |
-| 2013 | 1 | Kaombo (satellite) |
-
-Os nomes são baseados em campos conhecidos da concessão Cabinda/Block 0 operada pela Chevron. Cada entrada incluirá `name`, `status` (Producing/Development/Discovery conforme a antiguidade), `discoveryYear` e `peakProduction` estimado.
-
-O `explorationSummary.commercialDiscoveries` (actualmente 57) já contempla estes números, pelo que o resumo mantém-se consistente.
-
-### Impacto
-
-- O card **Campos & Descobertas** na visão geral do Bloco 0 passará a mostrar a timeline completa de 1966 a 2013
-- A barra de décadas incluirá as décadas 1990s, 2000s e 2010s
-- O gráfico de timeline e o grid de campos reflectirão todos os campos
-- Nenhuma alteração necessária no `BlockPage.tsx` — a lógica já itera sobre `block.fields` dinamicamente
-
+**Fase 3** — Dashboard de Integridade de Instalações
+**Fase 4** — Motor de Scoring Estratégico + Dashboard de Recomendação ao Conselho
+**Fase 5** — Sistema de Alertas Centrais
