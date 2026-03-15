@@ -66,11 +66,13 @@ function ProductionIndicators({ blocks, blockPolygons }: { blocks: OilBlock[]; b
         const polygon = blockPolygons[block.id];
         if (!polygon) return null;
         const center = getPolygonCenter(polygon);
+        const offset = zoom <= 5 ? 0.25 : zoom <= 7 ? 0.15 : 0.08;
+        const offsetCenter: [number, number] = [center[0] - offset, center[1]];
         const radius = Math.max(6, Math.min(18, Math.sqrt(block.dailyProduction / 1000) * 4));
         return (
           <CircleMarker
             key={`prod-${block.id}`}
-            center={center}
+            center={offsetCenter}
             radius={radius}
             pathOptions={{
               color: "#22c55e",
