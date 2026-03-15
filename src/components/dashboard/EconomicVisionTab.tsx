@@ -160,6 +160,16 @@ export const EconomicVisionTab = ({ block }: Props) => {
                 </div>
               </div>
             ))}
+            <div className="col-span-full flex items-center justify-center gap-5 pt-2">
+              <div className="flex items-center gap-1.5">
+                <span className="inline-block w-3 h-3 rounded-sm" style={{ backgroundColor: GE_COLOR }} />
+                <span className="text-xs text-muted-foreground font-medium">GE</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="inline-block w-3 h-3 rounded-sm" style={{ backgroundColor: TAX_COLOR }} />
+                <span className="text-xs text-muted-foreground font-medium">Impostos</span>
+              </div>
+            </div>
           </div>
         </ChartWrapper>
       )}
