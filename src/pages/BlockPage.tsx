@@ -364,7 +364,7 @@ const BlockPage = () => {
       </header>
 
       {/* Content */}
-      <main className="max-w-[1920px] mx-auto p-4 2xl:p-8 space-y-4 2xl:space-y-6">
+      <main className="max-w-[1920px] mx-auto p-4 2xl:p-8 pb-16 space-y-4 2xl:space-y-6">
          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4 2xl:space-y-6">
            <TabsList className="glass-card p-1 2xl:p-1.5 h-auto flex-wrap">
                 <TabsTrigger value="overview" className="gap-1.5 text-xs 2xl:text-sm"><Activity className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Visão Geral</TabsTrigger>
