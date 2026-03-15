@@ -37,13 +37,15 @@ interface TreemapContentProps {
   name: string;
   blockName?: string;
   fill: string;
+  hoveredBlock?: string | null;
 }
 
-const CustomTreemapContent = ({ x, y, width, height, name, blockName, fill }: TreemapContentProps) => {
+const CustomTreemapContent = ({ x, y, width, height, name, blockName, fill, hoveredBlock }: TreemapContentProps) => {
   const showLabel = width > 50 && height > 30;
   const showBlock = width > 80 && height > 45;
+  const dimmed = hoveredBlock && blockName !== hoveredBlock;
   return (
-    <g>
+    <g style={{ opacity: dimmed ? 0.2 : 1, transition: "opacity 0.2s ease" }}>
       <rect x={x} y={y} width={width} height={height} fill={fill} stroke="hsl(var(--background))" strokeWidth={2} rx={3} />
       {showLabel && (
         <text x={x + width / 2} y={y + height / 2 - (showBlock ? 6 : 0)} textAnchor="middle" dominantBaseline="middle" fill="white" fontSize={width > 100 ? 11 : 9} fontWeight={600}>
@@ -67,6 +69,7 @@ interface FieldProductionBreakdownProps {
 
 export const FieldProductionBreakdown = ({ filterOperator = "all", filterBasin = "all", filterBlock = "all" }: FieldProductionBreakdownProps) => {
   const [expandedBlocks, setExpandedBlocks] = useState<Set<string>>(new Set());
+  const [hoveredBlock, setHoveredBlock] = useState<string | null>(null);
   const totalProduction = useMemo(() => getTotalProduction(), []);
 
   const blocksWithFields = useMemo(() =>
@@ -128,7 +131,7 @@ export const FieldProductionBreakdown = ({ filterOperator = "all", filterBasin =
             nameKey="name"
             aspectRatio={4 / 3}
             stroke="hsl(var(--background))"
-            content={<CustomTreemapContent x={0} y={0} width={0} height={0} name="" fill="" />}
+            content={<CustomTreemapContent x={0} y={0} width={0} height={0} name="" fill="" hoveredBlock={hoveredBlock} />}
           >
             <Tooltip
               contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 11, color: "hsl(var(--foreground))" }}
@@ -143,7 +146,13 @@ export const FieldProductionBreakdown = ({ filterOperator = "all", filterBasin =
           <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider mb-2">Legenda — Blocos</p>
           <div className="flex flex-wrap gap-x-5 gap-y-2">
             {blocksWithFields.map((block, i) => (
-              <div key={block.id} className="flex items-center gap-1.5">
+              <div
+                key={block.id}
+                className="flex items-center gap-1.5 cursor-pointer rounded px-1.5 py-0.5 transition-colors hover:bg-muted/60"
+                onMouseEnter={() => setHoveredBlock(block.name)}
+                onMouseLeave={() => setHoveredBlock(null)}
+                style={{ opacity: hoveredBlock && hoveredBlock !== block.name ? 0.4 : 1, transition: "opacity 0.2s ease" }}
+              >
                 <span className="w-2.5 h-2.5 rounded-[3px] shrink-0" style={{ background: COLORS[i % COLORS.length] }} />
                 <span className="text-[11px] text-foreground/70">{block.name}</span>
               </div>
