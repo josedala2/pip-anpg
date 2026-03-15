@@ -112,11 +112,8 @@ function ProductionIndicators({ blocks, blockPolygons }: { blocks: OilBlock[]; b
     </>
   );
 }
-        );
-      })}
-    </>
-  );
-}
+
+
 
 // Zoom-responsive block labels
 function BlockLabels({ blocks, blockPolygons, showBlocks }: { blocks: OilBlock[]; blockPolygons: Record<string, [number, number][]>; showBlocks: boolean }) {
