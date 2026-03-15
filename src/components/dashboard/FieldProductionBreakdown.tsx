@@ -37,13 +37,15 @@ interface TreemapContentProps {
   name: string;
   blockName?: string;
   fill: string;
+  hoveredBlock?: string | null;
 }
 
-const CustomTreemapContent = ({ x, y, width, height, name, blockName, fill }: TreemapContentProps) => {
+const CustomTreemapContent = ({ x, y, width, height, name, blockName, fill, hoveredBlock }: TreemapContentProps) => {
   const showLabel = width > 50 && height > 30;
   const showBlock = width > 80 && height > 45;
+  const dimmed = hoveredBlock && blockName !== hoveredBlock;
   return (
-    <g>
+    <g style={{ opacity: dimmed ? 0.2 : 1, transition: "opacity 0.2s ease" }}>
       <rect x={x} y={y} width={width} height={height} fill={fill} stroke="hsl(var(--background))" strokeWidth={2} rx={3} />
       {showLabel && (
         <text x={x + width / 2} y={y + height / 2 - (showBlock ? 6 : 0)} textAnchor="middle" dominantBaseline="middle" fill="white" fontSize={width > 100 ? 11 : 9} fontWeight={600}>
