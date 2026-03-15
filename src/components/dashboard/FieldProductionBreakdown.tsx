@@ -69,6 +69,7 @@ interface FieldProductionBreakdownProps {
 
 export const FieldProductionBreakdown = ({ filterOperator = "all", filterBasin = "all", filterBlock = "all" }: FieldProductionBreakdownProps) => {
   const [expandedBlocks, setExpandedBlocks] = useState<Set<string>>(new Set());
+  const [hoveredBlock, setHoveredBlock] = useState<string | null>(null);
   const totalProduction = useMemo(() => getTotalProduction(), []);
 
   const blocksWithFields = useMemo(() =>
