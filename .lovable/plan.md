@@ -1,50 +1,18 @@
-## Roteiro de Evolução — Plataforma Nacional de Inteligência Petrolífera
 
-### Estado actual vs Visão
 
-| Capacidade | Estado |
-|---|---|
-| Mapa de concessões | ✅ Existe |
-| KPIs nacionais (prod, reservas, receita estado, variações) | ✅ Completo |
-| Painel de Blocos & Concessões | ✅ Existe |
-| Painel de Produção | ✅ Existe |
-| Painel de Exploração | ✅ Existe |
-| Painel de Operadores | ✅ Existe |
-| Risk & Performance | ✅ Existe |
-| Strategic Forecast | ✅ Existe |
-| Detalhe do bloco (12 abas) | ✅ Existe |
-| Visão Económica (Bloco 0) | ✅ Existe |
-| Comparativo de blocos | ✅ Existe |
-| Relatórios configuráveis | ✅ Existe |
-| Auth + roles | ✅ Existe |
-| **Branding "Inteligência Petrolífera"** | ✅ **Fase 1 concluída** |
-| **KPIs executivos completos** | ✅ **Fase 1 concluída** |
-| **Dashboard Contratual/Negocial** | ✅ **Fase 2 concluída** |
-| Dashboard Integridade Instalações | ✅ **Fase 3 concluída** |
-| Motor de Scoring Estratégico | ✅ **Fase 4 concluída** |
-| Dashboard Recomendação Conselho | ✅ **Fase 4 concluída** |
-| Sistema de Alertas Centrais | ✅ **Fase 5 concluída** |
+## Plan: Offset Production Circles from Block Labels
 
-### Fases concluídas
+**Problem**: The green production circles (`CircleMarker`) and block name labels both use `getPolygonCenter()` — they sit on top of each other, making hover interaction difficult.
 
-**Fase 1** — Rebranding + KPIs Executivos
-- Header: "Inteligência Petrolífera" + "Sistema Integrado de Monitorização, Análise e Apoio à Decisão"
-- KPIs primários: Produção Total, Reservas, Blocos Activos, CAPEX, Taxa de Execução
-- KPIs secundários: Em Produção, Em Exploração, Sem Produção, Risco Crítico, Receita Estado
-- Variações m/m e a/a na produção
-- Título HTML e meta tags actualizados
+**Solution**: Offset the production circle positions slightly south of the polygon centroid so they don't overlap with the block name label.
 
-**Fase 2** — Dashboard Contratual e Negocial
-- Painel "Contratos & Compliance" adicionado à navegação
-- KPIs: contratos a expirar em 12/24/36 meses, compliance < 80%, blocos com dados contratuais
-- 4 sub-abas: Calendário Contratual, Semáforo por Operador, Matriz de Urgência, Lista Completa
-- Gráfico de barras de expiração por ano com cores por urgência
-- Scatter plot meses restantes vs compliance (tamanho = produção)
-- Semáforo verde/amarelo/vermelho por operador (compliance + execução)
-- Lista ordenada por urgência com badges de estado
+### Changes in `src/components/dashboard/ConcessionMap.tsx`
 
-### Próximas fases
+1. **Offset the `CircleMarker` and its permanent "Xk" label** by shifting the latitude downward from the centroid. The offset will scale inversely with zoom level (larger offset at low zoom, smaller at high zoom) to maintain visual separation at all scales.
 
-**Fase 3** — Dashboard de Integridade de Instalações
-**Fase 4** — Motor de Scoring Estratégico + Dashboard de Recomendação ao Conselho
-**Fase 5** — Sistema de Alertas Centrais
+2. Specifically, in the `ProductionIndicators` component:
+   - Calculate `offsetCenter` as `[center[0] - offset, center[1]]` where offset ≈ `0.15` (tuned to ~15-20km south, adjusted by zoom).
+   - Apply this offset to both the `CircleMarker` (line 72) and the permanent label `Marker` (line 106).
+
+This keeps the block name at the true centroid and places the production indicator just below it, providing clear separation for hover interaction.
+
