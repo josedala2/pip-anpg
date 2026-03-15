@@ -839,7 +839,6 @@ const BlockPage = () => {
                         </div>
                       ))}
                     </div>
-                    </div>
                     <button
                       onClick={() => { setActiveTab("exploration"); window.scrollTo({ top: 0, behavior: "smooth" }); }}
                       className="inline-flex items-center gap-1.5 text-xs text-primary hover:underline mt-2 transition-colors"
