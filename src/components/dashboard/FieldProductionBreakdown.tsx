@@ -70,6 +70,8 @@ interface FieldProductionBreakdownProps {
 export const FieldProductionBreakdown = ({ filterOperator = "all", filterBasin = "all", filterBlock = "all" }: FieldProductionBreakdownProps) => {
   const [expandedBlocks, setExpandedBlocks] = useState<Set<string>>(new Set());
   const [hoveredBlock, setHoveredBlock] = useState<string | null>(null);
+  const [pinnedBlock, setPinnedBlock] = useState<string | null>(null);
+  const activeBlock = pinnedBlock || hoveredBlock;
   const totalProduction = useMemo(() => getTotalProduction(), []);
 
   const blocksWithFields = useMemo(() =>
@@ -131,7 +133,7 @@ export const FieldProductionBreakdown = ({ filterOperator = "all", filterBasin =
             nameKey="name"
             aspectRatio={4 / 3}
             stroke="hsl(var(--background))"
-            content={<CustomTreemapContent x={0} y={0} width={0} height={0} name="" fill="" hoveredBlock={hoveredBlock} />}
+            content={<CustomTreemapContent x={0} y={0} width={0} height={0} name="" fill="" hoveredBlock={activeBlock} />}
           >
             <Tooltip
               contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 11, color: "hsl(var(--foreground))" }}
@@ -148,10 +150,11 @@ export const FieldProductionBreakdown = ({ filterOperator = "all", filterBasin =
             {blocksWithFields.map((block, i) => (
               <div
                 key={block.id}
-                className="flex items-center gap-1.5 cursor-pointer rounded px-1.5 py-0.5 transition-colors hover:bg-muted/60"
+                className={`flex items-center gap-1.5 cursor-pointer rounded px-1.5 py-0.5 transition-colors hover:bg-muted/60 ${pinnedBlock === block.name ? "ring-1 ring-foreground/30 bg-muted/50" : ""}`}
                 onMouseEnter={() => setHoveredBlock(block.name)}
                 onMouseLeave={() => setHoveredBlock(null)}
-                style={{ opacity: hoveredBlock && hoveredBlock !== block.name ? 0.4 : 1, transition: "opacity 0.2s ease" }}
+                onClick={() => setPinnedBlock(prev => prev === block.name ? null : block.name)}
+                style={{ opacity: activeBlock && activeBlock !== block.name ? 0.4 : 1, transition: "opacity 0.2s ease" }}
               >
                 <span className="w-2.5 h-2.5 rounded-[3px] shrink-0" style={{ background: COLORS[i % COLORS.length] }} />
                 <span className="text-[11px] text-foreground/70">{block.name}</span>
