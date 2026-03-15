@@ -168,7 +168,7 @@ export const FieldProductionBreakdown = ({ filterOperator = "all", filterBasin =
       </ChartWrapper>
 
       {/* Expandable Table */}
-      <ChartWrapper title="Campos por Bloco — Detalhes de Produção">
+      <ChartWrapper title="Campos por Bloco — Detalhes de Produção" height="auto">
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
