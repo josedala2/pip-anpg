@@ -131,7 +131,7 @@ export const FieldProductionBreakdown = ({ filterOperator = "all", filterBasin =
             nameKey="name"
             aspectRatio={4 / 3}
             stroke="hsl(var(--background))"
-            content={<CustomTreemapContent x={0} y={0} width={0} height={0} name="" fill="" />}
+            content={<CustomTreemapContent x={0} y={0} width={0} height={0} name="" fill="" hoveredBlock={hoveredBlock} />}
           >
             <Tooltip
               contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 11, color: "hsl(var(--foreground))" }}
