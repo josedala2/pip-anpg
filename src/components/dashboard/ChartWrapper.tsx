@@ -12,7 +12,7 @@ import anpgLogoWhite from "@/assets/anpg-logo-white.svg";
 interface ChartWrapperProps {
   title: string;
   children: ReactNode;
-  height?: number;
+  height?: number | "auto";
   fullscreenHeight?: number;
   className?: string;
   icon?: ReactNode;
