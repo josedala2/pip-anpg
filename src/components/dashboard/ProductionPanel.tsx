@@ -3,6 +3,7 @@ import { oilBlocks, getTotalProduction } from "@/data/angolaBlocks";
 import { AnimatedCounter } from "./AnimatedCounter";
 import { ChartWrapper } from "./ChartWrapper";
 import { Activity, TrendingUp, Target, ArrowUpRight, ArrowDownRight, Filter } from "lucide-react";
+import { SortableHead } from "@/components/ui/sortable-head";
 import {
   PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend,
   BarChart, Bar, XAxis, YAxis, CartesianGrid,
