@@ -369,7 +369,8 @@ export function SobaChat() {
                   </button>
                 </div>
               ))
-            )}
+              );
+            })()}
           </div>
         </ScrollArea>
       </div>
