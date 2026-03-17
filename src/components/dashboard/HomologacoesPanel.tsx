@@ -119,6 +119,39 @@ export const HomologacoesPanel = ({ filterBloco }: Props) => {
     return mesOrder.filter(m => map.has(m)).map(m => ({ mes: m.slice(0, 3), valor: map.get(m) || 0 }));
   }, [data]);
 
+  // Year-over-year comparison by month
+  const yearComparison = useMemo(() => {
+    const mesOrder = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+    const allData = filterBloco ? homologacoesData.filter(h => h.bloco === filterBloco) : homologacoesData;
+    const map2024 = new Map<string, { valor: number; count: number }>();
+    const map2025 = new Map<string, { valor: number; count: number }>();
+    allData.forEach(h => {
+      const map = h.ano === 2024 ? map2024 : map2025;
+      const prev = map.get(h.mes) || { valor: 0, count: 0 };
+      map.set(h.mes, { valor: prev.valor + h.montanteAprovado, count: prev.count + 1 });
+    });
+    return mesOrder
+      .filter(m => map2024.has(m) || map2025.has(m))
+      .map(m => ({
+        mes: m.slice(0, 3),
+        "2024": map2024.get(m)?.valor || 0,
+        "2025": map2025.get(m)?.valor || 0,
+        count2024: map2024.get(m)?.count || 0,
+        count2025: map2025.get(m)?.count || 0,
+      }));
+  }, [filterBloco]);
+
+  // YoY totals
+  const yoyTotals = useMemo(() => {
+    const allData = filterBloco ? homologacoesData.filter(h => h.bloco === filterBloco) : homologacoesData;
+    const t24 = allData.filter(h => h.ano === 2024).reduce((s, h) => s + h.montanteAprovado, 0);
+    const t25 = allData.filter(h => h.ano === 2025).reduce((s, h) => s + h.montanteAprovado, 0);
+    const n24 = allData.filter(h => h.ano === 2024).length;
+    const n25 = allData.filter(h => h.ano === 2025).length;
+    const variation = t24 > 0 ? ((t25 - t24) / t24) * 100 : 0;
+    return { t24, t25, n24, n25, variation };
+  }, [filterBloco]);
+
   // Category donut
   const categoryData = [
     { name: "Exploração", value: totalExploracao },
@@ -356,6 +389,45 @@ export const HomologacoesPanel = ({ filterBloco }: Props) => {
               </CardContent>
             </Card>
           </div>
+
+          {/* Charts row 3: Year-over-Year */}
+          <Card className="glass-card">
+            <CardHeader className="p-4 pb-2">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-sm">Comparativo Ano-a-Ano — 2024 vs 2025</CardTitle>
+                <div className="flex items-center gap-3 text-xs">
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-3 h-3 rounded-sm" style={{ background: "hsl(199, 89%, 48%)" }} />
+                    <span className="text-muted-foreground">2024: {fmt(yoyTotals.t24)} ({yoyTotals.n24} proc.)</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-3 h-3 rounded-sm" style={{ background: "hsl(152, 69%, 40%)" }} />
+                    <span className="text-muted-foreground">2025: {fmt(yoyTotals.t25)} ({yoyTotals.n25} proc.)</span>
+                  </div>
+                  <Badge variant="outline" className={`text-[10px] ${yoyTotals.variation >= 0 ? "text-success border-success/30" : "text-danger border-danger/30"}`}>
+                    {yoyTotals.variation >= 0 ? "+" : ""}{yoyTotals.variation.toFixed(1)}% YoY
+                  </Badge>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="p-4 pt-0">
+              <ResponsiveContainer width="100%" height={320}>
+                <BarChart data={yearComparison} margin={{ left: 10, right: 10 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
+                  <XAxis dataKey="mes" tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} />
+                  <YAxis tickFormatter={v => fmt(v)} tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} />
+                  <Tooltip
+                    contentStyle={tooltipStyle}
+                    formatter={(v: number, name: string) => [fmtFull(v), name]}
+                    labelFormatter={(label) => `${label}`}
+                  />
+                  <Legend wrapperStyle={{ fontSize: 11, paddingTop: 8 }} />
+                  <Bar dataKey="2024" fill="hsl(199, 89%, 48%)" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="2025" fill="hsl(152, 69%, 40%)" radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
         </TabsContent>
 
         {/* TAB 2: By Bloco */}
