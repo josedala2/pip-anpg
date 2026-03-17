@@ -30,11 +30,15 @@ export interface ReportConfig {
 
 const reportTypeLabels: Record<ReportType, { label: string; description: string }> = {
   executive: { label: "Resumo Executivo", description: "KPIs agregados, produção, investimento e reservas" },
-  contractual: { label: "Contractual & Fiscal", description: "Decreto-lei, condições fiscais, bónus e períodos de pesquisa" },
+  production: { label: "Produção & Declínio", description: "Histórico de produção, projecções e análise de declínio" },
   exploration: { label: "Exploração & Produção", description: "Sísmica, poços, descobertas e taxas de sucesso" },
+  prospects: { label: "Prospectos Exploratórios", description: "Recursos prospectivos, probabilidade de sucesso e reservatórios" },
+  contractual: { label: "Contractual & Fiscal", description: "Decreto-lei, condições fiscais, bónus e períodos de pesquisa" },
   consortium: { label: "Consórcio & Participações", description: "Evolução GE Inicial → Actual por bloco" },
   legislation: { label: "Legislação & Documentos", description: "Lista consolidada de todos os documentos" },
-  financial: { label: "Económico & Financeiro", description: "Custos, plano quinquenal, abandono, partilha de produção e exportação Excel/CSV" },
+  financial: { label: "Económico & Financeiro", description: "Custos, plano quinquenal, abandono, partilha de produção" },
+  hse: { label: "HSE & Ambiente", description: "Segurança (TRIR, LTI), derrames, emissões CO₂ e gás queimado" },
+  facilities: { label: "Instalações & Infraestrutura", description: "Plataformas, capacidade, eficiência e plano de manutenção" },
   operators: { label: "Operadores", description: "Visão 360° por operador: blocos, produção, investimento e compliance" },
 };
 
