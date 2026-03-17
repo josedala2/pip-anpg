@@ -13,9 +13,11 @@ import {
 } from "recharts";
 import {
   DollarSign, FileText, TrendingUp, Building2, Users, Search,
-  Filter, ChevronDown, ChevronRight, Download,
+  Filter, ChevronDown, ChevronRight, Download, AlertTriangle, Settings,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Slider } from "@/components/ui/slider";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 const COLORS = [
   "hsl(199, 89%, 48%)", "hsl(152, 69%, 40%)", "hsl(38, 92%, 50%)",
@@ -53,6 +55,8 @@ export const HomologacoesPanel = ({ filterBloco }: Props) => {
   const [searchText, setSearchText] = useState("");
   const [expandedBloco, setExpandedBloco] = useState<string | null>(null);
   const [drilldown, setDrilldown] = useState<{ bloco: string; mes: string } | null>(null);
+  const [clThreshold, setClThreshold] = useState(30); // % minimum local content
+  const [showAlertConfig, setShowAlertConfig] = useState(false);
 
   // Map block names from angolaBlocks format ("Block 0 (Área A, B)") to homologações format ("Bloco 0")
   const matchBloco = (blocoData: string, filterName: string): boolean => {
@@ -723,6 +727,131 @@ export const HomologacoesPanel = ({ filterBloco }: Props) => {
               </div>
             </CardContent>
           </Card>
+
+          {/* Alertas de Conteúdo Local */}
+          {localContentTrend.length > 0 && (() => {
+            const alerts: { mes: string; pct: number; tipo: "valor" | "processos"; severity: "critical" | "warning" }[] = [];
+            localContentTrend.forEach(d => {
+              if (d.pctAngolanoValor < clThreshold) {
+                alerts.push({
+                  mes: d.label,
+                  pct: d.pctAngolanoValor,
+                  tipo: "valor",
+                  severity: d.pctAngolanoValor < clThreshold * 0.5 ? "critical" : "warning",
+                });
+              }
+              if (d.pctAngolano < clThreshold) {
+                alerts.push({
+                  mes: d.label,
+                  pct: d.pctAngolano,
+                  tipo: "processos",
+                  severity: d.pctAngolano < clThreshold * 0.5 ? "critical" : "warning",
+                });
+              }
+            });
+            // Also check declining trend
+            const trendAlert = localContentTrend.length >= 3 ? (() => {
+              const last3 = localContentTrend.slice(-3);
+              const allDeclining = last3.every((d, i) => i === 0 || d.pctAngolanoValor < last3[i - 1].pctAngolanoValor);
+              return allDeclining && last3[last3.length - 1].pctAngolanoValor < clThreshold * 1.2;
+            })() : false;
+
+            const criticals = alerts.filter(a => a.severity === "critical");
+            const warnings = alerts.filter(a => a.severity === "warning");
+
+            return (
+              <Card className={`glass-card border ${criticals.length > 0 ? "border-destructive/40" : warnings.length > 0 ? "border-warning/40" : "border-success/40"}`}>
+                <CardHeader className="p-4 pb-2">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-sm flex items-center gap-2">
+                      <AlertTriangle className={`w-4 h-4 ${criticals.length > 0 ? "text-destructive" : warnings.length > 0 ? "text-warning" : "text-success"}`} />
+                      Alertas de Conteúdo Local
+                      {(criticals.length + warnings.length) > 0 && (
+                        <Badge variant="destructive" className="text-[9px] h-5">{criticals.length + warnings.length} alertas</Badge>
+                      )}
+                      {(criticals.length + warnings.length) === 0 && (
+                        <Badge className="text-[9px] h-5 bg-success/20 text-success border-success/30">Conforme</Badge>
+                      )}
+                    </CardTitle>
+                    <Collapsible open={showAlertConfig} onOpenChange={setShowAlertConfig}>
+                      <CollapsibleTrigger asChild>
+                        <Button variant="ghost" size="sm" className="gap-1.5 text-xs text-muted-foreground hover:text-foreground h-7">
+                          <Settings className="w-3.5 h-3.5" />
+                          Configurar
+                        </Button>
+                      </CollapsibleTrigger>
+                    </Collapsible>
+                  </div>
+                </CardHeader>
+                <CardContent className="p-4 pt-0 space-y-3">
+                  <Collapsible open={showAlertConfig} onOpenChange={setShowAlertConfig}>
+                    <CollapsibleContent>
+                      <div className="p-3 rounded-lg bg-muted/50 border border-border/50 mb-3">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-xs font-medium text-foreground">Limiar Mínimo de Conteúdo Local</span>
+                          <Badge variant="outline" className="text-xs font-mono">{clThreshold}%</Badge>
+                        </div>
+                        <Slider
+                          value={[clThreshold]}
+                          onValueChange={([v]) => setClThreshold(v)}
+                          min={5}
+                          max={80}
+                          step={5}
+                          className="w-full"
+                        />
+                        <div className="flex justify-between text-[9px] text-muted-foreground mt-1">
+                          <span>5%</span>
+                          <span>Alerta quando % angolano {"<"} {clThreshold}%</span>
+                          <span>80%</span>
+                        </div>
+                      </div>
+                    </CollapsibleContent>
+                  </Collapsible>
+
+                  {(criticals.length + warnings.length) === 0 ? (
+                    <div className="flex items-center gap-2 p-3 rounded-lg bg-success/5 border border-success/20 text-xs text-success">
+                      <span>✓</span>
+                      Todos os meses apresentam participação de conteúdo local acima do limiar de {clThreshold}%.
+                    </div>
+                  ) : (
+                    <div className="space-y-2 max-h-[300px] overflow-y-auto">
+                      {trendAlert && (
+                        <div className="flex items-start gap-2 p-2.5 rounded-lg bg-destructive/5 border border-destructive/20 text-xs">
+                          <AlertTriangle className="w-3.5 h-3.5 text-destructive mt-0.5 shrink-0" />
+                          <div>
+                            <span className="font-semibold text-destructive">Tendência Decrescente</span>
+                            <p className="text-muted-foreground mt-0.5">A participação angolana tem vindo a diminuir nos últimos 3 meses consecutivos e aproxima-se do limiar de {clThreshold}%.</p>
+                          </div>
+                        </div>
+                      )}
+                      {criticals.map((a, i) => (
+                        <div key={`c-${i}`} className="flex items-start gap-2 p-2.5 rounded-lg bg-destructive/5 border border-destructive/20 text-xs">
+                          <AlertTriangle className="w-3.5 h-3.5 text-destructive mt-0.5 shrink-0" />
+                          <div>
+                            <span className="font-semibold text-destructive">Crítico — {a.mes}</span>
+                            <p className="text-muted-foreground mt-0.5">
+                              Conteúdo local por {a.tipo === "valor" ? "valor" : "nº processos"} a <span className="font-mono font-semibold text-destructive">{a.pct.toFixed(1)}%</span> — muito abaixo do limiar de {clThreshold}%.
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                      {warnings.map((a, i) => (
+                        <div key={`w-${i}`} className="flex items-start gap-2 p-2.5 rounded-lg bg-warning/5 border border-warning/20 text-xs">
+                          <AlertTriangle className="w-3.5 h-3.5 text-warning mt-0.5 shrink-0" />
+                          <div>
+                            <span className="font-semibold text-warning">Atenção — {a.mes}</span>
+                            <p className="text-muted-foreground mt-0.5">
+                              Conteúdo local por {a.tipo === "valor" ? "valor" : "nº processos"} a <span className="font-mono font-semibold text-warning">{a.pct.toFixed(1)}%</span> — abaixo do limiar de {clThreshold}%.
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            );
+          })()}
 
           {/* Tendência de Conteúdo Local */}
           {localContentTrend.length > 1 && (
