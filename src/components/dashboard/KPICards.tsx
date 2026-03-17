@@ -30,6 +30,34 @@ const taxaAprovacao = () => {
   return Math.round((aprovados / total) * 100);
 };
 
+// Monthly sparklines for homologações (last 6 months by mesNum desc)
+const homologSpark = (() => {
+  const byMonth = new Map<string, number>();
+  homologacoesData.forEach(h => {
+    const key = `${h.ano}-${h.mesNum}`;
+    byMonth.set(key, (byMonth.get(key) || 0) + (h.montanteAprovado || 0));
+  });
+  return [...byMonth.entries()]
+    .sort(([a], [b]) => a.localeCompare(b))
+    .slice(-6)
+    .map(([, v]) => Math.round(v / 1e6));
+})();
+
+const aprovacaoSpark = (() => {
+  const byMonth = new Map<string, { total: number; approved: number }>();
+  homologacoesData.forEach(h => {
+    const key = `${h.ano}-${h.mesNum}`;
+    const entry = byMonth.get(key) || { total: 0, approved: 0 };
+    entry.total++;
+    if (h.decisao === "Aprovado") entry.approved++;
+    byMonth.set(key, entry);
+  });
+  return [...byMonth.entries()]
+    .sort(([a], [b]) => a.localeCompare(b))
+    .slice(-6)
+    .map(([, v]) => Math.round((v.approved / v.total) * 100));
+})();
+
 // Sparkline data derived from current production
 const totalProd = getTotalProduction();
 const prodSpark = [
