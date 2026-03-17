@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { ChartWrapper } from "@/components/dashboard/ChartWrapper";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
