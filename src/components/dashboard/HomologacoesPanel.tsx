@@ -852,8 +852,8 @@ export const HomologacoesPanel = ({ filterBloco }: Props) => {
                           const intensity = heatmapData.maxVal > 0 ? v / heatmapData.maxVal : 0;
                           return (
                             <td key={m} className="text-center py-1.5 px-1.5">
-                              <div
-                                className="mx-auto rounded-sm flex items-center justify-center font-mono"
+                              <button
+                                className="mx-auto rounded-sm flex items-center justify-center font-mono cursor-pointer hover:ring-2 hover:ring-primary/50 transition-all"
                                 style={{
                                   width: 32, height: 24,
                                   backgroundColor: v === 0
@@ -862,9 +862,12 @@ export const HomologacoesPanel = ({ filterBloco }: Props) => {
                                   color: intensity > 0.5 ? "white" : v === 0 ? "hsl(var(--muted-foreground))" : "hsl(var(--foreground))",
                                   fontSize: 10,
                                 }}
+                                onClick={() => v > 0 && setDrilldown({ bloco, mes: m })}
+                                disabled={v === 0}
+                                title={v > 0 ? `Ver ${v} processos de ${bloco} em ${m}` : ""}
                               >
                                 {v || "–"}
-                              </div>
+                              </button>
                             </td>
                           );
                         })}
