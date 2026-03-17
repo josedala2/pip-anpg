@@ -1261,13 +1261,26 @@ export const HomologacoesPanel = ({ filterBloco }: Props) => {
                 <TableHeader>
                   <TableRow>
                     <TableHead className="text-xs">#</TableHead>
-                    <TableHead className="text-xs">Fornecedor</TableHead>
-                    <TableHead className="text-xs text-right">Nº Contratos</TableHead>
-                    <TableHead className="text-xs text-right">Montante Aprovado</TableHead>
+                    {[
+                      { key: "nomeCompleto", label: "Fornecedor", align: "" },
+                      { key: "count", label: "Nº Contratos", align: "text-right" },
+                      { key: "valor", label: "Montante Aprovado", align: "text-right" },
+                    ].map(col => (
+                      <TableHead
+                        key={col.key}
+                        className={`text-xs cursor-pointer select-none hover:text-foreground transition-colors ${col.align}`}
+                        onClick={() => makeHandleSort(fornSortKey, setFornSortKey, fornSortDir, setFornSortDir, ["nomeCompleto"])(col.key)}
+                      >
+                        <span className="inline-flex items-center gap-0.5">
+                          {col.label}
+                          <SortIcon active={fornSortKey === col.key} dir={fornSortDir} />
+                        </span>
+                      </TableHead>
+                    ))}
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {byFornecedor.slice(0, 20).map((f, i) => (
+                  {sortArray(byFornecedor, fornSortKey, fornSortDir).slice(0, 20).map((f, i) => (
                     <TableRow key={f.nomeCompleto}>
                       <TableCell className="text-xs text-muted-foreground">{i + 1}</TableCell>
                       <TableCell className="text-xs font-medium">{f.nomeCompleto}</TableCell>
