@@ -1,50 +1,44 @@
-## Roteiro de Evolução — Plataforma Nacional de Inteligência Petrolífera
 
-### Estado actual vs Visão
 
-| Capacidade | Estado |
+## Incluir todos os dados restantes no contexto do Soba
+
+### Diagnóstico
+
+A função `buildBlocksSummary()` já serializa a maioria dos dados (económicos, exploração, HSE, facilities, contratos, etc.), mas **omite os seguintes campos** que existem no `OilBlock`:
+
+| Campo omitido | Descrição |
 |---|---|
-| Mapa de concessões | ✅ Existe |
-| KPIs nacionais (prod, reservas, receita estado, variações) | ✅ Completo |
-| Painel de Blocos & Concessões | ✅ Existe |
-| Painel de Produção | ✅ Existe |
-| Painel de Exploração | ✅ Existe |
-| Painel de Operadores | ✅ Existe |
-| Risk & Performance | ✅ Existe |
-| Strategic Forecast | ✅ Existe |
-| Detalhe do bloco (12 abas) | ✅ Existe |
-| Visão Económica (Bloco 0) | ✅ Existe |
-| Comparativo de blocos | ✅ Existe |
-| Relatórios configuráveis | ✅ Existe |
-| Auth + roles | ✅ Existe |
-| **Branding "Inteligência Petrolífera"** | ✅ **Fase 1 concluída** |
-| **KPIs executivos completos** | ✅ **Fase 1 concluída** |
-| **Dashboard Contratual/Negocial** | ✅ **Fase 2 concluída** |
-| Dashboard Integridade Instalações | ✅ **Fase 3 concluída** |
-| Motor de Scoring Estratégico | ✅ **Fase 4 concluída** |
-| Dashboard Recomendação Conselho | ✅ **Fase 4 concluída** |
-| Sistema de Alertas Centrais | ✅ **Fase 5 concluída** |
+| `productionHistory` | Série mensal de produção (BOPD) |
+| `capexHistory` | CAPEX planeado vs real por ano |
+| `projections` | Cenários de projecção (conservative/base/expansion) |
+| `seismicData` | Dados sísmicos anuais (2D/3D/4D) |
+| `wellsData` | Dados de poços anuais (pesquisa/avaliação/descobertas) |
+| `geologicalObjectives` | Objectivos geológicos |
+| `legislationDocs` | Documentos legislativos associados |
+| `cashFlowNotes` | Notas sobre fluxo de caixa |
+| `facilityData.maintenancePlan` | Plano de manutenção das instalações |
+| `waterDepthRange` | Intervalo de profundidade |
 
-### Fases concluídas
+### Plano
 
-**Fase 1** — Rebranding + KPIs Executivos
-- Header: "Inteligência Petrolífera" + "Sistema Integrado de Monitorização, Análise e Apoio à Decisão"
-- KPIs primários: Produção Total, Reservas, Blocos Activos, CAPEX, Taxa de Execução
-- KPIs secundários: Em Produção, Em Exploração, Sem Produção, Risco Crítico, Receita Estado
-- Variações m/m e a/a na produção
-- Título HTML e meta tags actualizados
+Modificar apenas `src/components/dashboard/SobaChat.tsx` — expandir `buildBlocksSummary()` para incluir todos os campos em falta:
 
-**Fase 2** — Dashboard Contratual e Negocial
-- Painel "Contratos & Compliance" adicionado à navegação
-- KPIs: contratos a expirar em 12/24/36 meses, compliance < 80%, blocos com dados contratuais
-- 4 sub-abas: Calendário Contratual, Semáforo por Operador, Matriz de Urgência, Lista Completa
-- Gráfico de barras de expiração por ano com cores por urgência
-- Scatter plot meses restantes vs compliance (tamanho = produção)
-- Semáforo verde/amarelo/vermelho por operador (compliance + execução)
-- Lista ordenada por urgência com badges de estado
+1. **`productionHistory`** — últimos 6 meses + média para não explodir contexto
+2. **`capexHistory`** — tabela ano/planeado/real
+3. **`projections`** — 3 cenários com valores
+4. **`seismicData`** — tabela anual 2D/3D/4D
+5. **`wellsData`** — tabela anual com tipo de poço e resultados
+6. **`geologicalObjectives`** — lista
+7. **`legislationDocs`** — referência e tipo de cada documento
+8. **`cashFlowNotes`** — notas textuais
+9. **`maintenancePlan`** — período/escopo/status
+10. **`waterDepthRange`** — string simples
 
-### Próximas fases
+Dados volumosos (productionHistory, seismicData, wellsData) serão resumidos/limitados para manter o contexto dentro de limites razoáveis de tokens.
 
-**Fase 3** — Dashboard de Integridade de Instalações
-**Fase 4** — Motor de Scoring Estratégico + Dashboard de Recomendação ao Conselho
-**Fase 5** — Sistema de Alertas Centrais
+### Ficheiro a modificar
+
+| Ficheiro | Alteração |
+|---|---|
+| `src/components/dashboard/SobaChat.tsx` | Adicionar serialização dos 10 campos em falta em `buildBlocksSummary()` |
+
