@@ -381,6 +381,7 @@ const BlockPage = () => {
                 <TabsTrigger value="hse" className="gap-1.5 text-xs 2xl:text-sm"><Leaf className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />HSE & Ambiente</TabsTrigger>
                 <TabsTrigger value="swot" className="gap-1.5 text-xs 2xl:text-sm"><Brain className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Análise SWOT</TabsTrigger>
                 <TabsTrigger value="legislation" className="gap-1.5 text-xs 2xl:text-sm"><BookOpen className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Documentos & Legislação</TabsTrigger>
+                <TabsTrigger value="homologacoes" className="gap-1.5 text-xs 2xl:text-sm"><FileText className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Homologações</TabsTrigger>
             </TabsList>
 
           {/* Tab 1: Visão Geral */}
