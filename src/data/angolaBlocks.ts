@@ -643,21 +643,26 @@ export const oilBlocks: OilBlock[] = [
         "Plano quinquenal 2026-2030 totaliza MMUSD 8.726 em investimentos (Exploração + Desenvolvimento + Operação).",
       ],
     },
-    // HSE Safety Indicators (2021-2025)
+    // HSE Safety Indicators (2018–2025) — Dados oficiais ANPG
     hseData: [
-      { year: 2021, fat: 0, lti: 1, rwc: 2, mtc: 5, fac: 12, nmi: 45, hhr: 28.5, trir: 0.28, ltir: 0.04 },
-      { year: 2022, fat: 0, lti: 0, rwc: 1, mtc: 3, fac: 10, nmi: 52, hhr: 27.8, trir: 0.14, ltir: 0.00 },
-      { year: 2023, fat: 0, lti: 1, rwc: 0, mtc: 4, fac: 8, nmi: 48, hhr: 26.9, trir: 0.19, ltir: 0.04 },
-      { year: 2024, fat: 0, lti: 0, rwc: 1, mtc: 2, fac: 7, nmi: 55, hhr: 26.2, trir: 0.11, ltir: 0.00 },
-      { year: 2025, fat: 0, lti: 0, rwc: 0, mtc: 1, fac: 6, nmi: 60, hhr: 25.8, trir: 0.04, ltir: 0.00 },
+      { year: 2018, fat: 0, lti: 0, rwc: 0, mtc: 0, fac: 0, nmi: 0, hhr: 20.33, trir: 0.10, ltir: 0.00 },
+      { year: 2019, fat: 0, lti: 0, rwc: 0, mtc: 0, fac: 0, nmi: 0, hhr: 22.21, trir: 0.13, ltir: 0.00 },
+      { year: 2020, fat: 0, lti: 0, rwc: 0, mtc: 0, fac: 0, nmi: 0, hhr: 13.82, trir: 0.13, ltir: 0.00 },
+      { year: 2021, fat: 0, lti: 0, rwc: 0, mtc: 0, fac: 16, nmi: 0, hhr: 11.80, trir: 0.12, ltir: 0.00 },
+      { year: 2022, fat: 0, lti: 0, rwc: 0, mtc: 1, fac: 20, nmi: 0, hhr: 19.65, trir: 0.10, ltir: 0.00 },
+      { year: 2023, fat: 0, lti: 0, rwc: 0, mtc: 11, fac: 24, nmi: 0, hhr: 15.44, trir: 0.18, ltir: 0.00 },
+      { year: 2024, fat: 0, lti: 0, rwc: 0, mtc: 16, fac: 28, nmi: 35, hhr: 17.16, trir: 0.24, ltir: 0.00 },
+      { year: 2025, fat: 0, lti: 0, rwc: 0, mtc: 7, fac: 34, nmi: 0, hhr: 16.04, trir: 0.11, ltir: 0.00 },
     ],
-    // Environmental data (2021-2025)
+    // Environmental data (2019–2025) — Dados oficiais ANPG
     environmentalData: [
-      { year: 2021, oilSpillCount: 8, oilSpillVolumeBbl: 12, oilInWaterPPM: 5.17, co2EmissionsTonCO2eq: 3700000, gasFlaredMMSCFD: 17.519, gasFlaredTarget: 15 },
-      { year: 2022, oilSpillCount: 6, oilSpillVolumeBbl: 8, oilInWaterPPM: 5.10, co2EmissionsTonCO2eq: 3500000, gasFlaredMMSCFD: 15.2, gasFlaredTarget: 14 },
-      { year: 2023, oilSpillCount: 5, oilSpillVolumeBbl: 5, oilInWaterPPM: 4.75, co2EmissionsTonCO2eq: 3300000, gasFlaredMMSCFD: 13.8, gasFlaredTarget: 13 },
-      { year: 2024, oilSpillCount: 3, oilSpillVolumeBbl: 3, oilInWaterPPM: 4.66, co2EmissionsTonCO2eq: 3200000, gasFlaredMMSCFD: 11.9, gasFlaredTarget: 12 },
-      { year: 2025, oilSpillCount: 2, oilSpillVolumeBbl: 1, oilInWaterPPM: 6.53, co2EmissionsTonCO2eq: 3100000, gasFlaredMMSCFD: 10.54, gasFlaredTarget: 11 },
+      { year: 2019, oilSpillCount: 0, oilSpillVolumeBbl: 0, oilInWaterPPM: 4.80, co2EmissionsTonCO2eq: 3898642, gasFlaredMMSCFD: 27.98, gasFlaredTarget: 25 },
+      { year: 2020, oilSpillCount: 0, oilSpillVolumeBbl: 0, oilInWaterPPM: 5.00, co2EmissionsTonCO2eq: 3750000, gasFlaredMMSCFD: 27.06, gasFlaredTarget: 24 },
+      { year: 2021, oilSpillCount: 0, oilSpillVolumeBbl: 0, oilInWaterPPM: 5.17, co2EmissionsTonCO2eq: 3600000, gasFlaredMMSCFD: 17.52, gasFlaredTarget: 20 },
+      { year: 2022, oilSpillCount: 0, oilSpillVolumeBbl: 0, oilInWaterPPM: 5.10, co2EmissionsTonCO2eq: 3450000, gasFlaredMMSCFD: 18.70, gasFlaredTarget: 18 },
+      { year: 2023, oilSpillCount: 0, oilSpillVolumeBbl: 0, oilInWaterPPM: 4.75, co2EmissionsTonCO2eq: 3300000, gasFlaredMMSCFD: 14.63, gasFlaredTarget: 16 },
+      { year: 2024, oilSpillCount: 0, oilSpillVolumeBbl: 0, oilInWaterPPM: 4.66, co2EmissionsTonCO2eq: 3200000, gasFlaredMMSCFD: 14.01, gasFlaredTarget: 14 },
+      { year: 2025, oilSpillCount: 1, oilSpillVolumeBbl: 4.81, oilInWaterPPM: 6.53, co2EmissionsTonCO2eq: 3100000, gasFlaredMMSCFD: 10.54, gasFlaredTarget: 12 },
     ],
     // Facility status
     facilityData: {
