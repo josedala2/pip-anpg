@@ -3,6 +3,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Target } from "lucide-react";
+import { SortableHead } from "@/components/ui/sortable-head";
+import { useTableSort } from "@/hooks/useTableSort";
 import { ScatterChart, Scatter, XAxis, YAxis, ZAxis, Tooltip, ResponsiveContainer, CartesianGrid, Cell } from "recharts";
 import type { OilBlock } from "@/data/angolaBlocks";
 
