@@ -24,6 +24,7 @@
 | Motor de Scoring Estratégico | ✅ **Fase 4 concluída** |
 | Dashboard Recomendação Conselho | ✅ **Fase 4 concluída** |
 | Sistema de Alertas Centrais | ✅ **Fase 5 concluída** |
+| **Painel de Homologações** | ✅ **Fase 6 concluída** |
 
 ### Fases concluídas
 
