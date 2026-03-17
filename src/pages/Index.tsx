@@ -39,6 +39,7 @@ const allPanels = [
   "Económico",
   "Cenários",
   "Previsão Geral",
+  "Soba",
 ];
 
 const Index = () => {
