@@ -33,25 +33,47 @@ const barColors: Record<SemaphoreStatus, string> = {
   neutral: "bg-primary",
 };
 
+const monthLabels = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
+
+const formatBarValue = (v: number) =>
+  v >= 1000000 ? `${(v / 1000000).toFixed(1)}M` :
+  v >= 1000 ? `${(v / 1000).toFixed(0)}k` :
+  v.toLocaleString();
+
 const MiniTrendBars = ({ data, status }: { data: number[]; status: SemaphoreStatus }) => {
   const min = Math.min(...data);
   const max = Math.max(...data);
   const range = max - min || 1;
+  // Use last N months ending at current month
+  const now = new Date();
+  const currentMonth = now.getMonth();
+  const labels = data.map((_, i) => {
+    const idx = (currentMonth - (data.length - 1 - i) + 12) % 12;
+    return monthLabels[idx];
+  });
 
   return (
-    <div className="flex items-end gap-[3px] h-10 w-20 flex-shrink-0">
-      {data.map((v, i) => {
-        const pct = ((v - min) / range) * 100;
-        const height = Math.max(pct, 12); // minimum 12% so bars are always visible
-        return (
-          <div
-            key={i}
-            className={`flex-1 rounded-sm ${barColors[status]} transition-all duration-300`}
-            style={{ height: `${height}%`, opacity: 0.5 + (i / (data.length - 1)) * 0.5 }}
-          />
-        );
-      })}
-    </div>
+    <TooltipProvider delayDuration={100}>
+      <div className="flex items-end gap-[3px] h-10 w-20 flex-shrink-0">
+        {data.map((v, i) => {
+          const pct = ((v - min) / range) * 100;
+          const height = Math.max(pct, 12);
+          return (
+            <Tooltip key={i}>
+              <TooltipTrigger asChild>
+                <div
+                  className={`flex-1 rounded-sm ${barColors[status]} transition-all duration-300 cursor-default hover:opacity-100`}
+                  style={{ height: `${height}%`, opacity: 0.5 + (i / (data.length - 1)) * 0.5 }}
+                />
+              </TooltipTrigger>
+              <TooltipContent side="top" className="px-2 py-1">
+                <p className="text-[10px] font-semibold">{labels[i]}: {formatBarValue(v)}</p>
+              </TooltipContent>
+            </Tooltip>
+          );
+        })}
+      </div>
+    </TooltipProvider>
   );
 };
 
