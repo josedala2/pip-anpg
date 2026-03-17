@@ -15,6 +15,7 @@ import { OperatorsPanel } from "@/components/dashboard/OperatorsPanel";
 import { AlertsPanel } from "@/components/dashboard/AlertsPanel";
 import { CouncilRecommendationsPanel } from "@/components/dashboard/CouncilRecommendationsPanel";
 import { RiskPerformance } from "@/components/dashboard/RiskPerformance";
+import { SobaChat } from "@/components/dashboard/SobaChat";
 import { type OilBlock, oilBlocks } from "@/data/angolaBlocks";
 import { Maximize2, Minimize2, ChevronLeft, ChevronRight, Sun, Moon, FileText, LogOut, User, Users, Database, Bell, Clock, Signal } from "lucide-react";
 import { evaluateAlerts, evaluateForecastAlerts } from "@/lib/alertsEngine";
@@ -38,6 +39,7 @@ const allPanels = [
   "Económico",
   "Cenários",
   "Previsão Geral",
+  "Soba",
 ];
 
 const Index = () => {
@@ -273,6 +275,7 @@ const Index = () => {
             {panels[activePanel] === "Económico" && <EconomicFinancialPanel />}
             {panels[activePanel] === "Cenários" && <StrategicForecast />}
             {panels[activePanel] === "Previsão Geral" && <GeneralForecastPanel />}
+            {panels[activePanel] === "Soba" && <SobaChat />}
           </div>
         </div>
       </main>
