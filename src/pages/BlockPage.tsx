@@ -23,6 +23,7 @@ import { EconomicVisionTab } from "@/components/dashboard/EconomicVisionTab";
 import { InstitutionalFooter } from "@/components/InstitutionalFooter";
 import { HSEEnvironmentTab } from "@/components/dashboard/HSEEnvironmentTab";
 import { FacilitiesTab } from "@/components/dashboard/FacilitiesTab";
+import { HomologacoesPanel } from "@/components/dashboard/HomologacoesPanel";
 import type { LegislationDocument, ContractInfo } from "@/data/angolaBlocks";
 import {
   PieChart, Pie, Cell, AreaChart, Area, BarChart, Bar, LineChart, Line,
