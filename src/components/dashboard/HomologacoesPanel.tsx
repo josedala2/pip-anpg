@@ -160,6 +160,88 @@ export const HomologacoesPanel = ({ filterBloco }: Props) => {
     { name: "A&S", value: totalAS },
   ].filter(c => c.value > 0);
 
+  // Local content classification
+  const localContent = useMemo(() => {
+    const intlKeywords = [
+      "baker hughes", "schlumberger", "halliburton", "weatherford", "onesubsea",
+      "technipfmc", "saipem", "subsea 7", "aker solutions", "sbm offshore",
+      "maersk", "fugro", "kongsberg", "emerson", "cameron", "cecon",
+      "liebherr", "jeumont", "man energy", "mtu maintenance", "nuovo pignone",
+      "pgs", "framo", "advanced mechatronics", "h. butting", "clariant",
+      "3t oil", "geofizyka", "dof", "bourbon", "seabulk", "tidewater",
+      "shelf drilling", "valaris", "ensco", "diamond offshore", "noble",
+      "champion x", "cladtek", "cetco", "intech", "bently nevada",
+      "mrc global", "dnow", "nov uk", "oil spill response", "international sos",
+      "mckinsey", "graham manufacturing", "airpack", "measurement solutions",
+      "euronav", "grupo antonini", "telford", "dhl global", "excellence logging",
+    ];
+    const angolaKeywords = [
+      "angola", "lda", "limitada", " s.a", "cabinda", "luanda", "sonamer",
+      "sonamet", "sonangol", "kwanda", "sonepral", "enagol", "angolan",
+      "asco", "aes", "bestfly", "friburge", "equador", "global catering",
+      "newrest", "atlantic services", "atlantic facilities", "atlantic logistic",
+      "magnitika", "luajardim", "nilmiguel", "novagest", "nossa seguros",
+      "global seguros", "fidelidade", "fortaleza seguros", "ensa",
+      "nasa comercial", "ncr angola", "nf clean", "clear angola",
+      "internet technologies", "isistel", "ms telcom", "cosal",
+      "organizações mgp", "petrowork", "certex", "basetek", "imovias",
+      "emcica", "capgest", "kaeso", "kloten", "greenford",
+    ];
+
+    const classify = (name: string): "angolano" | "internacional" | "consórcio" => {
+      const lower = name.toLowerCase();
+      const hasIntl = intlKeywords.some(k => lower.includes(k));
+      const hasAngola = angolaKeywords.some(k => lower.includes(k));
+      if (lower.startsWith("consórcio") || lower.includes("/")) {
+        return "consórcio";
+      }
+      if (hasAngola && !hasIntl) return "angolano";
+      if (hasIntl && !hasAngola) return "internacional";
+      if (hasAngola) return "consórcio"; // mixed = consortium
+      return "internacional";
+    };
+
+    let angolanoCount = 0, intlCount = 0, consorcioCount = 0;
+    let angolanoValor = 0, intlValor = 0, consorcioValor = 0;
+    const fornecedorClassMap = new Map<string, "angolano" | "internacional" | "consórcio">();
+
+    data.forEach(h => {
+      const f = h.fornecedor || "N/D";
+      if (!fornecedorClassMap.has(f)) {
+        fornecedorClassMap.set(f, classify(f));
+      }
+      const cls = fornecedorClassMap.get(f)!;
+      if (cls === "angolano") { angolanoCount++; angolanoValor += h.montanteAprovado; }
+      else if (cls === "internacional") { intlCount++; intlValor += h.montanteAprovado; }
+      else { consorcioCount++; consorcioValor += h.montanteAprovado; }
+    });
+
+    const total = angolanoCount + intlCount + consorcioCount;
+    const totalValor = angolanoValor + intlValor + consorcioValor;
+    const uniqueFornecedores = [...fornecedorClassMap.entries()];
+    const uniqueAngolano = uniqueFornecedores.filter(([_, c]) => c === "angolano").length;
+    const uniqueIntl = uniqueFornecedores.filter(([_, c]) => c === "internacional").length;
+    const uniqueConsorcio = uniqueFornecedores.filter(([_, c]) => c === "consórcio").length;
+
+    return {
+      angolanoCount, intlCount, consorcioCount,
+      angolanoValor, intlValor, consorcioValor,
+      total, totalValor,
+      uniqueAngolano, uniqueIntl, uniqueConsorcio,
+      pctAngolanoProcessos: total > 0 ? (angolanoCount / total) * 100 : 0,
+      pctIntlProcessos: total > 0 ? (intlCount / total) * 100 : 0,
+      pctConsorcioProcessos: total > 0 ? (consorcioCount / total) * 100 : 0,
+      pctAngolanoValor: totalValor > 0 ? (angolanoValor / totalValor) * 100 : 0,
+      pctIntlValor: totalValor > 0 ? (intlValor / totalValor) * 100 : 0,
+      pctConsorcioValor: totalValor > 0 ? (consorcioValor / totalValor) * 100 : 0,
+      pieData: [
+        { name: "Angolano", value: angolanoValor },
+        { name: "Internacional", value: intlValor },
+        { name: "Consórcio Misto", value: consorcioValor },
+      ].filter(d => d.value > 0),
+    };
+  }, [data]);
+
   // By modalidade
   const byModalidade = useMemo(() => {
     const map = new Map<string, number>();
@@ -426,6 +508,100 @@ export const HomologacoesPanel = ({ filterBloco }: Props) => {
                   <Bar dataKey="2025" fill="hsl(152, 69%, 40%)" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
+            </CardContent>
+          </Card>
+
+          {/* Charts row 4: Local Content */}
+          <Card className="glass-card">
+            <CardHeader className="p-4 pb-2">
+              <CardTitle className="text-sm flex items-center gap-2">
+                🇦🇴 Indicadores de Conteúdo Local
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-4 pt-0 space-y-4">
+              {/* Summary KPIs */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <div className="p-3 rounded-lg bg-success/10 border border-success/20">
+                  <div className="text-[10px] text-muted-foreground mb-1">Fornecedores Angolanos</div>
+                  <div className="text-lg font-bold text-success">{localContent.uniqueAngolano}</div>
+                  <div className="text-[10px] text-muted-foreground">{localContent.angolanoCount} processos · {localContent.pctAngolanoProcessos.toFixed(1)}%</div>
+                </div>
+                <div className="p-3 rounded-lg bg-primary/10 border border-primary/20">
+                  <div className="text-[10px] text-muted-foreground mb-1">Fornecedores Internacionais</div>
+                  <div className="text-lg font-bold text-primary">{localContent.uniqueIntl}</div>
+                  <div className="text-[10px] text-muted-foreground">{localContent.intlCount} processos · {localContent.pctIntlProcessos.toFixed(1)}%</div>
+                </div>
+                <div className="p-3 rounded-lg bg-warning/10 border border-warning/20">
+                  <div className="text-[10px] text-muted-foreground mb-1">Consórcios Mistos</div>
+                  <div className="text-lg font-bold text-warning">{localContent.uniqueConsorcio}</div>
+                  <div className="text-[10px] text-muted-foreground">{localContent.consorcioCount} processos · {localContent.pctConsorcioProcessos.toFixed(1)}%</div>
+                </div>
+                <div className="p-3 rounded-lg bg-accent border border-border">
+                  <div className="text-[10px] text-muted-foreground mb-1">% Conteúdo Local (Valor)</div>
+                  <div className="text-lg font-bold">{localContent.pctAngolanoValor.toFixed(1)}%</div>
+                  <div className="text-[10px] text-muted-foreground">{fmt(localContent.angolanoValor)} de {fmt(localContent.totalValor)}</div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                {/* Stacked progress bars */}
+                <div className="space-y-3">
+                  <div className="text-xs font-medium text-muted-foreground">Repartição por Nº de Processos</div>
+                  <div className="flex h-6 rounded-full overflow-hidden">
+                    <div className="bg-success flex items-center justify-center text-[9px] font-bold text-white" style={{ width: `${localContent.pctAngolanoProcessos}%` }}>
+                      {localContent.pctAngolanoProcessos > 8 ? `${localContent.pctAngolanoProcessos.toFixed(0)}%` : ""}
+                    </div>
+                    <div className="bg-primary flex items-center justify-center text-[9px] font-bold text-white" style={{ width: `${localContent.pctIntlProcessos}%` }}>
+                      {localContent.pctIntlProcessos > 8 ? `${localContent.pctIntlProcessos.toFixed(0)}%` : ""}
+                    </div>
+                    <div className="bg-warning flex items-center justify-center text-[9px] font-bold text-white" style={{ width: `${localContent.pctConsorcioProcessos}%` }}>
+                      {localContent.pctConsorcioProcessos > 8 ? `${localContent.pctConsorcioProcessos.toFixed(0)}%` : ""}
+                    </div>
+                  </div>
+
+                  <div className="text-xs font-medium text-muted-foreground mt-4">Repartição por Montante Aprovado</div>
+                  <div className="flex h-6 rounded-full overflow-hidden">
+                    <div className="bg-success flex items-center justify-center text-[9px] font-bold text-white" style={{ width: `${localContent.pctAngolanoValor}%` }}>
+                      {localContent.pctAngolanoValor > 8 ? `${localContent.pctAngolanoValor.toFixed(0)}%` : ""}
+                    </div>
+                    <div className="bg-primary flex items-center justify-center text-[9px] font-bold text-white" style={{ width: `${localContent.pctIntlValor}%` }}>
+                      {localContent.pctIntlValor > 8 ? `${localContent.pctIntlValor.toFixed(0)}%` : ""}
+                    </div>
+                    <div className="bg-warning flex items-center justify-center text-[9px] font-bold text-white" style={{ width: `${localContent.pctConsorcioValor}%` }}>
+                      {localContent.pctConsorcioValor > 8 ? `${localContent.pctConsorcioValor.toFixed(0)}%` : ""}
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-4 mt-2 text-[10px]">
+                    <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-sm bg-success" />Angolano</span>
+                    <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-sm bg-primary" />Internacional</span>
+                    <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-sm bg-warning" />Consórcio Misto</span>
+                  </div>
+                </div>
+
+                {/* Donut chart */}
+                <ResponsiveContainer width="100%" height={220}>
+                  <PieChart>
+                    <Pie
+                      data={localContent.pieData}
+                      cx="50%" cy="50%"
+                      innerRadius={50} outerRadius={90}
+                      dataKey="value" nameKey="name"
+                      label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                      labelLine={false}
+                    >
+                      {localContent.pieData.map((entry, i) => (
+                        <Cell key={i} fill={
+                          entry.name === "Angolano" ? "hsl(152, 69%, 40%)" :
+                          entry.name === "Internacional" ? "hsl(199, 89%, 48%)" :
+                          "hsl(38, 92%, 50%)"
+                        } />
+                      ))}
+                    </Pie>
+                    <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => fmtFull(v)} />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
