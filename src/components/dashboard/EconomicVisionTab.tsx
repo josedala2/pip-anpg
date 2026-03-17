@@ -154,9 +154,17 @@ export const EconomicVisionTab = ({ block }: Props) => {
                     <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => `${v}%`} />
                   </PieChart>
                 </ResponsiveContainer>
-                <div className="flex gap-3 text-[10px] text-muted-foreground mt-1">
-                  <span>GE: <strong>{rs.geMMBO.toLocaleString()} MMBO</strong></span>
-                  <span>Imp: <strong>{rs.impostosMMBO.toLocaleString()} MMBO</strong></span>
+                <div className="flex flex-col gap-1 text-[10px] text-muted-foreground mt-1">
+                  <div className="flex gap-3">
+                    <span>GE: <strong>{rs.geMMBO.toLocaleString()} MMBO</strong></span>
+                    <span>Imp: <strong>{rs.impostosMMBO.toLocaleString()} MMBO</strong></span>
+                  </div>
+                  {rs.geMMUSD != null && (
+                    <div className="flex gap-3">
+                      <span>GE: <strong>{rs.geMMUSD.toLocaleString()} MMUSD</strong></span>
+                      <span>Imp: <strong>{rs.impostosMMUSD?.toLocaleString()} MMUSD</strong></span>
+                    </div>
+                  )}
                 </div>
               </div>
             ))}
