@@ -392,8 +392,24 @@ export function SobaChat() {
   const [loadingHistory, setLoadingHistory] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [showSearch, setShowSearch] = useState(false);
+  const [userProfile, setUserProfile] = useState<{ full_name: string; cargo: string } | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+
+  // Fetch user profile for personalisation
+  useEffect(() => {
+    if (!user) return;
+    supabase
+      .from("profiles")
+      .select("full_name, cargo")
+      .eq("user_id", user.id)
+      .single()
+      .then(({ data }) => {
+        if (data) setUserProfile(data);
+      });
+  }, [user]);
+
+  const firstName = userProfile?.full_name?.split(" ")[0] || "";
 
   // Context is now built per-query in sendMessage
 
