@@ -340,8 +340,14 @@ export function SobaChat() {
               </div>
             ) : conversations.length === 0 ? (
               <p className="text-xs text-muted-foreground text-center py-4">Sem conversas</p>
-            ) : (
-              conversations.map((conv) => (
+            ) : (() => {
+              const filtered = searchQuery.trim()
+                ? conversations.filter(c => c.title.toLowerCase().includes(searchQuery.toLowerCase()))
+                : conversations;
+              return filtered.length === 0 ? (
+                <p className="text-xs text-muted-foreground text-center py-4">Nenhum resultado</p>
+              ) : (
+                filtered.map((conv) => (
                 <div key={conv.id} className="group flex items-center">
                   <button
                     onClick={() => loadConversation(conv.id)}
