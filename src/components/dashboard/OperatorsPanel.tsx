@@ -423,7 +423,11 @@ function OperatorDetailView({ operator, onBack }: { operator: OperatorSummary; o
         </CardContent>
       </Card>
 
-      {/* Detail Tabs */}
+      {/* Search + Detail Tabs */}
+      <div className="relative max-w-sm">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+        <Input placeholder="Pesquisar bloco, campo, instalação..." className="pl-9 h-9 text-sm" value={detailSearch} onChange={e => setDetailSearch(e.target.value)} />
+      </div>
       <Tabs defaultValue="blocks" className="w-full">
         <TabsList className="flex flex-wrap h-auto gap-1 bg-muted/50 p-1">
           <TabsTrigger value="blocks" className="text-xs gap-1"><Layers className="w-3 h-3" /> Blocos</TabsTrigger>
