@@ -1469,6 +1469,11 @@ const BlockPage = () => {
             <LegislationSearch docs={block.legislationDocs || []} contractInfo={block.contractInfo} />
           </TabsContent>
 
+          {/* Tab: Homologações */}
+          <TabsContent value="homologacoes" className="space-y-4 2xl:space-y-6">
+            <HomologacoesPanel filterBloco={block.name} />
+          </TabsContent>
+
           {/* Tab 8: Financeiro & Contratual */}
           <TabsContent value="financial" className="space-y-6 2xl:space-y-8">
             {(() => {
