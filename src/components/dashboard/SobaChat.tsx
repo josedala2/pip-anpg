@@ -541,6 +541,8 @@ export function SobaChat() {
         body: JSON.stringify({
           messages: newMessages,
           context: buildSmartContext(text.trim()),
+          userName: userProfile?.full_name || "",
+          userRole: userProfile?.cargo || "",
         }),
       });
 
