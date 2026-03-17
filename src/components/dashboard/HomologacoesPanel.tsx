@@ -740,7 +740,65 @@ export const HomologacoesPanel = ({ filterBloco }: Props) => {
             </CardContent>
           </Card>
 
-          {/* Alertas de Conteúdo Local */}
+          {/* Ranking de Blocos por Conteúdo Local */}
+          {!filterBloco && localContent.blocoRanking.length > 1 && (
+            <ChartWrapper title="Ranking de Blocos por Conteúdo Local" height="auto" icon={<span className="text-sm">🇦🇴</span>}>
+              <div className="space-y-2">
+                <p className="text-[11px] text-muted-foreground">Blocos ordenados do menor para o maior % de participação angolana (por valor aprovado). Blocos abaixo de {clThreshold}% são destacados.</p>
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="text-[10px] w-8">#</TableHead>
+                        <TableHead className="text-[10px]">Bloco</TableHead>
+                        <TableHead className="text-[10px] text-right">Processos</TableHead>
+                        <TableHead className="text-[10px] text-right">Ang.</TableHead>
+                        <TableHead className="text-[10px] text-right">% CL (Proc.)</TableHead>
+                        <TableHead className="text-[10px] text-right">% CL (Valor)</TableHead>
+                        <TableHead className="text-[10px] text-right">Valor Total</TableHead>
+                        <TableHead className="text-[10px]">Nível</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {localContent.blocoRanking.map((b, i) => {
+                        const isCritical = b.pctAngValor < clThreshold * 0.5;
+                        const isWarning = b.pctAngValor < clThreshold;
+                        return (
+                          <TableRow key={b.bloco} className={isCritical ? "bg-destructive/5" : isWarning ? "bg-warning/5" : ""}>
+                            <TableCell className="text-[10px] font-mono text-muted-foreground">{i + 1}</TableCell>
+                            <TableCell className="text-[11px] font-medium">{b.bloco}</TableCell>
+                            <TableCell className="text-[11px] text-right font-mono">{b.processos}</TableCell>
+                            <TableCell className="text-[11px] text-right font-mono">{b.angProcessos}</TableCell>
+                            <TableCell className="text-[11px] text-right font-mono">{b.pctAngProcessos.toFixed(1)}%</TableCell>
+                            <TableCell className="text-[11px] text-right font-mono font-semibold">{b.pctAngValor.toFixed(1)}%</TableCell>
+                            <TableCell className="text-[10px] text-right font-mono text-muted-foreground">{fmt(b.totalValor)}</TableCell>
+                            <TableCell>
+                              <Badge
+                                variant="outline"
+                                className={`text-[9px] ${
+                                  isCritical ? "text-destructive border-destructive/30 bg-destructive/10" :
+                                  isWarning ? "text-warning border-warning/30 bg-warning/10" :
+                                  "text-success border-success/30 bg-success/10"
+                                }`}
+                              >
+                                {isCritical ? "Crítico" : isWarning ? "Alerta" : "Conforme"}
+                              </Badge>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
+                    </TableBody>
+                  </Table>
+                </div>
+                <div className="flex items-center gap-3 text-[10px] text-muted-foreground pt-1">
+                  <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-sm bg-destructive/60" /> Crítico: {"<"} {(clThreshold * 0.5).toFixed(0)}%</span>
+                  <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-sm bg-warning/60" /> Alerta: {"<"} {clThreshold}%</span>
+                  <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-sm bg-success/60" /> Conforme: ≥ {clThreshold}%</span>
+                </div>
+              </div>
+            </ChartWrapper>
+          )}
+
           {localContentTrend.length > 0 && (() => {
             const alerts: { mes: string; pct: number; tipo: "valor" | "processos"; severity: "critical" | "warning" }[] = [];
             localContentTrend.forEach(d => {
