@@ -153,7 +153,7 @@ export const HomologacoesPanel = ({ filterBloco }: Props) => {
 
   // YoY totals
   const yoyTotals = useMemo(() => {
-    const allData = filterBloco ? homologacoesData.filter(h => h.bloco === filterBloco) : homologacoesData;
+    const allData = filterBloco ? homologacoesData.filter(h => matchBloco(h.bloco, filterBloco)) : homologacoesData;
     const t24 = allData.filter(h => h.ano === 2024).reduce((s, h) => s + h.montanteAprovado, 0);
     const t25 = allData.filter(h => h.ano === 2025).reduce((s, h) => s + h.montanteAprovado, 0);
     const n24 = allData.filter(h => h.ano === 2024).length;
