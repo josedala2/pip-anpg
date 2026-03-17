@@ -13,7 +13,7 @@ import {
 } from "recharts";
 import {
   DollarSign, FileText, TrendingUp, Building2, Users, Search,
-  Filter, ChevronDown, ChevronRight, Download,
+  Filter, ChevronDown, ChevronRight, Download, AlertTriangle, Settings,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
