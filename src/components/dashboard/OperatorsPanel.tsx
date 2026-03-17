@@ -273,6 +273,22 @@ function OperatorDetailView({ operator, onBack }: { operator: OperatorSummary; o
   const { blocks } = operator;
   const [selectedBlock, setSelectedBlock] = useState<OilBlock | null>(null);
 
+  // Table sort states
+  const blocksTableData = useMemo(() => blocks.map(b => ({
+    id: b.id, name: b.name, phase: b.phase, basin: b.basin, waterDepth: b.waterDepth || "",
+    dailyProduction: b.dailyProduction, estimatedReserves: b.estimatedReserves,
+    complianceScore: b.complianceScore, contractDate: b.contractDate || "",
+    accumulatedInvestment: b.accumulatedInvestment, plannedInvestment: b.plannedInvestment,
+    executionRate: b.executionRate, opexPerBarrel: b.economicData?.opexPerBarrel || 0,
+  })), [blocks]);
+  const blocksSort = useTableSort(blocksTableData, "dailyProduction", "desc", ["name", "phase", "basin", "waterDepth", "contractDate"]);
+  const econSort = useTableSort(blocksTableData, "accumulatedInvestment", "desc", ["name"]);
+  const fieldsData = useMemo(() => blocks.flatMap(b => (b.fields || []).map(f => ({
+    blockName: b.name, fieldName: f.name, status: f.status, discoveryYear: f.discoveryYear || 0,
+    peakProduction: f.peakProduction || 0,
+  }))), [blocks]);
+  const fieldsSort = useTableSort(fieldsData, "peakProduction", "desc", ["blockName", "fieldName", "status"]);
+
   // Aggregate production history
   const aggregatedHistory = useMemo(() => {
     if (!blocks.length || !blocks[0].productionHistory?.length) return [];
