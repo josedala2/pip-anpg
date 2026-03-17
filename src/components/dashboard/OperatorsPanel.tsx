@@ -767,15 +767,15 @@ function OperatorDetailView({ operator, onBack }: { operator: OperatorSummary; o
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead>Nome</TableHead>
-                        <TableHead>Tipo</TableHead>
-                        <TableHead>Bloco</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead>Capacidade</TableHead>
+                        <SortableHead label="Nome" colKey="name" sortKey={facilitiesSort.sortKey} sortDir={facilitiesSort.sortDir} onSort={facilitiesSort.handleSort} />
+                        <SortableHead label="Tipo" colKey="type" sortKey={facilitiesSort.sortKey} sortDir={facilitiesSort.sortDir} onSort={facilitiesSort.handleSort} />
+                        <SortableHead label="Bloco" colKey="block" sortKey={facilitiesSort.sortKey} sortDir={facilitiesSort.sortDir} onSort={facilitiesSort.handleSort} />
+                        <SortableHead label="Status" colKey="status" sortKey={facilitiesSort.sortKey} sortDir={facilitiesSort.sortDir} onSort={facilitiesSort.handleSort} />
+                        <SortableHead label="Capacidade" colKey="capacity" sortKey={facilitiesSort.sortKey} sortDir={facilitiesSort.sortDir} onSort={facilitiesSort.handleSort} />
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {facilities.platforms.map((p, i) => (
+                      {facilitiesSort.sorted.map((p, i) => (
                         <TableRow key={i}>
                           <TableCell className="font-medium text-xs">{p.name}</TableCell>
                           <TableCell className="text-xs">{p.type}</TableCell>
