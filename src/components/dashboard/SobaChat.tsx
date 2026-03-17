@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import ReactMarkdown from "react-markdown";
-import { Send, Bot, User, Loader2, Sparkles, Trash2, Plus, MessageSquare } from "lucide-react";
+import { Send, Bot, User, Loader2, Sparkles, Trash2, Plus, MessageSquare, Search, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { oilBlocks } from "@/data/angolaBlocks";
