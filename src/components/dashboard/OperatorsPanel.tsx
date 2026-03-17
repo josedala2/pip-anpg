@@ -274,30 +274,39 @@ function OperatorDetailView({ operator, onBack }: { operator: OperatorSummary; o
   const [selectedBlock, setSelectedBlock] = useState<OilBlock | null>(null);
   const [detailSearch, setDetailSearch] = useState("");
   // Table sort states
-  const blocksTableData = useMemo(() => blocks.map(b => ({
-    id: b.id, name: b.name, phase: b.phase, basin: b.basin, waterDepth: b.waterDepth || "",
-    dailyProduction: b.dailyProduction, estimatedReserves: b.estimatedReserves,
-    complianceScore: b.complianceScore, contractDate: b.contractDate || "",
-    accumulatedInvestment: b.accumulatedInvestment, plannedInvestment: b.plannedInvestment,
-    executionRate: b.executionRate, opexPerBarrel: b.economicData?.opexPerBarrel || 0,
-  })), [blocks]);
+  const blocksTableData = useMemo(() => {
+    const q = detailSearch.toLowerCase();
+    return blocks
+      .map(b => ({
+        id: b.id, name: b.name, phase: b.phase, basin: b.basin, waterDepth: b.waterDepth || "",
+        dailyProduction: b.dailyProduction, estimatedReserves: b.estimatedReserves,
+        complianceScore: b.complianceScore, contractDate: b.contractDate || "",
+        accumulatedInvestment: b.accumulatedInvestment, plannedInvestment: b.plannedInvestment,
+        executionRate: b.executionRate, opexPerBarrel: b.economicData?.opexPerBarrel || 0,
+      }))
+      .filter(b => !q || b.name.toLowerCase().includes(q) || b.phase.toLowerCase().includes(q) || b.basin.toLowerCase().includes(q));
+  }, [blocks, detailSearch]);
   const blocksSort = useTableSort(blocksTableData, "dailyProduction", "desc", ["name", "phase", "basin", "waterDepth", "contractDate"]);
   const econSort = useTableSort(blocksTableData, "accumulatedInvestment", "desc", ["name"]);
-  const fieldsData = useMemo(() => blocks.flatMap(b => (b.fields || []).map(f => ({
-    blockName: b.name, fieldName: f.name, status: f.status, discoveryYear: f.discoveryYear || 0,
-    peakProduction: f.peakProduction || 0,
-  }))), [blocks]);
+  const fieldsData = useMemo(() => {
+    const q = detailSearch.toLowerCase();
+    return blocks.flatMap(b => (b.fields || []).map(f => ({
+      blockName: b.name, fieldName: f.name, status: f.status, discoveryYear: f.discoveryYear || 0,
+      peakProduction: f.peakProduction || 0,
+    }))).filter(f => !q || f.blockName.toLowerCase().includes(q) || f.fieldName.toLowerCase().includes(q) || f.status.toLowerCase().includes(q));
+  }, [blocks, detailSearch]);
   const fieldsSort = useTableSort(fieldsData, "peakProduction", "desc", ["blockName", "fieldName", "status"]);
   // Facilities data for sorting
   const facilitiesData = useMemo(() => {
+    const q = detailSearch.toLowerCase();
     const platforms: { name: string; type: string; block: string; status: string; capacity: string }[] = [];
     blocks.forEach(b => {
       b.facilityData?.platformSpecs?.forEach(p => {
         platforms.push({ name: p.name, type: p.type, block: b.name, status: p.status, capacity: p.capacity || "" });
       });
     });
-    return platforms;
-  }, [blocks]);
+    return platforms.filter(p => !q || p.name.toLowerCase().includes(q) || p.block.toLowerCase().includes(q) || p.type.toLowerCase().includes(q));
+  }, [blocks, detailSearch]);
   const facilitiesSort = useTableSort(facilitiesData, "name", "asc", ["name", "type", "block", "status", "capacity"]);
 
   // Aggregate production history
