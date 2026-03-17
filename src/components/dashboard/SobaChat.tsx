@@ -523,7 +523,7 @@ export function SobaChat() {
         },
         body: JSON.stringify({
           messages: newMessages,
-          context,
+          context: buildSmartContext(text.trim()),
         }),
       });
 
