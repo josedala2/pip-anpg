@@ -558,20 +558,17 @@ export const HomologacoesPanel = ({ filterBloco }: Props) => {
           {/* Charts row 2 */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             {/* Top Fornecedores */}
-            <Card className="glass-card">
-              <CardHeader className="p-4 pb-2"><CardTitle className="text-sm">Top 10 Fornecedores por Montante</CardTitle></CardHeader>
-              <CardContent className="p-4 pt-0">
-                <ResponsiveContainer width="100%" height={300}>
-                  <BarChart data={byFornecedor} layout="vertical" margin={{ left: 120, right: 20 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
-                    <XAxis type="number" tickFormatter={v => fmt(v)} tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} />
-                    <YAxis type="category" dataKey="nome" tick={{ fontSize: 9, fill: "hsl(var(--muted-foreground))" }} width={115} />
-                    <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => fmtFull(v)} />
-                    <Bar dataKey="valor" fill="hsl(152, 69%, 40%)" radius={[0, 4, 4, 0]} />
-                  </BarChart>
-                </ResponsiveContainer>
-              </CardContent>
-            </Card>
+            <ChartWrapper title="Top 10 Fornecedores por Montante" height={300}>
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={byFornecedor} layout="vertical" margin={{ left: 120, right: 20 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
+                  <XAxis type="number" tickFormatter={v => fmt(v)} tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} />
+                  <YAxis type="category" dataKey="nome" tick={{ fontSize: 9, fill: "hsl(var(--muted-foreground))" }} width={115} />
+                  <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => fmtFull(v)} />
+                  <Bar dataKey="valor" fill="hsl(152, 69%, 40%)" radius={[0, 4, 4, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </ChartWrapper>
 
             {/* Monthly evolution */}
             <Card className="glass-card">
