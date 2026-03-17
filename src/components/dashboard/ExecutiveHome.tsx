@@ -8,10 +8,11 @@ import { QuickRecommendations } from "./QuickRecommendations";
 import { OperatorsPanel } from "./OperatorsPanel";
 import { AlertsPanel } from "./AlertsPanel";
 import { CouncilRecommendationsPanel } from "./CouncilRecommendationsPanel";
+import { HomologacoesPanel } from "./HomologacoesPanel";
 import { type OilBlock, oilBlocks } from "@/data/angolaBlocks";
-import { ChevronDown, ChevronUp, Users, Bell, Target } from "lucide-react";
+import { ChevronDown, ChevronUp, Users, Bell, Target, FileCheck } from "lucide-react";
 
-type DrillDown = "operadores" | "alertas" | "recomendacoes" | null;
+type DrillDown = "operadores" | "alertas" | "recomendacoes" | "homologacoes" | null;
 
 export const ExecutiveHome = ({ initialDrillDown = null }: { initialDrillDown?: DrillDown }) => {
   const [hoveredBlockId, setHoveredBlockId] = useState<string | null>(null);
@@ -31,7 +32,7 @@ export const ExecutiveHome = ({ initialDrillDown = null }: { initialDrillDown?: 
           <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Painéis Detalhados</span>
         </div>
         <TooltipProvider>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-2">
             <Tooltip>
               <TooltipTrigger asChild>
                 <div>
@@ -77,6 +78,21 @@ export const ExecutiveHome = ({ initialDrillDown = null }: { initialDrillDown?: 
                 Acções estratégicas priorizadas para decisão, baseadas na análise de produção, contratos e risco de cada concessão.
               </TooltipContent>
             </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div>
+                  <DrillDownButton
+                    icon={FileCheck}
+                    label="Homologações"
+                    isOpen={expandedSection === "homologacoes"}
+                    onClick={() => toggle("homologacoes")}
+                  />
+                </div>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" className="max-w-[260px] text-xs">
+                Resumo executivo dos processos de homologação, incluindo montantes aprovados, taxa de aprovação e evolução mensal.
+              </TooltipContent>
+            </Tooltip>
           </div>
         </TooltipProvider>
       </div>
@@ -87,6 +103,7 @@ export const ExecutiveHome = ({ initialDrillDown = null }: { initialDrillDown?: 
           {expandedSection === "operadores" && <OperatorsPanel />}
           {expandedSection === "alertas" && <AlertsPanel />}
           {expandedSection === "recomendacoes" && <CouncilRecommendationsPanel />}
+          {expandedSection === "homologacoes" && <HomologacoesPanel />}
         </div>
       )}
 
@@ -124,7 +141,7 @@ function DrillDownButton({ icon: Icon, label, isOpen, onClick }: {
   return (
     <button
       onClick={onClick}
-      className={`flex items-center justify-between gap-2 px-4 py-2.5 rounded-lg border text-xs font-semibold transition-all ${
+      className={`flex items-center justify-between gap-2 px-4 py-2.5 rounded-lg border text-xs font-semibold transition-all w-full ${
         isOpen
           ? "bg-primary/10 border-primary/30 text-primary"
           : "bg-card border-border/50 text-muted-foreground hover:text-foreground hover:border-border"
@@ -138,3 +155,4 @@ function DrillDownButton({ icon: Icon, label, isOpen, onClick }: {
     </button>
   );
 }
+

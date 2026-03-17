@@ -1,30 +1,51 @@
+## Roteiro de Evolução — Plataforma Nacional de Inteligência Petrolífera
 
+### Estado actual vs Visão
 
-## Plano: Actualizar a Home Executiva com novos dados e KPIs
+| Capacidade | Estado |
+|---|---|
+| Mapa de concessões | ✅ Existe |
+| KPIs nacionais (prod, reservas, receita estado, variações) | ✅ Completo |
+| Painel de Blocos & Concessões | ✅ Existe |
+| Painel de Produção | ✅ Existe |
+| Painel de Exploração | ✅ Existe |
+| Painel de Operadores | ✅ Existe |
+| Risk & Performance | ✅ Existe |
+| Strategic Forecast | ✅ Existe |
+| Detalhe do bloco (12 abas) | ✅ Existe |
+| Visão Económica (Bloco 0) | ✅ Existe |
+| Comparativo de blocos | ✅ Existe |
+| Relatórios configuráveis | ✅ Existe |
+| Auth + roles | ✅ Existe |
+| **Branding "Inteligência Petrolífera"** | ✅ **Fase 1 concluída** |
+| **KPIs executivos completos** | ✅ **Fase 1 concluída** |
+| **Dashboard Contratual/Negocial** | ✅ **Fase 2 concluída** |
+| Dashboard Integridade Instalações | ✅ **Fase 3 concluída** |
+| Motor de Scoring Estratégico | ✅ **Fase 4 concluída** |
+| Dashboard Recomendação Conselho | ✅ **Fase 4 concluída** |
+| Sistema de Alertas Centrais | ✅ **Fase 5 concluída** |
+| **Painel de Homologações** | ✅ **Fase 6 concluída** |
 
-### Contexto
-O utilizador quer reflectir dados actualizados de produção e integrar indicadores de Homologações na Home Executiva, além de adicionar novos KPIs/secções.
+### Fases concluídas
 
-### Alterações
+**Fase 1** — Rebranding + KPIs Executivos
+- Header: "Inteligência Petrolífera" + "Sistema Integrado de Monitorização, Análise e Apoio à Decisão"
+- KPIs primários: Produção Total, Reservas, Blocos Activos, CAPEX, Taxa de Execução
+- KPIs secundários: Em Produção, Em Exploração, Sem Produção, Risco Crítico, Receita Estado
+- Variações m/m e a/a na produção
+- Título HTML e meta tags actualizados
 
-**1. Novos KPIs de Homologações no `KPICards.tsx`**
-- Importar `homologacoesData` de `@/data/homologacoesData`
-- Adicionar 2 novos KPIs derivados dos dados de homologações:
-  - **Total Homologado** — soma do `montanteAprovado` (em $M), com ícone `FileText`, status neutral
-  - **Taxa Aprovação** — percentagem de processos com `decisao === "Aprovado"` vs total, com semáforo (< 70% = warning, < 50% = critical)
-- Actualizar sparkline de produção para reflectir valores mais recentes derivados de `getTotalProduction()`
-- Ajustar grid para `md:grid-cols-6` (12 KPIs em 2 linhas de 6)
+**Fase 2** — Dashboard Contratual e Negocial
+- Painel "Contratos & Compliance" adicionado à navegação
+- KPIs: contratos a expirar em 12/24/36 meses, compliance < 80%, blocos com dados contratuais
+- 4 sub-abas: Calendário Contratual, Semáforo por Operador, Matriz de Urgência, Lista Completa
+- Gráfico de barras de expiração por ano com cores por urgência
+- Scatter plot meses restantes vs compliance (tamanho = produção)
+- Semáforo verde/amarelo/vermelho por operador (compliance + execução)
+- Lista ordenada por urgência com badges de estado
 
-**2. Secção de Homologações na Home Executiva (`ExecutiveHome.tsx`)**
-- Adicionar um novo botão de drill-down "Homologações" ao lado dos existentes (Operadores, Alertas, Recomendações)
-- Quando expandido, renderiza um resumo compacto de homologações (mini-dashboard com os KPIs principais e gráfico de barras por mês)
-- Grid de drill-down passa de `md:grid-cols-3` para `md:grid-cols-4`
+### Próximas fases
 
-**3. Actualização dos valores de produção**
-- Os KPIs já lêem dinamicamente de `getTotalProduction()` e `getTotalReserves()` — valores actualizam automaticamente quando `angolaBlocks.ts` é alterado
-- Actualizar os dados de sparkline estáticos para valores mais coerentes com a produção actual
-
-### Ficheiros alterados
-- `src/components/dashboard/KPICards.tsx` — novos KPIs de homologações, grid ajustado
-- `src/components/dashboard/ExecutiveHome.tsx` — novo drill-down de homologações
-
+**Fase 3** — Dashboard de Integridade de Instalações
+**Fase 4** — Motor de Scoring Estratégico + Dashboard de Recomendação ao Conselho
+**Fase 5** — Sistema de Alertas Centrais

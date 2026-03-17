@@ -1,6 +1,7 @@
 import { ExecutiveKPICard, type SemaphoreStatus } from "./ExecutiveKPICard";
 import { getTotalProduction, getTotalReserves, getActiveBlocks, getTotalCapex, getAvgExecutionRate, oilBlocks, getBlocksByPhase } from "@/data/angolaBlocks";
-import { Activity, BarChart3, Boxes, DollarSign, TrendingUp, AlertTriangle, Landmark, Pickaxe, Search, Wrench } from "lucide-react";
+import { homologacoesData } from "@/data/homologacoesData";
+import { Activity, BarChart3, Boxes, DollarSign, TrendingUp, AlertTriangle, Landmark, Pickaxe, Search, Wrench, FileText, CheckCircle } from "lucide-react";
 
 const blocksInProduction = () => getBlocksByPhase("Production").length;
 const blocksInExploration = () => getBlocksByPhase("Exploration").length;
@@ -20,14 +21,32 @@ const contractsExpiring = () => {
   }).length;
 };
 
-// Simulated sparkline data (6 months)
-const prodSpark = [1120, 1105, 1098, 1085, 1070, 1065];
+// Homologações KPIs
+const totalHomologado = () => Math.round(homologacoesData.reduce((s, h) => s + (h.montanteAprovado || 0), 0) / 1e6);
+const taxaAprovacao = () => {
+  const total = homologacoesData.length;
+  if (total === 0) return 0;
+  const aprovados = homologacoesData.filter(h => h.decisao === "Aprovado").length;
+  return Math.round((aprovados / total) * 100);
+};
+
+// Sparkline data derived from current production
+const totalProd = getTotalProduction();
+const prodSpark = [
+  Math.round(totalProd * 1.05),
+  Math.round(totalProd * 1.035),
+  Math.round(totalProd * 1.02),
+  Math.round(totalProd * 1.01),
+  Math.round(totalProd * 1.003),
+  totalProd,
+];
 const reservesSpark = [9200, 9180, 9150, 9120, 9100, 9080];
 
 const getStatus = (label: string, value: number): SemaphoreStatus => {
   if (label === "Risco Crítico" || label === "Instalações Críticas") return value > 0 ? "critical" : "healthy";
   if (label === "Sem Produção") return value > 5 ? "warning" : "healthy";
   if (label === "Contratos a Expirar") return value > 3 ? "warning" : value > 0 ? "warning" : "healthy";
+  if (label === "Taxa Aprovação") return value < 50 ? "critical" : value < 70 ? "warning" : "healthy";
   return "neutral";
 };
 
@@ -42,10 +61,12 @@ const kpis = [
   { label: "Instalações Críticas", value: criticalFacilities(), suffix: "", icon: Wrench, status: getStatus("Instalações Críticas", criticalFacilities()), drill: "Instalações com eficiência < 70%" },
   { label: "Receita Estado", value: estimatedStateRevenue(), prefix: "$", suffix: "M", icon: Landmark, status: "neutral" as SemaphoreStatus, drill: "Estimativa anual de receita fiscal petrolífera" },
   { label: "Contratos a Expirar", value: contractsExpiring(), suffix: "", icon: DollarSign, status: getStatus("Contratos a Expirar", contractsExpiring()), drill: "Contratos com vencimento em < 24 meses" },
+  { label: "Total Homologado", value: totalHomologado(), prefix: "$", suffix: "M", icon: FileText, status: "neutral" as SemaphoreStatus, drill: "Soma dos montantes aprovados em processos de homologação" },
+  { label: "Taxa Aprovação", value: taxaAprovacao(), suffix: "%", icon: CheckCircle, status: getStatus("Taxa Aprovação", taxaAprovacao()), drill: "Percentagem de processos de homologação aprovados" },
 ];
 
 export const KPICards = ({ compact = false }: { compact?: boolean }) => (
-  <div className={compact ? "grid grid-cols-2 gap-2" : "grid grid-cols-2 md:grid-cols-5 gap-2.5 md:gap-3"}>
+  <div className={compact ? "grid grid-cols-2 gap-2" : "grid grid-cols-2 md:grid-cols-6 gap-2.5 md:gap-3"}>
     {kpis.map((kpi, i) => (
       <ExecutiveKPICard
         key={kpi.label}
