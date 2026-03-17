@@ -252,6 +252,36 @@ export const HomologacoesPanel = ({ filterBloco }: Props) => {
     };
   }, [data]);
 
+  // Heatmap: processes by bloco × month
+  const heatmapData = useMemo(() => {
+    const mesOrder = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
+    const mesMap: Record<string, string> = {
+      Janeiro: "Jan", Fevereiro: "Fev", Março: "Mar", Abril: "Abr",
+      Maio: "Mai", Junho: "Jun", Julho: "Jul", Agosto: "Ago",
+      Setembro: "Set", Outubro: "Out", Novembro: "Nov", Dezembro: "Dez",
+    };
+    const map = new Map<string, Map<string, number>>();
+    const activeMeses = new Set<string>();
+    data.forEach(h => {
+      const m = mesMap[h.mes] || h.mes.slice(0, 3);
+      activeMeses.add(m);
+      if (!map.has(h.bloco)) map.set(h.bloco, new Map());
+      const row = map.get(h.bloco)!;
+      row.set(m, (row.get(m) || 0) + 1);
+    });
+    const meses = mesOrder.filter(m => activeMeses.has(m));
+    const blocos = [...map.entries()]
+      .map(([bloco, row]) => {
+        const total = [...row.values()].reduce((a, b) => a + b, 0);
+        return { bloco, row, total };
+      })
+      .sort((a, b) => b.total - a.total)
+      .slice(0, 15);
+    let maxVal = 0;
+    blocos.forEach(b => b.row.forEach(v => { if (v > maxVal) maxVal = v; }));
+    return { meses, blocos, maxVal };
+  }, [data]);
+
   // By modalidade
   const byModalidade = useMemo(() => {
     const map = new Map<string, number>();
