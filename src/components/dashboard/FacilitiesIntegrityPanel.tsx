@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button";
 import { oilBlocks, type OilBlock, type PlatformSpec } from "@/data/angolaBlocks";
 import { AnimatedCounter } from "./AnimatedCounter";
 import { FacilityDetailCard } from "./FacilityDetailCard";
-import { AlertTriangle, Anchor, ArrowDown, ArrowLeft, Calendar, Factory, Gauge, Globe, HardHat, Shield, Timer, Waves, Wrench } from "lucide-react";
+import { AlertTriangle, Anchor, ArrowDown, ArrowLeft, Calendar, Factory, Gauge, Globe, HardHat, Search, Shield, Timer, Waves, Wrench } from "lucide-react";
+import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScatterChart, Scatter, XAxis, YAxis, ZAxis, Tooltip, ResponsiveContainer, Cell, CartesianGrid, BarChart, Bar, Legend } from "recharts";
@@ -74,6 +75,7 @@ export const FacilitiesIntegrityPanel = () => {
   const [selectedFacility, setSelectedFacility] = useState<{ blockId: string; platformName: string } | null>(null);
   const [filterType, setFilterType] = useState<string>("all");
   const [filterStatus, setFilterStatus] = useState<string>("all");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const facilities: FacilityRecord[] = useMemo(() => {
     const results: FacilityRecord[] = [];
@@ -216,38 +218,51 @@ export const FacilitiesIntegrityPanel = () => {
 
         {/* Installations List */}
         <TabsContent value="installations">
-          {/* Filters */}
-          <div className="flex flex-wrap items-center gap-2 mb-4">
-            <span className="text-[10px] uppercase tracking-wider font-semibold text-muted-foreground">Tipo:</span>
-            {["all", ...Array.from(new Set(facilities.map(f => f.platform.type)))].map(t => (
-              <Badge
-                key={t}
-                variant="outline"
-                className={`text-[10px] cursor-pointer transition-colors ${filterType === t ? "bg-primary/15 text-primary border-primary/40" : "hover:bg-muted"}`}
-                onClick={() => setFilterType(t)}
-              >
-                {t === "all" ? "Todos" : t}
-              </Badge>
-            ))}
-            <span className="text-[10px] uppercase tracking-wider font-semibold text-muted-foreground ml-3">Status:</span>
-            {["all", "Operacional", "Manutenção", "Suspensa", "Descomissionada"].map(s => (
-              <Badge
-                key={s}
-                variant="outline"
-                className={`text-[10px] cursor-pointer transition-colors ${filterStatus === s ? "bg-primary/15 text-primary border-primary/40" : "hover:bg-muted"}`}
-                onClick={() => setFilterStatus(s)}
-              >
-                {s === "all" ? "Todos" : s}
-              </Badge>
-            ))}
+          {/* Search + Filters */}
+          <div className="space-y-3 mb-4">
+            <div className="relative max-w-sm">
+              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
+              <Input
+                placeholder="Pesquisar instalação…"
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                className="pl-8 h-8 text-xs"
+              />
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-[10px] uppercase tracking-wider font-semibold text-muted-foreground">Tipo:</span>
+              {["all", ...Array.from(new Set(facilities.map(f => f.platform.type)))].map(t => (
+                <Badge
+                  key={t}
+                  variant="outline"
+                  className={`text-[10px] cursor-pointer transition-colors ${filterType === t ? "bg-primary/15 text-primary border-primary/40" : "hover:bg-muted"}`}
+                  onClick={() => setFilterType(t)}
+                >
+                  {t === "all" ? "Todos" : t}
+                </Badge>
+              ))}
+              <span className="text-[10px] uppercase tracking-wider font-semibold text-muted-foreground ml-3">Status:</span>
+              {["all", "Operacional", "Manutenção", "Suspensa", "Descomissionada"].map(s => (
+                <Badge
+                  key={s}
+                  variant="outline"
+                  className={`text-[10px] cursor-pointer transition-colors ${filterStatus === s ? "bg-primary/15 text-primary border-primary/40" : "hover:bg-muted"}`}
+                  onClick={() => setFilterStatus(s)}
+                >
+                  {s === "all" ? "Todos" : s}
+                </Badge>
+              ))}
+            </div>
           </div>
 
-          <ScrollArea className="h-[560px]">
+          <ScrollArea className="h-[530px]">
             <div className="space-y-6">
               {oilBlocks.filter(b => b.facilityData?.platformSpecs?.length).map(block => {
+                const query = searchQuery.toLowerCase();
                 const filtered = block.facilityData!.platformSpecs!.filter(p =>
                   (filterType === "all" || p.type === filterType) &&
-                  (filterStatus === "all" || p.status === filterStatus)
+                  (filterStatus === "all" || p.status === filterStatus) &&
+                  (!query || p.name.toLowerCase().includes(query) || p.type.toLowerCase().includes(query) || block.name.toLowerCase().includes(query))
                 );
                 if (filtered.length === 0) return null;
                 return (
