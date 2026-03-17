@@ -576,26 +576,24 @@ function OperatorDetailView({ operator, onBack }: { operator: OperatorSummary; o
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Bloco</TableHead>
-                      <TableHead>Campo</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Ano</TableHead>
-                      <TableHead className="text-right">Pico (BOPD)</TableHead>
+                      <SortableHead label="Bloco" colKey="blockName" sortKey={fieldsSort.sortKey} sortDir={fieldsSort.sortDir} onSort={fieldsSort.handleSort} />
+                      <SortableHead label="Campo" colKey="fieldName" sortKey={fieldsSort.sortKey} sortDir={fieldsSort.sortDir} onSort={fieldsSort.handleSort} />
+                      <SortableHead label="Status" colKey="status" sortKey={fieldsSort.sortKey} sortDir={fieldsSort.sortDir} onSort={fieldsSort.handleSort} />
+                      <SortableHead label="Ano" colKey="discoveryYear" sortKey={fieldsSort.sortKey} sortDir={fieldsSort.sortDir} onSort={fieldsSort.handleSort} />
+                      <SortableHead label="Pico (BOPD)" colKey="peakProduction" sortKey={fieldsSort.sortKey} sortDir={fieldsSort.sortDir} onSort={fieldsSort.handleSort} align="text-right" />
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {blocks.flatMap(b =>
-                      (b.fields || []).map(f => (
-                        <TableRow key={`${b.id}-${f.name}`}>
-                          <TableCell className="text-xs">{b.name}</TableCell>
-                          <TableCell className="text-xs font-medium">{f.name}</TableCell>
-                          <TableCell><Badge variant="outline" className="text-[10px]">{f.status}</Badge></TableCell>
-                          <TableCell className="text-xs">{f.discoveryYear || "—"}</TableCell>
-                          <TableCell className="text-right font-mono text-xs">{f.peakProduction?.toLocaleString() || "—"}</TableCell>
-                        </TableRow>
-                      ))
-                    )}
-                    {blocks.every(b => !b.fields?.length) && (
+                    {fieldsSort.sorted.map((f, i) => (
+                      <TableRow key={`${f.blockName}-${f.fieldName}-${i}`}>
+                        <TableCell className="text-xs">{f.blockName}</TableCell>
+                        <TableCell className="text-xs font-medium">{f.fieldName}</TableCell>
+                        <TableCell><Badge variant="outline" className="text-[10px]">{f.status}</Badge></TableCell>
+                        <TableCell className="text-xs">{f.discoveryYear || "—"}</TableCell>
+                        <TableCell className="text-right font-mono text-xs">{f.peakProduction ? f.peakProduction.toLocaleString() : "—"}</TableCell>
+                      </TableRow>
+                    ))}
+                    {fieldsData.length === 0 && (
                       <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground text-xs py-6">Sem dados de descobertas disponíveis</TableCell></TableRow>
                     )}
                   </TableBody>
