@@ -119,6 +119,39 @@ export const HomologacoesPanel = ({ filterBloco }: Props) => {
     return mesOrder.filter(m => map.has(m)).map(m => ({ mes: m.slice(0, 3), valor: map.get(m) || 0 }));
   }, [data]);
 
+  // Year-over-year comparison by month
+  const yearComparison = useMemo(() => {
+    const mesOrder = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+    const allData = filterBloco ? homologacoesData.filter(h => h.bloco === filterBloco) : homologacoesData;
+    const map2024 = new Map<string, { valor: number; count: number }>();
+    const map2025 = new Map<string, { valor: number; count: number }>();
+    allData.forEach(h => {
+      const map = h.ano === 2024 ? map2024 : map2025;
+      const prev = map.get(h.mes) || { valor: 0, count: 0 };
+      map.set(h.mes, { valor: prev.valor + h.montanteAprovado, count: prev.count + 1 });
+    });
+    return mesOrder
+      .filter(m => map2024.has(m) || map2025.has(m))
+      .map(m => ({
+        mes: m.slice(0, 3),
+        "2024": map2024.get(m)?.valor || 0,
+        "2025": map2025.get(m)?.valor || 0,
+        count2024: map2024.get(m)?.count || 0,
+        count2025: map2025.get(m)?.count || 0,
+      }));
+  }, [filterBloco]);
+
+  // YoY totals
+  const yoyTotals = useMemo(() => {
+    const allData = filterBloco ? homologacoesData.filter(h => h.bloco === filterBloco) : homologacoesData;
+    const t24 = allData.filter(h => h.ano === 2024).reduce((s, h) => s + h.montanteAprovado, 0);
+    const t25 = allData.filter(h => h.ano === 2025).reduce((s, h) => s + h.montanteAprovado, 0);
+    const n24 = allData.filter(h => h.ano === 2024).length;
+    const n25 = allData.filter(h => h.ano === 2025).length;
+    const variation = t24 > 0 ? ((t25 - t24) / t24) * 100 : 0;
+    return { t24, t25, n24, n25, variation };
+  }, [filterBloco]);
+
   // Category donut
   const categoryData = [
     { name: "Exploração", value: totalExploracao },
