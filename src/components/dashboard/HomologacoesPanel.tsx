@@ -842,102 +842,89 @@ export const HomologacoesPanel = ({ filterBloco }: Props) => {
 
           {/* Tendência de Conteúdo Local */}
           {localContentTrend.length > 1 && (
-            <Card className="glass-card">
-              <CardHeader className="p-4 pb-2">
-                <CardTitle className="text-sm flex items-center gap-2">
-                  <TrendingUp className="w-4 h-4 text-primary" />
-                  Tendência de Conteúdo Local ao Longo dos Meses
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-4 pt-0">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                  {/* Stacked area: % by process count */}
-                  <div>
-                    <p className="text-[11px] text-muted-foreground mb-2 font-medium">% por Nº de Processos</p>
-                    <ResponsiveContainer width="100%" height={260}>
-                      <BarChart data={localContentTrend} stackOffset="expand" barSize={16}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.4} />
-                        <XAxis dataKey="label" tick={{ fontSize: 9, fill: "hsl(var(--muted-foreground))" }} />
-                        <YAxis tickFormatter={(v: number) => `${(v * 100).toFixed(0)}%`} tick={{ fontSize: 9, fill: "hsl(var(--muted-foreground))" }} />
-                        <Tooltip
-                          contentStyle={tooltipStyle}
-                          formatter={(v: number, name: string) => [`${v.toFixed(1)}%`, name]}
-                          labelFormatter={(l: string) => `Mês: ${l}`}
-                        />
-                        <Legend wrapperStyle={{ fontSize: 10 }} />
-                        <Bar dataKey="pctAngolano" name="Angolano" stackId="a" fill="hsl(152, 69%, 40%)" radius={[0, 0, 0, 0]} />
-                        <Bar dataKey="pctConsorcio" name="Consórcio" stackId="a" fill="hsl(38, 92%, 50%)" />
-                        <Bar dataKey="pctInternacional" name="Internacional" stackId="a" fill="hsl(199, 89%, 48%)" radius={[2, 2, 0, 0]} />
-                      </BarChart>
-                    </ResponsiveContainer>
-                  </div>
+            <>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <ChartWrapper title="CL — % por Nº de Processos" height={280} icon={<TrendingUp className="w-4 h-4 text-primary" />}>
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={localContentTrend} stackOffset="expand" barSize={16}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.4} />
+                      <XAxis dataKey="label" tick={{ fontSize: 9, fill: "hsl(var(--muted-foreground))" }} />
+                      <YAxis tickFormatter={(v: number) => `${(v * 100).toFixed(0)}%`} tick={{ fontSize: 9, fill: "hsl(var(--muted-foreground))" }} />
+                      <Tooltip
+                        contentStyle={tooltipStyle}
+                        formatter={(v: number, name: string) => [`${v.toFixed(1)}%`, name]}
+                        labelFormatter={(l: string) => `Mês: ${l}`}
+                      />
+                      <Legend wrapperStyle={{ fontSize: 10 }} />
+                      <Bar dataKey="pctAngolano" name="Angolano" stackId="a" fill="hsl(152, 69%, 40%)" radius={[0, 0, 0, 0]} />
+                      <Bar dataKey="pctConsorcio" name="Consórcio" stackId="a" fill="hsl(38, 92%, 50%)" />
+                      <Bar dataKey="pctInternacional" name="Internacional" stackId="a" fill="hsl(199, 89%, 48%)" radius={[2, 2, 0, 0]} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </ChartWrapper>
 
-                  {/* Line chart: Angola % trend (value) */}
-                  <div>
-                    <p className="text-[11px] text-muted-foreground mb-2 font-medium">% Conteúdo Local por Valor Aprovado</p>
-                    <ResponsiveContainer width="100%" height={260}>
-                      <LineChart data={localContentTrend}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.4} />
-                        <XAxis dataKey="label" tick={{ fontSize: 9, fill: "hsl(var(--muted-foreground))" }} />
-                        <YAxis domain={[0, 100]} tickFormatter={(v: number) => `${v}%`} tick={{ fontSize: 9, fill: "hsl(var(--muted-foreground))" }} />
-                        <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => [`${v.toFixed(1)}%`, "Conteúdo Local"]} />
-                        <Line
-                          type="monotone"
-                          dataKey="pctAngolanoValor"
-                          name="% Conteúdo Local (Valor)"
-                          stroke="hsl(152, 69%, 40%)"
-                          strokeWidth={2.5}
-                          dot={{ r: 3, fill: "hsl(152, 69%, 40%)" }}
-                          activeDot={{ r: 5 }}
-                        />
-                        {/* Reference line at average */}
-                        {(() => {
-                          const avg = localContentTrend.reduce((s, d) => s + d.pctAngolanoValor, 0) / localContentTrend.length;
-                          return (
-                            <Line
-                              type="monotone"
-                              dataKey={() => avg}
-                              name={`Média: ${avg.toFixed(1)}%`}
-                              stroke="hsl(var(--muted-foreground))"
-                              strokeWidth={1}
-                              strokeDasharray="6 3"
-                              dot={false}
-                              activeDot={false}
-                            />
-                          );
-                        })()}
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </div>
-                </div>
+                <ChartWrapper title="CL — % por Valor Aprovado" height={280} icon={<TrendingUp className="w-4 h-4 text-primary" />}>
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={localContentTrend}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.4} />
+                      <XAxis dataKey="label" tick={{ fontSize: 9, fill: "hsl(var(--muted-foreground))" }} />
+                      <YAxis domain={[0, 100]} tickFormatter={(v: number) => `${v}%`} tick={{ fontSize: 9, fill: "hsl(var(--muted-foreground))" }} />
+                      <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => [`${v.toFixed(1)}%`, "Conteúdo Local"]} />
+                      <Line
+                        type="monotone"
+                        dataKey="pctAngolanoValor"
+                        name="% Conteúdo Local (Valor)"
+                        stroke="hsl(152, 69%, 40%)"
+                        strokeWidth={2.5}
+                        dot={{ r: 3, fill: "hsl(152, 69%, 40%)" }}
+                        activeDot={{ r: 5 }}
+                      />
+                      {(() => {
+                        const avg = localContentTrend.reduce((s, d) => s + d.pctAngolanoValor, 0) / localContentTrend.length;
+                        return (
+                          <Line
+                            type="monotone"
+                            dataKey={() => avg}
+                            name={`Média: ${avg.toFixed(1)}%`}
+                            stroke="hsl(var(--muted-foreground))"
+                            strokeWidth={1}
+                            strokeDasharray="6 3"
+                            dot={false}
+                            activeDot={false}
+                          />
+                        );
+                      })()}
+                    </LineChart>
+                  </ResponsiveContainer>
+                </ChartWrapper>
+              </div>
 
-                {/* Trend summary */}
-                {localContentTrend.length >= 3 && (() => {
-                  const first3 = localContentTrend.slice(0, 3);
-                  const last3 = localContentTrend.slice(-3);
-                  const avgFirst = first3.reduce((s, d) => s + d.pctAngolanoValor, 0) / first3.length;
-                  const avgLast = last3.reduce((s, d) => s + d.pctAngolanoValor, 0) / last3.length;
-                  const diff = avgLast - avgFirst;
-                  const growing = diff > 1;
-                  const declining = diff < -1;
-                  return (
-                    <div className={`mt-3 p-3 rounded-lg border text-xs flex items-center gap-2 ${
-                      growing ? "border-success/30 bg-success/5 text-success" :
-                      declining ? "border-destructive/30 bg-destructive/5 text-destructive" :
-                      "border-border bg-muted/30 text-muted-foreground"
-                    }`}>
-                      <TrendingUp className={`w-4 h-4 ${declining ? "rotate-180" : ""}`} />
-                      {growing
-                        ? `Tendência positiva: a participação angolana cresceu ~${diff.toFixed(1)}pp (de ${avgFirst.toFixed(1)}% para ${avgLast.toFixed(1)}% em valor).`
-                        : declining
-                        ? `Tendência negativa: a participação angolana diminuiu ~${Math.abs(diff).toFixed(1)}pp (de ${avgFirst.toFixed(1)}% para ${avgLast.toFixed(1)}% em valor).`
-                        : `Participação angolana estável em torno de ${avgLast.toFixed(1)}% do valor aprovado.`
-                      }
-                    </div>
-                  );
-                })()}
-              </CardContent>
-            </Card>
+              {/* Trend summary */}
+              {localContentTrend.length >= 3 && (() => {
+                const first3 = localContentTrend.slice(0, 3);
+                const last3 = localContentTrend.slice(-3);
+                const avgFirst = first3.reduce((s, d) => s + d.pctAngolanoValor, 0) / first3.length;
+                const avgLast = last3.reduce((s, d) => s + d.pctAngolanoValor, 0) / last3.length;
+                const diff = avgLast - avgFirst;
+                const growing = diff > 1;
+                const declining = diff < -1;
+                return (
+                  <div className={`p-3 rounded-lg border text-xs flex items-center gap-2 ${
+                    growing ? "border-success/30 bg-success/5 text-success" :
+                    declining ? "border-destructive/30 bg-destructive/5 text-destructive" :
+                    "border-border bg-muted/30 text-muted-foreground"
+                  }`}>
+                    <TrendingUp className={`w-4 h-4 ${declining ? "rotate-180" : ""}`} />
+                    {growing
+                      ? `Tendência positiva: a participação angolana cresceu ~${diff.toFixed(1)}pp (de ${avgFirst.toFixed(1)}% para ${avgLast.toFixed(1)}% em valor).`
+                      : declining
+                      ? `Tendência negativa: a participação angolana diminuiu ~${Math.abs(diff).toFixed(1)}pp (de ${avgFirst.toFixed(1)}% para ${avgLast.toFixed(1)}% em valor).`
+                      : `Participação angolana estável em torno de ${avgLast.toFixed(1)}% do valor aprovado.`
+                    }
+                  </div>
+                );
+              })()}
+            </>
           )}
 
           {/* Heatmap: Concentração de Processos por Bloco × Mês */}
