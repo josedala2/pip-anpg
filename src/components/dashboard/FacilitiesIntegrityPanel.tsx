@@ -70,7 +70,8 @@ const parseCapacity = (cap?: string): number => {
 // ── Component ──
 
 export const FacilitiesIntegrityPanel = () => {
-  const [selectedTab, setSelectedTab] = useState("ranking");
+  const [selectedTab, setSelectedTab] = useState("installations");
+  const [selectedFacility, setSelectedFacility] = useState<{ blockId: string; platformName: string } | null>(null);
 
   const facilities: FacilityRecord[] = useMemo(() => {
     const results: FacilityRecord[] = [];
