@@ -16,6 +16,7 @@ import { AlertsPanel } from "@/components/dashboard/AlertsPanel";
 import { CouncilRecommendationsPanel } from "@/components/dashboard/CouncilRecommendationsPanel";
 import { RiskPerformance } from "@/components/dashboard/RiskPerformance";
 import { SobaChat } from "@/components/dashboard/SobaChat";
+import { Maximize2, Minimize2, ChevronLeft, ChevronRight, Sun, Moon, FileText, LogOut, User, Users, Database, Bell, Clock, Signal, Sparkles } from "lucide-react";
 import { type OilBlock, oilBlocks } from "@/data/angolaBlocks";
 import { Maximize2, Minimize2, ChevronLeft, ChevronRight, Sun, Moon, FileText, LogOut, User, Users, Database, Bell, Clock, Signal } from "lucide-react";
 import { evaluateAlerts, evaluateForecastAlerts } from "@/lib/alertsEngine";
