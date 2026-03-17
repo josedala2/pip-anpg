@@ -18,6 +18,8 @@ import {
   Search, ArrowLeft, Building2, Layers, BarChart3, Droplets, FileText, ShieldCheck, Factory, TrendingUp, MapPin,
   ChevronUp, ChevronDown, Minus,
 } from "lucide-react";
+import { SortableHead } from "@/components/ui/sortable-head";
+import { useTableSort } from "@/hooks/useTableSort";
 
 interface OperatorSummary {
   name: string;
@@ -271,6 +273,33 @@ function OperatorDetailView({ operator, onBack }: { operator: OperatorSummary; o
   const { blocks } = operator;
   const [selectedBlock, setSelectedBlock] = useState<OilBlock | null>(null);
 
+  // Table sort states
+  const blocksTableData = useMemo(() => blocks.map(b => ({
+    id: b.id, name: b.name, phase: b.phase, basin: b.basin, waterDepth: b.waterDepth || "",
+    dailyProduction: b.dailyProduction, estimatedReserves: b.estimatedReserves,
+    complianceScore: b.complianceScore, contractDate: b.contractDate || "",
+    accumulatedInvestment: b.accumulatedInvestment, plannedInvestment: b.plannedInvestment,
+    executionRate: b.executionRate, opexPerBarrel: b.economicData?.opexPerBarrel || 0,
+  })), [blocks]);
+  const blocksSort = useTableSort(blocksTableData, "dailyProduction", "desc", ["name", "phase", "basin", "waterDepth", "contractDate"]);
+  const econSort = useTableSort(blocksTableData, "accumulatedInvestment", "desc", ["name"]);
+  const fieldsData = useMemo(() => blocks.flatMap(b => (b.fields || []).map(f => ({
+    blockName: b.name, fieldName: f.name, status: f.status, discoveryYear: f.discoveryYear || 0,
+    peakProduction: f.peakProduction || 0,
+  }))), [blocks]);
+  const fieldsSort = useTableSort(fieldsData, "peakProduction", "desc", ["blockName", "fieldName", "status"]);
+  // Facilities data for sorting
+  const facilitiesData = useMemo(() => {
+    const platforms: { name: string; type: string; block: string; status: string; capacity: string }[] = [];
+    blocks.forEach(b => {
+      b.facilityData?.platformSpecs?.forEach(p => {
+        platforms.push({ name: p.name, type: p.type, block: b.name, status: p.status, capacity: p.capacity || "" });
+      });
+    });
+    return platforms;
+  }, [blocks]);
+  const facilitiesSort = useTableSort(facilitiesData, "name", "asc", ["name", "type", "block", "status", "capacity"]);
+
   // Aggregate production history
   const aggregatedHistory = useMemo(() => {
     if (!blocks.length || !blocks[0].productionHistory?.length) return [];
@@ -404,18 +433,18 @@ function OperatorDetailView({ operator, onBack }: { operator: OperatorSummary; o
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Bloco</TableHead>
-                    <TableHead>Fase</TableHead>
-                    <TableHead>Bacia</TableHead>
-                    <TableHead>Águas</TableHead>
-                    <TableHead className="text-right">Produção (BOPD)</TableHead>
-                    <TableHead className="text-right">Reservas (MMbbl)</TableHead>
-                    <TableHead className="text-right">Compliance</TableHead>
-                    <TableHead>Contrato</TableHead>
+                    <SortableHead label="Bloco" colKey="name" sortKey={blocksSort.sortKey} sortDir={blocksSort.sortDir} onSort={blocksSort.handleSort} />
+                    <SortableHead label="Fase" colKey="phase" sortKey={blocksSort.sortKey} sortDir={blocksSort.sortDir} onSort={blocksSort.handleSort} />
+                    <SortableHead label="Bacia" colKey="basin" sortKey={blocksSort.sortKey} sortDir={blocksSort.sortDir} onSort={blocksSort.handleSort} />
+                    <SortableHead label="Águas" colKey="waterDepth" sortKey={blocksSort.sortKey} sortDir={blocksSort.sortDir} onSort={blocksSort.handleSort} />
+                    <SortableHead label="Produção (BOPD)" colKey="dailyProduction" sortKey={blocksSort.sortKey} sortDir={blocksSort.sortDir} onSort={blocksSort.handleSort} align="text-right" />
+                    <SortableHead label="Reservas (MMbbl)" colKey="estimatedReserves" sortKey={blocksSort.sortKey} sortDir={blocksSort.sortDir} onSort={blocksSort.handleSort} align="text-right" />
+                    <SortableHead label="Compliance" colKey="complianceScore" sortKey={blocksSort.sortKey} sortDir={blocksSort.sortDir} onSort={blocksSort.handleSort} align="text-right" />
+                    <SortableHead label="Contrato" colKey="contractDate" sortKey={blocksSort.sortKey} sortDir={blocksSort.sortDir} onSort={blocksSort.handleSort} />
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {blocks.map(b => (
+                  {blocksSort.sorted.map(b => (
                     <TableRow key={b.id}>
                       <TableCell className="font-medium">{b.name}</TableCell>
                       <TableCell><Badge variant="outline" className="text-[10px]">{b.phase}</Badge></TableCell>
@@ -424,7 +453,7 @@ function OperatorDetailView({ operator, onBack }: { operator: OperatorSummary; o
                       <TableCell className="text-right font-mono text-xs">{b.dailyProduction.toLocaleString()}</TableCell>
                       <TableCell className="text-right font-mono text-xs">{b.estimatedReserves.toLocaleString()}</TableCell>
                       <TableCell className="text-right">
-                        <span className={`font-mono text-xs ${b.complianceScore >= 90 ? "text-green-500" : b.complianceScore >= 75 ? "text-yellow-500" : "text-red-500"}`}>
+                        <span className={`font-mono text-xs ${b.complianceScore >= 90 ? "text-success" : b.complianceScore >= 75 ? "text-warning" : "text-danger"}`}>
                           {b.complianceScore}%
                         </span>
                       </TableCell>
@@ -558,26 +587,24 @@ function OperatorDetailView({ operator, onBack }: { operator: OperatorSummary; o
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Bloco</TableHead>
-                      <TableHead>Campo</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Ano</TableHead>
-                      <TableHead className="text-right">Pico (BOPD)</TableHead>
+                      <SortableHead label="Bloco" colKey="blockName" sortKey={fieldsSort.sortKey} sortDir={fieldsSort.sortDir} onSort={fieldsSort.handleSort} />
+                      <SortableHead label="Campo" colKey="fieldName" sortKey={fieldsSort.sortKey} sortDir={fieldsSort.sortDir} onSort={fieldsSort.handleSort} />
+                      <SortableHead label="Status" colKey="status" sortKey={fieldsSort.sortKey} sortDir={fieldsSort.sortDir} onSort={fieldsSort.handleSort} />
+                      <SortableHead label="Ano" colKey="discoveryYear" sortKey={fieldsSort.sortKey} sortDir={fieldsSort.sortDir} onSort={fieldsSort.handleSort} />
+                      <SortableHead label="Pico (BOPD)" colKey="peakProduction" sortKey={fieldsSort.sortKey} sortDir={fieldsSort.sortDir} onSort={fieldsSort.handleSort} align="text-right" />
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {blocks.flatMap(b =>
-                      (b.fields || []).map(f => (
-                        <TableRow key={`${b.id}-${f.name}`}>
-                          <TableCell className="text-xs">{b.name}</TableCell>
-                          <TableCell className="text-xs font-medium">{f.name}</TableCell>
-                          <TableCell><Badge variant="outline" className="text-[10px]">{f.status}</Badge></TableCell>
-                          <TableCell className="text-xs">{f.discoveryYear || "—"}</TableCell>
-                          <TableCell className="text-right font-mono text-xs">{f.peakProduction?.toLocaleString() || "—"}</TableCell>
-                        </TableRow>
-                      ))
-                    )}
-                    {blocks.every(b => !b.fields?.length) && (
+                    {fieldsSort.sorted.map((f, i) => (
+                      <TableRow key={`${f.blockName}-${f.fieldName}-${i}`}>
+                        <TableCell className="text-xs">{f.blockName}</TableCell>
+                        <TableCell className="text-xs font-medium">{f.fieldName}</TableCell>
+                        <TableCell><Badge variant="outline" className="text-[10px]">{f.status}</Badge></TableCell>
+                        <TableCell className="text-xs">{f.discoveryYear || "—"}</TableCell>
+                        <TableCell className="text-right font-mono text-xs">{f.peakProduction ? f.peakProduction.toLocaleString() : "—"}</TableCell>
+                      </TableRow>
+                    ))}
+                    {fieldsData.length === 0 && (
                       <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground text-xs py-6">Sem dados de descobertas disponíveis</TableCell></TableRow>
                     )}
                   </TableBody>
@@ -631,18 +658,18 @@ function OperatorDetailView({ operator, onBack }: { operator: OperatorSummary; o
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Bloco</TableHead>
-                      <TableHead className="text-right">Opex/Barril</TableHead>
-                      <TableHead className="text-right">Invest. Acum.</TableHead>
-                      <TableHead className="text-right">Invest. Plan.</TableHead>
-                      <TableHead className="text-right">Taxa Execução</TableHead>
+                      <SortableHead label="Bloco" colKey="name" sortKey={econSort.sortKey} sortDir={econSort.sortDir} onSort={econSort.handleSort} />
+                      <SortableHead label="Opex/Barril" colKey="opexPerBarrel" sortKey={econSort.sortKey} sortDir={econSort.sortDir} onSort={econSort.handleSort} align="text-right" />
+                      <SortableHead label="Invest. Acum." colKey="accumulatedInvestment" sortKey={econSort.sortKey} sortDir={econSort.sortDir} onSort={econSort.handleSort} align="text-right" />
+                      <SortableHead label="Invest. Plan." colKey="plannedInvestment" sortKey={econSort.sortKey} sortDir={econSort.sortDir} onSort={econSort.handleSort} align="text-right" />
+                      <SortableHead label="Taxa Execução" colKey="executionRate" sortKey={econSort.sortKey} sortDir={econSort.sortDir} onSort={econSort.handleSort} align="text-right" />
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {blocks.map(b => (
+                    {econSort.sorted.map(b => (
                       <TableRow key={b.id}>
                         <TableCell className="font-medium text-xs">{b.name}</TableCell>
-                        <TableCell className="text-right font-mono text-xs">{b.economicData?.opexPerBarrel ? `$${b.economicData.opexPerBarrel}` : "—"}</TableCell>
+                        <TableCell className="text-right font-mono text-xs">{b.opexPerBarrel ? `$${b.opexPerBarrel}` : "—"}</TableCell>
                         <TableCell className="text-right font-mono text-xs">${b.accumulatedInvestment.toLocaleString()}MM</TableCell>
                         <TableCell className="text-right font-mono text-xs">${b.plannedInvestment.toLocaleString()}MM</TableCell>
                         <TableCell className="text-right font-mono text-xs">{b.executionRate}%</TableCell>
@@ -740,15 +767,15 @@ function OperatorDetailView({ operator, onBack }: { operator: OperatorSummary; o
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead>Nome</TableHead>
-                        <TableHead>Tipo</TableHead>
-                        <TableHead>Bloco</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead>Capacidade</TableHead>
+                        <SortableHead label="Nome" colKey="name" sortKey={facilitiesSort.sortKey} sortDir={facilitiesSort.sortDir} onSort={facilitiesSort.handleSort} />
+                        <SortableHead label="Tipo" colKey="type" sortKey={facilitiesSort.sortKey} sortDir={facilitiesSort.sortDir} onSort={facilitiesSort.handleSort} />
+                        <SortableHead label="Bloco" colKey="block" sortKey={facilitiesSort.sortKey} sortDir={facilitiesSort.sortDir} onSort={facilitiesSort.handleSort} />
+                        <SortableHead label="Status" colKey="status" sortKey={facilitiesSort.sortKey} sortDir={facilitiesSort.sortDir} onSort={facilitiesSort.handleSort} />
+                        <SortableHead label="Capacidade" colKey="capacity" sortKey={facilitiesSort.sortKey} sortDir={facilitiesSort.sortDir} onSort={facilitiesSort.handleSort} />
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {facilities.platforms.map((p, i) => (
+                      {facilitiesSort.sorted.map((p, i) => (
                         <TableRow key={i}>
                           <TableCell className="font-medium text-xs">{p.name}</TableCell>
                           <TableCell className="text-xs">{p.type}</TableCell>

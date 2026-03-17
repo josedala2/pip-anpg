@@ -3,6 +3,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Target } from "lucide-react";
+import { SortableHead } from "@/components/ui/sortable-head";
+import { useTableSort } from "@/hooks/useTableSort";
 import { ScatterChart, Scatter, XAxis, YAxis, ZAxis, Tooltip, ResponsiveContainer, CartesianGrid, Cell } from "recharts";
 import type { OilBlock } from "@/data/angolaBlocks";
 
@@ -66,14 +68,19 @@ export const ProspectsTable = ({ blocks, scopeLabel }: ProspectsTableProps) => {
     return { mmbo, bcf, count };
   }, [blocksWithProspects]);
 
-  const bubbleData = useMemo(() => {
-    const data: any[] = [];
+  const flatProspects = useMemo(() => {
+    const data: { block: string; blockId: string; discoveryArea: string; name: string; reservoir: string; resourcesMMBO: number; resourcesBCF: number; pos: number; key: string; z: number; idx: number }[] = [];
     blocksWithProspects.forEach(b => {
       b.prospects!.forEach((p, i) => {
         data.push({
-          ...p,
           block: b.name,
           blockId: b.id,
+          discoveryArea: p.discoveryArea,
+          name: p.name,
+          reservoir: p.reservoir,
+          resourcesMMBO: p.resourcesMMBO,
+          resourcesBCF: p.resourcesBCF || 0,
+          pos: p.pos,
           idx: i,
           key: `${b.id}-${i}`,
           z: Math.max(p.resourcesMMBO, 20),
@@ -82,6 +89,10 @@ export const ProspectsTable = ({ blocks, scopeLabel }: ProspectsTableProps) => {
     });
     return data;
   }, [blocksWithProspects]);
+
+  const prospectSort = useTableSort(flatProspects, "resourcesMMBO", "desc", ["block", "discoveryArea", "name", "reservoir"]);
+
+  const bubbleData = flatProspects;
 
   const handleBubbleClick = useCallback((data: any) => {
     if (!data) return;
@@ -186,56 +197,49 @@ export const ProspectsTable = ({ blocks, scopeLabel }: ProspectsTableProps) => {
             <Table>
               <TableHeader>
                 <TableRow className="border-border/50">
-                   <TableHead className="text-[10px] 2xl:text-xs uppercase tracking-wider">Bloco</TableHead>
-                   <TableHead className="text-[10px] 2xl:text-xs uppercase tracking-wider">Discovery Area</TableHead>
-                   <TableHead className="text-[10px] 2xl:text-xs uppercase tracking-wider">Prospecto</TableHead>
-                   <TableHead className="text-[10px] 2xl:text-xs uppercase tracking-wider">Reservatório</TableHead>
-                   <TableHead className="text-[10px] 2xl:text-xs uppercase tracking-wider text-right">MMBO</TableHead>
-                   <TableHead className="text-[10px] 2xl:text-xs uppercase tracking-wider text-right">BCF</TableHead>
-                   <TableHead className="text-[10px] 2xl:text-xs uppercase tracking-wider text-right">POS (%)</TableHead>
+                  <SortableHead label="Bloco" colKey="block" sortKey={prospectSort.sortKey} sortDir={prospectSort.sortDir} onSort={prospectSort.handleSort} className="text-[10px] 2xl:text-xs uppercase tracking-wider" />
+                  <SortableHead label="Discovery Area" colKey="discoveryArea" sortKey={prospectSort.sortKey} sortDir={prospectSort.sortDir} onSort={prospectSort.handleSort} className="text-[10px] 2xl:text-xs uppercase tracking-wider" />
+                  <SortableHead label="Prospecto" colKey="name" sortKey={prospectSort.sortKey} sortDir={prospectSort.sortDir} onSort={prospectSort.handleSort} className="text-[10px] 2xl:text-xs uppercase tracking-wider" />
+                  <SortableHead label="Reservatório" colKey="reservoir" sortKey={prospectSort.sortKey} sortDir={prospectSort.sortDir} onSort={prospectSort.handleSort} className="text-[10px] 2xl:text-xs uppercase tracking-wider" />
+                  <SortableHead label="MMBO" colKey="resourcesMMBO" sortKey={prospectSort.sortKey} sortDir={prospectSort.sortDir} onSort={prospectSort.handleSort} className="text-[10px] 2xl:text-xs uppercase tracking-wider" align="text-right" />
+                  <SortableHead label="BCF" colKey="resourcesBCF" sortKey={prospectSort.sortKey} sortDir={prospectSort.sortDir} onSort={prospectSort.handleSort} className="text-[10px] 2xl:text-xs uppercase tracking-wider" align="text-right" />
+                  <SortableHead label="POS (%)" colKey="pos" sortKey={prospectSort.sortKey} sortDir={prospectSort.sortDir} onSort={prospectSort.handleSort} className="text-[10px] 2xl:text-xs uppercase tracking-wider" align="text-right" />
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {blocksWithProspects.map(block =>
-                  block.prospects!.map((p, i) => {
-                    const key = `${block.id}-${i}`;
-                    const isSelected = selectedKey === key;
-                    return (
-                      <TableRow
-                        key={key}
-                        id={`prospect-row-${key}`}
-                        className={`border-border/30 cursor-pointer transition-all duration-300 ${
-                          isSelected
-                            ? "bg-primary/15 ring-1 ring-primary/40"
-                            : selectedKey !== null
-                              ? "opacity-40 hover:opacity-70"
-                              : "hover:bg-secondary/30"
-                        }`}
-                        onClick={() => setSelectedKey(isSelected ? null : key)}
-                      >
-                        {i === 0 && (
-                          <TableCell rowSpan={block.prospects!.length} className="text-xs 2xl:text-sm font-semibold align-top border-r border-border/20">
-                            {block.name}
-                          </TableCell>
-                        )}
-                         <TableCell className="text-xs 2xl:text-sm text-muted-foreground">{p.discoveryArea}</TableCell>
-                         <TableCell className="text-xs 2xl:text-sm font-mono">{p.name}</TableCell>
-                        <TableCell>
-                          <Badge variant="outline" className="text-[10px]">{p.reservoir}</Badge>
-                        </TableCell>
-                        <TableCell className="text-xs font-mono text-right font-medium">
-                          {p.resourcesMMBO.toLocaleString(undefined, { maximumFractionDigits: 1 })}
-                        </TableCell>
-                        <TableCell className="text-xs font-mono text-right text-muted-foreground">
-                          {p.resourcesBCF ? p.resourcesBCF.toLocaleString() : "—"}
-                        </TableCell>
-                        <TableCell className={`text-xs font-mono text-right font-bold ${posColor(p.pos)}`}>
-                          {p.pos}%
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })
-                )}
+                {prospectSort.sorted.map(p => {
+                  const isSelected = selectedKey === p.key;
+                  return (
+                    <TableRow
+                      key={p.key}
+                      id={`prospect-row-${p.key}`}
+                      className={`border-border/30 cursor-pointer transition-all duration-300 ${
+                        isSelected
+                          ? "bg-primary/15 ring-1 ring-primary/40"
+                          : selectedKey !== null
+                            ? "opacity-40 hover:opacity-70"
+                            : "hover:bg-secondary/30"
+                      }`}
+                      onClick={() => setSelectedKey(isSelected ? null : p.key)}
+                    >
+                      <TableCell className="text-xs 2xl:text-sm font-semibold">{p.block}</TableCell>
+                      <TableCell className="text-xs 2xl:text-sm text-muted-foreground">{p.discoveryArea}</TableCell>
+                      <TableCell className="text-xs 2xl:text-sm font-mono">{p.name}</TableCell>
+                      <TableCell>
+                        <Badge variant="outline" className="text-[10px]">{p.reservoir}</Badge>
+                      </TableCell>
+                      <TableCell className="text-xs font-mono text-right font-medium">
+                        {p.resourcesMMBO.toLocaleString(undefined, { maximumFractionDigits: 1 })}
+                      </TableCell>
+                      <TableCell className="text-xs font-mono text-right text-muted-foreground">
+                        {p.resourcesBCF ? p.resourcesBCF.toLocaleString() : "—"}
+                      </TableCell>
+                      <TableCell className={`text-xs font-mono text-right font-bold ${posColor(p.pos)}`}>
+                        {p.pos}%
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
               </TableBody>
             </Table>
           </div>

@@ -3,6 +3,7 @@ import { oilBlocks, getTotalProduction } from "@/data/angolaBlocks";
 import { AnimatedCounter } from "./AnimatedCounter";
 import { ChartWrapper } from "./ChartWrapper";
 import { Activity, TrendingUp, Target, ArrowUpRight, ArrowDownRight, Filter } from "lucide-react";
+import { SortableHead } from "@/components/ui/sortable-head";
 import {
   PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend,
   BarChart, Bar, XAxis, YAxis, CartesianGrid,
@@ -322,21 +323,11 @@ export const ProductionPanel = () => {
           <Table>
             <TableHeader className="sticky top-0 z-10 bg-card">
               <TableRow>
-                <TableHead className="cursor-pointer hover:text-foreground" onClick={() => handleSort("name")}>
-                  Bloco {sortKey === "name" ? (sortAsc ? "↑" : "↓") : ""}
-                </TableHead>
-                <TableHead className="cursor-pointer hover:text-foreground" onClick={() => handleSort("operator")}>
-                  Operador {sortKey === "operator" ? (sortAsc ? "↑" : "↓") : ""}
-                </TableHead>
-                <TableHead className="cursor-pointer hover:text-foreground text-right" onClick={() => handleSort("dailyProduction")}>
-                  Produção (BOPD) {sortKey === "dailyProduction" ? (sortAsc ? "↑" : "↓") : ""}
-                </TableHead>
-                <TableHead className="cursor-pointer hover:text-foreground text-right" onClick={() => handleSort("pct")}>
-                  % Total {sortKey === "pct" ? (sortAsc ? "↑" : "↓") : ""}
-                </TableHead>
-                <TableHead className="cursor-pointer hover:text-foreground" onClick={() => handleSort("basin")}>
-                  Bacia {sortKey === "basin" ? (sortAsc ? "↑" : "↓") : ""}
-                </TableHead>
+                <SortableHead label="Bloco" colKey="name" sortKey={sortKey} sortDir={sortAsc ? "asc" : "desc"} onSort={handleSort} />
+                <SortableHead label="Operador" colKey="operator" sortKey={sortKey} sortDir={sortAsc ? "asc" : "desc"} onSort={handleSort} />
+                <SortableHead label="Produção (BOPD)" colKey="dailyProduction" sortKey={sortKey} sortDir={sortAsc ? "asc" : "desc"} onSort={handleSort} align="text-right" />
+                <SortableHead label="% Total" colKey="pct" sortKey={sortKey} sortDir={sortAsc ? "asc" : "desc"} onSort={handleSort} align="text-right" />
+                <SortableHead label="Bacia" colKey="basin" sortKey={sortKey} sortDir={sortAsc ? "asc" : "desc"} onSort={handleSort} />
                 <TableHead>Fase</TableHead>
               </TableRow>
             </TableHeader>

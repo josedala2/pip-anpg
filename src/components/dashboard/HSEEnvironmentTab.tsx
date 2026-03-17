@@ -5,6 +5,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import type { HSEIndicators, EnvironmentalYearData, FacilityData, EconomicVision, RevitalizationScenario } from "@/data/angolaBlocks";
 import { ShieldCheck, Flame, Droplets, Wind, Factory, AlertTriangle, Lightbulb, TrendingDown } from "lucide-react";
 import { Tooltip as UITooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
+import { SortableHead } from "@/components/ui/sortable-head";
+import { useTableSort } from "@/hooks/useTableSort";
 import {
   BarChart, Bar, LineChart, Line, PieChart, Pie, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, ReferenceLine,
@@ -31,6 +33,7 @@ const NPV_COLORS = ["hsl(199, 89%, 48%)", "hsl(38, 92%, 50%)", "hsl(152, 69%, 40
 export const HSEEnvironmentTab = ({ hseData, environmentalData, facilityData, economicVision, revitalizationScenarios }: Props) => {
   const hasHSE = hseData && hseData.length > 0;
   const hasEnv = environmentalData && environmentalData.length > 0;
+  const hseSort = useTableSort(hseData || [], "year", "asc", []);
 
   return (
     <div className="space-y-6 2xl:space-y-8">
@@ -177,23 +180,33 @@ export const HSEEnvironmentTab = ({ hseData, environmentalData, facilityData, ec
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="text-xs">Ano</TableHead>
+                  <SortableHead label="Ano" colKey="year" sortKey={hseSort.sortKey} sortDir={hseSort.sortDir} onSort={hseSort.handleSort} className="text-xs" />
                   {[
-                    { label: "FAT", tip: "Fatality — Acidente com morte" },
-                    { label: "LTI", tip: "Lost Time Injury — Acidente com tempo perdido" },
-                    { label: "RWC", tip: "Restricted Work Case — Trabalho com restrição" },
-                    { label: "MTC", tip: "Medical Treatment Case — Tratamento médico" },
-                    { label: "FAC", tip: "First Aid Case — Primeiros socorros" },
-                    { label: "NMI", tip: "Near Miss Incident — Quase-acidente" },
-                    { label: "HHR (M)", tip: "Horas Homem Trabalhadas (Milhões)" },
-                    { label: "TRIR", tip: "Total Recordable Incident Rate — Taxa total de incidentes registáveis" },
-                    { label: "LTIR", tip: "Lost Time Incident Rate — Taxa de incidentes com tempo perdido" },
+                    { key: "fat", label: "FAT", tip: "Fatality — Acidente com morte" },
+                    { key: "lti", label: "LTI", tip: "Lost Time Injury — Acidente com tempo perdido" },
+                    { key: "rwc", label: "RWC", tip: "Restricted Work Case — Trabalho com restrição" },
+                    { key: "mtc", label: "MTC", tip: "Medical Treatment Case — Tratamento médico" },
+                    { key: "fac", label: "FAC", tip: "First Aid Case — Primeiros socorros" },
+                    { key: "nmi", label: "NMI", tip: "Near Miss Incident — Quase-acidente" },
+                    { key: "hhr", label: "HHR (M)", tip: "Horas Homem Trabalhadas (Milhões)" },
+                    { key: "trir", label: "TRIR", tip: "Total Recordable Incident Rate — Taxa total de incidentes registáveis" },
+                    { key: "ltir", label: "LTIR", tip: "Lost Time Incident Rate — Taxa de incidentes com tempo perdido" },
                   ].map(col => (
-                    <TableHead key={col.label} className="text-xs text-center">
+                    <TableHead
+                      key={col.key}
+                      className="text-xs text-center cursor-pointer select-none hover:text-foreground transition-colors"
+                      onClick={() => hseSort.handleSort(col.key)}
+                    >
                       <TooltipProvider delayDuration={200}>
                         <UITooltip>
                           <TooltipTrigger asChild>
-                            <span className="cursor-help border-b border-dashed border-muted-foreground/40">{col.label}</span>
+                            <span className="cursor-help border-b border-dashed border-muted-foreground/40 inline-flex items-center gap-0.5">
+                              {col.label}
+                              {hseSort.sortKey === col.key
+                                ? (hseSort.sortDir === "asc" ? " ↑" : " ↓")
+                                : ""
+                              }
+                            </span>
                           </TooltipTrigger>
                           <TooltipContent side="top" className="max-w-[220px] text-xs">
                             {col.tip}
@@ -205,7 +218,7 @@ export const HSEEnvironmentTab = ({ hseData, environmentalData, facilityData, ec
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {hseData.map(row => {
+                {hseSort.sorted.map(row => {
                   const allZero = row.fat === 0 && row.lti === 0 && row.rwc === 0 && row.mtc === 0 && row.fac === 0;
                   return (
                   <TableRow key={row.year} className={allZero ? "bg-success/5" : row.fat > 0 ? "bg-danger/5" : ""}>
