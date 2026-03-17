@@ -30,6 +30,34 @@ const taxaAprovacao = () => {
   return Math.round((aprovados / total) * 100);
 };
 
+// Monthly sparklines for homologações (last 6 months by mesNum desc)
+const homologSpark = (() => {
+  const byMonth = new Map<string, number>();
+  homologacoesData.forEach(h => {
+    const key = `${h.ano}-${h.mesNum}`;
+    byMonth.set(key, (byMonth.get(key) || 0) + (h.montanteAprovado || 0));
+  });
+  return [...byMonth.entries()]
+    .sort(([a], [b]) => a.localeCompare(b))
+    .slice(-6)
+    .map(([, v]) => Math.round(v / 1e6));
+})();
+
+const aprovacaoSpark = (() => {
+  const byMonth = new Map<string, { total: number; approved: number }>();
+  homologacoesData.forEach(h => {
+    const key = `${h.ano}-${h.mesNum}`;
+    const entry = byMonth.get(key) || { total: 0, approved: 0 };
+    entry.total++;
+    if (h.decisao === "Aprovado") entry.approved++;
+    byMonth.set(key, entry);
+  });
+  return [...byMonth.entries()]
+    .sort(([a], [b]) => a.localeCompare(b))
+    .slice(-6)
+    .map(([, v]) => Math.round((v.approved / v.total) * 100));
+})();
+
 // Sparkline data derived from current production
 const totalProd = getTotalProduction();
 const prodSpark = [
@@ -61,8 +89,8 @@ const kpis = [
   { label: "Instalações Críticas", value: criticalFacilities(), suffix: "", icon: Wrench, status: getStatus("Instalações Críticas", criticalFacilities()), drill: "Instalações com eficiência < 70%" },
   { label: "Receita Estado", value: estimatedStateRevenue(), prefix: "$", suffix: "M", icon: Landmark, status: "neutral" as SemaphoreStatus, drill: "Estimativa anual de receita fiscal petrolífera" },
   { label: "Contratos a Expirar", value: contractsExpiring(), suffix: "", icon: DollarSign, status: getStatus("Contratos a Expirar", contractsExpiring()), drill: "Contratos com vencimento em < 24 meses" },
-  { label: "Total Homologado", value: totalHomologado(), prefix: "$", suffix: "M", icon: FileText, status: "neutral" as SemaphoreStatus, drill: "Soma dos montantes aprovados em processos de homologação" },
-  { label: "Taxa Aprovação", value: taxaAprovacao(), suffix: "%", icon: CheckCircle, status: getStatus("Taxa Aprovação", taxaAprovacao()), drill: "Percentagem de processos de homologação aprovados" },
+  { label: "Total Homologado", value: totalHomologado(), prefix: "$", suffix: "M", icon: FileText, sparkline: homologSpark, status: "neutral" as SemaphoreStatus, drill: "Soma dos montantes aprovados em processos de homologação" },
+  { label: "Taxa Aprovação", value: taxaAprovacao(), suffix: "%", icon: CheckCircle, sparkline: aprovacaoSpark, status: getStatus("Taxa Aprovação", taxaAprovacao()), drill: "Percentagem de processos de homologação aprovados" },
 ];
 
 export const KPICards = ({ compact = false }: { compact?: boolean }) => (
