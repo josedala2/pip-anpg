@@ -8,7 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft, Droplets, DollarSign, ShieldCheck, TrendingUp, Users, Activity, Target, Layers, BarChart3, MapPin, Brain, FileText, Landmark, Building2, Clock, Scale, ArrowRight, History, BookOpen, ExternalLink, AlertTriangle, Crosshair, Search, Filter, AlignVerticalJustifyStart, AlignHorizontalJustifyStart, Download, FileSpreadsheet, FileDown, Leaf, Lightbulb, CheckCircle2, ChevronRight } from "lucide-react";
+import { ArrowLeft, Droplets, DollarSign, ShieldCheck, TrendingUp, Users, Activity, Target, Layers, BarChart3, MapPin, Brain, FileText, Landmark, Building2, Clock, Scale, ArrowRight, History, BookOpen, ExternalLink, AlertTriangle, Crosshair, Search, Filter, AlignVerticalJustifyStart, AlignHorizontalJustifyStart, Download, FileSpreadsheet, FileDown, Leaf, Lightbulb, CheckCircle2, ChevronRight, Gauge, BarChart2 } from "lucide-react";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import type { RevitalizationScenario } from "@/data/angolaBlocks";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { exportToCsv, exportToExcel, exportToPdf } from "@/lib/exportFinancial";
@@ -1205,6 +1206,53 @@ const BlockPage = () => {
 
           {/* Tab 4: Produção */}
            <TabsContent value="production" className="space-y-4 2xl:space-y-6">
+             {/* Production KPIs */}
+             {(() => {
+               const producingFields = block.fields?.filter(f => f.status === "Producing") || [];
+               const totalPeak = producingFields.reduce((s, f) => s + (f.peakProduction || 0), 0);
+               const peakVsActual = totalPeak > 0 ? ((block.dailyProduction / totalPeak) * 100).toFixed(1) : "N/A";
+               const history = block.productionHistory || [];
+               const declineRate = history.length >= 2
+                 ? (((history[0].value - history[history.length - 1].value) / history[0].value) * 100).toFixed(1)
+                 : "N/A";
+               return (
+                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                   <Card className="glass-card">
+                     <CardContent className="p-4 flex flex-col items-center text-center">
+                       <Gauge className="w-5 h-5 text-primary mb-1" />
+                       <span className="text-xs text-muted-foreground">Produção Actual</span>
+                       <span className="text-lg font-bold text-foreground">{block.dailyProduction.toLocaleString()}</span>
+                       <span className="text-[10px] text-muted-foreground">BOPD</span>
+                     </CardContent>
+                   </Card>
+                   <Card className="glass-card">
+                     <CardContent className="p-4 flex flex-col items-center text-center">
+                       <TrendingUp className="w-5 h-5 text-warning mb-1" />
+                       <span className="text-xs text-muted-foreground">Actual vs Pico</span>
+                       <span className="text-lg font-bold text-foreground">{peakVsActual}%</span>
+                       <span className="text-[10px] text-muted-foreground">do pico agregado</span>
+                     </CardContent>
+                   </Card>
+                   <Card className="glass-card">
+                     <CardContent className="p-4 flex flex-col items-center text-center">
+                       <Layers className="w-5 h-5 text-success mb-1" />
+                       <span className="text-xs text-muted-foreground">Campos em Produção</span>
+                       <span className="text-lg font-bold text-foreground">{producingFields.length}</span>
+                       <span className="text-[10px] text-muted-foreground">de {block.fields?.length || 0} total</span>
+                     </CardContent>
+                   </Card>
+                   <Card className="glass-card">
+                     <CardContent className="p-4 flex flex-col items-center text-center">
+                       <Activity className="w-5 h-5 text-danger mb-1" />
+                       <span className="text-xs text-muted-foreground">Taxa de Declínio</span>
+                       <span className="text-lg font-bold text-foreground">{declineRate}{typeof declineRate === "string" && declineRate !== "N/A" ? "" : ""}%</span>
+                       <span className="text-[10px] text-muted-foreground">12 meses</span>
+                     </CardContent>
+                   </Card>
+                 </div>
+               );
+             })()}
+
              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 2xl:gap-6">
               <ChartWrapper title="Tendência de Produção (12 meses)" height={360} fullscreenHeight={600}>
                    <ResponsiveContainer width="100%" height="100%">
@@ -1247,8 +1295,94 @@ const BlockPage = () => {
                     </BarChart>
                   </ResponsiveContainer>
               </ChartWrapper>
-            </div>
-          </TabsContent>
+             </div>
+
+             {/* Produção por Campo (Donut) + Projecções compactas */}
+             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 2xl:gap-6">
+               {block.fields && block.fields.length > 0 && (
+                 <ChartWrapper title="Produção por Campo" height={320} fullscreenHeight={550}>
+                   <ResponsiveContainer width="100%" height="100%">
+                     <PieChart>
+                       <Pie
+                         data={block.fields.filter(f => (f.peakProduction || 0) > 0).map(f => ({ name: f.name, value: f.peakProduction || 0 }))}
+                         cx="50%" cy="50%" innerRadius="45%" outerRadius="75%"
+                         dataKey="value" paddingAngle={2}
+                         animationDuration={800} animationEasing="ease-out"
+                       >
+                         {block.fields.filter(f => (f.peakProduction || 0) > 0).map((_, i) => (
+                           <Cell key={i} fill={CONSORTIUM_COLORS[i % CONSORTIUM_COLORS.length]} />
+                         ))}
+                       </Pie>
+                       <Tooltip contentStyle={tooltipStyle}
+                         formatter={(val: number) => [`${val.toLocaleString()} BOPD`, "Pico"]} />
+                       <Legend wrapperStyle={legendStyle} />
+                     </PieChart>
+                   </ResponsiveContainer>
+                 </ChartWrapper>
+               )}
+
+               <ChartWrapper title="Projecções de Produção (3 Cenários)" height={320} fullscreenHeight={550}>
+                 <ResponsiveContainer width="100%" height="100%">
+                   <LineChart data={projectionYears}>
+                     <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                     <XAxis dataKey="year" tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} />
+                     <YAxis tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} tickFormatter={v => `${(v / 1000).toFixed(0)}k`} />
+                     <Tooltip contentStyle={tooltipStyle}
+                       formatter={(val: number, name: string) => [`${val.toLocaleString()} BOPD`, name]} />
+                     <Legend wrapperStyle={legendStyle} />
+                     <Line type="monotone" dataKey="conservative" name="Conservador" stroke="hsl(0, 65%, 42%)" strokeWidth={1.5} dot={false} strokeDasharray="4 2" />
+                     <Line type="monotone" dataKey="base" name="Base" stroke="hsl(38, 75%, 48%)" strokeWidth={2} dot={false} />
+                     <Line type="monotone" dataKey="expansion" name="Expansão" stroke="hsl(152, 50%, 38%)" strokeWidth={1.5} dot={false} strokeDasharray="4 2" />
+                   </LineChart>
+                 </ResponsiveContainer>
+               </ChartWrapper>
+             </div>
+
+             {/* Tabela de Campos */}
+             {block.fields && block.fields.length > 0 && (
+               <Card className="glass-card">
+                 <CardHeader className="pb-3">
+                   <CardTitle className="text-sm font-bold flex items-center gap-2">
+                     <BarChart2 className="w-4 h-4 text-primary" />
+                     Campos do Bloco
+                   </CardTitle>
+                 </CardHeader>
+                 <CardContent>
+                   <Table>
+                     <TableHeader>
+                       <TableRow>
+                         <TableHead>Campo</TableHead>
+                         <TableHead>Status</TableHead>
+                         <TableHead className="text-right">Ano Descoberta</TableHead>
+                         <TableHead className="text-right">Pico Produção (BOPD)</TableHead>
+                       </TableRow>
+                     </TableHeader>
+                     <TableBody>
+                       {block.fields.map((field, i) => (
+                         <TableRow key={i}>
+                           <TableCell className="font-medium">{field.name}</TableCell>
+                           <TableCell>
+                             <Badge variant="outline" className={
+                               field.status === "Producing" ? "bg-success/15 text-success border-success/30" :
+                               field.status === "Development" ? "bg-warning/15 text-warning border-warning/30" :
+                               field.status === "Discovery" ? "bg-primary/15 text-primary border-primary/30" :
+                               "bg-danger/15 text-danger border-danger/30"
+                             }>
+                               {field.status === "Producing" ? "Em Produção" :
+                                field.status === "Development" ? "Desenvolvimento" :
+                                field.status === "Discovery" ? "Descoberta" : "Abandonado"}
+                             </Badge>
+                           </TableCell>
+                           <TableCell className="text-right">{field.discoveryYear || "—"}</TableCell>
+                           <TableCell className="text-right font-mono">{field.peakProduction?.toLocaleString() || "—"}</TableCell>
+                         </TableRow>
+                       ))}
+                     </TableBody>
+                   </Table>
+                 </CardContent>
+               </Card>
+             )}
+           </TabsContent>
 
           <TabsContent value="projections">
             <ChartWrapper title="Projecções de Produção (2025–2034)" height={450} fullscreenHeight={700}>
