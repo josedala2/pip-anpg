@@ -596,7 +596,6 @@ export const FacilitiesIntegrityPanel = () => {
           </Card>
         </TabsContent>
       </Tabs>
-      )}
     </div>
   );
 };
