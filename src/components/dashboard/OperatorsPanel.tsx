@@ -77,7 +77,8 @@ export function buildOperators(): OperatorSummary[] {
 }
 
 // ── List View ──────────────────────────────────────────────
-function OperatorListView({ operators, onSelect }: { operators: OperatorSummary[]; onSelect: (op: OperatorSummary) => void }) {
+function OperatorListView({ operators }: { operators: OperatorSummary[] }) {
+  const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState<SortKey>("production");
 
