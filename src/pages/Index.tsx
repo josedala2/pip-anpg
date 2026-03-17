@@ -37,6 +37,7 @@ const allPanels = [
   "Exploração",
   "Instalações",
   "Contratos",
+  "Homologações",
   "Económico",
   "Cenários",
   "Previsão Geral",
