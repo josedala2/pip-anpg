@@ -85,10 +85,6 @@ export const ProspectsTable = ({ blocks, scopeLabel }: ProspectsTableProps) => {
           key: `${b.id}-${i}`,
           z: Math.max(p.resourcesMMBO, 20),
         });
-          idx: i,
-          key: `${b.id}-${i}`,
-          z: Math.max(p.resourcesMMBO, 20),
-        });
       });
     });
     return data;
