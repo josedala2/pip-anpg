@@ -8,10 +8,11 @@ import type { FacilityData } from "@/data/angolaBlocks";
 import {
   Factory, AlertTriangle, Camera, FileText, Wrench, ShieldCheck,
   ChevronLeft, ChevronRight, X, Anchor, Clock, CheckCircle2,
-  Loader2, CalendarClock, Image as ImageIcon
+  Loader2, CalendarClock, Image as ImageIcon, ChevronDown, ArrowLeft,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { FacilitiesSchematic } from "./FacilitiesSchematic";
+import { FacilityDetailCard } from "./FacilityDetailCard";
 
 interface Props {
   facilityData: FacilityData;
@@ -42,6 +43,7 @@ export const FacilitiesTab = ({ facilityData }: Props) => {
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
   const [docFilter, setDocFilter] = useState<string>("all");
+  const [selectedFacility, setSelectedFacility] = useState<string | null>(null);
 
   const photos = facilityData.photos || [];
   const docs = facilityData.documents || [];
@@ -59,6 +61,42 @@ export const FacilitiesTab = ({ facilityData }: Props) => {
   const navigateLightbox = (dir: -1 | 1) => {
     setLightboxIndex((prev) => (prev + dir + photos.length) % photos.length);
   };
+
+  const selectedSpec = specs.find(s => s.name === selectedFacility);
+
+  // Filter photos/docs/maintenance relevant to the selected facility
+  const facilityPhotos = selectedSpec
+    ? photos.filter(p => p.platform === selectedSpec.name || p.caption?.toLowerCase().includes(selectedSpec.name.toLowerCase()))
+    : [];
+  const facilityDocs = selectedSpec
+    ? docs.filter(d => d.title?.toLowerCase().includes(selectedSpec.name.toLowerCase()))
+    : [];
+  const facilityMaintenance = selectedSpec
+    ? maintenance.filter(m => m.scope?.toLowerCase().includes(selectedSpec.name.toLowerCase()))
+    : [];
+
+  // If a facility is selected, show its detail view
+  if (selectedSpec) {
+    return (
+      <div className="space-y-4">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => setSelectedFacility(null)}
+          className="gap-1.5 text-muted-foreground hover:text-foreground mb-2"
+        >
+          <ArrowLeft className="w-3.5 h-3.5" />
+          Voltar à lista de instalações
+        </Button>
+        <FacilityDetailCard
+          spec={selectedSpec}
+          photos={facilityPhotos.length > 0 ? facilityPhotos : (selectedSpec.photo ? [{ url: selectedSpec.photo, caption: selectedSpec.name }] : [])}
+          documents={facilityDocs}
+          maintenanceItems={facilityMaintenance}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 2xl:space-y-8">
@@ -114,7 +152,59 @@ export const FacilitiesTab = ({ facilityData }: Props) => {
         )}
       </div>
 
-      {/* Areas with Efficiency */}
+      {/* Facility List — clickable cards */}
+      {specs.length > 0 && (
+        <Card className="glass-card">
+          <CardHeader className="p-4 pb-2">
+            <CardTitle className="text-sm flex items-center gap-2">
+              <Anchor className="w-4 h-4 text-primary" />Instalações
+              <Badge variant="outline" className="text-[10px] ml-auto">{specs.length} instalações</Badge>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-4 pt-0">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+              {specs.map(spec => {
+                const age = spec.installationYear ? new Date().getFullYear() - spec.installationYear : null;
+                return (
+                  <div
+                    key={spec.name}
+                    className="group rounded-xl border border-border/50 hover:border-primary/50 bg-card hover:shadow-md transition-all cursor-pointer overflow-hidden"
+                    onClick={() => setSelectedFacility(spec.name)}
+                  >
+                    {spec.photo ? (
+                      <div className="relative aspect-[16/9] overflow-hidden">
+                        <img src={spec.photo} alt={spec.name} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" loading="lazy" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
+                        <div className="absolute top-2 right-2">
+                          <Badge variant="outline" className={`text-[8px] backdrop-blur-sm ${statusColor[spec.status] || ""}`}>{spec.status}</Badge>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="aspect-[16/9] bg-muted/30 flex items-center justify-center relative">
+                        <Factory className="w-8 h-8 text-muted-foreground/30" />
+                        <div className="absolute top-2 right-2">
+                          <Badge variant="outline" className={`text-[8px] ${statusColor[spec.status] || ""}`}>{spec.status}</Badge>
+                        </div>
+                      </div>
+                    )}
+                    <div className="p-3 space-y-1.5">
+                      <h4 className="text-xs font-bold text-foreground group-hover:text-primary transition-colors">{spec.name}</h4>
+                      <p className="text-[10px] text-muted-foreground">{spec.type}</p>
+                      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[9px] text-muted-foreground">
+                        {spec.capacity && <span>{spec.capacity}</span>}
+                        {spec.waterDepthM && <span>{spec.waterDepthM}m</span>}
+                        {age && <span>{age} anos</span>}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 2xl:gap-6">
         {facilityData.areas.map(area => (
           <Card key={area.name} className="glass-card">
