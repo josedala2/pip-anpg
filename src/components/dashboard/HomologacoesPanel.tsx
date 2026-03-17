@@ -282,6 +282,83 @@ export const HomologacoesPanel = ({ filterBloco }: Props) => {
     return { meses, blocos, maxVal };
   }, [data]);
 
+  // Local content trend by month
+  const localContentTrend = useMemo(() => {
+    const mesOrder = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+    const mesLabels: Record<string, string> = {
+      Janeiro: "Jan", Fevereiro: "Fev", Março: "Mar", Abril: "Abr",
+      Maio: "Mai", Junho: "Jun", Julho: "Jul", Agosto: "Ago",
+      Setembro: "Set", Outubro: "Out", Novembro: "Nov", Dezembro: "Dez",
+    };
+
+    const intlKeywords = [
+      "baker hughes", "schlumberger", "halliburton", "weatherford", "onesubsea",
+      "technipfmc", "saipem", "subsea 7", "aker solutions", "sbm offshore",
+      "maersk", "fugro", "kongsberg", "emerson", "cameron", "cecon",
+      "liebherr", "jeumont", "man energy", "mtu maintenance", "nuovo pignone",
+      "pgs", "framo", "advanced mechatronics", "h. butting", "clariant",
+      "3t oil", "geofizyka", "dof", "bourbon", "seabulk", "tidewater",
+      "shelf drilling", "valaris", "ensco", "diamond offshore", "noble",
+      "champion x", "cladtek", "cetco", "intech", "bently nevada",
+      "mrc global", "dnow", "nov uk", "oil spill response", "international sos",
+      "mckinsey", "graham manufacturing", "airpack", "measurement solutions",
+      "euronav", "grupo antonini", "telford", "dhl global", "excellence logging",
+    ];
+    const angolaKeywords = [
+      "angola", "lda", "limitada", " s.a", "cabinda", "luanda", "sonamer",
+      "sonamet", "sonangol", "kwanda", "sonepral", "enagol", "angolan",
+      "asco", "aes", "bestfly", "friburge", "equador", "global catering",
+      "newrest", "atlantic services", "atlantic facilities", "atlantic logistic",
+      "magnitika", "luajardim", "nilmiguel", "novagest", "nossa seguros",
+      "global seguros", "fidelidade", "fortaleza seguros", "ensa",
+      "nasa comercial", "ncr angola", "nf clean", "clear angola",
+      "internet technologies", "isistel", "ms telcom", "cosal",
+      "organizações mgp", "petrowork", "certex", "basetek", "imovias",
+      "emcica", "capgest", "kaeso", "kloten", "greenford",
+    ];
+
+    const classify = (name: string): "angolano" | "internacional" | "consórcio" => {
+      const lower = name.toLowerCase();
+      const hasIntl = intlKeywords.some(k => lower.includes(k));
+      const hasAngola = angolaKeywords.some(k => lower.includes(k));
+      if (lower.startsWith("consórcio") || lower.includes("/")) return "consórcio";
+      if (hasAngola && !hasIntl) return "angolano";
+      if (hasIntl && !hasAngola) return "internacional";
+      if (hasAngola) return "consórcio";
+      return "internacional";
+    };
+
+    const map = new Map<string, { ang: number; intl: number; cons: number; total: number; angVal: number; totalVal: number }>();
+    data.forEach(h => {
+      const key = `${h.ano}-${h.mes}`;
+      if (!map.has(key)) map.set(key, { ang: 0, intl: 0, cons: 0, total: 0, angVal: 0, totalVal: 0 });
+      const entry = map.get(key)!;
+      const cls = classify(h.fornecedor || "N/D");
+      entry.total++;
+      entry.totalVal += h.montanteAprovado;
+      if (cls === "angolano") { entry.ang++; entry.angVal += h.montanteAprovado; }
+      else if (cls === "internacional") entry.intl++;
+      else entry.cons++;
+    });
+
+    // Sort by year then month order
+    const sorted = [...map.entries()]
+      .map(([key, vals]) => {
+        const [ano, mes] = key.split("-");
+        return { ano: Number(ano), mes, mesIdx: mesOrder.indexOf(mes), ...vals };
+      })
+      .sort((a, b) => a.ano - b.ano || a.mesIdx - b.mesIdx);
+
+    return sorted.map(s => ({
+      label: `${mesLabels[s.mes] || s.mes.slice(0, 3)} ${String(s.ano).slice(2)}`,
+      pctAngolano: s.total > 0 ? (s.ang / s.total) * 100 : 0,
+      pctInternacional: s.total > 0 ? (s.intl / s.total) * 100 : 0,
+      pctConsorcio: s.total > 0 ? (s.cons / s.total) * 100 : 0,
+      pctAngolanoValor: s.totalVal > 0 ? (s.angVal / s.totalVal) * 100 : 0,
+      processos: s.total,
+    }));
+  }, [data]);
+
   // By modalidade
   const byModalidade = useMemo(() => {
     const map = new Map<string, number>();
