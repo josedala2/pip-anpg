@@ -272,7 +272,7 @@ function OperatorListView({ operators, onSelect }: { operators: OperatorSummary[
 function OperatorDetailView({ operator, onBack }: { operator: OperatorSummary; onBack: () => void }) {
   const { blocks } = operator;
   const [selectedBlock, setSelectedBlock] = useState<OilBlock | null>(null);
-
+  const [detailSearch, setDetailSearch] = useState("");
   // Table sort states
   const blocksTableData = useMemo(() => blocks.map(b => ({
     id: b.id, name: b.name, phase: b.phase, basin: b.basin, waterDepth: b.waterDepth || "",
