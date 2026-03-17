@@ -1,9 +1,11 @@
 import { useMemo, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { oilBlocks, type OilBlock, type PlatformSpec } from "@/data/angolaBlocks";
 import { AnimatedCounter } from "./AnimatedCounter";
-import { AlertTriangle, Anchor, ArrowDown, Calendar, Factory, Gauge, HardHat, Shield, Timer, Wrench } from "lucide-react";
+import { FacilityDetailCard } from "./FacilityDetailCard";
+import { AlertTriangle, Anchor, ArrowDown, ArrowLeft, Calendar, Factory, Gauge, Globe, HardHat, Shield, Timer, Waves, Wrench } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScatterChart, Scatter, XAxis, YAxis, ZAxis, Tooltip, ResponsiveContainer, Cell, CartesianGrid, BarChart, Bar, Legend } from "recharts";
@@ -68,7 +70,8 @@ const parseCapacity = (cap?: string): number => {
 // ── Component ──
 
 export const FacilitiesIntegrityPanel = () => {
-  const [selectedTab, setSelectedTab] = useState("ranking");
+  const [selectedTab, setSelectedTab] = useState("installations");
+  const [selectedFacility, setSelectedFacility] = useState<{ blockId: string; platformName: string } | null>(null);
 
   const facilities: FacilityRecord[] = useMemo(() => {
     const results: FacilityRecord[] = [];
@@ -181,13 +184,97 @@ export const FacilitiesIntegrityPanel = () => {
         ))}
       </div>
 
+      {/* Detail view when facility selected */}
+      {selectedFacility && (() => {
+        const block = oilBlocks.find(b => b.id === selectedFacility.blockId);
+        const spec = block?.facilityData?.platformSpecs?.find(p => p.name === selectedFacility.platformName);
+        if (!block || !spec) return null;
+        const facilityPhotos = block.facilityData?.photos || [];
+        const facilityDocs = block.facilityData?.documents || [];
+        const facilityMaintenance = block.facilityData?.maintenancePlan || [];
+        return (
+          <div className="space-y-4">
+            <Button variant="ghost" size="sm" className="gap-1.5" onClick={() => setSelectedFacility(null)}>
+              <ArrowLeft className="w-4 h-4" /> Voltar à lista
+            </Button>
+            <FacilityDetailCard spec={spec} photos={facilityPhotos} documents={facilityDocs} maintenanceItems={facilityMaintenance} />
+          </div>
+        );
+      })()}
+
+      {!selectedFacility && (
       <Tabs value={selectedTab} onValueChange={setSelectedTab}>
-        <TabsList className="bg-muted/50">
+        <TabsList className="bg-muted/50 flex-wrap">
+          <TabsTrigger value="installations">Lista de Instalações</TabsTrigger>
           <TabsTrigger value="ranking">Ranking por Criticidade</TabsTrigger>
           <TabsTrigger value="scatter">Idade vs Risco</TabsTrigger>
           <TabsTrigger value="bottlenecks">Gargalos Operacionais</TabsTrigger>
           <TabsTrigger value="types">Distribuição por Tipo</TabsTrigger>
         </TabsList>
+
+        {/* Installations List */}
+        <TabsContent value="installations">
+          <ScrollArea className="h-[600px]">
+            <div className="space-y-6">
+              {oilBlocks.filter(b => b.facilityData?.platformSpecs?.length).map(block => (
+                <div key={block.id}>
+                  <h3 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
+                    <Factory className="w-4 h-4 text-primary" />
+                    {block.name}
+                    <Badge variant="outline" className="text-[9px] ml-1">{block.operator}</Badge>
+                    <Badge variant="outline" className="text-[9px]">{block.facilityData!.platformSpecs!.length} instalações</Badge>
+                  </h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+                    {block.facilityData!.platformSpecs!.map(p => {
+                      const age = p.installationYear ? currentYear - p.installationYear : null;
+                      const statusCls: Record<string, string> = {
+                        Operacional: "bg-success/10 text-success border-success/30",
+                        Manutenção: "bg-warning/10 text-warning border-warning/30",
+                        Descomissionada: "bg-muted text-muted-foreground border-border",
+                        Suspensa: "bg-danger/10 text-danger border-danger/30",
+                      };
+                      return (
+                        <div
+                          key={p.name}
+                          className="rounded-xl border border-border/50 bg-card overflow-hidden cursor-pointer hover:border-primary/50 hover:shadow-md transition-all group"
+                          onClick={() => setSelectedFacility({ blockId: block.id, platformName: p.name })}
+                        >
+                          {p.photo ? (
+                            <div className="relative aspect-[16/9] overflow-hidden">
+                              <img src={p.photo} alt={p.name} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" loading="lazy" />
+                              <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
+                              <div className="absolute top-2 right-2 flex gap-1">
+                                <Badge variant="outline" className={`text-[8px] ${statusCls[p.status] || ""}`}>{p.status}</Badge>
+                                {p.matterportUrl && <Badge variant="outline" className="text-[8px] bg-primary/10 text-primary border-primary/30"><Globe className="w-2.5 h-2.5 mr-0.5" />360°</Badge>}
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="relative aspect-[16/9] bg-muted/30 flex items-center justify-center">
+                              <Factory className="w-8 h-8 text-muted-foreground/30" />
+                              <div className="absolute top-2 right-2 flex gap-1">
+                                <Badge variant="outline" className={`text-[8px] ${statusCls[p.status] || ""}`}>{p.status}</Badge>
+                                {p.matterportUrl && <Badge variant="outline" className="text-[8px] bg-primary/10 text-primary border-primary/30"><Globe className="w-2.5 h-2.5 mr-0.5" />360°</Badge>}
+                              </div>
+                            </div>
+                          )}
+                          <div className="p-3">
+                            <h4 className="text-xs font-bold truncate">{p.name}</h4>
+                            <p className="text-[10px] text-muted-foreground">{p.type}</p>
+                            <div className="flex items-center gap-3 mt-2 text-[10px] text-muted-foreground">
+                              {age !== null && <span className="flex items-center gap-0.5"><Timer className="w-3 h-3" />{age}a</span>}
+                              {p.waterDepthM && <span className="flex items-center gap-0.5"><Waves className="w-3 h-3" />{p.waterDepthM}m</span>}
+                              {p.capacity && <span className="flex items-center gap-0.5"><Gauge className="w-3 h-3" />{p.capacity}</span>}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </ScrollArea>
+        </TabsContent>
 
         {/* Ranking */}
         <TabsContent value="ranking">
@@ -436,6 +523,7 @@ export const FacilitiesIntegrityPanel = () => {
           </Card>
         </TabsContent>
       </Tabs>
+      )}
     </div>
   );
 };
