@@ -5,6 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { homologacoesData, type Homologacao } from "@/data/homologacoesData";
 import {
   BarChart, Bar, PieChart, Pie, Cell, LineChart, Line,
@@ -51,6 +52,7 @@ export const HomologacoesPanel = ({ filterBloco }: Props) => {
   const [ownerFilter, setOwnerFilter] = useState<string>("all");
   const [searchText, setSearchText] = useState("");
   const [expandedBloco, setExpandedBloco] = useState<string | null>(null);
+  const [drilldown, setDrilldown] = useState<{ bloco: string; mes: string } | null>(null);
 
   // Map block names from angolaBlocks format ("Block 0 (Área A, B)") to homologações format ("Bloco 0")
   const matchBloco = (blocoData: string, filterName: string): boolean => {
@@ -851,8 +853,8 @@ export const HomologacoesPanel = ({ filterBloco }: Props) => {
                           const intensity = heatmapData.maxVal > 0 ? v / heatmapData.maxVal : 0;
                           return (
                             <td key={m} className="text-center py-1.5 px-1.5">
-                              <div
-                                className="mx-auto rounded-sm flex items-center justify-center font-mono"
+                              <button
+                                className="mx-auto rounded-sm flex items-center justify-center font-mono cursor-pointer hover:ring-2 hover:ring-primary/50 transition-all"
                                 style={{
                                   width: 32, height: 24,
                                   backgroundColor: v === 0
@@ -861,9 +863,12 @@ export const HomologacoesPanel = ({ filterBloco }: Props) => {
                                   color: intensity > 0.5 ? "white" : v === 0 ? "hsl(var(--muted-foreground))" : "hsl(var(--foreground))",
                                   fontSize: 10,
                                 }}
+                                onClick={() => v > 0 && setDrilldown({ bloco, mes: m })}
+                                disabled={v === 0}
+                                title={v > 0 ? `Ver ${v} processos de ${bloco} em ${m}` : ""}
                               >
                                 {v || "–"}
-                              </div>
+                              </button>
                             </td>
                           );
                         })}
@@ -1078,6 +1083,70 @@ export const HomologacoesPanel = ({ filterBloco }: Props) => {
           </Card>
         </TabsContent>
       </Tabs>
+
+      {/* Drill-down Modal */}
+      <Dialog open={!!drilldown} onOpenChange={(open) => !open && setDrilldown(null)}>
+        <DialogContent className="max-w-[90vw] w-[900px] max-h-[85vh] bg-card border-border p-0 gap-0">
+          <DialogHeader className="p-4 pb-2 border-b border-border/50">
+            <DialogTitle className="text-sm flex items-center gap-2">
+              <FileText className="w-4 h-4 text-primary" />
+              Processos — {drilldown?.bloco} em {drilldown?.mes}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="p-4 overflow-auto max-h-[70vh]">
+            {(() => {
+              if (!drilldown) return null;
+              const mesRevMap: Record<string, string> = {
+                Jan: "Janeiro", Fev: "Fevereiro", Mar: "Março", Abr: "Abril",
+                Mai: "Maio", Jun: "Junho", Jul: "Julho", Ago: "Agosto",
+                Set: "Setembro", Out: "Outubro", Nov: "Novembro", Dez: "Dezembro",
+              };
+              const mesFull = mesRevMap[drilldown.mes] || drilldown.mes;
+              const rows = data.filter(h => h.bloco === drilldown.bloco && h.mes === mesFull);
+              const totalAprov = rows.reduce((s, h) => s + h.montanteAprovado, 0);
+              return (
+                <>
+                  <div className="flex items-center gap-3 mb-3">
+                    <Badge variant="outline" className="text-xs">{rows.length} processos</Badge>
+                    <Badge className="text-xs bg-primary/10 text-primary border-primary/20">Total Aprovado: {fmt(totalAprov)}</Badge>
+                  </div>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="text-[10px]">Fornecedor</TableHead>
+                        <TableHead className="text-[10px]">Serviços</TableHead>
+                        <TableHead className="text-[10px]">Tipo</TableHead>
+                        <TableHead className="text-[10px] text-right">Solicitado</TableHead>
+                        <TableHead className="text-[10px] text-right">Aprovado</TableHead>
+                        <TableHead className="text-[10px]">Modalidade</TableHead>
+                        <TableHead className="text-[10px]">Decisão</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {rows.map((h, i) => (
+                        <TableRow key={i}>
+                          <TableCell className="text-[10px] font-medium max-w-[180px] truncate" title={h.fornecedor || ""}>{h.fornecedor}</TableCell>
+                          <TableCell className="text-[10px] max-w-[200px] truncate" title={h.servicos || ""}>{h.servicos}</TableCell>
+                          <TableCell className="text-[10px]">{h.tipoProcesso}</TableCell>
+                          <TableCell className="text-[10px] text-right font-mono">{fmt(h.montanteSolicitado)}</TableCell>
+                          <TableCell className="text-[10px] text-right font-mono font-semibold">{fmt(h.montanteAprovado)}</TableCell>
+                          <TableCell className="text-[10px]">{h.modalidade}</TableCell>
+                          <TableCell className="text-[10px]">
+                            <Badge variant="outline" className={`text-[9px] ${h.decisao === "Aprovado" ? "text-success border-success/30" : "text-destructive border-destructive/30"}`}>{h.decisao}</Badge>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                  {rows.length === 0 && (
+                    <p className="text-center text-xs text-muted-foreground py-6">Nenhum processo encontrado.</p>
+                  )}
+                </>
+              );
+            })()}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
