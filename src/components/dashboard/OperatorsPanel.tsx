@@ -224,7 +224,7 @@ function OperatorListView({ operators }: { operators: OperatorSummary[] }) {
           <Card
             key={op.name}
             className="glass-card cursor-pointer hover:border-primary/50 hover:shadow-lg transition-all group"
-            onClick={() => onSelect(op)}
+            onClick={() => navigate(`/operator/${encodeURIComponent(op.name)}`)}
           >
             <CardHeader className="p-4 pb-2">
               <div className="flex items-center justify-between">
