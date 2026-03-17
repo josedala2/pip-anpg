@@ -192,15 +192,26 @@ export const ProspectsTable = ({ blocks, scopeLabel }: ProspectsTableProps) => {
       {/* Table */}
       <Card className="glass-card">
          <CardHeader className="p-4 2xl:p-5 pb-2">
-           <CardTitle className="text-sm 2xl:text-base flex items-center gap-2">
-             <Target className="w-4 h-4 2xl:w-5 2xl:h-5 text-primary" />
-             Prospectos & Recursos — {scopeLabel}
-             <Badge variant="outline" className="ml-auto text-[10px] 2xl:text-xs bg-primary/10 text-primary border-primary/30">
-              {totals.count} prospectos · {totals.mmbo.toLocaleString(undefined, { maximumFractionDigits: 1 })} MMBO
-              {totals.bcf > 0 && ` · ${totals.bcf.toLocaleString()} BCF`}
-            </Badge>
-          </CardTitle>
-        </CardHeader>
+           <div className="flex items-center justify-between gap-3 flex-wrap">
+             <CardTitle className="text-sm 2xl:text-base flex items-center gap-2">
+               <Target className="w-4 h-4 2xl:w-5 2xl:h-5 text-primary" />
+               Prospectos & Recursos — {scopeLabel}
+               <Badge variant="outline" className="text-[10px] 2xl:text-xs bg-primary/10 text-primary border-primary/30">
+                {prospectSort.sorted.length}{prospectSort.sorted.length !== totals.count ? ` de ${totals.count}` : ""} prospectos · {totals.mmbo.toLocaleString(undefined, { maximumFractionDigits: 1 })} MMBO
+                {totals.bcf > 0 && ` · ${totals.bcf.toLocaleString()} BCF`}
+              </Badge>
+            </CardTitle>
+            <div className="relative w-52">
+              <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
+              <Input
+                placeholder="Pesquisar prospecto..."
+                value={prospectSearch}
+                onChange={e => setProspectSearch(e.target.value)}
+                className="h-7 pl-7 text-xs glass-card border-border/50"
+              />
+            </div>
+           </div>
+         </CardHeader>
         <CardContent className="p-4 pt-2">
           <div ref={tableRef} className="relative w-full overflow-auto max-h-[500px]">
             <Table>
