@@ -216,18 +216,50 @@ export const FacilitiesIntegrityPanel = () => {
 
         {/* Installations List */}
         <TabsContent value="installations">
-          <ScrollArea className="h-[600px]">
+          {/* Filters */}
+          <div className="flex flex-wrap items-center gap-2 mb-4">
+            <span className="text-[10px] uppercase tracking-wider font-semibold text-muted-foreground">Tipo:</span>
+            {["all", ...Array.from(new Set(facilities.map(f => f.platform.type)))].map(t => (
+              <Badge
+                key={t}
+                variant="outline"
+                className={`text-[10px] cursor-pointer transition-colors ${filterType === t ? "bg-primary/15 text-primary border-primary/40" : "hover:bg-muted"}`}
+                onClick={() => setFilterType(t)}
+              >
+                {t === "all" ? "Todos" : t}
+              </Badge>
+            ))}
+            <span className="text-[10px] uppercase tracking-wider font-semibold text-muted-foreground ml-3">Status:</span>
+            {["all", "Operacional", "Manutenção", "Suspensa", "Descomissionada"].map(s => (
+              <Badge
+                key={s}
+                variant="outline"
+                className={`text-[10px] cursor-pointer transition-colors ${filterStatus === s ? "bg-primary/15 text-primary border-primary/40" : "hover:bg-muted"}`}
+                onClick={() => setFilterStatus(s)}
+              >
+                {s === "all" ? "Todos" : s}
+              </Badge>
+            ))}
+          </div>
+
+          <ScrollArea className="h-[560px]">
             <div className="space-y-6">
-              {oilBlocks.filter(b => b.facilityData?.platformSpecs?.length).map(block => (
+              {oilBlocks.filter(b => b.facilityData?.platformSpecs?.length).map(block => {
+                const filtered = block.facilityData!.platformSpecs!.filter(p =>
+                  (filterType === "all" || p.type === filterType) &&
+                  (filterStatus === "all" || p.status === filterStatus)
+                );
+                if (filtered.length === 0) return null;
+                return (
                 <div key={block.id}>
                   <h3 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
                     <Factory className="w-4 h-4 text-primary" />
                     {block.name}
                     <Badge variant="outline" className="text-[9px] ml-1">{block.operator}</Badge>
-                    <Badge variant="outline" className="text-[9px]">{block.facilityData!.platformSpecs!.length} instalações</Badge>
+                    <Badge variant="outline" className="text-[9px]">{filtered.length} instalações</Badge>
                   </h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
-                    {block.facilityData!.platformSpecs!.map(p => {
+                    {filtered.map(p => {
                       const age = p.installationYear ? currentYear - p.installationYear : null;
                       const statusCls: Record<string, string> = {
                         Operacional: "bg-success/10 text-success border-success/30",
@@ -273,7 +305,8 @@ export const FacilitiesIntegrityPanel = () => {
                     })}
                   </div>
                 </div>
-              ))}
+                );
+              })}
             </div>
           </ScrollArea>
         </TabsContent>
