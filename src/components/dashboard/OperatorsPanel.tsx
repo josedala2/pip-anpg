@@ -288,6 +288,17 @@ function OperatorDetailView({ operator, onBack }: { operator: OperatorSummary; o
     peakProduction: f.peakProduction || 0,
   }))), [blocks]);
   const fieldsSort = useTableSort(fieldsData, "peakProduction", "desc", ["blockName", "fieldName", "status"]);
+  // Facilities data for sorting
+  const facilitiesData = useMemo(() => {
+    const platforms: { name: string; type: string; block: string; status: string; capacity: string }[] = [];
+    blocks.forEach(b => {
+      b.facilityData?.platformSpecs?.forEach(p => {
+        platforms.push({ name: p.name, type: p.type, block: b.name, status: p.status, capacity: p.capacity || "" });
+      });
+    });
+    return platforms;
+  }, [blocks]);
+  const facilitiesSort = useTableSort(facilitiesData, "name", "asc", ["name", "type", "block", "status", "capacity"]);
 
   // Aggregate production history
   const aggregatedHistory = useMemo(() => {
