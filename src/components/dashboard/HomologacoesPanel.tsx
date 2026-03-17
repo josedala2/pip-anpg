@@ -132,7 +132,7 @@ export const HomologacoesPanel = ({ filterBloco }: Props) => {
   // Year-over-year comparison by month
   const yearComparison = useMemo(() => {
     const mesOrder = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
-    const allData = filterBloco ? homologacoesData.filter(h => h.bloco === filterBloco) : homologacoesData;
+    const allData = filterBloco ? homologacoesData.filter(h => matchBloco(h.bloco, filterBloco)) : homologacoesData;
     const map2024 = new Map<string, { valor: number; count: number }>();
     const map2025 = new Map<string, { valor: number; count: number }>();
     allData.forEach(h => {
