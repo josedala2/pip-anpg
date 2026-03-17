@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import type { PlatformSpec, FacilityPhoto, FacilityDocument } from "@/data/angolaBlocks";
+import { VirtualTourViewer } from "./VirtualTourViewer";
 import {
   Anchor, ChevronLeft, ChevronRight, Clock, Camera,
   Factory, Wrench, ShieldCheck, FileText, Waves, Calendar,
@@ -98,6 +99,11 @@ export const FacilityDetailCard = ({ spec, photos, documents, maintenanceItems }
           )}
         </div>
       </div>
+
+      {/* Virtual Tour */}
+      {spec.matterportUrl && (
+        <VirtualTourViewer matterportUrl={spec.matterportUrl} facilityName={spec.name} />
+      )}
 
       {/* Photo gallery for this facility */}
       {photos.length > 0 && (
