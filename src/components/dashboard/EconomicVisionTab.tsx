@@ -131,7 +131,7 @@ export const EconomicVisionTab = ({ block }: Props) => {
             {revenueShare.map((rs) => (
               <div key={rs.period} className="flex flex-col items-center justify-center">
                 <p className="text-xs font-semibold text-muted-foreground mb-1">{rs.period}</p>
-                <ResponsiveContainer width="100%" height={160}>
+                <ResponsiveContainer width="100%" height={190}>
                   <PieChart>
                     <Pie
                       data={[
@@ -139,13 +139,23 @@ export const EconomicVisionTab = ({ block }: Props) => {
                         { name: "Impostos", value: rs.impostosPercent },
                       ]}
                       cx="50%"
-                      cy="50%"
-                      innerRadius={35}
-                      outerRadius={60}
+                      cy="52%"
+                      innerRadius={40}
+                      outerRadius={68}
                       paddingAngle={2}
                       dataKey="value"
-                      label={({ name, value }) => `${value}%`}
-                      labelLine={false}
+                      label={({ name, value, cx, cy, midAngle, outerRadius }) => {
+                        const RADIAN = Math.PI / 180;
+                        const radius = (outerRadius as number) + 18;
+                        const x = (cx as number) + radius * Math.cos(-midAngle * RADIAN);
+                        const y = (cy as number) + radius * Math.sin(-midAngle * RADIAN);
+                        return (
+                          <text x={x} y={y} textAnchor={x > (cx as number) ? "start" : "end"} dominantBaseline="central" fontSize={13} fontWeight={700} fill="hsl(var(--foreground))">
+                            {value}%
+                          </text>
+                        );
+                      }}
+                      labelLine={{ strokeWidth: 1, stroke: "hsl(var(--muted-foreground))" }}
                     >
                       {PIE_COLORS.map((color, i) => (
                         <Cell key={i} fill={color} />
