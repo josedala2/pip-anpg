@@ -189,9 +189,9 @@ export const FacilitiesIntegrityPanel = () => {
         const block = oilBlocks.find(b => b.id === selectedFacility.blockId);
         const spec = block?.facilityData?.platformSpecs?.find(p => p.name === selectedFacility.platformName);
         if (!block || !spec) return null;
-        const facilityPhotos = (block.facilityData?.photos || []).filter(p => p.facilityId === spec.id || (!p.facilityId && block.facilityData?.platformSpecs?.length === 1));
-        const facilityDocs = (block.facilityData?.documents || []).filter(d => d.facilityId === spec.id || (!d.facilityId && block.facilityData?.platformSpecs?.length === 1));
-        const facilityMaintenance = (block.facilityData?.maintenanceSchedule || []).filter(m => (m as any).facilityId === spec.id || !(m as any).facilityId);
+        const facilityPhotos = block.facilityData?.photos || [];
+        const facilityDocs = block.facilityData?.documents || [];
+        const facilityMaintenance = block.facilityData?.maintenancePlan || [];
         return (
           <div className="space-y-4">
             <Button variant="ghost" size="sm" className="gap-1.5" onClick={() => setSelectedFacility(null)}>
