@@ -1142,15 +1142,28 @@ export const HomologacoesPanel = ({ filterBloco }: Props) => {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="text-xs">Bloco</TableHead>
-                    <TableHead className="text-xs text-right">Nº Processos</TableHead>
-                    <TableHead className="text-xs text-right">Total Solicitado</TableHead>
-                    <TableHead className="text-xs text-right">Total Aprovado</TableHead>
-                    <TableHead className="text-xs text-right">Taxa</TableHead>
+                    {[
+                      { key: "bloco", label: "Bloco", align: "" },
+                      { key: "count", label: "Nº Processos", align: "text-right" },
+                      { key: "solicitado", label: "Total Solicitado", align: "text-right" },
+                      { key: "aprovado", label: "Total Aprovado", align: "text-right" },
+                      { key: "taxa", label: "Taxa", align: "text-right" },
+                    ].map(col => (
+                      <TableHead
+                        key={col.key}
+                        className={`text-xs cursor-pointer select-none hover:text-foreground transition-colors ${col.align}`}
+                        onClick={() => makeHandleSort(blocoSortKey, setBlocoSortKey, blocoSortDir, setBlocoSortDir, ["bloco"])(col.key)}
+                      >
+                        <span className="inline-flex items-center gap-0.5">
+                          {col.label}
+                          <SortIcon active={blocoSortKey === col.key} dir={blocoSortDir} />
+                        </span>
+                      </TableHead>
+                    ))}
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {blocoSummary.map(b => (
+                  {sortArray(blocoSummary, blocoSortKey, blocoSortDir).map(b => (
                     <>
                       <TableRow
                         key={b.bloco}
