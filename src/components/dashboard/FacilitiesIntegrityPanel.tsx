@@ -75,6 +75,7 @@ export const FacilitiesIntegrityPanel = () => {
   const [selectedFacility, setSelectedFacility] = useState<{ blockId: string; platformName: string } | null>(null);
   const [filterType, setFilterType] = useState<string>("all");
   const [filterStatus, setFilterStatus] = useState<string>("all");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const facilities: FacilityRecord[] = useMemo(() => {
     const results: FacilityRecord[] = [];
