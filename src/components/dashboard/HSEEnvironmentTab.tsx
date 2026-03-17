@@ -33,6 +33,7 @@ const NPV_COLORS = ["hsl(199, 89%, 48%)", "hsl(38, 92%, 50%)", "hsl(152, 69%, 40
 export const HSEEnvironmentTab = ({ hseData, environmentalData, facilityData, economicVision, revitalizationScenarios }: Props) => {
   const hasHSE = hseData && hseData.length > 0;
   const hasEnv = environmentalData && environmentalData.length > 0;
+  const hseSort = useTableSort(hseData || [], "year", "asc", []);
 
   return (
     <div className="space-y-6 2xl:space-y-8">
