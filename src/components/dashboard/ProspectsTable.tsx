@@ -71,6 +71,7 @@ export const ProspectsTable = ({ blocks, scopeLabel }: ProspectsTableProps) => {
   }, [blocksWithProspects]);
 
   const flatProspects = useMemo(() => {
+    const q = prospectSearch.toLowerCase();
     const data: { block: string; blockId: string; discoveryArea: string; name: string; reservoir: string; resourcesMMBO: number; resourcesBCF: number; pos: number; key: string; z: number; idx: number }[] = [];
     blocksWithProspects.forEach(b => {
       b.prospects!.forEach((p, i) => {
@@ -89,8 +90,14 @@ export const ProspectsTable = ({ blocks, scopeLabel }: ProspectsTableProps) => {
         });
       });
     });
-    return data;
-  }, [blocksWithProspects]);
+    if (!q) return data;
+    return data.filter(d =>
+      d.block.toLowerCase().includes(q) ||
+      d.name.toLowerCase().includes(q) ||
+      d.discoveryArea.toLowerCase().includes(q) ||
+      d.reservoir.toLowerCase().includes(q)
+    );
+  }, [blocksWithProspects, prospectSearch]);
 
   const prospectSort = useTableSort(flatProspects, "resourcesMMBO", "desc", ["block", "discoveryArea", "name", "reservoir"]);
 
