@@ -15,6 +15,7 @@ import {
 import {
   DollarSign, FileText, TrendingUp, Building2, Users, Search,
   Filter, ChevronDown, ChevronRight, Download, AlertTriangle, Settings,
+  ArrowUpDown, ArrowUp, ArrowDown,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
