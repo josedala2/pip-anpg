@@ -671,14 +671,22 @@ export const oilBlocks: OilBlock[] = [
         {
           name: "Área A",
           efficiency: 85,
-          platforms: ["Takula", "GIP-FOX", "Mafumeira"],
-          issues: ["Corrosão avançada nas plataformas antigas", "Obsolescência de equipamentos de controlo", "Integridade estrutural comprometida em Takula"],
+          platforms: ["Complexo Takula", "GIP-FOX", "Complexo Mafumeira", "GS-Lima", "GS-Papa", "GS-November"],
+          issues: [
+            "Integridade das instalações e obsolescência dos equipamentos (Takula Complex, GS-Julie, GS-Fox, wellhead jackets, GS-Lima, GS-Papa, GS-November)",
+            "Obsolescência dos turbogeradores, compressores e bombas de exportação de óleo — Malongo (Fox, Delta e KWIP); Takula (TGPP, ALP e GSN)",
+            "Obsolescência das UPS/baterias e do sistema de controlo e instrumentação",
+            "Integridade da linha de exportação de 42\" no Cais de Malongo",
+          ],
         },
         {
           name: "Área B",
           efficiency: 91,
-          platforms: ["Sanha", "Sanha LPG", "Nembas", "East Kwanza (EK)", "West Kwanza (WK)"],
-          issues: ["Manutenção crescente nos sistemas de compressão"],
+          platforms: ["Complexo Sanha", "Sanha LPG", "Nembas Norte", "Nembas Sul", "East Kwanza (EK)", "West Kwanza (WK)"],
+          issues: [
+            "Integridade das instalações e obsolescência dos equipamentos (EK, WK e Complexo Sanha)",
+            "Obsolescência dos turbogeradores, compressores e bombas de exportação de óleo (compressores de reinjecção e turbogerador C do Complexo Sanha e turbogerador A do Nemba Sul)",
+          ],
         },
       ],
       activeWells: { op: 358, wi: 78, gi: 27 },
