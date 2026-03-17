@@ -14,6 +14,7 @@ import { GeneralForecastPanel } from "@/components/dashboard/GeneralForecastPane
 import { OperatorsPanel } from "@/components/dashboard/OperatorsPanel";
 import { AlertsPanel } from "@/components/dashboard/AlertsPanel";
 import { CouncilRecommendationsPanel } from "@/components/dashboard/CouncilRecommendationsPanel";
+import { HomologacoesPanel } from "@/components/dashboard/HomologacoesPanel";
 import { RiskPerformance } from "@/components/dashboard/RiskPerformance";
 import { SobaChat } from "@/components/dashboard/SobaChat";
 import { type OilBlock, oilBlocks } from "@/data/angolaBlocks";
@@ -36,6 +37,7 @@ const allPanels = [
   "Exploração",
   "Instalações",
   "Contratos",
+  "Homologações",
   "Económico",
   "Cenários",
   "Previsão Geral",
@@ -273,6 +275,7 @@ const Index = () => {
             {panels[activePanel] === "Exploração" && <ExplorationPanel />}
             {panels[activePanel] === "Instalações" && <FacilitiesIntegrityPanel />}
             {panels[activePanel] === "Contratos" && <ContractCompliancePanel />}
+            {panels[activePanel] === "Homologações" && <HomologacoesPanel />}
             {panels[activePanel] === "Económico" && <EconomicFinancialPanel />}
             {panels[activePanel] === "Cenários" && <StrategicForecast />}
             {panels[activePanel] === "Previsão Geral" && <GeneralForecastPanel />}

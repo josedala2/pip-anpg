@@ -23,6 +23,7 @@ import { EconomicVisionTab } from "@/components/dashboard/EconomicVisionTab";
 import { InstitutionalFooter } from "@/components/InstitutionalFooter";
 import { HSEEnvironmentTab } from "@/components/dashboard/HSEEnvironmentTab";
 import { FacilitiesTab } from "@/components/dashboard/FacilitiesTab";
+import { HomologacoesPanel } from "@/components/dashboard/HomologacoesPanel";
 import type { LegislationDocument, ContractInfo } from "@/data/angolaBlocks";
 import {
   PieChart, Pie, Cell, AreaChart, Area, BarChart, Bar, LineChart, Line,
@@ -380,6 +381,7 @@ const BlockPage = () => {
                 <TabsTrigger value="hse" className="gap-1.5 text-xs 2xl:text-sm"><Leaf className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />HSE & Ambiente</TabsTrigger>
                 <TabsTrigger value="swot" className="gap-1.5 text-xs 2xl:text-sm"><Brain className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Análise SWOT</TabsTrigger>
                 <TabsTrigger value="legislation" className="gap-1.5 text-xs 2xl:text-sm"><BookOpen className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Documentos & Legislação</TabsTrigger>
+                <TabsTrigger value="homologacoes" className="gap-1.5 text-xs 2xl:text-sm"><FileText className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Homologações</TabsTrigger>
             </TabsList>
 
           {/* Tab 1: Visão Geral */}
@@ -1465,6 +1467,11 @@ const BlockPage = () => {
           {/* Tab 7: Documentos & Legislação */}
           <TabsContent value="legislation" className="space-y-4 2xl:space-y-6">
             <LegislationSearch docs={block.legislationDocs || []} contractInfo={block.contractInfo} />
+          </TabsContent>
+
+          {/* Tab: Homologações */}
+          <TabsContent value="homologacoes" className="space-y-4 2xl:space-y-6">
+            <HomologacoesPanel filterBloco={block.name} />
           </TabsContent>
 
           {/* Tab 8: Financeiro & Contratual */}
