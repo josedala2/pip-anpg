@@ -1,50 +1,83 @@
-## Roteiro de Evolução — Plataforma Nacional de Inteligência Petrolífera
 
-### Estado actual vs Visão
 
-| Capacidade | Estado |
-|---|---|
-| Mapa de concessões | ✅ Existe |
-| KPIs nacionais (prod, reservas, receita estado, variações) | ✅ Completo |
-| Painel de Blocos & Concessões | ✅ Existe |
-| Painel de Produção | ✅ Existe |
-| Painel de Exploração | ✅ Existe |
-| Painel de Operadores | ✅ Existe |
-| Risk & Performance | ✅ Existe |
-| Strategic Forecast | ✅ Existe |
-| Detalhe do bloco (12 abas) | ✅ Existe |
-| Visão Económica (Bloco 0) | ✅ Existe |
-| Comparativo de blocos | ✅ Existe |
-| Relatórios configuráveis | ✅ Existe |
-| Auth + roles | ✅ Existe |
-| **Branding "Inteligência Petrolífera"** | ✅ **Fase 1 concluída** |
-| **KPIs executivos completos** | ✅ **Fase 1 concluída** |
-| **Dashboard Contratual/Negocial** | ✅ **Fase 2 concluída** |
-| Dashboard Integridade Instalações | ✅ **Fase 3 concluída** |
-| Motor de Scoring Estratégico | ✅ **Fase 4 concluída** |
-| Dashboard Recomendação Conselho | ✅ **Fase 4 concluída** |
-| Sistema de Alertas Centrais | ✅ **Fase 5 concluída** |
+## Integração da Base de Dados de Homologações na Plataforma ANPG
 
-### Fases concluídas
+### Análise dos Dados
 
-**Fase 1** — Rebranding + KPIs Executivos
-- Header: "Inteligência Petrolífera" + "Sistema Integrado de Monitorização, Análise e Apoio à Decisão"
-- KPIs primários: Produção Total, Reservas, Blocos Activos, CAPEX, Taxa de Execução
-- KPIs secundários: Em Produção, Em Exploração, Sem Produção, Risco Crítico, Receita Estado
-- Variações m/m e a/a na produção
-- Título HTML e meta tags actualizados
+A base de dados contém **~1.200 registos** de homologações (2024–2025) com as seguintes colunas:
 
-**Fase 2** — Dashboard Contratual e Negocial
-- Painel "Contratos & Compliance" adicionado à navegação
-- KPIs: contratos a expirar em 12/24/36 meses, compliance < 80%, blocos com dados contratuais
-- 4 sub-abas: Calendário Contratual, Semáforo por Operador, Matriz de Urgência, Lista Completa
-- Gráfico de barras de expiração por ano com cores por urgência
-- Scatter plot meses restantes vs compliance (tamanho = produção)
-- Semáforo verde/amarelo/vermelho por operador (compliance + execução)
-- Lista ordenada por urgência com badges de estado
+| Campo | Descrição | Relevância |
+|-------|-----------|------------|
+| MÊS / BLOCO | Período e bloco petrolífero | Agrupamento primário |
+| FORNECEDOR | Nome do prestador de serviços | Top fornecedores |
+| SERVIÇOS | Descrição do serviço contratado | Categorização |
+| TIPO_PROCESSO | Tipo de apreciação (DHC, Concursos, etc.) | Análise processual |
+| MONTANTE SOLICITADO / APROVADO (USD) | Valores financeiros | KPIs principais |
+| EXPLORAÇÃO / DESENVOLVIMENTO / OPERAÇÃO / A&S | Repartição por categoria de custo | Decomposição orçamental |
+| ACTIVIDADE | Fase operacional | Filtro |
+| MODALIDADE DE CONTRATAÇÃO | Concurso Público, Adjudicação Directa, etc. | Transparência |
+| REGIME DE SERVIÇO | Preferência, Exclusividade, Concorrência | Conteúdo local |
+| TIPO DE ENTIDADE | SCDA, SCA, SE | Classificação entidade |
+| OWNER | CA, ADM | Nível decisório |
+| DECISÃO | Aprovado / Não Aprovado | Controlo |
 
-### Próximas fases
+**Totais globais:** ~$9.89 mil milhões solicitados, ~$9.76 mil milhões aprovados (taxa de aprovação ~98.6%).
 
-**Fase 3** — Dashboard de Integridade de Instalações
-**Fase 4** — Motor de Scoring Estratégico + Dashboard de Recomendação ao Conselho
-**Fase 5** — Sistema de Alertas Centrais
+### Proposta de Implementação
+
+#### 1. Nova página `/homologacoes` — Painel de Homologações
+
+Criar uma página dedicada com 4 visões em tabs, orientada para o Conselho de Administração:
+
+**Tab 1 — Dashboard Executivo (visão rápida)**
+- 6 KPI cards no topo: Total Aprovado, Nº Processos, Taxa Aprovação, Top Bloco, Top Fornecedor, Split CA vs ADM
+- Gráfico de barras: Montante aprovado por Bloco (top 10)
+- Gráfico donut: Repartição por categoria (Exploração / Desenvolvimento / Operação / A&S)
+- Gráfico de barras horizontal: Top 10 Fornecedores por montante
+- Mini-gráfico: Evolução mensal dos montantes aprovados
+
+**Tab 2 — Análise por Bloco**
+- Tabela resumo com todos os blocos: nº processos, total solicitado, total aprovado, taxa aprovação
+- Ao clicar num bloco, expande detalhes dos processos desse bloco
+- Filtros por mês, modalidade de contratação, tipo de processo
+
+**Tab 3 — Análise de Fornecedores & Contratação**
+- Top fornecedores com montantes e nº de contratos
+- Repartição por modalidade (Concurso Público vs Adjudicação Directa vs Renovação)
+- Repartição por regime de serviço (Preferência vs Exclusividade vs Concorrência)
+- Repartição por tipo de entidade (SCDA vs SCA vs SE)
+
+**Tab 4 — Tabela Detalhada**
+- Tabela completa pesquisável e filtrável com todos os registos
+- Filtros: Bloco, Mês, Fornecedor, Tipo Processo, Modalidade, Owner, Decisão
+- Exportação CSV/Excel
+
+#### 2. Ficheiro de dados estático
+
+- Copiar o ficheiro para `public/data/homologacoes-2025.xlsb` (ou converter para JSON)
+- Criar `src/data/homologacoesData.ts` com o dataset parseado e tipado
+- Definir interface `Homologacao` com todos os campos relevantes
+
+#### 3. Integração na navegação
+
+- Adicionar "Homologações" ao painel lateral do Index (na lista `allPanels`)
+- Adicionar link na navegação principal
+- Também acessível como tab dentro de cada BlockPage (filtrado para esse bloco)
+
+#### 4. Detalhes técnicos
+
+- Parsear os dados do XLSB em build-time para um JSON/TS estático (~1200 registos, viável em memória)
+- Componentes: `HomologacoesPanel.tsx` (dashboard principal), reutilizando Card, Table, Badge, Tabs existentes
+- Gráficos com Recharts (já instalado)
+- Filtros interactivos com Select/Input existentes
+
+### Ficheiros a criar/editar
+
+| Ficheiro | Acção |
+|----------|-------|
+| `src/data/homologacoesData.ts` | Novo — dataset completo tipado |
+| `src/components/dashboard/HomologacoesPanel.tsx` | Novo — painel principal com 4 tabs |
+| `src/pages/Index.tsx` | Editar — adicionar "Homologações" à lista de painéis |
+| `src/pages/BlockPage.tsx` | Editar — adicionar tab "Homologações" filtrada por bloco |
+| `src/App.tsx` | Sem alteração (painel integrado no Index) |
+
