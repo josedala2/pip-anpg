@@ -791,17 +791,30 @@ export const HomologacoesPanel = ({ filterBloco }: Props) => {
                     <TableHeader>
                       <TableRow>
                         <TableHead className="text-[10px] w-8">#</TableHead>
-                        <TableHead className="text-[10px]">Bloco</TableHead>
-                        <TableHead className="text-[10px] text-right">Processos</TableHead>
-                        <TableHead className="text-[10px] text-right">Ang.</TableHead>
-                        <TableHead className="text-[10px] text-right">% CL (Proc.)</TableHead>
-                        <TableHead className="text-[10px] text-right">% CL (Valor)</TableHead>
-                        <TableHead className="text-[10px] text-right">Valor Total</TableHead>
+                        {[
+                          { key: "bloco", label: "Bloco", align: "" },
+                          { key: "processos", label: "Processos", align: "text-right" },
+                          { key: "angProcessos", label: "Ang.", align: "text-right" },
+                          { key: "pctAngProcessos", label: "% CL (Proc.)", align: "text-right" },
+                          { key: "pctAngValor", label: "% CL (Valor)", align: "text-right" },
+                          { key: "totalValor", label: "Valor Total", align: "text-right" },
+                        ].map(col => (
+                          <TableHead
+                            key={col.key}
+                            className={`text-[10px] cursor-pointer select-none hover:text-foreground transition-colors ${col.align}`}
+                            onClick={() => makeHandleSort(rankSortKey, setRankSortKey, rankSortDir, setRankSortDir, ["bloco"])(col.key)}
+                          >
+                            <span className="inline-flex items-center gap-0.5">
+                              {col.label}
+                              <SortIcon active={rankSortKey === col.key} dir={rankSortDir} />
+                            </span>
+                          </TableHead>
+                        ))}
                         <TableHead className="text-[10px]">Nível</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {localContent.blocoRanking.map((b, i) => {
+                      {sortArray(localContent.blocoRanking, rankSortKey, rankSortDir).map((b, i) => {
                         const isCritical = b.pctAngValor < clThreshold * 0.5;
                         const isWarning = b.pctAngValor < clThreshold;
                         return (
