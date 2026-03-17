@@ -647,18 +647,18 @@ function OperatorDetailView({ operator, onBack }: { operator: OperatorSummary; o
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Bloco</TableHead>
-                      <TableHead className="text-right">Opex/Barril</TableHead>
-                      <TableHead className="text-right">Invest. Acum.</TableHead>
-                      <TableHead className="text-right">Invest. Plan.</TableHead>
-                      <TableHead className="text-right">Taxa Execução</TableHead>
+                      <SortableHead label="Bloco" colKey="name" sortKey={econSort.sortKey} sortDir={econSort.sortDir} onSort={econSort.handleSort} />
+                      <SortableHead label="Opex/Barril" colKey="opexPerBarrel" sortKey={econSort.sortKey} sortDir={econSort.sortDir} onSort={econSort.handleSort} align="text-right" />
+                      <SortableHead label="Invest. Acum." colKey="accumulatedInvestment" sortKey={econSort.sortKey} sortDir={econSort.sortDir} onSort={econSort.handleSort} align="text-right" />
+                      <SortableHead label="Invest. Plan." colKey="plannedInvestment" sortKey={econSort.sortKey} sortDir={econSort.sortDir} onSort={econSort.handleSort} align="text-right" />
+                      <SortableHead label="Taxa Execução" colKey="executionRate" sortKey={econSort.sortKey} sortDir={econSort.sortDir} onSort={econSort.handleSort} align="text-right" />
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {blocks.map(b => (
+                    {econSort.sorted.map(b => (
                       <TableRow key={b.id}>
                         <TableCell className="font-medium text-xs">{b.name}</TableCell>
-                        <TableCell className="text-right font-mono text-xs">{b.economicData?.opexPerBarrel ? `$${b.economicData.opexPerBarrel}` : "—"}</TableCell>
+                        <TableCell className="text-right font-mono text-xs">{b.opexPerBarrel ? `$${b.opexPerBarrel}` : "—"}</TableCell>
                         <TableCell className="text-right font-mono text-xs">${b.accumulatedInvestment.toLocaleString()}MM</TableCell>
                         <TableCell className="text-right font-mono text-xs">${b.plannedInvestment.toLocaleString()}MM</TableCell>
                         <TableCell className="text-right font-mono text-xs">{b.executionRate}%</TableCell>
