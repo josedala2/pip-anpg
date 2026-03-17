@@ -571,20 +571,17 @@ export const HomologacoesPanel = ({ filterBloco }: Props) => {
             </ChartWrapper>
 
             {/* Monthly evolution */}
-            <Card className="glass-card">
-              <CardHeader className="p-4 pb-2"><CardTitle className="text-sm">Evolução Mensal</CardTitle></CardHeader>
-              <CardContent className="p-4 pt-0">
-                <ResponsiveContainer width="100%" height={300}>
-                  <LineChart data={monthly}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
-                    <XAxis dataKey="mes" tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} />
-                    <YAxis tickFormatter={v => fmt(v)} tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} />
-                    <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => fmtFull(v)} />
-                    <Line type="monotone" dataKey="valor" stroke="hsl(199, 89%, 48%)" strokeWidth={2} dot={{ r: 4 }} />
-                  </LineChart>
-                </ResponsiveContainer>
-              </CardContent>
-            </Card>
+            <ChartWrapper title="Evolução Mensal" height={300}>
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={monthly}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
+                  <XAxis dataKey="mes" tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} />
+                  <YAxis tickFormatter={v => fmt(v)} tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} />
+                  <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => fmtFull(v)} />
+                  <Line type="monotone" dataKey="valor" stroke="hsl(199, 89%, 48%)" strokeWidth={2} dot={{ r: 4 }} />
+                </LineChart>
+              </ResponsiveContainer>
+            </ChartWrapper>
           </div>
 
           {/* Charts row 3: Year-over-Year */}
