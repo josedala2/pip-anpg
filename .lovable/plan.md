@@ -1,50 +1,35 @@
-## Roteiro de Evolução — Plataforma Nacional de Inteligência Petrolífera
 
-### Estado actual vs Visão
 
-| Capacidade | Estado |
-|---|---|
-| Mapa de concessões | ✅ Existe |
-| KPIs nacionais (prod, reservas, receita estado, variações) | ✅ Completo |
-| Painel de Blocos & Concessões | ✅ Existe |
-| Painel de Produção | ✅ Existe |
-| Painel de Exploração | ✅ Existe |
-| Painel de Operadores | ✅ Existe |
-| Risk & Performance | ✅ Existe |
-| Strategic Forecast | ✅ Existe |
-| Detalhe do bloco (12 abas) | ✅ Existe |
-| Visão Económica (Bloco 0) | ✅ Existe |
-| Comparativo de blocos | ✅ Existe |
-| Relatórios configuráveis | ✅ Existe |
-| Auth + roles | ✅ Existe |
-| **Branding "Inteligência Petrolífera"** | ✅ **Fase 1 concluída** |
-| **KPIs executivos completos** | ✅ **Fase 1 concluída** |
-| **Dashboard Contratual/Negocial** | ✅ **Fase 2 concluída** |
-| Dashboard Integridade Instalações | ✅ **Fase 3 concluída** |
-| Motor de Scoring Estratégico | ✅ **Fase 4 concluída** |
-| Dashboard Recomendação Conselho | ✅ **Fase 4 concluída** |
-| Sistema de Alertas Centrais | ✅ **Fase 5 concluída** |
+## Visita Virtual às Instalações (Matterport)
 
-### Fases concluídas
+### Resumo
 
-**Fase 1** — Rebranding + KPIs Executivos
-- Header: "Inteligência Petrolífera" + "Sistema Integrado de Monitorização, Análise e Apoio à Decisão"
-- KPIs primários: Produção Total, Reservas, Blocos Activos, CAPEX, Taxa de Execução
-- KPIs secundários: Em Produção, Em Exploração, Sem Produção, Risco Crítico, Receita Estado
-- Variações m/m e a/a na produção
-- Título HTML e meta tags actualizados
+Adicionar a cada instalação a possibilidade de incorporar um tour virtual Matterport via iframe. Na ficha de detalhe de cada plataforma/FPSO aparecerá um botão "Visita Virtual 360°" que abre um painel com o iframe do Matterport embebido. Cada `PlatformSpec` receberá um campo opcional `matterportUrl`.
 
-**Fase 2** — Dashboard Contratual e Negocial
-- Painel "Contratos & Compliance" adicionado à navegação
-- KPIs: contratos a expirar em 12/24/36 meses, compliance < 80%, blocos com dados contratuais
-- 4 sub-abas: Calendário Contratual, Semáforo por Operador, Matriz de Urgência, Lista Completa
-- Gráfico de barras de expiração por ano com cores por urgência
-- Scatter plot meses restantes vs compliance (tamanho = produção)
-- Semáforo verde/amarelo/vermelho por operador (compliance + execução)
-- Lista ordenada por urgência com badges de estado
+### Alterações
 
-### Próximas fases
+**1. Modelo de dados — `src/data/angolaBlocks.ts`**
+- Adicionar campo `matterportUrl?: string` à interface `PlatformSpec`
+- Adicionar URLs de exemplo (demo Matterport públicos) a algumas plataformas do Bloco 0 para demonstração (ex: `https://my.matterport.com/show/?m=SxQL3iGyvJk`)
 
-**Fase 3** — Dashboard de Integridade de Instalações
-**Fase 4** — Motor de Scoring Estratégico + Dashboard de Recomendação ao Conselho
-**Fase 5** — Sistema de Alertas Centrais
+**2. Componente de Tour Virtual — `src/components/dashboard/VirtualTourViewer.tsx`** (novo)
+- Componente que recebe `matterportUrl` e `facilityName`
+- Renderiza um iframe responsivo (aspect-ratio 16:9) apontando ao URL Matterport
+- Inclui botão de ecrã inteiro (fullscreen toggle)
+- Estado de loading com skeleton enquanto o iframe carrega
+- Fallback visual quando não há URL configurado
+
+**3. Ficha de detalhe — `src/components/dashboard/FacilityDetailCard.tsx`**
+- Importar `VirtualTourViewer`
+- Adicionar secção "Visita Virtual 360°" entre a galeria de fotos e os documentos
+- Só aparece se `spec.matterportUrl` existir
+- Card com ícone de câmara 360° e o viewer embebido
+
+**4. Lista de instalações — `src/components/dashboard/FacilitiesTab.tsx`**
+- Adicionar badge "360°" nos cards de instalações que têm `matterportUrl`, para indicar visualmente que têm tour disponível
+
+### Notas técnicas
+- O Matterport funciona inteiramente via iframe — não precisa de SDK nem API key
+- Os URLs de demo são públicos e servem para demonstrar a funcionalidade
+- Quando houver URLs reais das instalações, basta substituir no campo `matterportUrl`
+
