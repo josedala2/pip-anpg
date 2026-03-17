@@ -1,9 +1,11 @@
 import { useMemo, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { oilBlocks, type OilBlock, type PlatformSpec } from "@/data/angolaBlocks";
 import { AnimatedCounter } from "./AnimatedCounter";
-import { AlertTriangle, Anchor, ArrowDown, Calendar, Factory, Gauge, HardHat, Shield, Timer, Wrench } from "lucide-react";
+import { FacilityDetailCard } from "./FacilityDetailCard";
+import { AlertTriangle, Anchor, ArrowDown, ArrowLeft, Calendar, Factory, Gauge, Globe, HardHat, Shield, Timer, Waves, Wrench } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScatterChart, Scatter, XAxis, YAxis, ZAxis, Tooltip, ResponsiveContainer, Cell, CartesianGrid, BarChart, Bar, Legend } from "recharts";
