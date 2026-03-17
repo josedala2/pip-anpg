@@ -52,9 +52,19 @@ export const HomologacoesPanel = ({ filterBloco }: Props) => {
   const [searchText, setSearchText] = useState("");
   const [expandedBloco, setExpandedBloco] = useState<string | null>(null);
 
+  // Map block names from angolaBlocks format ("Block 0 (Área A, B)") to homologações format ("Bloco 0")
+  const matchBloco = (blocoData: string, filterName: string): boolean => {
+    // Extract block identifier: "Block 0 (Área A, B)" → "0", "Bloco 0" → "0"
+    const extractId = (name: string) => {
+      const m = name.match(/Bloc[ko]\s+(.+?)(?:\s*\(|$)/i);
+      return m ? m[1].trim() : name;
+    };
+    return extractId(blocoData) === extractId(filterName);
+  };
+
   const data = useMemo(() => {
     let d = filterBloco
-      ? homologacoesData.filter(h => h.bloco === filterBloco)
+      ? homologacoesData.filter(h => matchBloco(h.bloco, filterBloco))
       : homologacoesData;
     if (yearFilter !== "all") d = d.filter(h => h.ano === Number(yearFilter));
     if (mesFilter !== "all") d = d.filter(h => h.mes === mesFilter);
@@ -122,7 +132,7 @@ export const HomologacoesPanel = ({ filterBloco }: Props) => {
   // Year-over-year comparison by month
   const yearComparison = useMemo(() => {
     const mesOrder = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
-    const allData = filterBloco ? homologacoesData.filter(h => h.bloco === filterBloco) : homologacoesData;
+    const allData = filterBloco ? homologacoesData.filter(h => matchBloco(h.bloco, filterBloco)) : homologacoesData;
     const map2024 = new Map<string, { valor: number; count: number }>();
     const map2025 = new Map<string, { valor: number; count: number }>();
     allData.forEach(h => {
@@ -143,7 +153,7 @@ export const HomologacoesPanel = ({ filterBloco }: Props) => {
 
   // YoY totals
   const yoyTotals = useMemo(() => {
-    const allData = filterBloco ? homologacoesData.filter(h => h.bloco === filterBloco) : homologacoesData;
+    const allData = filterBloco ? homologacoesData.filter(h => matchBloco(h.bloco, filterBloco)) : homologacoesData;
     const t24 = allData.filter(h => h.ano === 2024).reduce((s, h) => s + h.montanteAprovado, 0);
     const t25 = allData.filter(h => h.ano === 2025).reduce((s, h) => s + h.montanteAprovado, 0);
     const n24 = allData.filter(h => h.ano === 2024).length;
