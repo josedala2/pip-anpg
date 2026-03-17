@@ -100,16 +100,23 @@ serve(async (req) => {
   }
 
   try {
-    const { messages, context } = await req.json();
+    const { messages, context, userName, userRole } = await req.json();
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
+    // Build personalisation block
+    let personalisation = "";
+    if (userName) {
+      const primeiroNome = userName.split(" ")[0];
+      personalisation = `\n\n---\n\n## PERSONALIZAÇÃO\n\n- O utilizador chama-se **${userName}** e ocupa o cargo de **${userRole || "Analista"}**.\n- Trate-o(a) como **colega sénior**, usando o primeiro nome «${primeiroNome}» de forma natural e respeitosa (ex: «Caro ${primeiroNome},», «Colega ${primeiroNome},»).\n- Nunca use tratamento formal excessivo ("Exmo.", "V. Exa."). Prefira um tom colegial e profissional.\n- Adapte a profundidade da resposta ao cargo: decisores (Conselho de Adm., Administrador) preferem **sínteses executivas**; técnicos (DPRO, DEX, DNEG, DEC) preferem **detalhe operacional**.`;
+    }
+
     const systemMessage = context
-      ? `${SYSTEM_PROMPT}\n\n---\n\n## DADOS DA PLATAFORMA (base de dados actualizada)\n\n${context}`
-      : SYSTEM_PROMPT;
+      ? `${SYSTEM_PROMPT}${personalisation}\n\n---\n\n## DADOS DA PLATAFORMA (base de dados actualizada)\n\n${context}`
+      : `${SYSTEM_PROMPT}${personalisation}`;
 
     const response = await fetch(
       "https://ai.gateway.lovable.dev/v1/chat/completions",
