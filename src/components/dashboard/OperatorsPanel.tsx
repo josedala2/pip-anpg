@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import { oilBlocks, type OilBlock } from "@/data/angolaBlocks";
 import { ConcessionMap } from "./ConcessionMap";
 import { BlockDetail } from "./BlockDetail";
