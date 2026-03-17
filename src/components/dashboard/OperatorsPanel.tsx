@@ -18,6 +18,8 @@ import {
   Search, ArrowLeft, Building2, Layers, BarChart3, Droplets, FileText, ShieldCheck, Factory, TrendingUp, MapPin,
   ChevronUp, ChevronDown, Minus,
 } from "lucide-react";
+import { SortableHead } from "@/components/ui/sortable-head";
+import { useTableSort } from "@/hooks/useTableSort";
 
 interface OperatorSummary {
   name: string;
