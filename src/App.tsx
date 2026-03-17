@@ -13,6 +13,7 @@ import ReportsPage from "./pages/ReportsPage";
 import AdminUsersPage from "./pages/AdminUsersPage";
 import AdminDataPage from "./pages/AdminDataPage";
 import OperatorPage from "./pages/OperatorPage";
+import FacilityPage from "./pages/FacilityPage";
 import LoginPage from "./pages/LoginPage";
 import NotFound from "./pages/NotFound";
 
@@ -31,6 +32,7 @@ const App = () => (
               <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
               <Route path="/block/:blockId" element={<ProtectedRoute><BlockPage /></ProtectedRoute>} />
               <Route path="/operator/:operatorName" element={<ProtectedRoute><OperatorPage /></ProtectedRoute>} />
+              <Route path="/facility/:blockId/:platformName" element={<ProtectedRoute><FacilityPage /></ProtectedRoute>} />
               <Route path="/compare" element={<ComparePage />} />
               <Route path="/reports" element={<ProtectedRoute><ReportsPage /></ProtectedRoute>} />
               <Route path="/admin/users" element={<ProtectedRoute><AdminUsersPage /></ProtectedRoute>} />

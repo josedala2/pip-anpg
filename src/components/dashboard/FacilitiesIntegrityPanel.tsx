@@ -74,7 +74,6 @@ const parseCapacity = (cap?: string): number => {
 export const FacilitiesIntegrityPanel = () => {
   const navigate = useNavigate();
   const [selectedTab, setSelectedTab] = useState("installations");
-  const [selectedFacility, setSelectedFacility] = useState<{ blockId: string; platformName: string } | null>(null);
   const [filterType, setFilterType] = useState<string>("all");
   const [filterStatus, setFilterStatus] = useState<string>("all");
   const [filterBlock, setFilterBlock] = useState<string>("all");
@@ -191,25 +190,7 @@ export const FacilitiesIntegrityPanel = () => {
         ))}
       </div>
 
-      {/* Detail view when facility selected */}
-      {selectedFacility && (() => {
-        const block = oilBlocks.find(b => b.id === selectedFacility.blockId);
-        const spec = block?.facilityData?.platformSpecs?.find(p => p.name === selectedFacility.platformName);
-        if (!block || !spec) return null;
-        const facilityPhotos = block.facilityData?.photos || [];
-        const facilityDocs = block.facilityData?.documents || [];
-        const facilityMaintenance = block.facilityData?.maintenancePlan || [];
-        return (
-          <div className="space-y-4">
-            <Button variant="ghost" size="sm" className="gap-1.5" onClick={() => navigate(-1)}>
-              <ArrowLeft className="w-4 h-4" /> Voltar à lista
-            </Button>
-            <FacilityDetailCard spec={spec} photos={facilityPhotos} documents={facilityDocs} maintenanceItems={facilityMaintenance} />
-          </div>
-        );
-      })()}
-
-      {!selectedFacility && (
+      {/* Main content — always show list/tabs (detail is now a separate page) */}
       <Tabs value={selectedTab} onValueChange={setSelectedTab}>
         <TabsList className="bg-muted/50 flex-wrap">
           <TabsTrigger value="installations">Lista de Instalações</TabsTrigger>
@@ -327,10 +308,7 @@ export const FacilitiesIntegrityPanel = () => {
                         <div
                           key={p.name}
                           className="rounded-xl border border-border/50 bg-card overflow-hidden cursor-pointer hover:border-primary/50 hover:shadow-md transition-all group"
-                          onClick={() => {
-                            window.history.pushState(null, "", window.location.pathname + `?facility=${encodeURIComponent(p.name)}&block=${block.id}`);
-                            setSelectedFacility({ blockId: block.id, platformName: p.name });
-                          }}
+                          onClick={() => navigate(`/facility/${block.id}/${encodeURIComponent(p.name)}`)}
                         >
                           {p.photo ? (
                             <div className="relative aspect-[16/9] overflow-hidden">
@@ -617,7 +595,6 @@ export const FacilitiesIntegrityPanel = () => {
           </Card>
         </TabsContent>
       </Tabs>
-      )}
     </div>
   );
 };
