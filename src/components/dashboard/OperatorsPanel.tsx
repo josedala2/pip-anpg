@@ -422,18 +422,18 @@ function OperatorDetailView({ operator, onBack }: { operator: OperatorSummary; o
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Bloco</TableHead>
-                    <TableHead>Fase</TableHead>
-                    <TableHead>Bacia</TableHead>
-                    <TableHead>Águas</TableHead>
-                    <TableHead className="text-right">Produção (BOPD)</TableHead>
-                    <TableHead className="text-right">Reservas (MMbbl)</TableHead>
-                    <TableHead className="text-right">Compliance</TableHead>
-                    <TableHead>Contrato</TableHead>
+                    <SortableHead label="Bloco" colKey="name" sortKey={blocksSort.sortKey} sortDir={blocksSort.sortDir} onSort={blocksSort.handleSort} />
+                    <SortableHead label="Fase" colKey="phase" sortKey={blocksSort.sortKey} sortDir={blocksSort.sortDir} onSort={blocksSort.handleSort} />
+                    <SortableHead label="Bacia" colKey="basin" sortKey={blocksSort.sortKey} sortDir={blocksSort.sortDir} onSort={blocksSort.handleSort} />
+                    <SortableHead label="Águas" colKey="waterDepth" sortKey={blocksSort.sortKey} sortDir={blocksSort.sortDir} onSort={blocksSort.handleSort} />
+                    <SortableHead label="Produção (BOPD)" colKey="dailyProduction" sortKey={blocksSort.sortKey} sortDir={blocksSort.sortDir} onSort={blocksSort.handleSort} align="text-right" />
+                    <SortableHead label="Reservas (MMbbl)" colKey="estimatedReserves" sortKey={blocksSort.sortKey} sortDir={blocksSort.sortDir} onSort={blocksSort.handleSort} align="text-right" />
+                    <SortableHead label="Compliance" colKey="complianceScore" sortKey={blocksSort.sortKey} sortDir={blocksSort.sortDir} onSort={blocksSort.handleSort} align="text-right" />
+                    <SortableHead label="Contrato" colKey="contractDate" sortKey={blocksSort.sortKey} sortDir={blocksSort.sortDir} onSort={blocksSort.handleSort} />
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {blocks.map(b => (
+                  {blocksSort.sorted.map(b => (
                     <TableRow key={b.id}>
                       <TableCell className="font-medium">{b.name}</TableCell>
                       <TableCell><Badge variant="outline" className="text-[10px]">{b.phase}</Badge></TableCell>
@@ -442,7 +442,7 @@ function OperatorDetailView({ operator, onBack }: { operator: OperatorSummary; o
                       <TableCell className="text-right font-mono text-xs">{b.dailyProduction.toLocaleString()}</TableCell>
                       <TableCell className="text-right font-mono text-xs">{b.estimatedReserves.toLocaleString()}</TableCell>
                       <TableCell className="text-right">
-                        <span className={`font-mono text-xs ${b.complianceScore >= 90 ? "text-green-500" : b.complianceScore >= 75 ? "text-yellow-500" : "text-red-500"}`}>
+                        <span className={`font-mono text-xs ${b.complianceScore >= 90 ? "text-success" : b.complianceScore >= 75 ? "text-warning" : "text-danger"}`}>
                           {b.complianceScore}%
                         </span>
                       </TableCell>
