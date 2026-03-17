@@ -282,6 +282,83 @@ export const HomologacoesPanel = ({ filterBloco }: Props) => {
     return { meses, blocos, maxVal };
   }, [data]);
 
+  // Local content trend by month
+  const localContentTrend = useMemo(() => {
+    const mesOrder = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+    const mesLabels: Record<string, string> = {
+      Janeiro: "Jan", Fevereiro: "Fev", Março: "Mar", Abril: "Abr",
+      Maio: "Mai", Junho: "Jun", Julho: "Jul", Agosto: "Ago",
+      Setembro: "Set", Outubro: "Out", Novembro: "Nov", Dezembro: "Dez",
+    };
+
+    const intlKeywords = [
+      "baker hughes", "schlumberger", "halliburton", "weatherford", "onesubsea",
+      "technipfmc", "saipem", "subsea 7", "aker solutions", "sbm offshore",
+      "maersk", "fugro", "kongsberg", "emerson", "cameron", "cecon",
+      "liebherr", "jeumont", "man energy", "mtu maintenance", "nuovo pignone",
+      "pgs", "framo", "advanced mechatronics", "h. butting", "clariant",
+      "3t oil", "geofizyka", "dof", "bourbon", "seabulk", "tidewater",
+      "shelf drilling", "valaris", "ensco", "diamond offshore", "noble",
+      "champion x", "cladtek", "cetco", "intech", "bently nevada",
+      "mrc global", "dnow", "nov uk", "oil spill response", "international sos",
+      "mckinsey", "graham manufacturing", "airpack", "measurement solutions",
+      "euronav", "grupo antonini", "telford", "dhl global", "excellence logging",
+    ];
+    const angolaKeywords = [
+      "angola", "lda", "limitada", " s.a", "cabinda", "luanda", "sonamer",
+      "sonamet", "sonangol", "kwanda", "sonepral", "enagol", "angolan",
+      "asco", "aes", "bestfly", "friburge", "equador", "global catering",
+      "newrest", "atlantic services", "atlantic facilities", "atlantic logistic",
+      "magnitika", "luajardim", "nilmiguel", "novagest", "nossa seguros",
+      "global seguros", "fidelidade", "fortaleza seguros", "ensa",
+      "nasa comercial", "ncr angola", "nf clean", "clear angola",
+      "internet technologies", "isistel", "ms telcom", "cosal",
+      "organizações mgp", "petrowork", "certex", "basetek", "imovias",
+      "emcica", "capgest", "kaeso", "kloten", "greenford",
+    ];
+
+    const classify = (name: string): "angolano" | "internacional" | "consórcio" => {
+      const lower = name.toLowerCase();
+      const hasIntl = intlKeywords.some(k => lower.includes(k));
+      const hasAngola = angolaKeywords.some(k => lower.includes(k));
+      if (lower.startsWith("consórcio") || lower.includes("/")) return "consórcio";
+      if (hasAngola && !hasIntl) return "angolano";
+      if (hasIntl && !hasAngola) return "internacional";
+      if (hasAngola) return "consórcio";
+      return "internacional";
+    };
+
+    const map = new Map<string, { ang: number; intl: number; cons: number; total: number; angVal: number; totalVal: number }>();
+    data.forEach(h => {
+      const key = `${h.ano}-${h.mes}`;
+      if (!map.has(key)) map.set(key, { ang: 0, intl: 0, cons: 0, total: 0, angVal: 0, totalVal: 0 });
+      const entry = map.get(key)!;
+      const cls = classify(h.fornecedor || "N/D");
+      entry.total++;
+      entry.totalVal += h.montanteAprovado;
+      if (cls === "angolano") { entry.ang++; entry.angVal += h.montanteAprovado; }
+      else if (cls === "internacional") entry.intl++;
+      else entry.cons++;
+    });
+
+    // Sort by year then month order
+    const sorted = [...map.entries()]
+      .map(([key, vals]) => {
+        const [ano, mes] = key.split("-");
+        return { ano: Number(ano), mes, mesIdx: mesOrder.indexOf(mes), ...vals };
+      })
+      .sort((a, b) => a.ano - b.ano || a.mesIdx - b.mesIdx);
+
+    return sorted.map(s => ({
+      label: `${mesLabels[s.mes] || s.mes.slice(0, 3)} ${String(s.ano).slice(2)}`,
+      pctAngolano: s.total > 0 ? (s.ang / s.total) * 100 : 0,
+      pctInternacional: s.total > 0 ? (s.intl / s.total) * 100 : 0,
+      pctConsorcio: s.total > 0 ? (s.cons / s.total) * 100 : 0,
+      pctAngolanoValor: s.totalVal > 0 ? (s.angVal / s.totalVal) * 100 : 0,
+      processos: s.total,
+    }));
+  }, [data]);
+
   // By modalidade
   const byModalidade = useMemo(() => {
     const map = new Map<string, number>();
@@ -644,6 +721,106 @@ export const HomologacoesPanel = ({ filterBloco }: Props) => {
               </div>
             </CardContent>
           </Card>
+
+          {/* Tendência de Conteúdo Local */}
+          {localContentTrend.length > 1 && (
+            <Card className="glass-card">
+              <CardHeader className="p-4 pb-2">
+                <CardTitle className="text-sm flex items-center gap-2">
+                  <TrendingUp className="w-4 h-4 text-primary" />
+                  Tendência de Conteúdo Local ao Longo dos Meses
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-4 pt-0">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                  {/* Stacked area: % by process count */}
+                  <div>
+                    <p className="text-[11px] text-muted-foreground mb-2 font-medium">% por Nº de Processos</p>
+                    <ResponsiveContainer width="100%" height={260}>
+                      <BarChart data={localContentTrend} stackOffset="expand" barSize={16}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.4} />
+                        <XAxis dataKey="label" tick={{ fontSize: 9, fill: "hsl(var(--muted-foreground))" }} />
+                        <YAxis tickFormatter={(v: number) => `${(v * 100).toFixed(0)}%`} tick={{ fontSize: 9, fill: "hsl(var(--muted-foreground))" }} />
+                        <Tooltip
+                          contentStyle={tooltipStyle}
+                          formatter={(v: number, name: string) => [`${v.toFixed(1)}%`, name]}
+                          labelFormatter={(l: string) => `Mês: ${l}`}
+                        />
+                        <Legend wrapperStyle={{ fontSize: 10 }} />
+                        <Bar dataKey="pctAngolano" name="Angolano" stackId="a" fill="hsl(152, 69%, 40%)" radius={[0, 0, 0, 0]} />
+                        <Bar dataKey="pctConsorcio" name="Consórcio" stackId="a" fill="hsl(38, 92%, 50%)" />
+                        <Bar dataKey="pctInternacional" name="Internacional" stackId="a" fill="hsl(199, 89%, 48%)" radius={[2, 2, 0, 0]} />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+
+                  {/* Line chart: Angola % trend (value) */}
+                  <div>
+                    <p className="text-[11px] text-muted-foreground mb-2 font-medium">% Conteúdo Local por Valor Aprovado</p>
+                    <ResponsiveContainer width="100%" height={260}>
+                      <LineChart data={localContentTrend}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.4} />
+                        <XAxis dataKey="label" tick={{ fontSize: 9, fill: "hsl(var(--muted-foreground))" }} />
+                        <YAxis domain={[0, 100]} tickFormatter={(v: number) => `${v}%`} tick={{ fontSize: 9, fill: "hsl(var(--muted-foreground))" }} />
+                        <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => [`${v.toFixed(1)}%`, "Conteúdo Local"]} />
+                        <Line
+                          type="monotone"
+                          dataKey="pctAngolanoValor"
+                          name="% Conteúdo Local (Valor)"
+                          stroke="hsl(152, 69%, 40%)"
+                          strokeWidth={2.5}
+                          dot={{ r: 3, fill: "hsl(152, 69%, 40%)" }}
+                          activeDot={{ r: 5 }}
+                        />
+                        {/* Reference line at average */}
+                        {(() => {
+                          const avg = localContentTrend.reduce((s, d) => s + d.pctAngolanoValor, 0) / localContentTrend.length;
+                          return (
+                            <Line
+                              type="monotone"
+                              dataKey={() => avg}
+                              name={`Média: ${avg.toFixed(1)}%`}
+                              stroke="hsl(var(--muted-foreground))"
+                              strokeWidth={1}
+                              strokeDasharray="6 3"
+                              dot={false}
+                              activeDot={false}
+                            />
+                          );
+                        })()}
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+
+                {/* Trend summary */}
+                {localContentTrend.length >= 3 && (() => {
+                  const first3 = localContentTrend.slice(0, 3);
+                  const last3 = localContentTrend.slice(-3);
+                  const avgFirst = first3.reduce((s, d) => s + d.pctAngolanoValor, 0) / first3.length;
+                  const avgLast = last3.reduce((s, d) => s + d.pctAngolanoValor, 0) / last3.length;
+                  const diff = avgLast - avgFirst;
+                  const growing = diff > 1;
+                  const declining = diff < -1;
+                  return (
+                    <div className={`mt-3 p-3 rounded-lg border text-xs flex items-center gap-2 ${
+                      growing ? "border-success/30 bg-success/5 text-success" :
+                      declining ? "border-destructive/30 bg-destructive/5 text-destructive" :
+                      "border-border bg-muted/30 text-muted-foreground"
+                    }`}>
+                      <TrendingUp className={`w-4 h-4 ${declining ? "rotate-180" : ""}`} />
+                      {growing
+                        ? `Tendência positiva: a participação angolana cresceu ~${diff.toFixed(1)}pp (de ${avgFirst.toFixed(1)}% para ${avgLast.toFixed(1)}% em valor).`
+                        : declining
+                        ? `Tendência negativa: a participação angolana diminuiu ~${Math.abs(diff).toFixed(1)}pp (de ${avgFirst.toFixed(1)}% para ${avgLast.toFixed(1)}% em valor).`
+                        : `Participação angolana estável em torno de ${avgLast.toFixed(1)}% do valor aprovado.`
+                      }
+                    </div>
+                  );
+                })()}
+              </CardContent>
+            </Card>
+          )}
 
           {/* Heatmap: Concentração de Processos por Bloco × Mês */}
           {!filterBloco && heatmapData.blocos.length > 1 && (
