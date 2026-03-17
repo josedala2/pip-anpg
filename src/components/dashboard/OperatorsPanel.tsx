@@ -269,7 +269,7 @@ function OperatorListView({ operators, onSelect }: { operators: OperatorSummary[
 }
 
 // ── Detail View ────────────────────────────────────────────
-function OperatorDetailView({ operator, onBack }: { operator: OperatorSummary; onBack: () => void }) {
+export function OperatorDetailView({ operator, onBack }: { operator: OperatorSummary; onBack: () => void }) {
   const { blocks } = operator;
   const [selectedBlock, setSelectedBlock] = useState<OilBlock | null>(null);
   const [detailSearch, setDetailSearch] = useState("");
