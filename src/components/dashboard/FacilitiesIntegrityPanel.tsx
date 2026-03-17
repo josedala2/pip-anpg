@@ -309,10 +309,7 @@ export const FacilitiesIntegrityPanel = () => {
                         <div
                           key={p.name}
                           className="rounded-xl border border-border/50 bg-card overflow-hidden cursor-pointer hover:border-primary/50 hover:shadow-md transition-all group"
-                          onClick={() => {
-                            window.history.pushState(null, "", window.location.pathname + `?facility=${encodeURIComponent(p.name)}&block=${block.id}`);
-                            setSelectedFacility({ blockId: block.id, platformName: p.name });
-                          }}
+                          onClick={() => navigate(`/facility/${block.id}/${encodeURIComponent(p.name)}`)}
                         >
                           {p.photo ? (
                             <div className="relative aspect-[16/9] overflow-hidden">
