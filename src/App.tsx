@@ -12,6 +12,7 @@ import ComparePage from "./pages/ComparePage";
 import ReportsPage from "./pages/ReportsPage";
 import AdminUsersPage from "./pages/AdminUsersPage";
 import AdminDataPage from "./pages/AdminDataPage";
+import OperatorPage from "./pages/OperatorPage";
 import LoginPage from "./pages/LoginPage";
 import NotFound from "./pages/NotFound";
 
