@@ -752,7 +752,7 @@ export function SobaChat() {
                     }`}
                   >
                     {msg.role === "assistant" ? (
-                      <div className="prose prose-sm dark:prose-invert max-w-none [&_table]:text-xs [&_th]:px-2 [&_td]:px-2">
+                      <div className="prose prose-sm dark:prose-invert max-w-none [&_table]:w-full [&_table]:text-xs [&_table]:border-collapse [&_table]:border [&_table]:border-border/40 [&_table]:rounded-md [&_table]:overflow-hidden [&_th]:bg-muted/60 [&_th]:px-3 [&_th]:py-2 [&_th]:text-left [&_th]:font-semibold [&_th]:text-foreground [&_th]:border [&_th]:border-border/30 [&_td]:px-3 [&_td]:py-1.5 [&_td]:border [&_td]:border-border/20 [&_tr:nth-child(even)]:bg-muted/20 [&_tr:hover]:bg-muted/30">
                         <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.content}</ReactMarkdown>
                       </div>
                     ) : (
