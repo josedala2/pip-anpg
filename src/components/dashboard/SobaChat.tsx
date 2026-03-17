@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import ReactMarkdown from "react-markdown";
-import { Send, Bot, User, Loader2, Sparkles, Trash2, Plus, MessageSquare } from "lucide-react";
+import { Send, Bot, User, Loader2, Sparkles, Trash2, Plus, MessageSquare, Search, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { oilBlocks } from "@/data/angolaBlocks";
@@ -78,6 +78,8 @@ export function SobaChat() {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [loadingHistory, setLoadingHistory] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showSearch, setShowSearch] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
@@ -299,11 +301,37 @@ export function SobaChat() {
         <Button
           variant="outline"
           size="sm"
-          className="mb-3 w-full justify-start gap-2"
+          className="mb-2 w-full justify-start gap-2"
           onClick={startNewConversation}
         >
           <Plus className="w-4 h-4" /> Nova conversa
         </Button>
+        {/* Search toggle */}
+        <div className="mb-2">
+          {showSearch ? (
+            <div className="flex items-center gap-1 border border-border/60 rounded-md bg-card px-2 py-1">
+              <Search className="w-3 h-3 text-muted-foreground shrink-0" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Pesquisar..."
+                className="flex-1 bg-transparent text-xs text-foreground placeholder:text-muted-foreground focus:outline-none"
+                autoFocus
+              />
+              <button onClick={() => { setSearchQuery(""); setShowSearch(false); }} className="p-0.5 rounded hover:bg-secondary">
+                <X className="w-3 h-3 text-muted-foreground" />
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => setShowSearch(true)}
+              className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-md text-xs text-muted-foreground hover:bg-secondary/50 transition-colors"
+            >
+              <Search className="w-3 h-3" /> Pesquisar conversas
+            </button>
+          )}
+        </div>
         <ScrollArea className="flex-1">
           <div className="space-y-1 pr-2">
             {loadingHistory ? (
@@ -312,8 +340,14 @@ export function SobaChat() {
               </div>
             ) : conversations.length === 0 ? (
               <p className="text-xs text-muted-foreground text-center py-4">Sem conversas</p>
-            ) : (
-              conversations.map((conv) => (
+            ) : (() => {
+              const filtered = searchQuery.trim()
+                ? conversations.filter(c => c.title.toLowerCase().includes(searchQuery.toLowerCase()))
+                : conversations;
+              return filtered.length === 0 ? (
+                <p className="text-xs text-muted-foreground text-center py-4">Nenhum resultado</p>
+              ) : (
+                filtered.map((conv) => (
                 <div key={conv.id} className="group flex items-center">
                   <button
                     onClick={() => loadConversation(conv.id)}
@@ -335,7 +369,8 @@ export function SobaChat() {
                   </button>
                 </div>
               ))
-            )}
+              );
+            })()}
           </div>
         </ScrollArea>
       </div>
