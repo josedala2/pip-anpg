@@ -394,7 +394,7 @@ export function SobaChat() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
-  const context = useMemo(() => buildBlocksSummary(), []);
+  // Context is now built per-query in sendMessage
 
   const scrollToBottom = useCallback(() => {
     setTimeout(() => {
