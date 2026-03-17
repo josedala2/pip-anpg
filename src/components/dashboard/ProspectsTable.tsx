@@ -50,6 +50,7 @@ const BubbleTooltip = ({ active, payload }: any) => {
 
 export const ProspectsTable = ({ blocks, scopeLabel }: ProspectsTableProps) => {
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
+  const [prospectSearch, setProspectSearch] = useState("");
   const tableRef = useRef<HTMLDivElement>(null);
 
   const blocksWithProspects = useMemo(
