@@ -812,6 +812,396 @@ const OperatorsSection = ({ blocks, showTables, showCharts }: { blocks: OilBlock
   );
 };
 
+// ─── PRODUCTION & DECLINE ─────────────────────────────────
+const ProductionSection = ({ blocks, showTables, showCharts }: { blocks: OilBlock[]; showTables: boolean; showCharts: boolean }) => {
+  const prodHistoryData = useMemo(() => {
+    if (!showCharts) return [];
+    const monthMap: Record<string, Record<string, number>> = {};
+    blocks.forEach(b => {
+      b.productionHistory.slice(-12).forEach(p => {
+        if (!monthMap[p.month]) monthMap[p.month] = {};
+        monthMap[p.month][b.name] = p.value;
+      });
+    });
+    return Object.entries(monthMap).map(([month, vals]) => ({ month, ...vals })).sort((a, b) => a.month.localeCompare(b.month));
+  }, [blocks, showCharts]);
+
+  const projectionData = useMemo(() => {
+    if (!showCharts) return [];
+    const years = Array.from({ length: 10 }, (_, i) => 2025 + i);
+    return years.map((year, i) => ({
+      year: year.toString(),
+      ...Object.fromEntries(blocks.filter(b => b.projections).map(b => [
+        b.name, b.projections.base[i] ?? 0,
+      ])),
+    }));
+  }, [blocks, showCharts]);
+
+  const totalProd = blocks.reduce((s, b) => s + b.dailyProduction, 0);
+  const producing = blocks.filter(b => b.dailyProduction > 0);
+  const blockNames = blocks.map(b => b.name);
+
+  return (
+    <>
+      <SectionTitle>Produção & Declínio</SectionTitle>
+      <Prose>
+        Os {blocks.length} blocos seleccionados registam uma produção total de {formatNumber(totalProd)} BOPD,
+        com {producing.length} bloco{producing.length !== 1 ? "s" : ""} activamente em produção.
+        {blocks.some(b => b.projections) && " As projecções a 10 anos (cenário base) são apresentadas abaixo."}
+      </Prose>
+
+      {showCharts && prodHistoryData.length > 0 && (
+        <ChartCard title="Histórico de Produção — Últimos 12 Meses (BOPD)">
+          <ResponsiveContainer width="100%" height={280}>
+            <LineChart data={prodHistoryData} margin={{ left: 10, right: 10 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} />
+              <XAxis dataKey="month" tick={axisStyle} />
+              <YAxis tick={axisStyle} />
+              <Tooltip contentStyle={{ background: "hsl(var(--popover))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }} />
+              <Legend wrapperStyle={{ fontSize: 11 }} />
+              {blockNames.map((name, i) => (
+                <Line key={name} type="monotone" dataKey={name} stroke={CHART_COLORS[i % CHART_COLORS.length]} strokeWidth={2} dot={{ r: 2 }} />
+              ))}
+            </LineChart>
+          </ResponsiveContainer>
+        </ChartCard>
+      )}
+
+      {showCharts && projectionData.length > 0 && (
+        <ChartCard title="Projecção de Produção — Cenário Base (BOPD)">
+          <ResponsiveContainer width="100%" height={280}>
+            <LineChart data={projectionData} margin={{ left: 10, right: 10 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} />
+              <XAxis dataKey="year" tick={axisStyle} />
+              <YAxis tick={axisStyle} />
+              <Tooltip contentStyle={{ background: "hsl(var(--popover))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }} />
+              <Legend wrapperStyle={{ fontSize: 11 }} />
+              {blockNames.filter(name => blocks.find(b => b.name === name)?.projections).map((name, i) => (
+                <Line key={name} type="monotone" dataKey={name} stroke={CHART_COLORS[i % CHART_COLORS.length]} strokeWidth={2} dot={{ r: 2 }} />
+              ))}
+            </LineChart>
+          </ResponsiveContainer>
+        </ChartCard>
+      )}
+
+      {showTables && (
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Bloco</TableHead>
+              <TableHead>Operador</TableHead>
+              <TableHead className="text-right">Produção Actual (BOPD)</TableHead>
+              <TableHead className="text-right">Reservas (MMbbl)</TableHead>
+              <TableHead className="text-right">Taxa Execução (%)</TableHead>
+              <TableHead className="text-right">Risco</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {blocks.map(b => (
+              <TableRow key={b.id}>
+                <TableCell className="font-medium">{b.name}</TableCell>
+                <TableCell>{b.operator}</TableCell>
+                <TableCell className="text-right">{formatNumber(b.dailyProduction)}</TableCell>
+                <TableCell className="text-right">{formatNumber(b.estimatedReserves)}</TableCell>
+                <TableCell className="text-right">{b.executionRate}%</TableCell>
+                <TableCell className="text-right">{b.riskScore}/10</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      )}
+    </>
+  );
+};
+
+// ─── HSE & ENVIRONMENT ────────────────────────────────────
+const HSESection = ({ blocks, showTables, showCharts }: { blocks: OilBlock[]; showTables: boolean; showCharts: boolean }) => {
+  const blocksWithHSE = blocks.filter(b => b.hseData && b.hseData.length > 0);
+  const blocksWithEnv = blocks.filter(b => b.environmentalData && b.environmentalData.length > 0);
+
+  const trirData = useMemo(() => {
+    if (!showCharts) return [];
+    const yearMap: Record<number, Record<string, number>> = {};
+    blocksWithHSE.forEach(b => {
+      b.hseData!.forEach(h => {
+        if (!yearMap[h.year]) yearMap[h.year] = {};
+        yearMap[h.year][b.name] = h.trir;
+      });
+    });
+    return Object.entries(yearMap).map(([year, vals]) => ({ year, ...vals })).sort((a, b) => a.year.localeCompare(b.year));
+  }, [blocksWithHSE, showCharts]);
+
+  return (
+    <>
+      <SectionTitle>HSE & Ambiente</SectionTitle>
+      <Prose>
+        {blocksWithHSE.length > 0
+          ? `${blocksWithHSE.length} dos ${blocks.length} blocos seleccionados possuem dados de segurança (HSE).`
+          : "Nenhum dos blocos seleccionados possui dados de HSE detalhados."}
+        {blocksWithEnv.length > 0 && ` ${blocksWithEnv.length} bloco${blocksWithEnv.length > 1 ? "s possuem" : " possui"} dados ambientais (emissões, derrames).`}
+      </Prose>
+
+      {showCharts && trirData.length > 0 && (
+        <ChartCard title="TRIR (Total Recordable Incident Rate) por Ano">
+          <ResponsiveContainer width="100%" height={250}>
+            <LineChart data={trirData} margin={{ left: 10, right: 10 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} />
+              <XAxis dataKey="year" tick={axisStyle} />
+              <YAxis tick={axisStyle} />
+              <Tooltip contentStyle={{ background: "hsl(var(--popover))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }} />
+              <Legend wrapperStyle={{ fontSize: 11 }} />
+              {blocksWithHSE.map((b, i) => (
+                <Line key={b.name} type="monotone" dataKey={b.name} stroke={CHART_COLORS[i % CHART_COLORS.length]} strokeWidth={2} dot={{ r: 3 }} />
+              ))}
+            </LineChart>
+          </ResponsiveContainer>
+        </ChartCard>
+      )}
+
+      {showTables && blocksWithHSE.map(b => (
+        <div key={b.id} className="mb-6 p-4 rounded-lg border border-border bg-card print:break-inside-avoid">
+          <h3 className="text-sm font-semibold text-foreground mb-3">{b.name} — Indicadores HSE</h3>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Ano</TableHead>
+                <TableHead className="text-right">FAT</TableHead>
+                <TableHead className="text-right">LTI</TableHead>
+                <TableHead className="text-right">RWC</TableHead>
+                <TableHead className="text-right">MTC</TableHead>
+                <TableHead className="text-right">TRIR</TableHead>
+                <TableHead className="text-right">LTIR</TableHead>
+                <TableHead className="text-right">HH (M)</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {b.hseData!.map(h => (
+                <TableRow key={h.year}>
+                  <TableCell className="font-medium">{h.year}</TableCell>
+                  <TableCell className="text-right">{h.fat}</TableCell>
+                  <TableCell className="text-right">{h.lti}</TableCell>
+                  <TableCell className="text-right">{h.rwc}</TableCell>
+                  <TableCell className="text-right">{h.mtc}</TableCell>
+                  <TableCell className="text-right">{h.trir}</TableCell>
+                  <TableCell className="text-right">{h.ltir}</TableCell>
+                  <TableCell className="text-right">{h.hhr}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      ))}
+
+      {showTables && blocksWithEnv.map(b => (
+        <div key={b.id} className="mb-6 p-4 rounded-lg border border-border bg-card print:break-inside-avoid">
+          <h3 className="text-sm font-semibold text-foreground mb-3">{b.name} — Dados Ambientais</h3>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Ano</TableHead>
+                <TableHead className="text-right">Derrames</TableHead>
+                <TableHead className="text-right">Vol. (bbl)</TableHead>
+                <TableHead className="text-right">CO₂ (tCO₂eq)</TableHead>
+                <TableHead className="text-right">Gás Queimado (MMSCFD)</TableHead>
+                <TableHead className="text-right">Óleo na Água (PPM)</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {b.environmentalData!.map(e => (
+                <TableRow key={e.year}>
+                  <TableCell className="font-medium">{e.year}</TableCell>
+                  <TableCell className="text-right">{e.oilSpillCount ?? "—"}</TableCell>
+                  <TableCell className="text-right">{e.oilSpillVolumeBbl != null ? formatNumber(e.oilSpillVolumeBbl) : "—"}</TableCell>
+                  <TableCell className="text-right">{e.co2EmissionsTonCO2eq != null ? formatNumber(e.co2EmissionsTonCO2eq) : "—"}</TableCell>
+                  <TableCell className="text-right">{e.gasFlaredMMSCFD ?? "—"}</TableCell>
+                  <TableCell className="text-right">{e.oilInWaterPPM ?? "—"}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      ))}
+    </>
+  );
+};
+
+// ─── FACILITIES & INFRASTRUCTURE ──────────────────────────
+const FacilitiesSection = ({ blocks, showTables }: { blocks: OilBlock[]; showTables: boolean }) => {
+  const blocksWithFacilities = blocks.filter(b => b.facilityData);
+
+  return (
+    <>
+      <SectionTitle>Instalações & Infraestrutura</SectionTitle>
+      <Prose>
+        {blocksWithFacilities.length > 0
+          ? `${blocksWithFacilities.length} dos ${blocks.length} blocos seleccionados possuem dados de instalações detalhados.`
+          : "Nenhum dos blocos seleccionados possui dados de instalações."}
+      </Prose>
+
+      {blocksWithFacilities.map(b => {
+        const fd = b.facilityData!;
+        return (
+          <div key={b.id} className="mb-6 p-4 rounded-lg border border-border bg-card print:break-inside-avoid">
+            <h3 className="text-sm font-semibold text-foreground mb-3">{b.name}</h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+              {fd.capacityBOPD && (
+                <div className="p-2 rounded-lg bg-secondary/30 text-center">
+                  <div className="text-[9px] uppercase text-muted-foreground">Capacidade</div>
+                  <div className="font-bold font-mono text-sm">{formatNumber(fd.capacityBOPD)} BOPD</div>
+                </div>
+              )}
+              {fd.overallEfficiency != null && (
+                <div className="p-2 rounded-lg bg-secondary/30 text-center">
+                  <div className="text-[9px] uppercase text-muted-foreground">Eficiência</div>
+                  <div className="font-bold font-mono text-sm">{fd.overallEfficiency}%</div>
+                </div>
+              )}
+              {fd.activeWells && (
+                <div className="p-2 rounded-lg bg-secondary/30 text-center">
+                  <div className="text-[9px] uppercase text-muted-foreground">Poços Activos</div>
+                  <div className="font-bold font-mono text-sm">{fd.activeWells.op + fd.activeWells.wi + fd.activeWells.gi}</div>
+                </div>
+              )}
+              {fd.productionStartYear && (
+                <div className="p-2 rounded-lg bg-secondary/30 text-center">
+                  <div className="text-[9px] uppercase text-muted-foreground">Início Produção</div>
+                  <div className="font-bold font-mono text-sm">{fd.productionStartYear}</div>
+                </div>
+              )}
+            </div>
+
+            {showTables && fd.platformSpecs && fd.platformSpecs.length > 0 && (
+              <div className="mb-4">
+                <p className="text-xs font-medium text-muted-foreground mb-2">Plataformas & Infraestrutura</p>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Nome</TableHead>
+                      <TableHead>Tipo</TableHead>
+                      <TableHead>Estado</TableHead>
+                      <TableHead>Capacidade</TableHead>
+                      <TableHead>Última Inspecção</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {fd.platformSpecs.map(p => (
+                      <TableRow key={p.name}>
+                        <TableCell className="font-medium">{p.name}</TableCell>
+                        <TableCell>{p.type}</TableCell>
+                        <TableCell>{p.status}</TableCell>
+                        <TableCell>{p.capacity ?? "—"}</TableCell>
+                        <TableCell>{p.lastInspection ?? "—"}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            )}
+
+            {showTables && fd.areas && fd.areas.length > 0 && (
+              <div className="mb-4">
+                <p className="text-xs font-medium text-muted-foreground mb-2">Áreas Operacionais</p>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Área</TableHead>
+                      <TableHead className="text-right">Eficiência (%)</TableHead>
+                      <TableHead>Plataformas</TableHead>
+                      <TableHead>Problemas</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {fd.areas.map(a => (
+                      <TableRow key={a.name}>
+                        <TableCell className="font-medium">{a.name}</TableCell>
+                        <TableCell className="text-right">{a.efficiency}%</TableCell>
+                        <TableCell className="text-xs">{a.platforms.join(", ")}</TableCell>
+                        <TableCell className="text-xs text-muted-foreground">{a.issues?.join(", ") ?? "—"}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            )}
+
+            {showTables && fd.maintenancePlan && fd.maintenancePlan.length > 0 && (
+              <div>
+                <p className="text-xs font-medium text-muted-foreground mb-2">Plano de Manutenção</p>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Período</TableHead>
+                      <TableHead>Escopo</TableHead>
+                      <TableHead>Estado</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {fd.maintenancePlan.map((m, i) => (
+                      <TableRow key={i}>
+                        <TableCell className="font-medium">{m.period}</TableCell>
+                        <TableCell>{m.scope}</TableCell>
+                        <TableCell>{m.status}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </>
+  );
+};
+
+// ─── PROSPECTS ────────────────────────────────────────────
+const ProspectsSection = ({ blocks, showTables }: { blocks: OilBlock[]; showTables: boolean }) => {
+  const blocksWithProspects = blocks.filter(b => b.prospects && b.prospects.length > 0);
+  const totalProspects = blocksWithProspects.reduce((s, b) => s + (b.prospects?.length ?? 0), 0);
+  const totalResources = blocksWithProspects.reduce((s, b) => s + (b.prospects ?? []).reduce((ss, p) => ss + p.resourcesMMBO, 0), 0);
+
+  return (
+    <>
+      <SectionTitle>Prospectos Exploratórios</SectionTitle>
+      <Prose>
+        {blocksWithProspects.length > 0
+          ? `Foram identificados ${totalProspects} prospectos exploratórios em ${blocksWithProspects.length} bloco${blocksWithProspects.length > 1 ? "s" : ""}, com recursos totais estimados de ${formatNumber(Math.round(totalResources))} MMBO.`
+          : "Nenhum dos blocos seleccionados possui dados de prospectos exploratórios."}
+      </Prose>
+
+      {showTables && blocksWithProspects.map(b => (
+        <div key={b.id} className="mb-6 p-4 rounded-lg border border-border bg-card print:break-inside-avoid">
+          <h3 className="text-sm font-semibold text-foreground mb-3">{b.name} — Prospectos</h3>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Área</TableHead>
+                <TableHead>Prospecto</TableHead>
+                <TableHead>Reservatório</TableHead>
+                <TableHead className="text-right">Recursos (MMBO)</TableHead>
+                <TableHead className="text-right">BCF</TableHead>
+                <TableHead className="text-right">POS (%)</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {b.prospects!.map((p, i) => (
+                <TableRow key={i}>
+                  <TableCell className="font-medium">{p.discoveryArea}</TableCell>
+                  <TableCell>{p.name}</TableCell>
+                  <TableCell className="text-xs">{p.reservoir}</TableCell>
+                  <TableCell className="text-right">{p.resourcesMMBO}</TableCell>
+                  <TableCell className="text-right">{p.resourcesBCF ?? "—"}</TableCell>
+                  <TableCell className="text-right">{p.pos}%</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      ))}
+    </>
+  );
+};
+
 // ─── MAIN REPORT PREVIEW ─────────────────────────────────
 const reportTitles: Record<ReportType, string> = {
   executive: "Resumo Executivo",
@@ -821,6 +1211,10 @@ const reportTitles: Record<ReportType, string> = {
   legislation: "Legislação & Documentos",
   financial: "Económico & Financeiro",
   operators: "Operadores",
+  production: "Produção & Declínio",
+  hse: "HSE & Ambiente",
+  facilities: "Instalações & Infraestrutura",
+  prospects: "Prospectos Exploratórios",
 };
 
 export const ReportPreview = ({ config, aiNarrative, aiLoading }: Props) => {
@@ -864,11 +1258,17 @@ export const ReportPreview = ({ config, aiNarrative, aiLoading }: Props) => {
       {config.reportTypes.includes("executive") && (
         <ExecutiveSection blocks={blocks} showTables={config.includeTables} showCharts={config.includeCharts} />
       )}
+      {config.reportTypes.includes("production") && (
+        <ProductionSection blocks={blocks} showTables={config.includeTables} showCharts={config.includeCharts} />
+      )}
       {config.reportTypes.includes("contractual") && (
         <ContractualSection blocks={blocks} showTables={config.includeTables} />
       )}
       {config.reportTypes.includes("exploration") && (
         <ExplorationSection blocks={blocks} showTables={config.includeTables} showCharts={config.includeCharts} />
+      )}
+      {config.reportTypes.includes("prospects") && (
+        <ProspectsSection blocks={blocks} showTables={config.includeTables} />
       )}
       {config.reportTypes.includes("consortium") && (
         <ConsortiumSection blocks={blocks} showTables={config.includeTables} />
@@ -878,6 +1278,12 @@ export const ReportPreview = ({ config, aiNarrative, aiLoading }: Props) => {
       )}
       {config.reportTypes.includes("financial") && (
         <FinancialSection blocks={blocks} showTables={config.includeTables} showCharts={config.includeCharts} />
+      )}
+      {config.reportTypes.includes("hse") && (
+        <HSESection blocks={blocks} showTables={config.includeTables} showCharts={config.includeCharts} />
+      )}
+      {config.reportTypes.includes("facilities") && (
+        <FacilitiesSection blocks={blocks} showTables={config.includeTables} />
       )}
       {config.reportTypes.includes("operators") && (
         <OperatorsSection blocks={operatorBlocks} showTables={config.includeTables} showCharts={config.includeCharts} />

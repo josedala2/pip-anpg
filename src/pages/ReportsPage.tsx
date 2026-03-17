@@ -81,6 +81,10 @@ const ReportsPage = () => {
         legislation: "Legislação & Documentos",
         financial: "Económico & Financeiro",
         operators: "Operadores",
+        production: "Produção & Declínio",
+        hse: "HSE & Ambiente",
+        facilities: "Instalações & Infraestrutura",
+        prospects: "Prospectos Exploratórios",
       };
       await exportReportPdf(
         "report-content",
