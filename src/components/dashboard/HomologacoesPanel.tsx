@@ -252,6 +252,36 @@ export const HomologacoesPanel = ({ filterBloco }: Props) => {
     };
   }, [data]);
 
+  // Heatmap: processes by bloco × month
+  const heatmapData = useMemo(() => {
+    const mesOrder = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
+    const mesMap: Record<string, string> = {
+      Janeiro: "Jan", Fevereiro: "Fev", Março: "Mar", Abril: "Abr",
+      Maio: "Mai", Junho: "Jun", Julho: "Jul", Agosto: "Ago",
+      Setembro: "Set", Outubro: "Out", Novembro: "Nov", Dezembro: "Dez",
+    };
+    const map = new Map<string, Map<string, number>>();
+    const activeMeses = new Set<string>();
+    data.forEach(h => {
+      const m = mesMap[h.mes] || h.mes.slice(0, 3);
+      activeMeses.add(m);
+      if (!map.has(h.bloco)) map.set(h.bloco, new Map());
+      const row = map.get(h.bloco)!;
+      row.set(m, (row.get(m) || 0) + 1);
+    });
+    const meses = mesOrder.filter(m => activeMeses.has(m));
+    const blocos = [...map.entries()]
+      .map(([bloco, row]) => {
+        const total = [...row.values()].reduce((a, b) => a + b, 0);
+        return { bloco, row, total };
+      })
+      .sort((a, b) => b.total - a.total)
+      .slice(0, 15);
+    let maxVal = 0;
+    blocos.forEach(b => b.row.forEach(v => { if (v > maxVal) maxVal = v; }));
+    return { meses, blocos, maxVal };
+  }, [data]);
+
   // By modalidade
   const byModalidade = useMemo(() => {
     const map = new Map<string, number>();
@@ -614,6 +644,73 @@ export const HomologacoesPanel = ({ filterBloco }: Props) => {
               </div>
             </CardContent>
           </Card>
+
+          {/* Heatmap: Concentração de Processos por Bloco × Mês */}
+          {!filterBloco && heatmapData.blocos.length > 1 && (
+            <Card className="glass-card">
+              <CardHeader className="p-4 pb-2">
+                <CardTitle className="text-sm flex items-center gap-2">
+                  <Filter className="w-4 h-4 text-primary" />
+                  Heatmap — Concentração de Processos por Bloco e Mês
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-4 pt-0 overflow-x-auto">
+                <table className="w-full border-collapse text-[10px]">
+                  <thead>
+                    <tr>
+                      <th className="text-left py-1.5 px-2 font-medium text-muted-foreground sticky left-0 bg-card z-10 min-w-[120px]">Bloco</th>
+                      {heatmapData.meses.map(m => (
+                        <th key={m} className="text-center py-1.5 px-1.5 font-medium text-muted-foreground min-w-[40px]">{m}</th>
+                      ))}
+                      <th className="text-center py-1.5 px-2 font-semibold text-foreground min-w-[50px]">Total</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {heatmapData.blocos.map(({ bloco, row, total }) => (
+                      <tr key={bloco} className="border-t border-border/30">
+                        <td className="py-1.5 px-2 font-medium text-foreground sticky left-0 bg-card z-10 truncate max-w-[140px]" title={bloco}>{bloco}</td>
+                        {heatmapData.meses.map(m => {
+                          const v = row.get(m) || 0;
+                          const intensity = heatmapData.maxVal > 0 ? v / heatmapData.maxVal : 0;
+                          return (
+                            <td key={m} className="text-center py-1.5 px-1.5">
+                              <div
+                                className="mx-auto rounded-sm flex items-center justify-center font-mono"
+                                style={{
+                                  width: 32, height: 24,
+                                  backgroundColor: v === 0
+                                    ? "hsl(var(--muted) / 0.3)"
+                                    : `hsl(199, 89%, ${Math.max(25, 75 - intensity * 50)}%)`,
+                                  color: intensity > 0.5 ? "white" : v === 0 ? "hsl(var(--muted-foreground))" : "hsl(var(--foreground))",
+                                  fontSize: 10,
+                                }}
+                              >
+                                {v || "–"}
+                              </div>
+                            </td>
+                          );
+                        })}
+                        <td className="text-center py-1.5 px-2 font-mono font-semibold text-foreground">{total}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                <div className="flex items-center justify-end gap-2 mt-3 text-[10px] text-muted-foreground">
+                  <span>Menor</span>
+                  <div className="flex gap-0.5">
+                    {[0, 0.25, 0.5, 0.75, 1].map(i => (
+                      <div
+                        key={i}
+                        className="w-5 h-3 rounded-sm"
+                        style={{ backgroundColor: `hsl(199, 89%, ${Math.max(25, 75 - i * 50)}%)` }}
+                      />
+                    ))}
+                  </div>
+                  <span>Maior</span>
+                </div>
+              </CardContent>
+            </Card>
+          )}
         </TabsContent>
 
         {/* TAB 2: By Bloco */}
