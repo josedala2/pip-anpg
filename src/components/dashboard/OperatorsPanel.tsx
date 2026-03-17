@@ -819,11 +819,5 @@ export function OperatorDetailView({ operator, onBack }: { operator: OperatorSum
 // ── Main Panel ─────────────────────────────────────────────
 export function OperatorsPanel() {
   const operators = useMemo(() => buildOperators(), []);
-  const [selectedOperator, setSelectedOperator] = useState<OperatorSummary | null>(null);
-
-  if (selectedOperator) {
-    return <OperatorDetailView operator={selectedOperator} onBack={() => setSelectedOperator(null)} />;
-  }
-
-  return <OperatorListView operators={operators} onSelect={setSelectedOperator} />;
+  return <OperatorListView operators={operators} />;
 }

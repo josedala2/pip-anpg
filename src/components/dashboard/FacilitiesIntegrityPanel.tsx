@@ -201,7 +201,7 @@ export const FacilitiesIntegrityPanel = () => {
         const facilityMaintenance = block.facilityData?.maintenancePlan || [];
         return (
           <div className="space-y-4">
-            <Button variant="ghost" size="sm" className="gap-1.5" onClick={() => setSelectedFacility(null)}>
+            <Button variant="ghost" size="sm" className="gap-1.5" onClick={() => navigate(-1)}>
               <ArrowLeft className="w-4 h-4" /> Voltar à lista
             </Button>
             <FacilityDetailCard spec={spec} photos={facilityPhotos} documents={facilityDocs} maintenanceItems={facilityMaintenance} />
