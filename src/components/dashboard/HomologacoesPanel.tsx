@@ -160,6 +160,88 @@ export const HomologacoesPanel = ({ filterBloco }: Props) => {
     { name: "A&S", value: totalAS },
   ].filter(c => c.value > 0);
 
+  // Local content classification
+  const localContent = useMemo(() => {
+    const intlKeywords = [
+      "baker hughes", "schlumberger", "halliburton", "weatherford", "onesubsea",
+      "technipfmc", "saipem", "subsea 7", "aker solutions", "sbm offshore",
+      "maersk", "fugro", "kongsberg", "emerson", "cameron", "cecon",
+      "liebherr", "jeumont", "man energy", "mtu maintenance", "nuovo pignone",
+      "pgs", "framo", "advanced mechatronics", "h. butting", "clariant",
+      "3t oil", "geofizyka", "dof", "bourbon", "seabulk", "tidewater",
+      "shelf drilling", "valaris", "ensco", "diamond offshore", "noble",
+      "champion x", "cladtek", "cetco", "intech", "bently nevada",
+      "mrc global", "dnow", "nov uk", "oil spill response", "international sos",
+      "mckinsey", "graham manufacturing", "airpack", "measurement solutions",
+      "euronav", "grupo antonini", "telford", "dhl global", "excellence logging",
+    ];
+    const angolaKeywords = [
+      "angola", "lda", "limitada", " s.a", "cabinda", "luanda", "sonamer",
+      "sonamet", "sonangol", "kwanda", "sonepral", "enagol", "angolan",
+      "asco", "aes", "bestfly", "friburge", "equador", "global catering",
+      "newrest", "atlantic services", "atlantic facilities", "atlantic logistic",
+      "magnitika", "luajardim", "nilmiguel", "novagest", "nossa seguros",
+      "global seguros", "fidelidade", "fortaleza seguros", "ensa",
+      "nasa comercial", "ncr angola", "nf clean", "clear angola",
+      "internet technologies", "isistel", "ms telcom", "cosal",
+      "organizações mgp", "petrowork", "certex", "basetek", "imovias",
+      "emcica", "capgest", "kaeso", "kloten", "greenford",
+    ];
+
+    const classify = (name: string): "angolano" | "internacional" | "consórcio" => {
+      const lower = name.toLowerCase();
+      const hasIntl = intlKeywords.some(k => lower.includes(k));
+      const hasAngola = angolaKeywords.some(k => lower.includes(k));
+      if (lower.startsWith("consórcio") || lower.includes("/")) {
+        return "consórcio";
+      }
+      if (hasAngola && !hasIntl) return "angolano";
+      if (hasIntl && !hasAngola) return "internacional";
+      if (hasAngola) return "consórcio"; // mixed = consortium
+      return "internacional";
+    };
+
+    let angolanoCount = 0, intlCount = 0, consorcioCount = 0;
+    let angolanoValor = 0, intlValor = 0, consorcioValor = 0;
+    const fornecedorClassMap = new Map<string, "angolano" | "internacional" | "consórcio">();
+
+    data.forEach(h => {
+      const f = h.fornecedor || "N/D";
+      if (!fornecedorClassMap.has(f)) {
+        fornecedorClassMap.set(f, classify(f));
+      }
+      const cls = fornecedorClassMap.get(f)!;
+      if (cls === "angolano") { angolanoCount++; angolanoValor += h.montanteAprovado; }
+      else if (cls === "internacional") { intlCount++; intlValor += h.montanteAprovado; }
+      else { consorcioCount++; consorcioValor += h.montanteAprovado; }
+    });
+
+    const total = angolanoCount + intlCount + consorcioCount;
+    const totalValor = angolanoValor + intlValor + consorcioValor;
+    const uniqueFornecedores = [...fornecedorClassMap.entries()];
+    const uniqueAngolano = uniqueFornecedores.filter(([_, c]) => c === "angolano").length;
+    const uniqueIntl = uniqueFornecedores.filter(([_, c]) => c === "internacional").length;
+    const uniqueConsorcio = uniqueFornecedores.filter(([_, c]) => c === "consórcio").length;
+
+    return {
+      angolanoCount, intlCount, consorcioCount,
+      angolanoValor, intlValor, consorcioValor,
+      total, totalValor,
+      uniqueAngolano, uniqueIntl, uniqueConsorcio,
+      pctAngolanoProcessos: total > 0 ? (angolanoCount / total) * 100 : 0,
+      pctIntlProcessos: total > 0 ? (intlCount / total) * 100 : 0,
+      pctConsorcioProcessos: total > 0 ? (consorcioCount / total) * 100 : 0,
+      pctAngolanoValor: totalValor > 0 ? (angolanoValor / totalValor) * 100 : 0,
+      pctIntlValor: totalValor > 0 ? (intlValor / totalValor) * 100 : 0,
+      pctConsorcioValor: totalValor > 0 ? (consorcioValor / totalValor) * 100 : 0,
+      pieData: [
+        { name: "Angolano", value: angolanoValor },
+        { name: "Internacional", value: intlValor },
+        { name: "Consórcio Misto", value: consorcioValor },
+      ].filter(d => d.value > 0),
+    };
+  }, [data]);
+
   // By modalidade
   const byModalidade = useMemo(() => {
     const map = new Map<string, number>();
