@@ -55,6 +55,8 @@ export const HomologacoesPanel = ({ filterBloco }: Props) => {
   const [searchText, setSearchText] = useState("");
   const [expandedBloco, setExpandedBloco] = useState<string | null>(null);
   const [drilldown, setDrilldown] = useState<{ bloco: string; mes: string } | null>(null);
+  const [clThreshold, setClThreshold] = useState(30); // % minimum local content
+  const [showAlertConfig, setShowAlertConfig] = useState(false);
 
   // Map block names from angolaBlocks format ("Block 0 (Área A, B)") to homologações format ("Bloco 0")
   const matchBloco = (blocoData: string, filterName: string): boolean => {
