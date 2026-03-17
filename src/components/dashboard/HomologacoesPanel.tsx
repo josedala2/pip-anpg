@@ -510,6 +510,100 @@ export const HomologacoesPanel = ({ filterBloco }: Props) => {
               </ResponsiveContainer>
             </CardContent>
           </Card>
+
+          {/* Charts row 4: Local Content */}
+          <Card className="glass-card">
+            <CardHeader className="p-4 pb-2">
+              <CardTitle className="text-sm flex items-center gap-2">
+                🇦🇴 Indicadores de Conteúdo Local
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-4 pt-0 space-y-4">
+              {/* Summary KPIs */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <div className="p-3 rounded-lg bg-success/10 border border-success/20">
+                  <div className="text-[10px] text-muted-foreground mb-1">Fornecedores Angolanos</div>
+                  <div className="text-lg font-bold text-success">{localContent.uniqueAngolano}</div>
+                  <div className="text-[10px] text-muted-foreground">{localContent.angolanoCount} processos · {localContent.pctAngolanoProcessos.toFixed(1)}%</div>
+                </div>
+                <div className="p-3 rounded-lg bg-primary/10 border border-primary/20">
+                  <div className="text-[10px] text-muted-foreground mb-1">Fornecedores Internacionais</div>
+                  <div className="text-lg font-bold text-primary">{localContent.uniqueIntl}</div>
+                  <div className="text-[10px] text-muted-foreground">{localContent.intlCount} processos · {localContent.pctIntlProcessos.toFixed(1)}%</div>
+                </div>
+                <div className="p-3 rounded-lg bg-warning/10 border border-warning/20">
+                  <div className="text-[10px] text-muted-foreground mb-1">Consórcios Mistos</div>
+                  <div className="text-lg font-bold text-warning">{localContent.uniqueConsorcio}</div>
+                  <div className="text-[10px] text-muted-foreground">{localContent.consorcioCount} processos · {localContent.pctConsorcioProcessos.toFixed(1)}%</div>
+                </div>
+                <div className="p-3 rounded-lg bg-accent border border-border">
+                  <div className="text-[10px] text-muted-foreground mb-1">% Conteúdo Local (Valor)</div>
+                  <div className="text-lg font-bold">{localContent.pctAngolanoValor.toFixed(1)}%</div>
+                  <div className="text-[10px] text-muted-foreground">{fmt(localContent.angolanoValor)} de {fmt(localContent.totalValor)}</div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                {/* Stacked progress bars */}
+                <div className="space-y-3">
+                  <div className="text-xs font-medium text-muted-foreground">Repartição por Nº de Processos</div>
+                  <div className="flex h-6 rounded-full overflow-hidden">
+                    <div className="bg-success flex items-center justify-center text-[9px] font-bold text-white" style={{ width: `${localContent.pctAngolanoProcessos}%` }}>
+                      {localContent.pctAngolanoProcessos > 8 ? `${localContent.pctAngolanoProcessos.toFixed(0)}%` : ""}
+                    </div>
+                    <div className="bg-primary flex items-center justify-center text-[9px] font-bold text-white" style={{ width: `${localContent.pctIntlProcessos}%` }}>
+                      {localContent.pctIntlProcessos > 8 ? `${localContent.pctIntlProcessos.toFixed(0)}%` : ""}
+                    </div>
+                    <div className="bg-warning flex items-center justify-center text-[9px] font-bold text-white" style={{ width: `${localContent.pctConsorcioProcessos}%` }}>
+                      {localContent.pctConsorcioProcessos > 8 ? `${localContent.pctConsorcioProcessos.toFixed(0)}%` : ""}
+                    </div>
+                  </div>
+
+                  <div className="text-xs font-medium text-muted-foreground mt-4">Repartição por Montante Aprovado</div>
+                  <div className="flex h-6 rounded-full overflow-hidden">
+                    <div className="bg-success flex items-center justify-center text-[9px] font-bold text-white" style={{ width: `${localContent.pctAngolanoValor}%` }}>
+                      {localContent.pctAngolanoValor > 8 ? `${localContent.pctAngolanoValor.toFixed(0)}%` : ""}
+                    </div>
+                    <div className="bg-primary flex items-center justify-center text-[9px] font-bold text-white" style={{ width: `${localContent.pctIntlValor}%` }}>
+                      {localContent.pctIntlValor > 8 ? `${localContent.pctIntlValor.toFixed(0)}%` : ""}
+                    </div>
+                    <div className="bg-warning flex items-center justify-center text-[9px] font-bold text-white" style={{ width: `${localContent.pctConsorcioValor}%` }}>
+                      {localContent.pctConsorcioValor > 8 ? `${localContent.pctConsorcioValor.toFixed(0)}%` : ""}
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-4 mt-2 text-[10px]">
+                    <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-sm bg-success" />Angolano</span>
+                    <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-sm bg-primary" />Internacional</span>
+                    <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-sm bg-warning" />Consórcio Misto</span>
+                  </div>
+                </div>
+
+                {/* Donut chart */}
+                <ResponsiveContainer width="100%" height={220}>
+                  <PieChart>
+                    <Pie
+                      data={localContent.pieData}
+                      cx="50%" cy="50%"
+                      innerRadius={50} outerRadius={90}
+                      dataKey="value" nameKey="name"
+                      label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                      labelLine={false}
+                    >
+                      {localContent.pieData.map((entry, i) => (
+                        <Cell key={i} fill={
+                          entry.name === "Angolano" ? "hsl(152, 69%, 40%)" :
+                          entry.name === "Internacional" ? "hsl(199, 89%, 48%)" :
+                          "hsl(38, 92%, 50%)"
+                        } />
+                      ))}
+                    </Pie>
+                    <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => fmtFull(v)} />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
 
         {/* TAB 2: By Bloco */}
