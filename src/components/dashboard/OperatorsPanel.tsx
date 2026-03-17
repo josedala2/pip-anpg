@@ -21,7 +21,7 @@ import {
 import { SortableHead } from "@/components/ui/sortable-head";
 import { useTableSort } from "@/hooks/useTableSort";
 
-interface OperatorSummary {
+export interface OperatorSummary {
   name: string;
   blocks: OilBlock[];
   totalProduction: number;
