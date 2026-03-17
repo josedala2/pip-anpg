@@ -15,6 +15,7 @@ import {
 import {
   DollarSign, FileText, TrendingUp, Building2, Users, Search,
   Filter, ChevronDown, ChevronRight, Download, AlertTriangle, Settings,
+  ArrowUpDown, ArrowUp, ArrowDown,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
@@ -58,6 +59,46 @@ export const HomologacoesPanel = ({ filterBloco }: Props) => {
   const [drilldown, setDrilldown] = useState<{ bloco: string; mes: string } | null>(null);
   const [clThreshold, setClThreshold] = useState(30); // % minimum local content
   const [showAlertConfig, setShowAlertConfig] = useState(false);
+
+  // Sort state for each table
+  const [rankSortKey, setRankSortKey] = useState<string>("pctAngValor");
+  const [rankSortDir, setRankSortDir] = useState<"asc" | "desc">("asc");
+  const [blocoSortKey, setBlocoSortKey] = useState<string>("aprovado");
+  const [blocoSortDir, setBlocoSortDir] = useState<"asc" | "desc">("desc");
+  const [fornSortKey, setFornSortKey] = useState<string>("valor");
+  const [fornSortDir, setFornSortDir] = useState<"asc" | "desc">("desc");
+  const [detailSortKey, setDetailSortKey] = useState<string>("montanteAprovado");
+  const [detailSortDir, setDetailSortDir] = useState<"asc" | "desc">("desc");
+
+  const SortIcon = ({ active, dir }: { active: boolean; dir: "asc" | "desc" }) => {
+    if (!active) return <ArrowUpDown className="w-3 h-3 opacity-40" />;
+    return dir === "asc" ? <ArrowUp className="w-3 h-3 text-primary" /> : <ArrowDown className="w-3 h-3 text-primary" />;
+  };
+
+  const makeHandleSort = (
+    currentKey: string, setKey: (k: string) => void,
+    currentDir: "asc" | "desc", setDir: (d: "asc" | "desc") => void,
+    textCols: string[] = []
+  ) => (key: string) => {
+    if (currentKey === key) {
+      setDir(currentDir === "asc" ? "desc" : "asc");
+    } else {
+      setKey(key);
+      setDir(textCols.includes(key) ? "asc" : "desc");
+    }
+  };
+
+  const sortArray = <T extends Record<string, any>>(arr: T[], key: string, dir: "asc" | "desc"): T[] => {
+    const mult = dir === "asc" ? 1 : -1;
+    return [...arr].sort((a, b) => {
+      const av = a[key]; const bv = b[key];
+      if (av == null && bv == null) return 0;
+      if (av == null) return 1;
+      if (bv == null) return -1;
+      if (typeof av === "string" && typeof bv === "string") return av.localeCompare(bv) * mult;
+      return ((av as number) - (bv as number)) * mult;
+    });
+  };
 
   // Map block names from angolaBlocks format ("Block 0 (Área A, B)") to homologações format ("Bloco 0")
   const matchBloco = (blocoData: string, filterName: string): boolean => {
@@ -750,17 +791,30 @@ export const HomologacoesPanel = ({ filterBloco }: Props) => {
                     <TableHeader>
                       <TableRow>
                         <TableHead className="text-[10px] w-8">#</TableHead>
-                        <TableHead className="text-[10px]">Bloco</TableHead>
-                        <TableHead className="text-[10px] text-right">Processos</TableHead>
-                        <TableHead className="text-[10px] text-right">Ang.</TableHead>
-                        <TableHead className="text-[10px] text-right">% CL (Proc.)</TableHead>
-                        <TableHead className="text-[10px] text-right">% CL (Valor)</TableHead>
-                        <TableHead className="text-[10px] text-right">Valor Total</TableHead>
+                        {[
+                          { key: "bloco", label: "Bloco", align: "" },
+                          { key: "processos", label: "Processos", align: "text-right" },
+                          { key: "angProcessos", label: "Ang.", align: "text-right" },
+                          { key: "pctAngProcessos", label: "% CL (Proc.)", align: "text-right" },
+                          { key: "pctAngValor", label: "% CL (Valor)", align: "text-right" },
+                          { key: "totalValor", label: "Valor Total", align: "text-right" },
+                        ].map(col => (
+                          <TableHead
+                            key={col.key}
+                            className={`text-[10px] cursor-pointer select-none hover:text-foreground transition-colors ${col.align}`}
+                            onClick={() => makeHandleSort(rankSortKey, setRankSortKey, rankSortDir, setRankSortDir, ["bloco"])(col.key)}
+                          >
+                            <span className="inline-flex items-center gap-0.5">
+                              {col.label}
+                              <SortIcon active={rankSortKey === col.key} dir={rankSortDir} />
+                            </span>
+                          </TableHead>
+                        ))}
                         <TableHead className="text-[10px]">Nível</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {localContent.blocoRanking.map((b, i) => {
+                      {sortArray(localContent.blocoRanking, rankSortKey, rankSortDir).map((b, i) => {
                         const isCritical = b.pctAngValor < clThreshold * 0.5;
                         const isWarning = b.pctAngValor < clThreshold;
                         return (
@@ -1088,15 +1142,28 @@ export const HomologacoesPanel = ({ filterBloco }: Props) => {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="text-xs">Bloco</TableHead>
-                    <TableHead className="text-xs text-right">Nº Processos</TableHead>
-                    <TableHead className="text-xs text-right">Total Solicitado</TableHead>
-                    <TableHead className="text-xs text-right">Total Aprovado</TableHead>
-                    <TableHead className="text-xs text-right">Taxa</TableHead>
+                    {[
+                      { key: "bloco", label: "Bloco", align: "" },
+                      { key: "count", label: "Nº Processos", align: "text-right" },
+                      { key: "solicitado", label: "Total Solicitado", align: "text-right" },
+                      { key: "aprovado", label: "Total Aprovado", align: "text-right" },
+                      { key: "taxa", label: "Taxa", align: "text-right" },
+                    ].map(col => (
+                      <TableHead
+                        key={col.key}
+                        className={`text-xs cursor-pointer select-none hover:text-foreground transition-colors ${col.align}`}
+                        onClick={() => makeHandleSort(blocoSortKey, setBlocoSortKey, blocoSortDir, setBlocoSortDir, ["bloco"])(col.key)}
+                      >
+                        <span className="inline-flex items-center gap-0.5">
+                          {col.label}
+                          <SortIcon active={blocoSortKey === col.key} dir={blocoSortDir} />
+                        </span>
+                      </TableHead>
+                    ))}
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {blocoSummary.map(b => (
+                  {sortArray(blocoSummary, blocoSortKey, blocoSortDir).map(b => (
                     <>
                       <TableRow
                         key={b.bloco}
@@ -1194,13 +1261,26 @@ export const HomologacoesPanel = ({ filterBloco }: Props) => {
                 <TableHeader>
                   <TableRow>
                     <TableHead className="text-xs">#</TableHead>
-                    <TableHead className="text-xs">Fornecedor</TableHead>
-                    <TableHead className="text-xs text-right">Nº Contratos</TableHead>
-                    <TableHead className="text-xs text-right">Montante Aprovado</TableHead>
+                    {[
+                      { key: "nomeCompleto", label: "Fornecedor", align: "" },
+                      { key: "count", label: "Nº Contratos", align: "text-right" },
+                      { key: "valor", label: "Montante Aprovado", align: "text-right" },
+                    ].map(col => (
+                      <TableHead
+                        key={col.key}
+                        className={`text-xs cursor-pointer select-none hover:text-foreground transition-colors ${col.align}`}
+                        onClick={() => makeHandleSort(fornSortKey, setFornSortKey, fornSortDir, setFornSortDir, ["nomeCompleto"])(col.key)}
+                      >
+                        <span className="inline-flex items-center gap-0.5">
+                          {col.label}
+                          <SortIcon active={fornSortKey === col.key} dir={fornSortDir} />
+                        </span>
+                      </TableHead>
+                    ))}
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {byFornecedor.slice(0, 20).map((f, i) => (
+                  {sortArray(byFornecedor, fornSortKey, fornSortDir).slice(0, 20).map((f, i) => (
                     <TableRow key={f.nomeCompleto}>
                       <TableCell className="text-xs text-muted-foreground">{i + 1}</TableCell>
                       <TableCell className="text-xs font-medium">{f.nomeCompleto}</TableCell>
@@ -1227,21 +1307,34 @@ export const HomologacoesPanel = ({ filterBloco }: Props) => {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="text-[10px] sticky top-0 bg-card">Mês</TableHead>
-                    <TableHead className="text-[10px] sticky top-0 bg-card">Ano</TableHead>
-                    <TableHead className="text-[10px] sticky top-0 bg-card">Bloco</TableHead>
-                    <TableHead className="text-[10px] sticky top-0 bg-card">Fornecedor</TableHead>
-                    <TableHead className="text-[10px] sticky top-0 bg-card max-w-[200px]">Serviços</TableHead>
-                    <TableHead className="text-[10px] sticky top-0 bg-card">Tipo Processo</TableHead>
-                    <TableHead className="text-[10px] sticky top-0 bg-card text-right">Solicitado</TableHead>
-                    <TableHead className="text-[10px] sticky top-0 bg-card text-right">Aprovado</TableHead>
-                    <TableHead className="text-[10px] sticky top-0 bg-card">Modalidade</TableHead>
-                    <TableHead className="text-[10px] sticky top-0 bg-card">Owner</TableHead>
-                    <TableHead className="text-[10px] sticky top-0 bg-card">Decisão</TableHead>
+                    {[
+                      { key: "mes", label: "Mês", align: "" },
+                      { key: "ano", label: "Ano", align: "" },
+                      { key: "bloco", label: "Bloco", align: "" },
+                      { key: "fornecedor", label: "Fornecedor", align: "" },
+                      { key: "servicos", label: "Serviços", align: "", extra: "max-w-[200px]" },
+                      { key: "tipoProcesso", label: "Tipo Processo", align: "" },
+                      { key: "montanteSolicitado", label: "Solicitado", align: "text-right" },
+                      { key: "montanteAprovado", label: "Aprovado", align: "text-right" },
+                      { key: "modalidade", label: "Modalidade", align: "" },
+                      { key: "owner", label: "Owner", align: "" },
+                      { key: "decisao", label: "Decisão", align: "" },
+                    ].map(col => (
+                      <TableHead
+                        key={col.key}
+                        className={`text-[10px] sticky top-0 bg-card z-10 cursor-pointer select-none hover:text-foreground transition-colors ${col.align} ${col.extra || ""}`}
+                        onClick={() => makeHandleSort(detailSortKey, setDetailSortKey, detailSortDir, setDetailSortDir, ["mes", "bloco", "fornecedor", "servicos", "tipoProcesso", "modalidade", "owner", "decisao"])(col.key)}
+                      >
+                        <span className="inline-flex items-center gap-0.5">
+                          {col.label}
+                          <SortIcon active={detailSortKey === col.key} dir={detailSortDir} />
+                        </span>
+                      </TableHead>
+                    ))}
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {data.slice(0, 200).map((h, i) => (
+                  {sortArray([...data], detailSortKey, detailSortDir).slice(0, 200).map((h, i) => (
                     <TableRow key={i}>
                       <TableCell className="text-[10px]">{h.mes}</TableCell>
                       <TableCell className="text-[10px]">{h.ano}</TableCell>
