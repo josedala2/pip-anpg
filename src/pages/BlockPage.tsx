@@ -1421,6 +1421,7 @@ const BlockPage = () => {
              })()}
            </TabsContent>
 
+          <TabsContent value="projections">
             <ChartWrapper title="Projecções de Produção (2025–2034)" height={450} fullscreenHeight={700}>
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={projectionYears}>
