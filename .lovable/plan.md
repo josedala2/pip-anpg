@@ -1,39 +1,51 @@
+## Roteiro de Evolução — Plataforma Nacional de Inteligência Petrolífera
 
+### Estado actual vs Visão
 
-## Plan: Independent Pages for Operator Detail & Facilities Detail
+| Capacidade | Estado |
+|---|---|
+| Mapa de concessões | ✅ Existe |
+| KPIs nacionais (prod, reservas, receita estado, variações) | ✅ Completo |
+| Painel de Blocos & Concessões | ✅ Existe |
+| Painel de Produção | ✅ Existe |
+| Painel de Exploração | ✅ Existe |
+| Painel de Operadores | ✅ Existe |
+| Risk & Performance | ✅ Existe |
+| Strategic Forecast | ✅ Existe |
+| Detalhe do bloco (12 abas) | ✅ Existe |
+| Visão Económica (Bloco 0) | ✅ Existe |
+| Comparativo de blocos | ✅ Existe |
+| Relatórios configuráveis | ✅ Existe |
+| Auth + roles | ✅ Existe |
+| **Branding "Inteligência Petrolífera"** | ✅ **Fase 1 concluída** |
+| **KPIs executivos completos** | ✅ **Fase 1 concluída** |
+| **Dashboard Contratual/Negocial** | ✅ **Fase 2 concluída** |
+| Dashboard Integridade Instalações | ✅ **Fase 3 concluída** |
+| Motor de Scoring Estratégico | ✅ **Fase 4 concluída** |
+| Dashboard Recomendação Conselho | ✅ **Fase 4 concluída** |
+| Sistema de Alertas Centrais | ✅ **Fase 5 concluída** |
+| **Painel de Homologações** | ✅ **Fase 6 concluída** |
 
-### Problem
-Currently, clicking an operator in the Operators panel and a facility in the Facilities panel renders detail views **inline via state**, so there's no URL change and no browser history entry. The "Voltar" buttons just reset state instead of navigating back.
+### Fases concluídas
 
-### Solution
-Create dedicated routes for operator detail and facility detail, using `react-router-dom` navigation. The back buttons will use `navigate(-1)` (already proven in `BlockPage.tsx`).
+**Fase 1** — Rebranding + KPIs Executivos
+- Header: "Inteligência Petrolífera" + "Sistema Integrado de Monitorização, Análise e Apoio à Decisão"
+- KPIs primários: Produção Total, Reservas, Blocos Activos, CAPEX, Taxa de Execução
+- KPIs secundários: Em Produção, Em Exploração, Sem Produção, Risco Crítico, Receita Estado
+- Variações m/m e a/a na produção
+- Título HTML e meta tags actualizados
 
-### Changes
+**Fase 2** — Dashboard Contratual e Negocial
+- Painel "Contratos & Compliance" adicionado à navegação
+- KPIs: contratos a expirar em 12/24/36 meses, compliance < 80%, blocos com dados contratuais
+- 4 sub-abas: Calendário Contratual, Semáforo por Operador, Matriz de Urgência, Lista Completa
+- Gráfico de barras de expiração por ano com cores por urgência
+- Scatter plot meses restantes vs compliance (tamanho = produção)
+- Semáforo verde/amarelo/vermelho por operador (compliance + execução)
+- Lista ordenada por urgência com badges de estado
 
-**1. New page: `src/pages/OperatorPage.tsx`**
-- Route: `/operator/:operatorName`
-- Extracts `operatorName` from URL params, builds the `OperatorSummary` from `oilBlocks` data
-- Renders the existing `OperatorDetailView` component (extracted/exported from `OperatorsPanel.tsx`)
-- Back button uses `navigate(-1)`
-- Includes the same header/footer pattern as `BlockPage.tsx`
+### Próximas fases
 
-**2. Refactor `src/components/dashboard/OperatorsPanel.tsx`**
-- Export `OperatorDetailView` and `buildOperators` so they can be reused
-- Change `OperatorListView` cards to use `<Link to={/operator/${encodeURIComponent(op.name)}}>`  or `navigate()` instead of `onSelect` state
-- Remove `selectedOperator` state from `OperatorsPanel` — it becomes a pure list
-- Change `OperatorDetailView`'s `onBack` to use `navigate(-1)`
-
-**3. Refactor `src/components/dashboard/FacilitiesIntegrityPanel.tsx`**
-- Same pattern: the "Voltar à lista" button currently resets `selectedFacility` state
-- Change to use `navigate(-1)` with a route `/facility/:facilityName` or, simpler approach: use `window.history` pushState to create a history entry when selecting a facility, so back works naturally without a full route
-- Given the facility detail is lightweight, the simplest approach: push a hash/search param when selecting, and use `navigate(-1)` for back
-
-**4. Update `src/App.tsx`**
-- Add route: `<Route path="/operator/:operatorName" element={<ProtectedRoute><OperatorPage /></ProtectedRoute>} />`
-
-### Files changed
-- `src/pages/OperatorPage.tsx` (new)
-- `src/components/dashboard/OperatorsPanel.tsx` (refactor to export detail view, list uses links)
-- `src/components/dashboard/FacilitiesIntegrityPanel.tsx` (back button uses navigate(-1) with history entry)
-- `src/App.tsx` (add operator route)
-
+**Fase 3** — Dashboard de Integridade de Instalações
+**Fase 4** — Motor de Scoring Estratégico + Dashboard de Recomendação ao Conselho
+**Fase 5** — Sistema de Alertas Centrais

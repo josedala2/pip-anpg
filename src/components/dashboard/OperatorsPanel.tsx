@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import { oilBlocks, type OilBlock } from "@/data/angolaBlocks";
 import { ConcessionMap } from "./ConcessionMap";
 import { BlockDetail } from "./BlockDetail";
@@ -21,7 +22,7 @@ import {
 import { SortableHead } from "@/components/ui/sortable-head";
 import { useTableSort } from "@/hooks/useTableSort";
 
-interface OperatorSummary {
+export interface OperatorSummary {
   name: string;
   blocks: OilBlock[];
   totalProduction: number;
@@ -53,7 +54,7 @@ const CHART_COLORS = [
 
 type SortKey = "production" | "blocks" | "reserves" | "investment" | "compliance";
 
-function buildOperators(): OperatorSummary[] {
+export function buildOperators(): OperatorSummary[] {
   const map = new Map<string, OilBlock[]>();
   for (const b of oilBlocks) {
     const existing = map.get(b.operator) || [];
@@ -77,7 +78,8 @@ function buildOperators(): OperatorSummary[] {
 }
 
 // ── List View ──────────────────────────────────────────────
-function OperatorListView({ operators, onSelect }: { operators: OperatorSummary[]; onSelect: (op: OperatorSummary) => void }) {
+function OperatorListView({ operators }: { operators: OperatorSummary[] }) {
+  const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState<SortKey>("production");
 
@@ -222,7 +224,7 @@ function OperatorListView({ operators, onSelect }: { operators: OperatorSummary[
           <Card
             key={op.name}
             className="glass-card cursor-pointer hover:border-primary/50 hover:shadow-lg transition-all group"
-            onClick={() => onSelect(op)}
+            onClick={() => navigate(`/operator/${encodeURIComponent(op.name)}`)}
           >
             <CardHeader className="p-4 pb-2">
               <div className="flex items-center justify-between">
@@ -269,7 +271,7 @@ function OperatorListView({ operators, onSelect }: { operators: OperatorSummary[
 }
 
 // ── Detail View ────────────────────────────────────────────
-function OperatorDetailView({ operator, onBack }: { operator: OperatorSummary; onBack: () => void }) {
+export function OperatorDetailView({ operator, onBack }: { operator: OperatorSummary; onBack: () => void }) {
   const { blocks } = operator;
   const [selectedBlock, setSelectedBlock] = useState<OilBlock | null>(null);
   const [detailSearch, setDetailSearch] = useState("");
@@ -817,11 +819,5 @@ function OperatorDetailView({ operator, onBack }: { operator: OperatorSummary; o
 // ── Main Panel ─────────────────────────────────────────────
 export function OperatorsPanel() {
   const operators = useMemo(() => buildOperators(), []);
-  const [selectedOperator, setSelectedOperator] = useState<OperatorSummary | null>(null);
-
-  if (selectedOperator) {
-    return <OperatorDetailView operator={selectedOperator} onBack={() => setSelectedOperator(null)} />;
-  }
-
-  return <OperatorListView operators={operators} onSelect={setSelectedOperator} />;
+  return <OperatorListView operators={operators} />;
 }

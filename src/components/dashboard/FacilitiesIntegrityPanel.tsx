@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -71,6 +72,7 @@ const parseCapacity = (cap?: string): number => {
 // ── Component ──
 
 export const FacilitiesIntegrityPanel = () => {
+  const navigate = useNavigate();
   const [selectedTab, setSelectedTab] = useState("installations");
   const [selectedFacility, setSelectedFacility] = useState<{ blockId: string; platformName: string } | null>(null);
   const [filterType, setFilterType] = useState<string>("all");
@@ -199,7 +201,7 @@ export const FacilitiesIntegrityPanel = () => {
         const facilityMaintenance = block.facilityData?.maintenancePlan || [];
         return (
           <div className="space-y-4">
-            <Button variant="ghost" size="sm" className="gap-1.5" onClick={() => setSelectedFacility(null)}>
+            <Button variant="ghost" size="sm" className="gap-1.5" onClick={() => navigate(-1)}>
               <ArrowLeft className="w-4 h-4" /> Voltar à lista
             </Button>
             <FacilityDetailCard spec={spec} photos={facilityPhotos} documents={facilityDocs} maintenanceItems={facilityMaintenance} />
@@ -325,7 +327,10 @@ export const FacilitiesIntegrityPanel = () => {
                         <div
                           key={p.name}
                           className="rounded-xl border border-border/50 bg-card overflow-hidden cursor-pointer hover:border-primary/50 hover:shadow-md transition-all group"
-                          onClick={() => setSelectedFacility({ blockId: block.id, platformName: p.name })}
+                          onClick={() => {
+                            window.history.pushState(null, "", window.location.pathname + `?facility=${encodeURIComponent(p.name)}&block=${block.id}`);
+                            setSelectedFacility({ blockId: block.id, platformName: p.name });
+                          }}
                         >
                           {p.photo ? (
                             <div className="relative aspect-[16/9] overflow-hidden">
