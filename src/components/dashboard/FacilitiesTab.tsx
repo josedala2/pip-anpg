@@ -244,6 +244,29 @@ export const FacilitiesTab = ({ facilityData }: Props) => {
         ))}
       </div>
 
+      {/* Recommendations from ANPG / Platform */}
+      {facilityData.recommendations && facilityData.recommendations.length > 0 && (
+        <Card className="glass-card border-primary/20">
+          <CardHeader className="p-4 pb-2">
+            <CardTitle className="text-sm flex items-center gap-2">
+              <Lightbulb className="w-4 h-4 text-primary" />
+              Recomendações da Plataforma
+              <Badge variant="outline" className="text-[10px] ml-auto">{facilityData.recommendations.length} acções</Badge>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-4 pt-0">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+              {facilityData.recommendations.map((rec, i) => (
+                <div key={i} className="flex items-start gap-2 p-2 rounded-lg bg-primary/5 border border-primary/10">
+                  <Target className="w-3.5 h-3.5 text-primary mt-0.5 shrink-0" />
+                  <p className="text-xs text-muted-foreground leading-relaxed">{rec}</p>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Interactive Schematic Diagram */}
       <FacilitiesSchematic />
 
