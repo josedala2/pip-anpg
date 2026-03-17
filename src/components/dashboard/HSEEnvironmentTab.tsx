@@ -5,6 +5,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import type { HSEIndicators, EnvironmentalYearData, FacilityData, EconomicVision, RevitalizationScenario } from "@/data/angolaBlocks";
 import { ShieldCheck, Flame, Droplets, Wind, Factory, AlertTriangle, Lightbulb, TrendingDown } from "lucide-react";
 import { Tooltip as UITooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
+import { SortableHead } from "@/components/ui/sortable-head";
+import { useTableSort } from "@/hooks/useTableSort";
 import {
   BarChart, Bar, LineChart, Line, PieChart, Pie, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, ReferenceLine,
