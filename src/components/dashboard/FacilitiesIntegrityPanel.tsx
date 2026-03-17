@@ -72,6 +72,7 @@ const parseCapacity = (cap?: string): number => {
 // ── Component ──
 
 export const FacilitiesIntegrityPanel = () => {
+  const navigate = useNavigate();
   const [selectedTab, setSelectedTab] = useState("installations");
   const [selectedFacility, setSelectedFacility] = useState<{ blockId: string; platformName: string } | null>(null);
   const [filterType, setFilterType] = useState<string>("all");
