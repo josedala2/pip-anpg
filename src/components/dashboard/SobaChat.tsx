@@ -737,7 +737,9 @@ export function SobaChat() {
               <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-4">
                 <Bot className="w-8 h-8 text-primary" />
               </div>
-              <h3 className="text-base font-semibold text-foreground mb-1">Olá! Sou o Soba 🇦🇴</h3>
+              <h3 className="text-base font-semibold text-foreground mb-1">
+                {firstName ? `Olá, ${firstName}! Sou o Soba 🇦🇴` : "Olá! Sou o Soba 🇦🇴"}
+              </h3>
               <p className="text-sm text-muted-foreground text-center max-w-md mb-6">
                 O seu assistente da Plataforma de Inteligência Petrolífera. Posso ajudar com informações sobre todos os blocos petrolíferos de Angola.
               </p>
