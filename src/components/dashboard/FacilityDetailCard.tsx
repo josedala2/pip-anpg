@@ -100,6 +100,11 @@ export const FacilityDetailCard = ({ spec, photos, documents, maintenanceItems }
         </div>
       </div>
 
+      {/* Virtual Tour */}
+      {spec.matterportUrl && (
+        <VirtualTourViewer matterportUrl={spec.matterportUrl} facilityName={spec.name} />
+      )}
+
       {/* Photo gallery for this facility */}
       {photos.length > 0 && (
         <Card className="glass-card">

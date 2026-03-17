@@ -194,6 +194,9 @@ export const FacilitiesTab = ({ facilityData }: Props) => {
                         {spec.capacity && <span>{spec.capacity}</span>}
                         {spec.waterDepthM && <span>{spec.waterDepthM}m</span>}
                         {age && <span>{age} anos</span>}
+                        {spec.matterportUrl && (
+                          <Badge variant="outline" className="text-[8px] bg-primary/10 text-primary border-primary/30">360°</Badge>
+                        )}
                       </div>
                     </div>
                   </div>
