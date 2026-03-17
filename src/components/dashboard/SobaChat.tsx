@@ -199,28 +199,131 @@ function buildBlocksSummary(): string {
         }
       }
 
-      // Contract info highlights
+      // Water depth range
+      if (b.waterDepthRange) parts.push(`Intervalo de profundidade: ${b.waterDepthRange}`);
+
+      // Production history — last 6 months + average
+      if (b.productionHistory?.length) {
+        const hist = b.productionHistory;
+        const last6 = hist.slice(-6);
+        const avg = Math.round(hist.reduce((s, h) => s + h.value, 0) / hist.length);
+        parts.push(`### Histórico de Produção (últimos 6 meses)`);
+        parts.push(`Média anual: ${avg.toLocaleString()} BOPD`);
+        parts.push(last6.map(h => `${h.month}: ${h.value.toLocaleString()} BOPD`).join(" | "));
+      }
+
+      // CAPEX history
+      if (b.capexHistory?.length) {
+        parts.push(`### Histórico CAPEX (MMUSD)`);
+        parts.push(`| Ano | Planeado | Real |`);
+        parts.push(`|-----|---------|------|`);
+        b.capexHistory.forEach(c => {
+          parts.push(`| ${c.year} | ${c.planned} | ${c.actual} |`);
+        });
+      }
+
+      // Projections
+      if (b.projections) {
+        const p = b.projections;
+        parts.push(`### Projecções de Produção (BOPD, 10 anos)`);
+        parts.push(`Conservador: ${p.conservative.map(v => v.toLocaleString()).join(", ")}`);
+        parts.push(`Base: ${p.base.map(v => v.toLocaleString()).join(", ")}`);
+        parts.push(`Expansão: ${p.expansion.map(v => v.toLocaleString()).join(", ")}`);
+      }
+
+      // Seismic data
+      if (b.seismicData?.length) {
+        parts.push(`### Dados Sísmicos`);
+        parts.push(`| Ano | 2D (km) | 3D (km²) | 4D (km²) |`);
+        parts.push(`|-----|---------|----------|----------|`);
+        b.seismicData.forEach(s => {
+          parts.push(`| ${s.year} | ${s.seismic2D} | ${s.seismic3D} | ${s.seismic4D} |`);
+        });
+      }
+
+      // Wells data
+      if (b.wellsData?.length) {
+        parts.push(`### Dados de Poços`);
+        parts.push(`| Ano | Pesquisa | Avaliação | Desc. Comercial | Desc. Não-Comercial | Seco |`);
+        parts.push(`|-----|---------|----------|----------------|--------------------|----|`);
+        b.wellsData.forEach(w => {
+          parts.push(`| ${w.year} | ${w.pesquisa} | ${w.avaliacao} | ${w.descobertaComercial ?? "-"} | ${w.descobertaNaoComercial ?? "-"} | ${w.seco ?? "-"} |`);
+        });
+      }
+
+      // Geological objectives
+      if (b.geologicalObjectives?.length) {
+        parts.push(`Objectivos geológicos: ${b.geologicalObjectives.join("; ")}`);
+      }
+
+      // Legislation documents
+      if (b.legislationDocs?.length) {
+        parts.push(`### Legislação`);
+        b.legislationDocs.forEach(d => {
+          parts.push(`- ${d.title} (${d.type}${d.reference ? `, ref: ${d.reference}` : ""}${d.date ? `, ${d.date}` : ""}${d.description ? ` — ${d.description}` : ""})`);
+        });
+      }
+
+      // Cash flow notes
+      if (b.economicVision?.cashFlowNotes?.length) {
+        parts.push(`Notas fluxo de caixa: ${b.economicVision.cashFlowNotes.join("; ")}`);
+      }
+
+      // Maintenance plan
+      if (b.facilityData?.maintenancePlan?.length) {
+        parts.push(`### Plano de Manutenção`);
+        parts.push(`| Período | Escopo | Status |`);
+        parts.push(`|---------|--------|--------|`);
+        b.facilityData.maintenancePlan.forEach(m => {
+          parts.push(`| ${m.period} | ${m.scope} | ${m.status} |`);
+        });
+      }
+
+      // Contract info highlights (expanded)
       if (b.contractInfo) {
         const ci = b.contractInfo;
         const ciParts: string[] = [];
+        if (ci.decretoLei) ciParts.push(`Decreto: ${ci.decretoLei}`);
         if (ci.contractType) ciParts.push(`Tipo: ${ci.contractType}`);
         if (ci.signingDate) ciParts.push(`Assinatura: ${ci.signingDate}`);
+        if (ci.effectiveDate) ciParts.push(`Efectivo: ${ci.effectiveDate}`);
+        if (ci.location) ciParts.push(`Localização: ${ci.location}`);
         if (ci.signatureBonus) ciParts.push(`Bónus assinatura: ${ci.signatureBonus} MMUSD`);
         if (ci.socialBonus) ciParts.push(`Bónus social: ${ci.socialBonus} MMUSD`);
+        if (ci.socialProjects) ciParts.push(`Projectos sociais: ${ci.socialProjects} MMUSD${ci.socialProjectsPeriod ? ` (${ci.socialProjectsPeriod})` : ""}`);
+        if (ci.regulatoryContribution) ciParts.push(`Contribuição regulatória: ${ci.regulatoryContribution} MMUSD${ci.regulatoryContributionPeriod ? ` (${ci.regulatoryContributionPeriod})` : ""}`);
+        if (ci.productionBonus) ciParts.push(`Bónus produção: ${ci.productionBonus} MMUSD`);
+        if (ci.productionPeriodStart) ciParts.push(`Período produção: ${ci.productionPeriodStart}–${ci.productionPeriodEnd ?? "?"}`);
         if (ci.fiscalConditions) {
           const fc = ci.fiscalConditions;
           if (fc.irp) ciParts.push(`IRP: ${fc.irp}%`);
           if (fc.ipp) ciParts.push(`IPP: ${fc.ipp}%`);
+          if (fc.itp) ciParts.push(`ITP: ${fc.itp}%`);
           if (fc.costRecoveryPreProd) ciParts.push(`Cost Recovery pré-prod: ${fc.costRecoveryPreProd}%`);
           if (fc.costRecoveryPostProd) ciParts.push(`Cost Recovery pós-prod: ${fc.costRecoveryPostProd}%`);
+          if (fc.productionPremium) ciParts.push(`Prémio produção: ${fc.productionPremium} USD/bbl`);
+        }
+        if (ci.researchPeriod) {
+          const rp = ci.researchPeriod;
+          if (rp.initialPhaseYears) ciParts.push(`Fase inicial: ${rp.initialPhaseYears} anos, ${rp.initialPhaseWells ?? "?"} poços`);
+          if (rp.subsequentPhaseYears) ciParts.push(`Fase subsequente: ${rp.subsequentPhaseYears} anos, ${rp.subsequentPhaseWells ?? "?"} poços`);
         }
         if (ciParts.length) parts.push(`Contrato: ${ciParts.join(" | ")}`);
+        if (ci.initialConsortium?.length) {
+          parts.push(`Consórcio inicial: ${ci.initialConsortium.map(c => `${c.name} ${c.share}%${c.isOperator ? " (Op)" : ""}`).join(", ")}`);
+        }
         if (ci.historicalNotes?.length) parts.push(`Notas históricas: ${ci.historicalNotes.join("; ")}`);
       }
 
       // Revitalization scenarios
       if (b.revitalizationScenarios?.length) {
-        parts.push(`Cenários de revitalização: ${b.revitalizationScenarios.map(s => `${s.title}: ${s.description}`).join("; ")}`);
+        parts.push(`### Cenários de Revitalização`);
+        b.revitalizationScenarios.forEach(s => {
+          parts.push(`**${s.title}**: ${s.description}`);
+          if (s.proposals?.length) parts.push(`Propostas: ${s.proposals.join("; ")}`);
+          if (s.incentives?.length) parts.push(`Incentivos: ${s.incentives.join("; ")}`);
+          if (s.commitments?.length) parts.push(`Compromissos: ${s.commitments.join("; ")}`);
+        });
       }
 
       return parts.join("\n");
