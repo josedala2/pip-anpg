@@ -68,8 +68,8 @@ export const ProspectsTable = ({ blocks, scopeLabel }: ProspectsTableProps) => {
     return { mmbo, bcf, count };
   }, [blocksWithProspects]);
 
-  const bubbleData = useMemo(() => {
-    const data: any[] = [];
+  const flatProspects = useMemo(() => {
+    const data: { block: string; blockId: string; discoveryArea: string; name: string; reservoir: string; resourcesMMBO: number; resourcesBCF: number; pos: number; key: string; z: number; idx: number }[] = [];
     blocksWithProspects.forEach(b => {
       b.prospects!.forEach((p, i) => {
         data.push({
@@ -84,6 +84,10 @@ export const ProspectsTable = ({ blocks, scopeLabel }: ProspectsTableProps) => {
     });
     return data;
   }, [blocksWithProspects]);
+
+  const prospectSort = useTableSort(flatProspects, "resourcesMMBO", "desc", ["block", "discoveryArea", "name", "reservoir"]);
+
+  const bubbleData = flatProspects;
 
   const handleBubbleClick = useCallback((data: any) => {
     if (!data) return;
