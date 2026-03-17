@@ -226,6 +226,8 @@ export interface RevenueSharePeriod {
   impostosPercent: number;
   geMMBO: number;
   impostosMMBO: number;
+  geMMUSD?: number;
+  impostosMMUSD?: number;
 }
 
 export interface AbandonmentDetail {
