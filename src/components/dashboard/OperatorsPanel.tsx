@@ -53,7 +53,7 @@ const CHART_COLORS = [
 
 type SortKey = "production" | "blocks" | "reserves" | "investment" | "compliance";
 
-function buildOperators(): OperatorSummary[] {
+export function buildOperators(): OperatorSummary[] {
   const map = new Map<string, OilBlock[]>();
   for (const b of oilBlocks) {
     const existing = map.get(b.operator) || [];
