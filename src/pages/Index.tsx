@@ -244,6 +244,7 @@ const Index = () => {
                   : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
               }`}
             >
+              {panel === "Soba" && <Sparkles className="w-3.5 h-3.5 inline-block mr-1 -mt-0.5" />}
               {panel}
               {activePanel === i && (
                 <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-2/3 h-0.5 rounded-full bg-primary" />
