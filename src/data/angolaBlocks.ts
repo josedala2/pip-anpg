@@ -713,9 +713,9 @@ export const oilBlocks: OilBlock[] = [
         { name: "GIP-FOX", type: "Fixed Platform", installationYear: 1985, waterDepthM: 45, capacity: "35.000 BOPD", status: "Operacional", lastInspection: "2024-03", nextMaintenance: "2025-Q1", photo: takulaImg, matterportUrl: "https://my.matterport.com/show/?m=Kxk2zTtfWW5" },
         { name: "Mafumeira Norte", type: "Fixed Platform", installationYear: 2009, waterDepthM: 55, capacity: "100.000 BOPD", status: "Operacional", lastInspection: "2024-09", nextMaintenance: "2025-Q3", photo: mafumeiraImg, matterportUrl: "https://my.matterport.com/show/?m=Kxk2zTtfWW5" },
         { name: "Mafumeira Sul", type: "Fixed Platform", installationYear: 2015, waterDepthM: 65, capacity: "50.000 BOPD", status: "Operacional", lastInspection: "2024-11", nextMaintenance: "2025-Q4", photo: mafumeiraImg, matterportUrl: "https://my.matterport.com/show/?m=Kxk2zTtfWW5" },
-        { name: "Sanha", type: "FPSO", installationYear: 2004, waterDepthM: 350, capacity: "100.000 BOPD", status: "Operacional", lastInspection: "2024-08", nextMaintenance: "2025-Q2", photo: sanhaImg, matterportUrl: "https://my.matterport.com/show/?m=Kxk2zTtfWW5" },
-        { name: "Sanha LPG", type: "FPSO", installationYear: 2005, waterDepthM: 350, capacity: "LPG Processing", status: "Operacional", lastInspection: "2024-05", nextMaintenance: "2025-Q3", photo: sanhaImg, matterportUrl: "https://my.matterport.com/show/?m=Kxk2zTtfWW5" },
-        { name: "Nembas", type: "FPSO", installationYear: 2010, waterDepthM: 400, capacity: "60.000 BOPD", status: "Operacional", lastInspection: "2024-07", nextMaintenance: "2025-Q1", photo: nembasImg, matterportUrl: "https://my.matterport.com/show/?m=Kxk2zTtfWW5" },
+        { name: "Sanha", type: "FPSO", installationYear: 2004, waterDepthM: 350, capacity: "100.000 BOPD", status: "Operacional", lastInspection: "2024-08", nextMaintenance: "2025-Q2", photo: sanhaImg, matterportUrl: "https://my.matterport.com/show/?m=27fADgcq1S1" },
+        { name: "Sanha LPG", type: "FPSO", installationYear: 2005, waterDepthM: 350, capacity: "LPG Processing", status: "Operacional", lastInspection: "2024-05", nextMaintenance: "2025-Q3", photo: sanhaImg, matterportUrl: "https://my.matterport.com/show/?m=mLeAUDBhSLW" },
+        { name: "Nembas", type: "FPSO", installationYear: 2010, waterDepthM: 400, capacity: "60.000 BOPD", status: "Operacional", lastInspection: "2024-07", nextMaintenance: "2025-Q1", photo: nembasImg, matterportUrl: "https://my.matterport.com/show/?m=fVGjmBDWugV" },
         { name: "East Kwanza (EK)", type: "Subsea Tieback", installationYear: 2012, waterDepthM: 450, capacity: "30.000 BOPD", status: "Operacional", lastInspection: "2024-04", nextMaintenance: "2025-Q2", photo: subseaImg, matterportUrl: "https://my.matterport.com/show/?m=Kxk2zTtfWW5" },
         { name: "West Kwanza (WK)", type: "Subsea Tieback", installationYear: 2014, waterDepthM: 480, capacity: "25.000 BOPD", status: "Operacional", lastInspection: "2024-10", nextMaintenance: "2025-Q4", photo: subseaImg, matterportUrl: "https://my.matterport.com/show/?m=Kxk2zTtfWW5" },
         { name: "Malongo Terminal", type: "Onshore Terminal", installationYear: 1968, waterDepthM: 0, capacity: "400.000 BOPD", status: "Operacional", lastInspection: "2024-12", nextMaintenance: "2025-Q1", photo: malongoImg },
@@ -1110,9 +1110,9 @@ export const oilBlocks: OilBlock[] = [
       endOfLifeField: "Tômbua-Lândana",
       cumulativeProductionBO: 1450000000,
       platformSpecs: [
-        { name: "Kuito FPSO", type: "FPSO", installationYear: 1999, waterDepthM: 800, capacity: "50.000 BOPD", status: "Operacional", lastInspection: "2024-05", nextMaintenance: "2025-Q2", matterportUrl: "https://my.matterport.com/show/?m=Kxk2zTtfWW5" },
-        { name: "BBLT FPSO", type: "FPSO", installationYear: 2005, waterDepthM: 1200, capacity: "100.000 BOPD", status: "Operacional", lastInspection: "2024-09", nextMaintenance: "2025-Q3", matterportUrl: "https://my.matterport.com/show/?m=Kxk2zTtfWW5" },
-        { name: "Tômbua-Lândana FPSO", type: "FPSO", installationYear: 2009, waterDepthM: 1400, capacity: "80.000 BOPD", status: "Operacional", lastInspection: "2024-11", nextMaintenance: "2025-Q1", matterportUrl: "https://my.matterport.com/show/?m=Kxk2zTtfWW5" },
+        { name: "Kuito FPSO", type: "FPSO", installationYear: 1999, waterDepthM: 800, capacity: "50.000 BOPD", status: "Operacional", lastInspection: "2024-05", nextMaintenance: "2025-Q2", matterportUrl: "https://my.matterport.com/show/?m=hG9sERCfULe" },
+        { name: "BBLT FPSO", type: "FPSO", installationYear: 2005, waterDepthM: 1200, capacity: "100.000 BOPD", status: "Operacional", lastInspection: "2024-09", nextMaintenance: "2025-Q3", matterportUrl: "https://my.matterport.com/show/?m=zzWL6Cyf32f" },
+        { name: "Tômbua-Lândana FPSO", type: "FPSO", installationYear: 2009, waterDepthM: 1400, capacity: "80.000 BOPD", status: "Operacional", lastInspection: "2024-11", nextMaintenance: "2025-Q1", matterportUrl: "https://my.matterport.com/show/?m=Gdj155SZGio" },
       ],
       documents: [
         { title: "Ficha Técnica — FPSO Kuito", type: "ficha-tecnica", date: "2024-05-15", description: "Primeiro FPSO deep water de Angola. Capacidade original de 100.000 BOPD, actualmente reduzida." },
@@ -1604,9 +1604,9 @@ export const oilBlocks: OilBlock[] = [
       endOfLifeField: "Kizomba B",
       cumulativeProductionBO: 2100000000,
       platformSpecs: [
-        { name: "Kizomba A FPSO", type: "FPSO", installationYear: 2004, waterDepthM: 1200, capacity: "150.000 BOPD", status: "Operacional", lastInspection: "2024-09", nextMaintenance: "2025-Q2", matterportUrl: "https://my.matterport.com/show/?m=Kxk2zTtfWW5" },
-        { name: "Kizomba B FPSO", type: "FPSO", installationYear: 2005, waterDepthM: 1100, capacity: "120.000 BOPD", status: "Operacional", lastInspection: "2024-07", nextMaintenance: "2025-Q3", matterportUrl: "https://my.matterport.com/show/?m=Kxk2zTtfWW5" },
-        { name: "Mondo FPSO", type: "FPSO", installationYear: 2008, waterDepthM: 900, capacity: "80.000 BOPD", status: "Operacional", lastInspection: "2024-11", nextMaintenance: "2025-Q1", matterportUrl: "https://my.matterport.com/show/?m=Kxk2zTtfWW5" },
+        { name: "Kizomba A FPSO", type: "FPSO", installationYear: 2004, waterDepthM: 1200, capacity: "150.000 BOPD", status: "Operacional", lastInspection: "2024-09", nextMaintenance: "2025-Q2", matterportUrl: "https://my.matterport.com/show/?m=AYF61Gh9wyq" },
+        { name: "Kizomba B FPSO", type: "FPSO", installationYear: 2005, waterDepthM: 1100, capacity: "120.000 BOPD", status: "Operacional", lastInspection: "2024-07", nextMaintenance: "2025-Q3", matterportUrl: "https://my.matterport.com/show/?m=27fADgcq1S1" },
+        { name: "Mondo FPSO", type: "FPSO", installationYear: 2008, waterDepthM: 900, capacity: "80.000 BOPD", status: "Operacional", lastInspection: "2024-11", nextMaintenance: "2025-Q1", matterportUrl: "https://my.matterport.com/show/?m=mLeAUDBhSLW" },
         { name: "Saxi-Batuque Subsea", type: "Subsea Tieback", installationYear: 2009, waterDepthM: 800, capacity: "50.000 BOPD", status: "Operacional", lastInspection: "2024-06", nextMaintenance: "2025-Q4", matterportUrl: "https://my.matterport.com/show/?m=Kxk2zTtfWW5" },
       ],
       documents: [
@@ -1876,10 +1876,10 @@ export const oilBlocks: OilBlock[] = [
       endOfLifeField: "Zinia Phase 2",
       cumulativeProductionBO: 3200000000,
       platformSpecs: [
-        { name: "Girassol FPSO", type: "FPSO", installationYear: 2001, waterDepthM: 1350, capacity: "200.000 BOPD", status: "Operacional", lastInspection: "2024-08", nextMaintenance: "2025-Q2", matterportUrl: "https://my.matterport.com/show/?m=Kxk2zTtfWW5" },
-        { name: "Dalia FPSO", type: "FPSO", installationYear: 2006, waterDepthM: 1500, capacity: "240.000 BOPD", status: "Operacional", lastInspection: "2024-10", nextMaintenance: "2025-Q3", matterportUrl: "https://my.matterport.com/show/?m=Kxk2zTtfWW5" },
-        { name: "Pazflor FPSO", type: "FPSO", installationYear: 2011, waterDepthM: 800, capacity: "220.000 BOPD", status: "Operacional", lastInspection: "2024-07", nextMaintenance: "2025-Q1", matterportUrl: "https://my.matterport.com/show/?m=Kxk2zTtfWW5" },
-        { name: "CLOV FPSO", type: "FPSO", installationYear: 2014, waterDepthM: 1400, capacity: "160.000 BOPD", status: "Operacional", lastInspection: "2024-11", nextMaintenance: "2025-Q4", matterportUrl: "https://my.matterport.com/show/?m=Kxk2zTtfWW5" },
+        { name: "Girassol FPSO", type: "FPSO", installationYear: 2001, waterDepthM: 1350, capacity: "200.000 BOPD", status: "Operacional", lastInspection: "2024-08", nextMaintenance: "2025-Q2", matterportUrl: "https://my.matterport.com/show/?m=fVGjmBDWugV" },
+        { name: "Dalia FPSO", type: "FPSO", installationYear: 2006, waterDepthM: 1500, capacity: "240.000 BOPD", status: "Operacional", lastInspection: "2024-10", nextMaintenance: "2025-Q3", matterportUrl: "https://my.matterport.com/show/?m=hG9sERCfULe" },
+        { name: "Pazflor FPSO", type: "FPSO", installationYear: 2011, waterDepthM: 800, capacity: "220.000 BOPD", status: "Operacional", lastInspection: "2024-07", nextMaintenance: "2025-Q1", matterportUrl: "https://my.matterport.com/show/?m=zzWL6Cyf32f" },
+        { name: "CLOV FPSO", type: "FPSO", installationYear: 2014, waterDepthM: 1400, capacity: "160.000 BOPD", status: "Operacional", lastInspection: "2024-11", nextMaintenance: "2025-Q4", matterportUrl: "https://my.matterport.com/show/?m=Gdj155SZGio" },
       ],
       documents: [
         { title: "Ficha Técnica — FPSO Girassol", type: "ficha-tecnica", date: "2024-08-10", description: "Primeiro FPSO ultra-deep water de Angola. Capacidade de armazenamento de 2M barris." },
@@ -2118,7 +2118,7 @@ export const oilBlocks: OilBlock[] = [
       endOfLifeField: "Paladio (se desenvolvido)",
       cumulativeProductionBO: 580000000,
       platformSpecs: [
-        { name: "Greater Plutonio FPSO", type: "FPSO", installationYear: 2007, waterDepthM: 1400, capacity: "120.000 BOPD", status: "Operacional", lastInspection: "2024-06", nextMaintenance: "2025-Q2", matterportUrl: "https://my.matterport.com/show/?m=Kxk2zTtfWW5" },
+        { name: "Greater Plutonio FPSO", type: "FPSO", installationYear: 2007, waterDepthM: 1400, capacity: "120.000 BOPD", status: "Operacional", lastInspection: "2024-06", nextMaintenance: "2025-Q2", matterportUrl: "https://my.matterport.com/show/?m=AYF61Gh9wyq" },
       ],
       documents: [
         { title: "Ficha Técnica — FPSO Greater Plutonio", type: "ficha-tecnica", date: "2024-06-15", description: "FPSO operado pela Azule Energy com capacidade de 120.000 BOPD e armazenamento de 1.6M barris." },
@@ -2345,7 +2345,7 @@ export const oilBlocks: OilBlock[] = [
       endOfLifeField: "Ceres Phase 2",
       cumulativeProductionBO: 680000000,
       platformSpecs: [
-        { name: "PSVM FPSO", type: "FPSO", installationYear: 2012, waterDepthM: 2000, capacity: "150.000 BOPD", status: "Operacional", lastInspection: "2024-09", nextMaintenance: "2025-Q2", matterportUrl: "https://my.matterport.com/show/?m=Kxk2zTtfWW5" },
+        { name: "PSVM FPSO", type: "FPSO", installationYear: 2012, waterDepthM: 2000, capacity: "150.000 BOPD", status: "Operacional", lastInspection: "2024-09", nextMaintenance: "2025-Q2", matterportUrl: "https://my.matterport.com/show/?m=27fADgcq1S1" },
         { name: "Ceres Subsea", type: "Subsea Tieback", installationYear: 2020, waterDepthM: 2200, capacity: "30.000 BOPD", status: "Operacional", lastInspection: "2024-07", nextMaintenance: "2025-Q3", matterportUrl: "https://my.matterport.com/show/?m=Kxk2zTtfWW5" },
       ],
       documents: [
@@ -2576,7 +2576,7 @@ export const oilBlocks: OilBlock[] = [
       endOfLifeField: "Mavinga/Kwanza Rift",
       cumulativeProductionBO: 15000000,
       platformSpecs: [
-        { name: "Kaminho FPSO", type: "FPSO", installationYear: 2027, waterDepthM: 2200, capacity: "120.000 BOPD", status: "Suspensa", lastInspection: "N/A", nextMaintenance: "2028-Q1", matterportUrl: "https://my.matterport.com/show/?m=Kxk2zTtfWW5" },
+        { name: "Kaminho FPSO", type: "FPSO", installationYear: 2027, waterDepthM: 2200, capacity: "120.000 BOPD", status: "Suspensa", lastInspection: "N/A", nextMaintenance: "2028-Q1", matterportUrl: "https://my.matterport.com/show/?m=mLeAUDBhSLW" },
       ],
       documents: [
         { title: "Ficha Técnica — FPSO Kaminho", type: "ficha-tecnica", date: "2024-12-01", description: "FPSO de nova geração para o desenvolvimento Kaminho Pre-Salt. Capacidade de 120.000 BOPD." },
@@ -2820,9 +2820,9 @@ export const oilBlocks: OilBlock[] = [
       endOfLifeField: "Agogo Phase 2",
       cumulativeProductionBO: 850000000,
       platformSpecs: [
-        { name: "FPSO Ngoma", type: "FPSO", installationYear: 2008, waterDepthM: 1200, capacity: "200.000 BOPD", status: "Operacional", lastInspection: "2024-09", nextMaintenance: "2025-Q2", matterportUrl: "https://my.matterport.com/show/?m=Kxk2zTtfWW5" },
-        { name: "FPSO Kaombo Norte", type: "FPSO", installationYear: 2018, waterDepthM: 1600, capacity: "115.000 BOPD", status: "Operacional", lastInspection: "2024-07", nextMaintenance: "2025-Q3", matterportUrl: "https://my.matterport.com/show/?m=Kxk2zTtfWW5" },
-        { name: "FPSO Kaombo Sul", type: "FPSO", installationYear: 2019, waterDepthM: 1600, capacity: "115.000 BOPD", status: "Operacional", lastInspection: "2024-10", nextMaintenance: "2025-Q4", matterportUrl: "https://my.matterport.com/show/?m=Kxk2zTtfWW5" },
+        { name: "FPSO Ngoma", type: "FPSO", installationYear: 2008, waterDepthM: 1200, capacity: "200.000 BOPD", status: "Operacional", lastInspection: "2024-09", nextMaintenance: "2025-Q2", matterportUrl: "https://my.matterport.com/show/?m=fVGjmBDWugV" },
+        { name: "FPSO Kaombo Norte", type: "FPSO", installationYear: 2018, waterDepthM: 1600, capacity: "115.000 BOPD", status: "Operacional", lastInspection: "2024-07", nextMaintenance: "2025-Q3", matterportUrl: "https://my.matterport.com/show/?m=hG9sERCfULe" },
+        { name: "FPSO Kaombo Sul", type: "FPSO", installationYear: 2019, waterDepthM: 1600, capacity: "115.000 BOPD", status: "Operacional", lastInspection: "2024-10", nextMaintenance: "2025-Q4", matterportUrl: "https://my.matterport.com/show/?m=zzWL6Cyf32f" },
       ],
       documents: [
         { title: "Ficha Técnica — FPSO Ngoma", type: "ficha-tecnica", date: "2024-09-15", description: "FPSO principal do Bloco 15/06 com capacidade de 200.000 BOPD. Opera desde 2008." },
@@ -3663,7 +3663,7 @@ export const oilBlocks: OilBlock[] = [
       endOfLifeField: "Caco Gazela Phase 2",
       cumulativeProductionBO: 22000000,
       platformSpecs: [
-        { name: "Caco Gazela FPSO", type: "FPSO", installationYear: 2022, waterDepthM: 120, capacity: "80.000 BOPD", status: "Operacional", lastInspection: "2024-09", nextMaintenance: "2025-Q3", matterportUrl: "https://my.matterport.com/show/?m=Kxk2zTtfWW5" },
+        { name: "Caco Gazela FPSO", type: "FPSO", installationYear: 2022, waterDepthM: 120, capacity: "80.000 BOPD", status: "Operacional", lastInspection: "2024-09", nextMaintenance: "2025-Q3", matterportUrl: "https://my.matterport.com/show/?m=Gdj155SZGio" },
       ],
       documents: [
         { title: "Ficha Técnica — FPSO Caco Gazela", type: "ficha-tecnica", date: "2024-09-10", description: "FPSO para o desenvolvimento Caco Gazela em águas rasas. Capacidade de 80.000 BOPD." },
