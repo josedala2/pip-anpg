@@ -175,6 +175,7 @@ export interface PlatformSpec {
   lastInspection?: string;
   nextMaintenance?: string;
   photo?: string;
+  matterportUrl?: string;
 }
 
 export interface FacilityArea {
