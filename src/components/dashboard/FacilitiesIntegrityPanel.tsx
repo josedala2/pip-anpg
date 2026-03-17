@@ -75,6 +75,7 @@ export const FacilitiesIntegrityPanel = () => {
   const [selectedFacility, setSelectedFacility] = useState<{ blockId: string; platformName: string } | null>(null);
   const [filterType, setFilterType] = useState<string>("all");
   const [filterStatus, setFilterStatus] = useState<string>("all");
+  const [filterBlock, setFilterBlock] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
 
   const facilities: FacilityRecord[] = useMemo(() => {
@@ -219,49 +220,87 @@ export const FacilitiesIntegrityPanel = () => {
         {/* Installations List */}
         <TabsContent value="installations">
           {/* Search + Filters */}
-          <div className="space-y-3 mb-4">
-            <div className="relative max-w-sm">
-              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
-              <Input
-                placeholder="Pesquisar instalação…"
-                value={searchQuery}
-                onChange={e => setSearchQuery(e.target.value)}
-                className="pl-8 h-8 text-xs"
-              />
-            </div>
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="text-[10px] uppercase tracking-wider font-semibold text-muted-foreground">Tipo:</span>
-              {["all", ...Array.from(new Set(facilities.map(f => f.platform.type)))].map(t => (
-                <Badge
-                  key={t}
-                  variant="outline"
-                  className={`text-[10px] cursor-pointer transition-colors ${filterType === t ? "bg-primary/15 text-primary border-primary/40" : "hover:bg-muted"}`}
-                  onClick={() => setFilterType(t)}
-                >
-                  {t === "all" ? "Todos" : t}
-                </Badge>
-              ))}
-              <span className="text-[10px] uppercase tracking-wider font-semibold text-muted-foreground ml-3">Status:</span>
-              {["all", "Operacional", "Manutenção", "Suspensa", "Descomissionada"].map(s => (
-                <Badge
-                  key={s}
-                  variant="outline"
-                  className={`text-[10px] cursor-pointer transition-colors ${filterStatus === s ? "bg-primary/15 text-primary border-primary/40" : "hover:bg-muted"}`}
-                  onClick={() => setFilterStatus(s)}
-                >
-                  {s === "all" ? "Todos" : s}
-                </Badge>
-              ))}
-            </div>
-          </div>
+          {(() => {
+            const query = searchQuery.toLowerCase();
+            const blocksWithSpecs = oilBlocks.filter(b => b.facilityData?.platformSpecs?.length);
+            const totalFiltered = blocksWithSpecs.reduce((sum, block) =>
+              sum + block.facilityData!.platformSpecs!.filter(p =>
+                (filterType === "all" || p.type === filterType) &&
+                (filterStatus === "all" || p.status === filterStatus) &&
+                (filterBlock === "all" || block.id === filterBlock) &&
+                (!query || p.name.toLowerCase().includes(query) || p.type.toLowerCase().includes(query) || block.name.toLowerCase().includes(query))
+              ).length, 0
+            );
+            const totalAll = blocksWithSpecs.reduce((s, b) => s + b.facilityData!.platformSpecs!.length, 0);
 
-          <ScrollArea className="h-[530px]">
+            return (
+            <div className="space-y-3 mb-4">
+              <div className="flex items-center gap-3">
+                <div className="relative max-w-sm flex-1">
+                  <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
+                  <Input
+                    placeholder="Pesquisar instalação…"
+                    value={searchQuery}
+                    onChange={e => setSearchQuery(e.target.value)}
+                    className="pl-8 h-8 text-xs"
+                  />
+                </div>
+                <Badge variant="outline" className="text-[10px] shrink-0">
+                  {totalFiltered} de {totalAll} instalações
+                </Badge>
+              </div>
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-[10px] uppercase tracking-wider font-semibold text-muted-foreground">Bloco:</span>
+                {["all", ...blocksWithSpecs.map(b => b.id)].map(bId => {
+                  const label = bId === "all" ? "Todos" : blocksWithSpecs.find(b => b.id === bId)?.name || bId;
+                  return (
+                    <Badge
+                      key={bId}
+                      variant="outline"
+                      className={`text-[10px] cursor-pointer transition-colors ${filterBlock === bId ? "bg-primary/15 text-primary border-primary/40" : "hover:bg-muted"}`}
+                      onClick={() => setFilterBlock(bId)}
+                    >
+                      {label}
+                    </Badge>
+                  );
+                })}
+              </div>
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-[10px] uppercase tracking-wider font-semibold text-muted-foreground">Tipo:</span>
+                {["all", ...Array.from(new Set(facilities.map(f => f.platform.type)))].map(t => (
+                  <Badge
+                    key={t}
+                    variant="outline"
+                    className={`text-[10px] cursor-pointer transition-colors ${filterType === t ? "bg-primary/15 text-primary border-primary/40" : "hover:bg-muted"}`}
+                    onClick={() => setFilterType(t)}
+                  >
+                    {t === "all" ? "Todos" : t}
+                  </Badge>
+                ))}
+                <span className="text-[10px] uppercase tracking-wider font-semibold text-muted-foreground ml-3">Status:</span>
+                {["all", "Operacional", "Manutenção", "Suspensa", "Descomissionada"].map(s => (
+                  <Badge
+                    key={s}
+                    variant="outline"
+                    className={`text-[10px] cursor-pointer transition-colors ${filterStatus === s ? "bg-primary/15 text-primary border-primary/40" : "hover:bg-muted"}`}
+                    onClick={() => setFilterStatus(s)}
+                  >
+                    {s === "all" ? "Todos" : s}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+            );
+          })()}
+
+          <ScrollArea className="h-[500px]">
             <div className="space-y-6">
               {oilBlocks.filter(b => b.facilityData?.platformSpecs?.length).map(block => {
                 const query = searchQuery.toLowerCase();
                 const filtered = block.facilityData!.platformSpecs!.filter(p =>
                   (filterType === "all" || p.type === filterType) &&
                   (filterStatus === "all" || p.status === filterStatus) &&
+                  (filterBlock === "all" || block.id === filterBlock) &&
                   (!query || p.name.toLowerCase().includes(query) || p.type.toLowerCase().includes(query) || block.name.toLowerCase().includes(query))
                 );
                 if (filtered.length === 0) return null;
