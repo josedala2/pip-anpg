@@ -72,6 +72,8 @@ const parseCapacity = (cap?: string): number => {
 export const FacilitiesIntegrityPanel = () => {
   const [selectedTab, setSelectedTab] = useState("installations");
   const [selectedFacility, setSelectedFacility] = useState<{ blockId: string; platformName: string } | null>(null);
+  const [filterType, setFilterType] = useState<string>("all");
+  const [filterStatus, setFilterStatus] = useState<string>("all");
 
   const facilities: FacilityRecord[] = useMemo(() => {
     const results: FacilityRecord[] = [];
