@@ -240,6 +240,30 @@ export const HomologacoesPanel = ({ filterBloco }: Props) => {
     const uniqueIntl = uniqueFornecedores.filter(([_, c]) => c === "internacional").length;
     const uniqueConsorcio = uniqueFornecedores.filter(([_, c]) => c === "consórcio").length;
 
+    // Per-block local content ranking
+    const blocoMap = new Map<string, { ang: number; intl: number; cons: number; total: number; angVal: number; totalVal: number }>();
+    data.forEach(h => {
+      if (!blocoMap.has(h.bloco)) blocoMap.set(h.bloco, { ang: 0, intl: 0, cons: 0, total: 0, angVal: 0, totalVal: 0 });
+      const entry = blocoMap.get(h.bloco)!;
+      const cls = fornecedorClassMap.get(h.fornecedor || "N/D") || "internacional";
+      entry.total++;
+      entry.totalVal += h.montanteAprovado;
+      if (cls === "angolano") { entry.ang++; entry.angVal += h.montanteAprovado; }
+      else if (cls === "internacional") entry.intl++;
+      else entry.cons++;
+    });
+    const blocoRanking = [...blocoMap.entries()]
+      .map(([bloco, v]) => ({
+        bloco,
+        pctAngProcessos: v.total > 0 ? (v.ang / v.total) * 100 : 0,
+        pctAngValor: v.totalVal > 0 ? (v.angVal / v.totalVal) * 100 : 0,
+        processos: v.total,
+        angProcessos: v.ang,
+        totalValor: v.totalVal,
+        angValor: v.angVal,
+      }))
+      .sort((a, b) => a.pctAngValor - b.pctAngValor); // ascending = worst first
+
     return {
       angolanoCount, intlCount, consorcioCount,
       angolanoValor, intlValor, consorcioValor,
@@ -256,6 +280,7 @@ export const HomologacoesPanel = ({ filterBloco }: Props) => {
         { name: "Internacional", value: intlValor },
         { name: "Consórcio Misto", value: consorcioValor },
       ].filter(d => d.value > 0),
+      blocoRanking,
     };
   }, [data]);
 
