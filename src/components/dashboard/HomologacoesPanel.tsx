@@ -52,9 +52,19 @@ export const HomologacoesPanel = ({ filterBloco }: Props) => {
   const [searchText, setSearchText] = useState("");
   const [expandedBloco, setExpandedBloco] = useState<string | null>(null);
 
+  // Map block names from angolaBlocks format ("Block 0 (Área A, B)") to homologações format ("Bloco 0")
+  const matchBloco = (blocoData: string, filterName: string): boolean => {
+    // Extract block identifier: "Block 0 (Área A, B)" → "0", "Bloco 0" → "0"
+    const extractId = (name: string) => {
+      const m = name.match(/Bloc[ko]\s+(.+?)(?:\s*\(|$)/i);
+      return m ? m[1].trim() : name;
+    };
+    return extractId(blocoData) === extractId(filterName);
+  };
+
   const data = useMemo(() => {
     let d = filterBloco
-      ? homologacoesData.filter(h => h.bloco === filterBloco)
+      ? homologacoesData.filter(h => matchBloco(h.bloco, filterBloco))
       : homologacoesData;
     if (yearFilter !== "all") d = d.filter(h => h.ano === Number(yearFilter));
     if (mesFilter !== "all") d = d.filter(h => h.mes === mesFilter);
