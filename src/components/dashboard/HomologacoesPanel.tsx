@@ -1307,21 +1307,34 @@ export const HomologacoesPanel = ({ filterBloco }: Props) => {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="text-[10px] sticky top-0 bg-card">Mês</TableHead>
-                    <TableHead className="text-[10px] sticky top-0 bg-card">Ano</TableHead>
-                    <TableHead className="text-[10px] sticky top-0 bg-card">Bloco</TableHead>
-                    <TableHead className="text-[10px] sticky top-0 bg-card">Fornecedor</TableHead>
-                    <TableHead className="text-[10px] sticky top-0 bg-card max-w-[200px]">Serviços</TableHead>
-                    <TableHead className="text-[10px] sticky top-0 bg-card">Tipo Processo</TableHead>
-                    <TableHead className="text-[10px] sticky top-0 bg-card text-right">Solicitado</TableHead>
-                    <TableHead className="text-[10px] sticky top-0 bg-card text-right">Aprovado</TableHead>
-                    <TableHead className="text-[10px] sticky top-0 bg-card">Modalidade</TableHead>
-                    <TableHead className="text-[10px] sticky top-0 bg-card">Owner</TableHead>
-                    <TableHead className="text-[10px] sticky top-0 bg-card">Decisão</TableHead>
+                    {[
+                      { key: "mes", label: "Mês", align: "" },
+                      { key: "ano", label: "Ano", align: "" },
+                      { key: "bloco", label: "Bloco", align: "" },
+                      { key: "fornecedor", label: "Fornecedor", align: "" },
+                      { key: "servicos", label: "Serviços", align: "", extra: "max-w-[200px]" },
+                      { key: "tipoProcesso", label: "Tipo Processo", align: "" },
+                      { key: "montanteSolicitado", label: "Solicitado", align: "text-right" },
+                      { key: "montanteAprovado", label: "Aprovado", align: "text-right" },
+                      { key: "modalidade", label: "Modalidade", align: "" },
+                      { key: "owner", label: "Owner", align: "" },
+                      { key: "decisao", label: "Decisão", align: "" },
+                    ].map(col => (
+                      <TableHead
+                        key={col.key}
+                        className={`text-[10px] sticky top-0 bg-card z-10 cursor-pointer select-none hover:text-foreground transition-colors ${col.align} ${col.extra || ""}`}
+                        onClick={() => makeHandleSort(detailSortKey, setDetailSortKey, detailSortDir, setDetailSortDir, ["mes", "bloco", "fornecedor", "servicos", "tipoProcesso", "modalidade", "owner", "decisao"])(col.key)}
+                      >
+                        <span className="inline-flex items-center gap-0.5">
+                          {col.label}
+                          <SortIcon active={detailSortKey === col.key} dir={detailSortDir} />
+                        </span>
+                      </TableHead>
+                    ))}
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {data.slice(0, 200).map((h, i) => (
+                  {sortArray([...data], detailSortKey, detailSortDir).slice(0, 200).map((h, i) => (
                     <TableRow key={i}>
                       <TableCell className="text-[10px]">{h.mes}</TableCell>
                       <TableCell className="text-[10px]">{h.ano}</TableCell>
