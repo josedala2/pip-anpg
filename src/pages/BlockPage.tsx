@@ -1339,49 +1339,86 @@ const BlockPage = () => {
              </div>
 
              {/* Tabela de Campos */}
-             {block.fields && block.fields.length > 0 && (
-               <Card className="glass-card">
-                 <CardHeader className="pb-3">
-                   <CardTitle className="text-sm font-bold flex items-center gap-2">
-                     <BarChart2 className="w-4 h-4 text-primary" />
-                     Campos do Bloco
-                   </CardTitle>
-                 </CardHeader>
-                 <CardContent>
-                   <Table>
-                     <TableHeader>
-                       <TableRow>
-                         <TableHead>Campo</TableHead>
-                         <TableHead>Status</TableHead>
-                         <TableHead className="text-right">Ano Descoberta</TableHead>
-                         <TableHead className="text-right">Pico Produção (BOPD)</TableHead>
-                       </TableRow>
-                     </TableHeader>
-                     <TableBody>
-                       {block.fields.map((field, i) => (
-                         <TableRow key={i}>
-                           <TableCell className="font-medium">{field.name}</TableCell>
-                           <TableCell>
-                             <Badge variant="outline" className={
-                               field.status === "Producing" ? "bg-success/15 text-success border-success/30" :
-                               field.status === "Development" ? "bg-warning/15 text-warning border-warning/30" :
-                               field.status === "Discovery" ? "bg-primary/15 text-primary border-primary/30" :
-                               "bg-danger/15 text-danger border-danger/30"
-                             }>
-                               {field.status === "Producing" ? "Em Produção" :
-                                field.status === "Development" ? "Desenvolvimento" :
-                                field.status === "Discovery" ? "Descoberta" : "Abandonado"}
-                             </Badge>
-                           </TableCell>
-                           <TableCell className="text-right">{field.discoveryYear || "—"}</TableCell>
-                           <TableCell className="text-right font-mono">{field.peakProduction?.toLocaleString() || "—"}</TableCell>
+             {block.fields && block.fields.length > 0 && (() => {
+               const statusOptions = [...new Set(block.fields.map(f => f.status))];
+               const statusLabel = (s: string) =>
+                 s === "Producing" ? "Em Produção" : s === "Development" ? "Desenvolvimento" : s === "Discovery" ? "Descoberta" : "Abandonado";
+               const filtered = block.fields
+                 .filter(f => !fieldStatusFilter || f.status === fieldStatusFilter)
+                 .sort((a, b) => (b.peakProduction || 0) - (a.peakProduction || 0));
+               return (
+                 <Card className="glass-card">
+                   <CardHeader className="pb-3">
+                     <div className="flex items-center justify-between flex-wrap gap-2">
+                       <CardTitle className="text-sm font-bold flex items-center gap-2">
+                         <BarChart2 className="w-4 h-4 text-primary" />
+                         Campos do Bloco
+                         <span className="text-xs font-normal text-muted-foreground ml-1">({filtered.length} de {block.fields.length})</span>
+                       </CardTitle>
+                       <div className="flex items-center gap-2">
+                         <div className="flex items-center gap-1">
+                           <Button
+                             variant={fieldStatusFilter === null ? "default" : "outline"}
+                             size="sm" className="h-7 text-xs px-2"
+                             onClick={() => setFieldStatusFilter(null)}
+                           >
+                             Todos
+                           </Button>
+                           {statusOptions.map(s => (
+                             <Button
+                               key={s}
+                               variant={fieldStatusFilter === s ? "default" : "outline"}
+                               size="sm" className="h-7 text-xs px-2"
+                               onClick={() => setFieldStatusFilter(fieldStatusFilter === s ? null : s)}
+                             >
+                               {statusLabel(s)}
+                             </Button>
+                           ))}
+                         </div>
+                       </div>
+                     </div>
+                   </CardHeader>
+                   <CardContent>
+                     <Table>
+                       <TableHeader>
+                         <TableRow>
+                           <TableHead>Campo</TableHead>
+                           <TableHead>Status</TableHead>
+                           <TableHead className="text-right">Ano Descoberta</TableHead>
+                           <TableHead className="text-right">Pico Produção (BOPD) ↓</TableHead>
                          </TableRow>
-                       ))}
-                     </TableBody>
-                   </Table>
-                 </CardContent>
-               </Card>
-             )}
+                       </TableHeader>
+                       <TableBody>
+                         {filtered.map((field, i) => (
+                           <TableRow key={i}>
+                             <TableCell className="font-medium">{field.name}</TableCell>
+                             <TableCell>
+                               <Badge variant="outline" className={
+                                 field.status === "Producing" ? "bg-success/15 text-success border-success/30" :
+                                 field.status === "Development" ? "bg-warning/15 text-warning border-warning/30" :
+                                 field.status === "Discovery" ? "bg-primary/15 text-primary border-primary/30" :
+                                 "bg-danger/15 text-danger border-danger/30"
+                               }>
+                                 {statusLabel(field.status)}
+                               </Badge>
+                             </TableCell>
+                             <TableCell className="text-right">{field.discoveryYear || "—"}</TableCell>
+                             <TableCell className="text-right font-mono">{field.peakProduction?.toLocaleString() || "—"}</TableCell>
+                           </TableRow>
+                         ))}
+                         {filtered.length === 0 && (
+                           <TableRow>
+                             <TableCell colSpan={4} className="text-center text-muted-foreground py-6">
+                               Nenhum campo com este filtro
+                             </TableCell>
+                           </TableRow>
+                         )}
+                       </TableBody>
+                     </Table>
+                   </CardContent>
+                 </Card>
+               );
+             })()}
            </TabsContent>
 
           <TabsContent value="projections">
