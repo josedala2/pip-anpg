@@ -201,6 +201,7 @@ export interface FacilityData {
   documents?: FacilityDocument[];
   platformSpecs?: PlatformSpec[];
   maintenancePlan?: { period: string; scope: string; status: "Concluído" | "Em Curso" | "Planeado" }[];
+  recommendations?: string[];
 }
 
 export interface NPVBreakdown {
