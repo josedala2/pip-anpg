@@ -1258,11 +1258,17 @@ export const ReportPreview = ({ config, aiNarrative, aiLoading }: Props) => {
       {config.reportTypes.includes("executive") && (
         <ExecutiveSection blocks={blocks} showTables={config.includeTables} showCharts={config.includeCharts} />
       )}
+      {config.reportTypes.includes("production") && (
+        <ProductionSection blocks={blocks} showTables={config.includeTables} showCharts={config.includeCharts} />
+      )}
       {config.reportTypes.includes("contractual") && (
         <ContractualSection blocks={blocks} showTables={config.includeTables} />
       )}
       {config.reportTypes.includes("exploration") && (
         <ExplorationSection blocks={blocks} showTables={config.includeTables} showCharts={config.includeCharts} />
+      )}
+      {config.reportTypes.includes("prospects") && (
+        <ProspectsSection blocks={blocks} showTables={config.includeTables} />
       )}
       {config.reportTypes.includes("consortium") && (
         <ConsortiumSection blocks={blocks} showTables={config.includeTables} />
@@ -1272,6 +1278,12 @@ export const ReportPreview = ({ config, aiNarrative, aiLoading }: Props) => {
       )}
       {config.reportTypes.includes("financial") && (
         <FinancialSection blocks={blocks} showTables={config.includeTables} showCharts={config.includeCharts} />
+      )}
+      {config.reportTypes.includes("hse") && (
+        <HSESection blocks={blocks} showTables={config.includeTables} showCharts={config.includeCharts} />
+      )}
+      {config.reportTypes.includes("facilities") && (
+        <FacilitiesSection blocks={blocks} showTables={config.includeTables} />
       )}
       {config.reportTypes.includes("operators") && (
         <OperatorsSection blocks={operatorBlocks} showTables={config.includeTables} showCharts={config.includeCharts} />
