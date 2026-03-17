@@ -9,6 +9,7 @@ import {
   Factory, AlertTriangle, Camera, FileText, Wrench, ShieldCheck,
   ChevronLeft, ChevronRight, X, Anchor, Clock, CheckCircle2,
   Loader2, CalendarClock, Image as ImageIcon, ChevronDown, ArrowLeft,
+  Target, Lightbulb,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { FacilitiesSchematic } from "./FacilitiesSchematic";
