@@ -201,6 +201,7 @@ export interface FacilityData {
   documents?: FacilityDocument[];
   platformSpecs?: PlatformSpec[];
   maintenancePlan?: { period: string; scope: string; status: "Concluído" | "Em Curso" | "Planeado" }[];
+  recommendations?: string[];
 }
 
 export interface NPVBreakdown {
@@ -670,14 +671,22 @@ export const oilBlocks: OilBlock[] = [
         {
           name: "Área A",
           efficiency: 85,
-          platforms: ["Takula", "GIP-FOX", "Mafumeira"],
-          issues: ["Corrosão avançada nas plataformas antigas", "Obsolescência de equipamentos de controlo", "Integridade estrutural comprometida em Takula"],
+          platforms: ["Complexo Takula", "GIP-FOX", "Complexo Mafumeira", "GS-Lima", "GS-Papa", "GS-November"],
+          issues: [
+            "Integridade das instalações e obsolescência dos equipamentos (Takula Complex, GS-Julie, GS-Fox, wellhead jackets, GS-Lima, GS-Papa, GS-November)",
+            "Obsolescência dos turbogeradores, compressores e bombas de exportação de óleo — Malongo (Fox, Delta e KWIP); Takula (TGPP, ALP e GSN)",
+            "Obsolescência das UPS/baterias e do sistema de controlo e instrumentação",
+            "Integridade da linha de exportação de 42\" no Cais de Malongo",
+          ],
         },
         {
           name: "Área B",
           efficiency: 91,
-          platforms: ["Sanha", "Sanha LPG", "Nembas", "East Kwanza (EK)", "West Kwanza (WK)"],
-          issues: ["Manutenção crescente nos sistemas de compressão"],
+          platforms: ["Complexo Sanha", "Sanha LPG", "Nembas Norte", "Nembas Sul", "East Kwanza (EK)", "West Kwanza (WK)"],
+          issues: [
+            "Integridade das instalações e obsolescência dos equipamentos (EK, WK e Complexo Sanha)",
+            "Obsolescência dos turbogeradores, compressores e bombas de exportação de óleo (compressores de reinjecção e turbogerador C do Complexo Sanha e turbogerador A do Nemba Sul)",
+          ],
         },
       ],
       activeWells: { op: 358, wi: 78, gi: 27 },
@@ -690,6 +699,17 @@ export const oilBlocks: OilBlock[] = [
       endOfLifeYear: 2040,
       endOfLifeField: "Mafumeira Sul",
       cumulativeProductionBO: 290043686705,
+      recommendations: [
+        "Realizar avaliações de estudos de engenharia e aumentar a frequência de inspecções de nível 3 e 4, de modo a identificar prioridades",
+        "Melhorar a gestão de peças sobressalentes para as manutenções preventivas dos compressores, turbogeradores e bombas de exportação de óleo",
+        "Prosseguir com a campanha de modernização dos sistemas de controlo e instrumentação",
+        "Concluir os estudos de engenharia da linha de exportação de 42\" para resolução do problema de integridade",
+        "Prosseguir com a campanha de optimização de energia do Bloco 0, com instalação de cabos submarinos para as plataformas Sanha Sul, Norte N'Dola, GS-Lima, Lomba e Maf. Norte",
+        "Reavaliação das prioridades do programa Asset Life Extension (ALE)",
+        "Monitorização da manutenção de barreiras de segurança robustas para tarefas de alto risco (sistemas de bloqueio/sinalização, permissões de trabalho, protecções de máquinas)",
+        "Promoção da investigação das causas raiz dos RWDC, MTC, FAC e NMI para implementar acções que impeçam a recorrência",
+        "Manutenção periódica preventiva/preditiva para mitigação de fugas por corrosão",
+      ],
       photos: [
         { url: takulaImg, caption: "Vista aérea do complexo Takula", platform: "Takula", year: 2023 },
         { url: takulaImg, caption: "Deck principal — Plataforma Takula", platform: "Takula", year: 2024 },
