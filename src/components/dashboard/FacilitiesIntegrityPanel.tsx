@@ -191,25 +191,7 @@ export const FacilitiesIntegrityPanel = () => {
         ))}
       </div>
 
-      {/* Detail view when facility selected */}
-      {selectedFacility && (() => {
-        const block = oilBlocks.find(b => b.id === selectedFacility.blockId);
-        const spec = block?.facilityData?.platformSpecs?.find(p => p.name === selectedFacility.platformName);
-        if (!block || !spec) return null;
-        const facilityPhotos = block.facilityData?.photos || [];
-        const facilityDocs = block.facilityData?.documents || [];
-        const facilityMaintenance = block.facilityData?.maintenancePlan || [];
-        return (
-          <div className="space-y-4">
-            <Button variant="ghost" size="sm" className="gap-1.5" onClick={() => navigate(-1)}>
-              <ArrowLeft className="w-4 h-4" /> Voltar à lista
-            </Button>
-            <FacilityDetailCard spec={spec} photos={facilityPhotos} documents={facilityDocs} maintenanceItems={facilityMaintenance} />
-          </div>
-        );
-      })()}
-
-      {!selectedFacility && (
+      {/* Main content — always show list/tabs (detail is now a separate page) */}
       <Tabs value={selectedTab} onValueChange={setSelectedTab}>
         <TabsList className="bg-muted/50 flex-wrap">
           <TabsTrigger value="installations">Lista de Instalações</TabsTrigger>
