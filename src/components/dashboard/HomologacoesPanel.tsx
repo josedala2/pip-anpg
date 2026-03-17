@@ -60,6 +60,46 @@ export const HomologacoesPanel = ({ filterBloco }: Props) => {
   const [clThreshold, setClThreshold] = useState(30); // % minimum local content
   const [showAlertConfig, setShowAlertConfig] = useState(false);
 
+  // Sort state for each table
+  const [rankSortKey, setRankSortKey] = useState<string>("pctAngValor");
+  const [rankSortDir, setRankSortDir] = useState<"asc" | "desc">("asc");
+  const [blocoSortKey, setBlocoSortKey] = useState<string>("aprovado");
+  const [blocoSortDir, setBlocoSortDir] = useState<"asc" | "desc">("desc");
+  const [fornSortKey, setFornSortKey] = useState<string>("valor");
+  const [fornSortDir, setFornSortDir] = useState<"asc" | "desc">("desc");
+  const [detailSortKey, setDetailSortKey] = useState<string>("montanteAprovado");
+  const [detailSortDir, setDetailSortDir] = useState<"asc" | "desc">("desc");
+
+  const SortIcon = ({ active, dir }: { active: boolean; dir: "asc" | "desc" }) => {
+    if (!active) return <ArrowUpDown className="w-3 h-3 opacity-40" />;
+    return dir === "asc" ? <ArrowUp className="w-3 h-3 text-primary" /> : <ArrowDown className="w-3 h-3 text-primary" />;
+  };
+
+  const makeHandleSort = (
+    currentKey: string, setKey: (k: string) => void,
+    currentDir: "asc" | "desc", setDir: (d: "asc" | "desc") => void,
+    textCols: string[] = []
+  ) => (key: string) => {
+    if (currentKey === key) {
+      setDir(currentDir === "asc" ? "desc" : "asc");
+    } else {
+      setKey(key);
+      setDir(textCols.includes(key) ? "asc" : "desc");
+    }
+  };
+
+  const sortArray = <T extends Record<string, any>>(arr: T[], key: string, dir: "asc" | "desc"): T[] => {
+    const mult = dir === "asc" ? 1 : -1;
+    return [...arr].sort((a, b) => {
+      const av = a[key]; const bv = b[key];
+      if (av == null && bv == null) return 0;
+      if (av == null) return 1;
+      if (bv == null) return -1;
+      if (typeof av === "string" && typeof bv === "string") return av.localeCompare(bv) * mult;
+      return ((av as number) - (bv as number)) * mult;
+    });
+  };
+
   // Map block names from angolaBlocks format ("Block 0 (Área A, B)") to homologações format ("Bloco 0")
   const matchBloco = (blocoData: string, filterName: string): boolean => {
     // Extract block identifier: "Block 0 (Área A, B)" → "0", "Bloco 0" → "0"
