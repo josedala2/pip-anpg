@@ -156,26 +156,3 @@ function DrillDownButton({ icon: Icon, label, isOpen, onClick }: {
   );
 }
 
-function DrillDownButton({ icon: Icon, label, isOpen, onClick }: {
-  icon: React.ElementType;
-  label: string;
-  isOpen: boolean;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      onClick={onClick}
-      className={`flex items-center justify-between gap-2 px-4 py-2.5 rounded-lg border text-xs font-semibold transition-all ${
-        isOpen
-          ? "bg-primary/10 border-primary/30 text-primary"
-          : "bg-card border-border/50 text-muted-foreground hover:text-foreground hover:border-border"
-      }`}
-    >
-      <div className="flex items-center gap-2">
-        <Icon className="w-3.5 h-3.5" />
-        <span>{label}</span>
-      </div>
-      {isOpen ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
-    </button>
-  );
-}
