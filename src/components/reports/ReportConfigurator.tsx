@@ -12,7 +12,11 @@ export type ReportType =
   | "consortium"
   | "legislation"
   | "financial"
-  | "operators";
+  | "operators"
+  | "production"
+  | "hse"
+  | "facilities"
+  | "prospects";
 
 export interface ReportConfig {
   reportTypes: ReportType[];
