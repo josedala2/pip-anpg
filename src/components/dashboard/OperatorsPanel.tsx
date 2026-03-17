@@ -272,32 +272,41 @@ function OperatorListView({ operators, onSelect }: { operators: OperatorSummary[
 function OperatorDetailView({ operator, onBack }: { operator: OperatorSummary; onBack: () => void }) {
   const { blocks } = operator;
   const [selectedBlock, setSelectedBlock] = useState<OilBlock | null>(null);
-
+  const [detailSearch, setDetailSearch] = useState("");
   // Table sort states
-  const blocksTableData = useMemo(() => blocks.map(b => ({
-    id: b.id, name: b.name, phase: b.phase, basin: b.basin, waterDepth: b.waterDepth || "",
-    dailyProduction: b.dailyProduction, estimatedReserves: b.estimatedReserves,
-    complianceScore: b.complianceScore, contractDate: b.contractDate || "",
-    accumulatedInvestment: b.accumulatedInvestment, plannedInvestment: b.plannedInvestment,
-    executionRate: b.executionRate, opexPerBarrel: b.economicData?.opexPerBarrel || 0,
-  })), [blocks]);
+  const blocksTableData = useMemo(() => {
+    const q = detailSearch.toLowerCase();
+    return blocks
+      .map(b => ({
+        id: b.id, name: b.name, phase: b.phase, basin: b.basin, waterDepth: b.waterDepth || "",
+        dailyProduction: b.dailyProduction, estimatedReserves: b.estimatedReserves,
+        complianceScore: b.complianceScore, contractDate: b.contractDate || "",
+        accumulatedInvestment: b.accumulatedInvestment, plannedInvestment: b.plannedInvestment,
+        executionRate: b.executionRate, opexPerBarrel: b.economicData?.opexPerBarrel || 0,
+      }))
+      .filter(b => !q || b.name.toLowerCase().includes(q) || b.phase.toLowerCase().includes(q) || b.basin.toLowerCase().includes(q));
+  }, [blocks, detailSearch]);
   const blocksSort = useTableSort(blocksTableData, "dailyProduction", "desc", ["name", "phase", "basin", "waterDepth", "contractDate"]);
   const econSort = useTableSort(blocksTableData, "accumulatedInvestment", "desc", ["name"]);
-  const fieldsData = useMemo(() => blocks.flatMap(b => (b.fields || []).map(f => ({
-    blockName: b.name, fieldName: f.name, status: f.status, discoveryYear: f.discoveryYear || 0,
-    peakProduction: f.peakProduction || 0,
-  }))), [blocks]);
+  const fieldsData = useMemo(() => {
+    const q = detailSearch.toLowerCase();
+    return blocks.flatMap(b => (b.fields || []).map(f => ({
+      blockName: b.name, fieldName: f.name, status: f.status, discoveryYear: f.discoveryYear || 0,
+      peakProduction: f.peakProduction || 0,
+    }))).filter(f => !q || f.blockName.toLowerCase().includes(q) || f.fieldName.toLowerCase().includes(q) || f.status.toLowerCase().includes(q));
+  }, [blocks, detailSearch]);
   const fieldsSort = useTableSort(fieldsData, "peakProduction", "desc", ["blockName", "fieldName", "status"]);
   // Facilities data for sorting
   const facilitiesData = useMemo(() => {
+    const q = detailSearch.toLowerCase();
     const platforms: { name: string; type: string; block: string; status: string; capacity: string }[] = [];
     blocks.forEach(b => {
       b.facilityData?.platformSpecs?.forEach(p => {
         platforms.push({ name: p.name, type: p.type, block: b.name, status: p.status, capacity: p.capacity || "" });
       });
     });
-    return platforms;
-  }, [blocks]);
+    return platforms.filter(p => !q || p.name.toLowerCase().includes(q) || p.block.toLowerCase().includes(q) || p.type.toLowerCase().includes(q));
+  }, [blocks, detailSearch]);
   const facilitiesSort = useTableSort(facilitiesData, "name", "asc", ["name", "type", "block", "status", "capacity"]);
 
   // Aggregate production history
@@ -414,7 +423,11 @@ function OperatorDetailView({ operator, onBack }: { operator: OperatorSummary; o
         </CardContent>
       </Card>
 
-      {/* Detail Tabs */}
+      {/* Search + Detail Tabs */}
+      <div className="relative max-w-sm">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+        <Input placeholder="Pesquisar bloco, campo, instalação..." className="pl-9 h-9 text-sm" value={detailSearch} onChange={e => setDetailSearch(e.target.value)} />
+      </div>
       <Tabs defaultValue="blocks" className="w-full">
         <TabsList className="flex flex-wrap h-auto gap-1 bg-muted/50 p-1">
           <TabsTrigger value="blocks" className="text-xs gap-1"><Layers className="w-3 h-3" /> Blocos</TabsTrigger>

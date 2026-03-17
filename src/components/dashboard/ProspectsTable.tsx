@@ -2,7 +2,8 @@ import { useMemo, useState, useRef, useCallback } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Target } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Target, Search } from "lucide-react";
 import { SortableHead } from "@/components/ui/sortable-head";
 import { useTableSort } from "@/hooks/useTableSort";
 import { ScatterChart, Scatter, XAxis, YAxis, ZAxis, Tooltip, ResponsiveContainer, CartesianGrid, Cell } from "recharts";
@@ -49,6 +50,7 @@ const BubbleTooltip = ({ active, payload }: any) => {
 
 export const ProspectsTable = ({ blocks, scopeLabel }: ProspectsTableProps) => {
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
+  const [prospectSearch, setProspectSearch] = useState("");
   const tableRef = useRef<HTMLDivElement>(null);
 
   const blocksWithProspects = useMemo(
@@ -69,6 +71,7 @@ export const ProspectsTable = ({ blocks, scopeLabel }: ProspectsTableProps) => {
   }, [blocksWithProspects]);
 
   const flatProspects = useMemo(() => {
+    const q = prospectSearch.toLowerCase();
     const data: { block: string; blockId: string; discoveryArea: string; name: string; reservoir: string; resourcesMMBO: number; resourcesBCF: number; pos: number; key: string; z: number; idx: number }[] = [];
     blocksWithProspects.forEach(b => {
       b.prospects!.forEach((p, i) => {
@@ -87,8 +90,14 @@ export const ProspectsTable = ({ blocks, scopeLabel }: ProspectsTableProps) => {
         });
       });
     });
-    return data;
-  }, [blocksWithProspects]);
+    if (!q) return data;
+    return data.filter(d =>
+      d.block.toLowerCase().includes(q) ||
+      d.name.toLowerCase().includes(q) ||
+      d.discoveryArea.toLowerCase().includes(q) ||
+      d.reservoir.toLowerCase().includes(q)
+    );
+  }, [blocksWithProspects, prospectSearch]);
 
   const prospectSort = useTableSort(flatProspects, "resourcesMMBO", "desc", ["block", "discoveryArea", "name", "reservoir"]);
 
@@ -183,15 +192,26 @@ export const ProspectsTable = ({ blocks, scopeLabel }: ProspectsTableProps) => {
       {/* Table */}
       <Card className="glass-card">
          <CardHeader className="p-4 2xl:p-5 pb-2">
-           <CardTitle className="text-sm 2xl:text-base flex items-center gap-2">
-             <Target className="w-4 h-4 2xl:w-5 2xl:h-5 text-primary" />
-             Prospectos & Recursos — {scopeLabel}
-             <Badge variant="outline" className="ml-auto text-[10px] 2xl:text-xs bg-primary/10 text-primary border-primary/30">
-              {totals.count} prospectos · {totals.mmbo.toLocaleString(undefined, { maximumFractionDigits: 1 })} MMBO
-              {totals.bcf > 0 && ` · ${totals.bcf.toLocaleString()} BCF`}
-            </Badge>
-          </CardTitle>
-        </CardHeader>
+           <div className="flex items-center justify-between gap-3 flex-wrap">
+             <CardTitle className="text-sm 2xl:text-base flex items-center gap-2">
+               <Target className="w-4 h-4 2xl:w-5 2xl:h-5 text-primary" />
+               Prospectos & Recursos — {scopeLabel}
+               <Badge variant="outline" className="text-[10px] 2xl:text-xs bg-primary/10 text-primary border-primary/30">
+                {prospectSort.sorted.length}{prospectSort.sorted.length !== totals.count ? ` de ${totals.count}` : ""} prospectos · {totals.mmbo.toLocaleString(undefined, { maximumFractionDigits: 1 })} MMBO
+                {totals.bcf > 0 && ` · ${totals.bcf.toLocaleString()} BCF`}
+              </Badge>
+            </CardTitle>
+            <div className="relative w-52">
+              <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
+              <Input
+                placeholder="Pesquisar prospecto..."
+                value={prospectSearch}
+                onChange={e => setProspectSearch(e.target.value)}
+                className="h-7 pl-7 text-xs glass-card border-border/50"
+              />
+            </div>
+           </div>
+         </CardHeader>
         <CardContent className="p-4 pt-2">
           <div ref={tableRef} className="relative w-full overflow-auto max-h-[500px]">
             <Table>
