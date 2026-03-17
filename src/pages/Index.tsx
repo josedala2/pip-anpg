@@ -14,6 +14,7 @@ import { GeneralForecastPanel } from "@/components/dashboard/GeneralForecastPane
 import { OperatorsPanel } from "@/components/dashboard/OperatorsPanel";
 import { AlertsPanel } from "@/components/dashboard/AlertsPanel";
 import { CouncilRecommendationsPanel } from "@/components/dashboard/CouncilRecommendationsPanel";
+import { HomologacoesPanel } from "@/components/dashboard/HomologacoesPanel";
 import { RiskPerformance } from "@/components/dashboard/RiskPerformance";
 import { SobaChat } from "@/components/dashboard/SobaChat";
 import { type OilBlock, oilBlocks } from "@/data/angolaBlocks";
