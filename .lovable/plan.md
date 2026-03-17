@@ -1,30 +1,51 @@
+## Roteiro de Evolução — Plataforma Nacional de Inteligência Petrolífera
 
+### Estado actual vs Visão
 
-## Plan: Wrap Homologações Charts with ChartWrapper
+| Capacidade | Estado |
+|---|---|
+| Mapa de concessões | ✅ Existe |
+| KPIs nacionais (prod, reservas, receita estado, variações) | ✅ Completo |
+| Painel de Blocos & Concessões | ✅ Existe |
+| Painel de Produção | ✅ Existe |
+| Painel de Exploração | ✅ Existe |
+| Painel de Operadores | ✅ Existe |
+| Risk & Performance | ✅ Existe |
+| Strategic Forecast | ✅ Existe |
+| Detalhe do bloco (12 abas) | ✅ Existe |
+| Visão Económica (Bloco 0) | ✅ Existe |
+| Comparativo de blocos | ✅ Existe |
+| Relatórios configuráveis | ✅ Existe |
+| Auth + roles | ✅ Existe |
+| **Branding "Inteligência Petrolífera"** | ✅ **Fase 1 concluída** |
+| **KPIs executivos completos** | ✅ **Fase 1 concluída** |
+| **Dashboard Contratual/Negocial** | ✅ **Fase 2 concluída** |
+| Dashboard Integridade Instalações | ✅ **Fase 3 concluída** |
+| Motor de Scoring Estratégico | ✅ **Fase 4 concluída** |
+| Dashboard Recomendação Conselho | ✅ **Fase 4 concluída** |
+| Sistema de Alertas Centrais | ✅ **Fase 5 concluída** |
+| **Painel de Homologações** | ✅ **Fase 6 concluída** |
 
-The project already has a `ChartWrapper` component that provides download-as-PNG and fullscreen functionality for any chart. The Homologações panel currently renders charts directly inside `Card` components with raw `ResponsiveContainer`.
+### Fases concluídas
 
-### Approach
+**Fase 1** — Rebranding + KPIs Executivos
+- Header: "Inteligência Petrolífera" + "Sistema Integrado de Monitorização, Análise e Apoio à Decisão"
+- KPIs primários: Produção Total, Reservas, Blocos Activos, CAPEX, Taxa de Execução
+- KPIs secundários: Em Produção, Em Exploração, Sem Produção, Risco Crítico, Receita Estado
+- Variações m/m e a/a na produção
+- Título HTML e meta tags actualizados
 
-Replace each `Card > CardHeader > CardContent > ResponsiveContainer` chart block in `HomologacoesPanel.tsx` with the existing `ChartWrapper` component. This gives every chart the hover-reveal download button, fullscreen modal, and watermark on export — consistent with the rest of the dashboard.
+**Fase 2** — Dashboard Contratual e Negocial
+- Painel "Contratos & Compliance" adicionado à navegação
+- KPIs: contratos a expirar em 12/24/36 meses, compliance < 80%, blocos com dados contratuais
+- 4 sub-abas: Calendário Contratual, Semáforo por Operador, Matriz de Urgência, Lista Completa
+- Gráfico de barras de expiração por ano com cores por urgência
+- Scatter plot meses restantes vs compliance (tamanho = produção)
+- Semáforo verde/amarelo/vermelho por operador (compliance + execução)
+- Lista ordenada por urgência com badges de estado
 
-### Charts to wrap (8 total)
+### Próximas fases
 
-1. **Montante Aprovado por Bloco (Top 10)** — BarChart (line ~532)
-2. **Repartição por Categoria** — PieChart (line ~548)
-3. **Top 10 Fornecedores por Montante** — BarChart (line ~566)
-4. **Evolução Mensal** — LineChart (line ~582)
-5. **Comparação Anual** — BarChart (line ~599)
-6. **Conteúdo Local — Donut** — PieChart (line ~705)
-7. **Tendência CL — % por Nº de Processos** — BarChart (line ~870)
-8. **Tendência CL — % por Valor Aprovado** — LineChart (line ~891)
-
-### Implementation
-
-- Import `ChartWrapper` from `@/components/dashboard/ChartWrapper`
-- For each chart, replace `<Card className="glass-card">` + `CardHeader` + `CardContent` + `ResponsiveContainer` with `<ChartWrapper title="..." height={300}>` containing just the Recharts chart
-- For charts 7 and 8 (trend sub-charts inside a single card), wrap the parent card and keep both charts inside, or split into two separate `ChartWrapper` instances
-- Remove redundant `Card`/`CardHeader`/`CardContent` imports if no longer needed elsewhere (they are still used for KPIs and other non-chart sections, so they stay)
-
-### No database or backend changes required.
-
+**Fase 3** — Dashboard de Integridade de Instalações
+**Fase 4** — Motor de Scoring Estratégico + Dashboard de Recomendação ao Conselho
+**Fase 5** — Sistema de Alertas Centrais
