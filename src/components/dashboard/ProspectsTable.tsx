@@ -73,9 +73,18 @@ export const ProspectsTable = ({ blocks, scopeLabel }: ProspectsTableProps) => {
     blocksWithProspects.forEach(b => {
       b.prospects!.forEach((p, i) => {
         data.push({
-          ...p,
           block: b.name,
           blockId: b.id,
+          discoveryArea: p.discoveryArea,
+          name: p.name,
+          reservoir: p.reservoir,
+          resourcesMMBO: p.resourcesMMBO,
+          resourcesBCF: p.resourcesBCF || 0,
+          pos: p.pos,
+          idx: i,
+          key: `${b.id}-${i}`,
+          z: Math.max(p.resourcesMMBO, 20),
+        });
           idx: i,
           key: `${b.id}-${i}`,
           z: Math.max(p.resourcesMMBO, 20),
