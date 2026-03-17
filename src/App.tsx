@@ -13,6 +13,7 @@ import ReportsPage from "./pages/ReportsPage";
 import AdminUsersPage from "./pages/AdminUsersPage";
 import AdminDataPage from "./pages/AdminDataPage";
 import OperatorPage from "./pages/OperatorPage";
+import FacilityPage from "./pages/FacilityPage";
 import LoginPage from "./pages/LoginPage";
 import NotFound from "./pages/NotFound";
 
