@@ -9,6 +9,7 @@ import { useAuth } from "@/components/AuthProvider";
 import anpgLogo from "@/assets/anpg-logo-color-v2.svg";
 import anpgLogoWhite from "@/assets/anpg-logo-white.svg";
 import angolaSatellite from "@/assets/angola-coast-satellite.jpg";
+import LoginPolygonsOverlay from "@/components/LoginPolygonsOverlay";
 import {
   Eye, EyeOff, LogIn, Shield, Factory, Search,
   Handshake, Scale, Crown, Fuel, Globe, BarChart3, GitCompareArrows
@@ -102,6 +103,7 @@ const LoginPage = () => {
         alt=""
         className="absolute inset-0 w-full h-full object-cover scale-105"
       />
+      <LoginPolygonsOverlay />
       <div className="absolute inset-0 bg-gradient-to-br from-black/80 via-black/60 to-black/80" />
 
       <div className="absolute top-4 right-4 lg:top-6 lg:right-6 z-20">
