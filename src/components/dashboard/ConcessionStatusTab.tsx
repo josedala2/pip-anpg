@@ -356,6 +356,9 @@ export const ConcessionStatusTab = ({ block }: ConcessionStatusTabProps) => {
       {/* Row 3b: Semaphore Forecast */}
       <SemaphoreForecastPanel block={block} />
 
+      {/* Row 3c: Semaphore History */}
+      <SemaphoreHistoryPanel block={block} />
+
       {/* Row 4: Fiscal Conditions */}
       {fc && (
         <Card className="glass-card">
