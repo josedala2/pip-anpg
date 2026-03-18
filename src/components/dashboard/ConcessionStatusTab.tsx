@@ -6,6 +6,7 @@ import {
   AlertTriangle, CheckCircle2, Clock, DollarSign, TrendingDown,
   ShieldCheck, Landmark, Scale, Calendar, Droplets, Activity, Factory, Gauge,
 } from "lucide-react";
+import { SemaphoreForecastPanel } from "./SemaphoreForecastPanel";
 
 interface ConcessionStatusTabProps {
   block: OilBlock;
@@ -350,6 +351,9 @@ export const ConcessionStatusTab = ({ block }: ConcessionStatusTabProps) => {
           </CardContent>
         </Card>
       </div>
+
+      {/* Row 3b: Semaphore Forecast */}
+      <SemaphoreForecastPanel block={block} />
 
       {/* Row 4: Fiscal Conditions */}
       {fc && (
