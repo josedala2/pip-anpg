@@ -1,34 +1,51 @@
+## Roteiro de Evolução — Plataforma Nacional de Inteligência Petrolífera
 
+### Estado actual vs Visão
 
-## Plano: Novos critérios de avaliação no Estado da Concessão
+| Capacidade | Estado |
+|---|---|
+| Mapa de concessões | ✅ Existe |
+| KPIs nacionais (prod, reservas, receita estado, variações) | ✅ Completo |
+| Painel de Blocos & Concessões | ✅ Existe |
+| Painel de Produção | ✅ Existe |
+| Painel de Exploração | ✅ Existe |
+| Painel de Operadores | ✅ Existe |
+| Risk & Performance | ✅ Existe |
+| Strategic Forecast | ✅ Existe |
+| Detalhe do bloco (12 abas) | ✅ Existe |
+| Visão Económica (Bloco 0) | ✅ Existe |
+| Comparativo de blocos | ✅ Existe |
+| Relatórios configuráveis | ✅ Existe |
+| Auth + roles | ✅ Existe |
+| **Branding "Inteligência Petrolífera"** | ✅ **Fase 1 concluída** |
+| **KPIs executivos completos** | ✅ **Fase 1 concluída** |
+| **Dashboard Contratual/Negocial** | ✅ **Fase 2 concluída** |
+| Dashboard Integridade Instalações | ✅ **Fase 3 concluída** |
+| Motor de Scoring Estratégico | ✅ **Fase 4 concluída** |
+| Dashboard Recomendação Conselho | ✅ **Fase 4 concluída** |
+| Sistema de Alertas Centrais | ✅ **Fase 5 concluída** |
+| **Painel de Homologações** | ✅ **Fase 6 concluída** |
 
-### Novos critérios a adicionar (3)
+### Fases concluídas
 
-**1. Tendência CAPEX (desvio acumulado real vs planeado)**
-- Calcular o desvio médio entre `actual` e `planned` no `capexHistory`
-- Alerta amarelo se desvio < -10%, vermelho se < -20%
-- Mensagem: "CAPEX abaixo do planeado: -X%"
+**Fase 1** — Rebranding + KPIs Executivos
+- Header: "Inteligência Petrolífera" + "Sistema Integrado de Monitorização, Análise e Apoio à Decisão"
+- KPIs primários: Produção Total, Reservas, Blocos Activos, CAPEX, Taxa de Execução
+- KPIs secundários: Em Produção, Em Exploração, Sem Produção, Risco Crítico, Receita Estado
+- Variações m/m e a/a na produção
+- Título HTML e meta tags actualizados
 
-**2. Idade das Instalações (plataforma mais antiga)**
-- Usar `platformSpecs[].installationYear` para encontrar a instalação mais antiga
-- Calcular idade = ano actual - installationYear
-- Alerta amarelo se > 30 anos, vermelho se > 40 anos
-- Mensagem: "Instalação mais antiga: Nome (Xa)"
+**Fase 2** — Dashboard Contratual e Negocial
+- Painel "Contratos & Compliance" adicionado à navegação
+- KPIs: contratos a expirar em 12/24/36 meses, compliance < 80%, blocos com dados contratuais
+- 4 sub-abas: Calendário Contratual, Semáforo por Operador, Matriz de Urgência, Lista Completa
+- Gráfico de barras de expiração por ano com cores por urgência
+- Scatter plot meses restantes vs compliance (tamanho = produção)
+- Semáforo verde/amarelo/vermelho por operador (compliance + execução)
+- Lista ordenada por urgência com badges de estado
 
-**3. Declínio de Produção (refinado)**
-- Actualmente usa first vs last do `productionHistory` com limiar -15%
-- Refinar: calcular declínio dos últimos 3 meses vs primeiros 3 meses para suavizar ruído
-- Adicionar severidade vermelha se declínio < -25%
-- Adicionar novo KPI card com o valor do declínio
+### Próximas fases
 
-### Alterações em KPIs (Row 1)
-- Adicionar KPI "Declínio Produção" com percentagem e cor semáforo
-- Adicionar KPI "Idade Máx. Instalação" com anos e cor semáforo
-
-### Ficheiros
-- `src/components/dashboard/ConcessionStatusTab.tsx` — adicionar cálculos, alertas e KPIs
-
-### Impacto
-- Sem novos ficheiros nem alterações de dados — tudo usa campos já existentes em `OilBlock`
-- O semáforo global passa a considerar 7 critérios em vez de 4
-
+**Fase 3** — Dashboard de Integridade de Instalações
+**Fase 4** — Motor de Scoring Estratégico + Dashboard de Recomendação ao Conselho
+**Fase 5** — Sistema de Alertas Centrais
