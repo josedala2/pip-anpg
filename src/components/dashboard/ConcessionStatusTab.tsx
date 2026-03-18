@@ -7,6 +7,7 @@ import {
   ShieldCheck, Landmark, Scale, Calendar, Droplets, Activity, Factory, Gauge,
 } from "lucide-react";
 import { SemaphoreForecastPanel } from "./SemaphoreForecastPanel";
+import { SemaphoreHistoryPanel } from "./SemaphoreHistoryPanel";
 
 interface ConcessionStatusTabProps {
   block: OilBlock;
