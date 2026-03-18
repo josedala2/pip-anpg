@@ -7,6 +7,7 @@ import {
   ShieldCheck, Landmark, Scale, Calendar, Droplets, Activity, Factory, Gauge,
 } from "lucide-react";
 import { SemaphoreForecastPanel } from "./SemaphoreForecastPanel";
+import { SemaphoreHistoryPanel } from "./SemaphoreHistoryPanel";
 
 interface ConcessionStatusTabProps {
   block: OilBlock;
@@ -354,6 +355,9 @@ export const ConcessionStatusTab = ({ block }: ConcessionStatusTabProps) => {
 
       {/* Row 3b: Semaphore Forecast */}
       <SemaphoreForecastPanel block={block} />
+
+      {/* Row 3c: Semaphore History */}
+      <SemaphoreHistoryPanel block={block} />
 
       {/* Row 4: Fiscal Conditions */}
       {fc && (
