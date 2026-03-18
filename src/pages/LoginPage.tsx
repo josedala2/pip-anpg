@@ -9,6 +9,7 @@ import { useAuth } from "@/components/AuthProvider";
 import anpgLogo from "@/assets/anpg-logo-color-v2.svg";
 import anpgLogoWhite from "@/assets/anpg-logo-white.svg";
 import angolaSatellite from "@/assets/angola-coast-satellite.jpg";
+import LoginPolygonsOverlay from "@/components/LoginPolygonsOverlay";
 import {
   Eye, EyeOff, LogIn, Shield, Factory, Search,
   Handshake, Scale, Crown, Fuel, Globe, BarChart3, GitCompareArrows
