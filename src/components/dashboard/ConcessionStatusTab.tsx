@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { SemaphoreForecastPanel } from "./SemaphoreForecastPanel";
 import { SemaphoreHistoryPanel } from "./SemaphoreHistoryPanel";
+import { SemaphoreTimelineChart } from "./SemaphoreTimelineChart";
 
 interface ConcessionStatusTabProps {
   block: OilBlock;
@@ -358,6 +359,9 @@ export const ConcessionStatusTab = ({ block }: ConcessionStatusTabProps) => {
 
       {/* Row 3c: Semaphore History */}
       <SemaphoreHistoryPanel block={block} />
+
+      {/* Row 3d: Semaphore Timeline Projection (5 years) */}
+      <SemaphoreTimelineChart block={block} />
 
       {/* Row 4: Fiscal Conditions */}
       {fc && (
