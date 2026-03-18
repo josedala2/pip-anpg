@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { SemaphoreForecastPanel } from "./SemaphoreForecastPanel";
 import { SemaphoreHistoryPanel } from "./SemaphoreHistoryPanel";
+import { SemaphoreTimelineChart } from "./SemaphoreTimelineChart";
 
 interface ConcessionStatusTabProps {
   block: OilBlock;
