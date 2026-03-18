@@ -6,6 +6,7 @@ import {
   AlertTriangle, CheckCircle2, Clock, DollarSign, TrendingDown,
   ShieldCheck, Landmark, Scale, Calendar, Droplets, Activity, Factory, Gauge,
 } from "lucide-react";
+import { SemaphoreForecastPanel } from "./SemaphoreForecastPanel";
 
 interface ConcessionStatusTabProps {
   block: OilBlock;
