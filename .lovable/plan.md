@@ -1,51 +1,23 @@
-## Roteiro de Evolução — Plataforma Nacional de Inteligência Petrolífera
 
-### Estado actual vs Visão
 
-| Capacidade | Estado |
-|---|---|
-| Mapa de concessões | ✅ Existe |
-| KPIs nacionais (prod, reservas, receita estado, variações) | ✅ Completo |
-| Painel de Blocos & Concessões | ✅ Existe |
-| Painel de Produção | ✅ Existe |
-| Painel de Exploração | ✅ Existe |
-| Painel de Operadores | ✅ Existe |
-| Risk & Performance | ✅ Existe |
-| Strategic Forecast | ✅ Existe |
-| Detalhe do bloco (12 abas) | ✅ Existe |
-| Visão Económica (Bloco 0) | ✅ Existe |
-| Comparativo de blocos | ✅ Existe |
-| Relatórios configuráveis | ✅ Existe |
-| Auth + roles | ✅ Existe |
-| **Branding "Inteligência Petrolífera"** | ✅ **Fase 1 concluída** |
-| **KPIs executivos completos** | ✅ **Fase 1 concluída** |
-| **Dashboard Contratual/Negocial** | ✅ **Fase 2 concluída** |
-| Dashboard Integridade Instalações | ✅ **Fase 3 concluída** |
-| Motor de Scoring Estratégico | ✅ **Fase 4 concluída** |
-| Dashboard Recomendação Conselho | ✅ **Fase 4 concluída** |
-| Sistema de Alertas Centrais | ✅ **Fase 5 concluída** |
-| **Painel de Homologações** | ✅ **Fase 6 concluída** |
+## Plano: Polígonos de concessões como overlay na página de login
 
-### Fases concluídas
+### Abordagem
+Criar um componente SVG overlay que carrega os polígonos das concessões via `loadBlockPolygons()` e os renderiza sobre a imagem de fundo da página de login, com baixa opacidade (≈10-15%) e stroke subtil, criando um efeito decorativo que reforça o contexto petrolífero.
 
-**Fase 1** — Rebranding + KPIs Executivos
-- Header: "Inteligência Petrolífera" + "Sistema Integrado de Monitorização, Análise e Apoio à Decisão"
-- KPIs primários: Produção Total, Reservas, Blocos Activos, CAPEX, Taxa de Execução
-- KPIs secundários: Em Produção, Em Exploração, Sem Produção, Risco Crítico, Receita Estado
-- Variações m/m e a/a na produção
-- Título HTML e meta tags actualizados
+### Alterações
 
-**Fase 2** — Dashboard Contratual e Negocial
-- Painel "Contratos & Compliance" adicionado à navegação
-- KPIs: contratos a expirar em 12/24/36 meses, compliance < 80%, blocos com dados contratuais
-- 4 sub-abas: Calendário Contratual, Semáforo por Operador, Matriz de Urgência, Lista Completa
-- Gráfico de barras de expiração por ano com cores por urgência
-- Scatter plot meses restantes vs compliance (tamanho = produção)
-- Semáforo verde/amarelo/vermelho por operador (compliance + execução)
-- Lista ordenada por urgência com badges de estado
+**1. Novo componente `src/components/LoginPolygonsOverlay.tsx`**
+- Usa `useEffect` + `useState` para carregar `loadBlockPolygons()` assincronamente
+- Converte coordenadas geográficas [lat, lng] para posições SVG no viewBox, usando uma projecção linear simples (bounding box da costa angolana: lat ~-18 a -4, lng ~8 a 14)
+- Renderiza um `<svg>` absoluto cobrindo toda a tela, com cada bloco como `<polygon>` com `fill` primário a ~8% opacidade e `stroke` a ~15%
+- Animação fade-in suave ao carregar
 
-### Próximas fases
+**2. Integração em `src/pages/LoginPage.tsx`**
+- Inserir `<LoginPolygonsOverlay />` entre a imagem de fundo e o gradient overlay (linha ~104-105)
+- Sem impacto no layout existente — é puramente decorativo e posicionado absolutamente
 
-**Fase 3** — Dashboard de Integridade de Instalações
-**Fase 4** — Motor de Scoring Estratégico + Dashboard de Recomendação ao Conselho
-**Fase 5** — Sistema de Alertas Centrais
+### Ficheiros
+- `src/components/LoginPolygonsOverlay.tsx` — novo
+- `src/pages/LoginPage.tsx` — inserção de 1 linha
+
