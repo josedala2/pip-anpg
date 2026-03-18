@@ -130,7 +130,7 @@ const LoginPage = () => {
               <h1 className="text-3xl lg:text-5xl font-bold text-white leading-[1.1] tracking-tight">
                 Plataforma de
                 <br />
-                <span className="text-primary">Inteligência</span>
+                <span className="text-primary">Inteligência</span> e Análise
                 <br />
                 Petrolífera — PIP
               </h1>

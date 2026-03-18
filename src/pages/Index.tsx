@@ -129,7 +129,7 @@ const Index = () => {
             />
             <div>
               <h1 className="text-base md:text-lg 2xl:text-xl 3xl:text-2xl font-bold tracking-tight text-foreground">
-                Plataforma de Inteligência Petrolífera
+                Plataforma de Inteligência e Análise Petrolífera
               </h1>
               <div className="flex items-center gap-3 mt-0.5">
                 <div className="flex items-center gap-1 text-[10px] text-muted-foreground">

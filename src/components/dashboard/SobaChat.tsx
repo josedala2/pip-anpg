@@ -741,7 +741,7 @@ export function SobaChat() {
                 {firstName ? `Olá, ${firstName}! Sou o Soba 🇦🇴` : "Olá! Sou o Soba 🇦🇴"}
               </h3>
               <p className="text-sm text-muted-foreground text-center max-w-md mb-6">
-                O seu assistente da Plataforma de Inteligência Petrolífera. Posso ajudar com informações sobre todos os blocos petrolíferos de Angola.
+                O seu assistente da Plataforma de Inteligência e Análise Petrolífera. Posso ajudar com informações sobre todos os blocos petrolíferos de Angola.
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-w-lg w-full">
                 {QUICK_SUGGESTIONS.map((s) => (

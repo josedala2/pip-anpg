@@ -6,7 +6,7 @@ export const InstitutionalFooter = () => {
           © {new Date().getFullYear()} ANPG — Todos os direitos reservados.
         </p>
         <p className="text-xs text-muted-foreground">
-          ANPG Concession Vision • Plataforma de Inteligência Petrolífera
+          ANPG Concession Vision • Plataforma de Inteligência e Análise Petrolífera
         </p>
       </div>
     </footer>
