@@ -1,20 +1,14 @@
 import { useState, useEffect } from "react";
-import { loadBlockPolygons, BlockPolygonMap } from "@/data/blockPolygonsLoader";
+import { MapContainer, TileLayer, Polygon } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
+import { loadBlockPolygons, type BlockPolygonMap } from "@/data/blockPolygonsLoader";
 
-// Angola bounding box (geographic)
-const LAT_MIN = -18;
-const LAT_MAX = -4;
-const LNG_MIN = 8;
-const LNG_MAX = 14;
-
-const VW = 1000;
-const VH = 1000;
-
-function project(lat: number, lng: number): [number, number] {
-  const x = ((lng - LNG_MIN) / (LNG_MAX - LNG_MIN)) * VW;
-  const y = ((LAT_MAX - lat) / (LAT_MAX - LAT_MIN)) * VH;
-  return [x, y];
-}
+const PHASE_COLORS: Record<string, string> = {
+  production: "#22c55e",
+  exploration: "#3b82f6",
+  development: "#f59e0b",
+  licensing: "#a855f7",
+};
 
 const LoginPolygonsOverlay = () => {
   const [polygons, setPolygons] = useState<BlockPolygonMap | null>(null);
@@ -26,25 +20,42 @@ const LoginPolygonsOverlay = () => {
   if (!polygons || Object.keys(polygons).length === 0) return null;
 
   return (
-    <svg
-      viewBox={`0 0 ${VW} ${VH}`}
-      preserveAspectRatio="xMidYMid slice"
-      className="absolute inset-0 w-full h-full z-[1] pointer-events-none animate-fade-in"
+    <div
+      className="absolute inset-0 z-[1] pointer-events-none opacity-25 animate-fade-in"
       aria-hidden="true"
     >
-      {Object.entries(polygons).map(([id, coords]) => {
-        const points = coords.map(([lat, lng]) => project(lat, lng).join(",")).join(" ");
-        return (
-          <polygon
+      <MapContainer
+        center={[-9.5, 13]}
+        zoom={6}
+        zoomControl={false}
+        attributionControl={false}
+        dragging={false}
+        scrollWheelZoom={false}
+        doubleClickZoom={false}
+        touchZoom={false}
+        keyboard={false}
+        boxZoom={false}
+        style={{ width: "100%", height: "100%", background: "transparent" }}
+      >
+        <TileLayer
+          url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+          attribution=""
+        />
+        {Object.entries(polygons).map(([id, coords]) => (
+          <Polygon
             key={id}
-            points={points}
-            fill="hsl(var(--primary) / 0.08)"
-            stroke="hsl(var(--primary) / 0.15)"
-            strokeWidth="0.5"
+            positions={coords}
+            pathOptions={{
+              fillColor: "#f59e0b",
+              fillOpacity: 0.15,
+              color: "#f59e0b",
+              weight: 1,
+              opacity: 0.4,
+            }}
           />
-        );
-      })}
-    </svg>
+        ))}
+      </MapContainer>
+    </div>
   );
 };
 
