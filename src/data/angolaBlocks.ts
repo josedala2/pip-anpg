@@ -114,6 +114,17 @@ export interface ContractInfo {
   researchPeriod?: ResearchPeriod;
   fiscalConditions?: FiscalConditions;
   historicalNotes?: string[];
+  adminFeePerYear?: number;           // Taxa de administração da associação (USD/ano)
+  adminFeePeriod?: string;            // Período da taxa admin (e.g. "2022-2050")
+  abandonmentProvisionPerYear?: number; // Aprovisionamento para abandono (USD/ano)
+  abandonmentProvisionStart?: string;   // Data início do aprovisionamento
+  originalDecree?: string;            // Decreto original de concessão
+  extensionDecree?: string;           // Decreto de prorrogação
+  extensionYears?: number;            // Anos de prorrogação
+  extensionStage?: string;            // Estágio da prorrogação (e.g. "3.º estágio 2030-2050")
+  royaltyRates?: { period: string; rate: number }[]; // Taxas de royalty por período
+  amortizationRate?: number;          // Taxa de amortização %
+  ttpRate?: number;                   // TTP %
 }
 
 export interface InvestmentPlanYear {
