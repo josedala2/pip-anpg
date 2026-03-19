@@ -101,6 +101,9 @@ export const EconomicVisionTab = ({ block }: Props) => {
                 <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => v.toLocaleString()} />
                 <Legend wrapperStyle={{ fontSize: 11 }} />
                 <Bar dataKey="ge" name="GE" fill={GE_COLOR} radius={[4, 4, 0, 0]} />
+                {npvByPeriod.some(d => d.conc != null) && (
+                  <Bar dataKey="conc" name="Concessionária" fill={CONC_COLOR} radius={[4, 4, 0, 0]} />
+                )}
                 <Bar dataKey="impostos" name="Impostos" fill={TAX_COLOR} radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
@@ -118,6 +121,9 @@ export const EconomicVisionTab = ({ block }: Props) => {
                 <Legend wrapperStyle={{ fontSize: 11 }} />
                 <ReferenceLine y={0} stroke="hsl(var(--muted-foreground))" strokeDasharray="3 3" />
                 <Bar dataKey="impostos" name="Impostos" stackId="a" fill={TAX_COLOR} />
+                {cashFlow.some(d => d.conc != null) && (
+                  <Bar dataKey="conc" name="Concessionária" stackId="a" fill={CONC_COLOR} />
+                )}
                 <Bar dataKey="ge" name="GE" stackId="a" fill={GE_COLOR} radius={[2, 2, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
