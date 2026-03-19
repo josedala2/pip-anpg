@@ -213,12 +213,14 @@ export interface NPVBreakdown {
 export interface NPVByPeriod {
   period: string;
   ge: number;       // MMUSD
+  conc?: number;     // MMUSD — Concessionária
   impostos: number;  // MMUSD
 }
 
 export interface CashFlowYear {
   year: number;
   ge: number;
+  conc?: number;     // Concessionária
   impostos: number;
 }
 
