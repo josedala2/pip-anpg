@@ -203,6 +203,8 @@ export interface FacilityData {
   productionLossesBbls?: number;
   overallEfficiency?: number; // percentage
   capacityBOPD?: number;
+  waterInjectionCapacityBWIPD?: number;   // Capacidade de injecção de água
+  producedWaterCapacityBWP?: number;      // Capacidade de água produzida
   terminalName?: string;
   productionStartYear?: number;
   endOfLifeYear?: number;
