@@ -701,8 +701,8 @@ export const oilBlocks: OilBlock[] = [
     ],
     // Environmental data (2019–2025) — Dados oficiais ANPG
     environmentalData: [
-      { year: 2019, oilSpillCount: 0, oilSpillVolumeBbl: 0, oilInWaterPPM: 4.80, co2EmissionsTonCO2eq: 3898642, gasFlaredMMSCFD: 27.98, gasFlaredTarget: 25 },
-      { year: 2020, oilSpillCount: 0, oilSpillVolumeBbl: 0, oilInWaterPPM: 5.00, co2EmissionsTonCO2eq: 3750000, gasFlaredMMSCFD: 27.06, gasFlaredTarget: 24 },
+      { year: 2019, oilSpillCount: 0, oilSpillVolumeBbl: 0, oilInWaterPPM: 5.97, co2EmissionsTonCO2eq: 3898642, gasFlaredMMSCFD: 27.98, gasFlaredTarget: 0 },
+      { year: 2020, oilSpillCount: 0, oilSpillVolumeBbl: 0, oilInWaterPPM: 5.76, co2EmissionsTonCO2eq: 3750000, gasFlaredMMSCFD: 27.06, gasFlaredTarget: 24 },
       { year: 2021, oilSpillCount: 0, oilSpillVolumeBbl: 0, oilInWaterPPM: 5.17, co2EmissionsTonCO2eq: 3600000, gasFlaredMMSCFD: 17.52, gasFlaredTarget: 20 },
       { year: 2022, oilSpillCount: 0, oilSpillVolumeBbl: 0, oilInWaterPPM: 5.10, co2EmissionsTonCO2eq: 3450000, gasFlaredMMSCFD: 18.70, gasFlaredTarget: 18 },
       { year: 2023, oilSpillCount: 0, oilSpillVolumeBbl: 0, oilInWaterPPM: 4.75, co2EmissionsTonCO2eq: 3300000, gasFlaredMMSCFD: 14.63, gasFlaredTarget: 16 },
