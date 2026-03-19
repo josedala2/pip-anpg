@@ -690,14 +690,14 @@ export const oilBlocks: OilBlock[] = [
     },
     // HSE Safety Indicators (2018–2025) — Dados oficiais ANPG
     hseData: [
-      { year: 2018, fat: 0, lti: 0, rwc: 0, mtc: 0, fac: 0, nmi: 0, hhr: 20.33, trir: 0.10, ltir: 0.00 },
-      { year: 2019, fat: 0, lti: 0, rwc: 0, mtc: 0, fac: 0, nmi: 0, hhr: 22.21, trir: 0.13, ltir: 0.00 },
-      { year: 2020, fat: 0, lti: 0, rwc: 0, mtc: 0, fac: 0, nmi: 0, hhr: 13.82, trir: 0.13, ltir: 0.00 },
-      { year: 2021, fat: 0, lti: 0, rwc: 0, mtc: 0, fac: 16, nmi: 0, hhr: 11.80, trir: 0.12, ltir: 0.00 },
-      { year: 2022, fat: 0, lti: 0, rwc: 0, mtc: 1, fac: 20, nmi: 0, hhr: 19.65, trir: 0.10, ltir: 0.00 },
-      { year: 2023, fat: 0, lti: 0, rwc: 0, mtc: 11, fac: 24, nmi: 0, hhr: 15.44, trir: 0.18, ltir: 0.00 },
-      { year: 2024, fat: 0, lti: 0, rwc: 0, mtc: 16, fac: 28, nmi: 35, hhr: 17.16, trir: 0.24, ltir: 0.00 },
-      { year: 2025, fat: 0, lti: 0, rwc: 0, mtc: 7, fac: 34, nmi: 0, hhr: 16.04, trir: 0.11, ltir: 0.00 },
+      { year: 2018, fat: 0, lti: 0, rwc: 3, mtc: 0, fac: 0, nmi: 0, hhr: 20.33, trir: 0.10, ltir: 0.00 },
+      { year: 2019, fat: 0, lti: 0, rwc: 7, mtc: 0, fac: 0, nmi: 0, hhr: 22.21, trir: 0.13, ltir: 0.00 },
+      { year: 2020, fat: 0, lti: 0, rwc: 2, mtc: 0, fac: 0, nmi: 0, hhr: 13.82, trir: 0.13, ltir: 0.00 },
+      { year: 2021, fat: 0, lti: 0, rwc: 3, mtc: 0, fac: 16, nmi: 0, hhr: 11.80, trir: 0.12, ltir: 0.00 },
+      { year: 2022, fat: 0, lti: 0, rwc: 9, mtc: 1, fac: 20, nmi: 0, hhr: 19.65, trir: 0.10, ltir: 0.00 },
+      { year: 2023, fat: 0, lti: 0, rwc: 3, mtc: 11, fac: 24, nmi: 0, hhr: 15.44, trir: 0.18, ltir: 0.00 },
+      { year: 2024, fat: 0, lti: 0, rwc: 5, mtc: 16, fac: 28, nmi: 35, hhr: 17.16, trir: 0.24, ltir: 0.00 },
+      { year: 2025, fat: 0, lti: 0, rwc: 2, mtc: 7, fac: 34, nmi: 0, hhr: 16.04, trir: 0.11, ltir: 0.00 },
     ],
     // Environmental data (2019–2025) — Dados oficiais ANPG
     environmentalData: [
