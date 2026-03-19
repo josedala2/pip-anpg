@@ -1722,7 +1722,7 @@ export const oilBlocks: OilBlock[] = [
       { name: "Sonangol E&P", share: 20.0 },
       { name: "Equinor Angola", share: 13.33 },
       { name: "ESSO (ExxonMobil)", share: 13.33 },
-      { name: "Azule Energy", share: 13.33 },
+      { name: "Azule Energy", share: 13.34 },
     ],
     dailyProduction: 181755,
     estimatedReserves: 2100,
