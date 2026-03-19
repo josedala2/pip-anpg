@@ -740,8 +740,8 @@ export const oilBlocks: OilBlock[] = [
       capacityBOPD: 400000,
       terminalName: "Malongo Terminal",
       productionStartYear: 1968,
-      endOfLifeYear: 2040,
-      endOfLifeField: "Mafumeira Sul",
+      endOfLifeYear: 2045,
+      endOfLifeField: "N'Dola Sul",
       cumulativeProductionBO: 290043686705,
       recommendations: [
         "Realizar avaliações de estudos de engenharia e aumentar a frequência de inspecções de nível 3 e 4, de modo a identificar prioridades",
