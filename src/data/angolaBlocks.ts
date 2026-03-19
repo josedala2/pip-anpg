@@ -5103,7 +5103,7 @@ export const oilBlocks: OilBlock[] = [
     riskScore: 7,
     complianceScore: 64,
     concession: [
-      { name: "Apex", share: 35.0, isOperator: true },
+      { name: "Apex", share: 30.0, isOperator: true },
       { name: "Sonangol E&P", share: 55.0 },
       { name: "Brite's Oil and Gas", share: 15.0 },
     ],
