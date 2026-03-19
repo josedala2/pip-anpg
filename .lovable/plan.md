@@ -1,51 +1,49 @@
-## Roteiro de Evolução — Plataforma Nacional de Inteligência Petrolífera
 
-### Estado actual vs Visão
 
-| Capacidade | Estado |
-|---|---|
-| Mapa de concessões | ✅ Existe |
-| KPIs nacionais (prod, reservas, receita estado, variações) | ✅ Completo |
-| Painel de Blocos & Concessões | ✅ Existe |
-| Painel de Produção | ✅ Existe |
-| Painel de Exploração | ✅ Existe |
-| Painel de Operadores | ✅ Existe |
-| Risk & Performance | ✅ Existe |
-| Strategic Forecast | ✅ Existe |
-| Detalhe do bloco (12 abas) | ✅ Existe |
-| Visão Económica (Bloco 0) | ✅ Existe |
-| Comparativo de blocos | ✅ Existe |
-| Relatórios configuráveis | ✅ Existe |
-| Auth + roles | ✅ Existe |
-| **Branding "Inteligência Petrolífera"** | ✅ **Fase 1 concluída** |
-| **KPIs executivos completos** | ✅ **Fase 1 concluída** |
-| **Dashboard Contratual/Negocial** | ✅ **Fase 2 concluída** |
-| Dashboard Integridade Instalações | ✅ **Fase 3 concluída** |
-| Motor de Scoring Estratégico | ✅ **Fase 4 concluída** |
-| Dashboard Recomendação Conselho | ✅ **Fase 4 concluída** |
-| Sistema de Alertas Centrais | ✅ **Fase 5 concluída** |
-| **Painel de Homologações** | ✅ **Fase 6 concluída** |
+## Plano: Actualizar Dados Económicos de 6 Blocos com Dados Reais do Excel
 
-### Fases concluídas
+### Mapeamento das Páginas do Excel
 
-**Fase 1** — Rebranding + KPIs Executivos
-- Header: "Inteligência Petrolífera" + "Sistema Integrado de Monitorização, Análise e Apoio à Decisão"
-- KPIs primários: Produção Total, Reservas, Blocos Activos, CAPEX, Taxa de Execução
-- KPIs secundários: Em Produção, Em Exploração, Sem Produção, Risco Crítico, Receita Estado
-- Variações m/m e a/a na produção
-- Título HTML e meta tags actualizados
+| Página | Bloco | Identificação |
+|--------|-------|---------------|
+| 1 | Block 0 | Opex 2025=26.69 (confirma), cash flow desde 2005 |
+| 2 | Block 14K | NPV GE=-110, valores muito pequenos, bloco exploratório |
+| 3 | Block 14 | NPV PF GE=1,040, cash flow 2016-2038 |
+| 4 | Block 17 | Grandes valores históricos, cash flow 2003-2032 |
+| 5 | Block 15 | Menção explícita "Bloco 15 - Fundos de Abandono" |
+| 6 | Block 15/06 | Menção explícita "Bloco 15/06 - Fundos de Abandono", campos Ngoma/Olombendo/Agogo |
 
-**Fase 2** — Dashboard Contratual e Negocial
-- Painel "Contratos & Compliance" adicionado à navegação
-- KPIs: contratos a expirar em 12/24/36 meses, compliance < 80%, blocos com dados contratuais
-- 4 sub-abas: Calendário Contratual, Semáforo por Operador, Matriz de Urgência, Lista Completa
-- Gráfico de barras de expiração por ano com cores por urgência
-- Scatter plot meses restantes vs compliance (tamanho = produção)
-- Semáforo verde/amarelo/vermelho por operador (compliance + execução)
-- Lista ordenada por urgência com badges de estado
+### Dados a Actualizar por Bloco
 
-### Próximas fases
+Para cada um dos 6 blocos, os seguintes campos serão actualizados com os valores reais do Excel:
 
-**Fase 3** — Dashboard de Integridade de Instalações
-**Fase 4** — Motor de Scoring Estratégico + Dashboard de Recomendação ao Conselho
-**Fase 5** — Sistema de Alertas Centrais
+1. **NPV** — npvFullcycle, npvPointForward, npvByPeriod (GE, Conc, Impostos)
+2. **Fluxo de Caixa** — cashFlowTimeSeries completo (GE, Concessionária, Impostos por ano)
+3. **Repartição de Receitas** — revenueShare (totais MMUSD por período)
+4. **Partilha de Produção** — productionShareGE (2026-2030, em milhares de barris)
+5. **Custos Técnicos** — technicalCost (Capex/bbl, Opex/bbl, Opex 2025)
+6. **Custos Recuperáveis** — custos por recuperar e custos recuperados
+7. **Plano de Investimentos** — investmentPlan quinquenal (2026-2030)
+8. **Fundos de Abandono** — onde disponível (Blocos 15 e 15/06)
+
+### Alteração Estrutural
+
+A interface `CashFlowYear` actualmente só tem `ge` e `impostos`. O Excel inclui também os valores da **Concessionária**. Será necessário:
+
+- Adicionar campo `conc?: number` à interface `CashFlowYear`
+- Actualizar o gráfico de Fluxo de Caixa no `EconomicVisionTab.tsx` para mostrar as 3 barras (GE, Impostos, Concessionária)
+- Actualizar a tabela do chatbot `SobaChat.tsx` para incluir a coluna Concessionária
+
+### Ficheiros a Editar
+
+1. **`src/data/angolaBlocks.ts`** — interfaces + dados económicos dos 6 blocos
+2. **`src/components/dashboard/EconomicVisionTab.tsx`** — gráfico com 3 séries
+3. **`src/components/dashboard/SobaChat.tsx`** — tabela com coluna Conc
+
+### Resumo do Impacto
+
+- 6 blocos passam a ter dados económicos reais e verificáveis
+- Gráficos de fluxo de caixa mostrarão a repartição completa (GE + Conc + Impostos)
+- KPIs e painéis fiscais reflectirão valores actualizados
+- Dados de NPV, custos e investimentos alinhados com a planilha oficial
+
