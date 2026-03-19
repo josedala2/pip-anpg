@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 
 const GE_COLOR = "hsl(199, 89%, 48%)";
+const CONC_COLOR = "hsl(152, 69%, 40%)";
 const TAX_COLOR = "hsl(38, 92%, 50%)";
 const CAPEX_COLOR = "hsl(199, 89%, 48%)";
 const OPEX_COLOR = "hsl(38, 92%, 50%)";
