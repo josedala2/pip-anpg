@@ -610,9 +610,11 @@ export const oilBlocks: OilBlock[] = [
       geologicalTargets: "Cretáceo (Pinda/Pós-sal, Toca e Lucula/Pré-sal)",
     },
     legislationDocs: [
+      { title: "Decreto n.º 47380", type: "decreto-lei", reference: "Decreto n.º 47380, de 14 de Novembro de 1957", date: "1957-11-14", description: "Concessão original do Bloco 0 à CABGOC (Cabinda Gulf Oil Company)" },
       { title: "Decreto Lei n.° 2/04", type: "decreto-lei", reference: "Decreto Lei n.° 2/04, de 7 de Maio", date: "2004-05-07", description: "Aprovação do Contrato de Associação do Bloco 0 (Áreas A e B)" },
       { title: "Decreto 29/86", type: "decreto-lei", reference: "Decreto 29/86, de 30 de Dezembro", date: "1986-12-30", description: "Associações das Áreas A, B e C do Bloco 0" },
       { title: "Decreto Legislativo Presidencial n.° 3/12", type: "decreto-lei", reference: "DLP n.° 3/12, de 16 de Março", date: "2012-03-16", description: "Regime fiscal especial — IRP 30% para empresas petrolíferas angolanas" },
+      { title: "DLP n.º 1/23", type: "decreto-lei", reference: "DLP n.º 1/23, de 21 de Abril", date: "2023-04-21", description: "Prorrogação do Bloco 0 por 20 anos (3.º estágio 2030-2050), com revisão dos termos fiscais e taxa de royalty" },
       { title: "Contrato de Associação (2004)", type: "contrato", date: "2004-05-13", description: "Contrato de Associação entre SNL, CABGOC, TOTAL e ENI para exploração e produção do Bloco 0" },
       { title: "Consolidação Áreas B e C", type: "nota", date: "2002-06-01", description: "Com efeito a partir de 1 de Junho de 2002, as Áreas B e C são consolidadas numa só Área designada B" },
     ],
