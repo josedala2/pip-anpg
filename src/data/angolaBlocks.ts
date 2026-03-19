@@ -4674,10 +4674,10 @@ export const oilBlocks: OilBlock[] = [
     riskScore: 7,
     complianceScore: 64,
     concession: [
-      { name: "ETU Energias", share: 67.5, isOperator: true },
-      { name: "Effimax Energy", share: 30.0 },
+      { name: "ETU Energias", share: 37.5, isOperator: true },
+      { name: "Effimax Energy", share: 20.0 },
       { name: "Sonangol E&P", share: 20.0 },
-      { name: "Simples Oil", share: 20.0 },
+      { name: "Simples Oil", share: 10.0 },
       { name: "Gesprocon", share: 12.5 },
     ],
     mapPosition: { x: 28, y: 24 },
