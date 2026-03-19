@@ -100,16 +100,17 @@ function buildBlockDetail(b: typeof oilBlocks[0]): string {
     parts.push(`NPV Point-Forward: ${b.economicVision.npvPointForward.map(n => `${n.label}: ${n.valueMM} MMUSD (${n.percentage}%)`).join("; ")}`);
   }
   if (b.economicVision?.npvByPeriod?.length) {
-    parts.push(`NPV por período: ${b.economicVision.npvByPeriod.map(n => `${n.period}: GE ${n.ge} / Imp ${n.impostos} MMUSD`).join("; ")}`);
+    parts.push(`NPV por período: ${b.economicVision.npvByPeriod.map(n => `${n.period}: GE ${n.ge}${n.conc != null ? ` / Conc ${n.conc}` : ""} / Imp ${n.impostos} MMUSD`).join("; ")}`);
   }
 
   // Cash flow time series
   if (b.economicVision?.cashFlowTimeSeries?.length) {
+    const hasConc = b.economicVision.cashFlowTimeSeries.some(cf => cf.conc != null);
     parts.push(`### Fluxo de Caixa Anual (MMUSD)`);
-    parts.push(`| Ano | GE | Impostos |`);
-    parts.push(`|-----|-----|----------|`);
+    parts.push(hasConc ? `| Ano | GE | Conc. | Impostos |` : `| Ano | GE | Impostos |`);
+    parts.push(hasConc ? `|-----|-----|-------|----------|` : `|-----|-----|----------|`);
     b.economicVision.cashFlowTimeSeries.forEach(cf => {
-      parts.push(`| ${cf.year} | ${cf.ge} | ${cf.impostos} |`);
+      parts.push(hasConc ? `| ${cf.year} | ${cf.ge} | ${cf.conc ?? 0} | ${cf.impostos} |` : `| ${cf.year} | ${cf.ge} | ${cf.impostos} |`);
     });
   }
 
