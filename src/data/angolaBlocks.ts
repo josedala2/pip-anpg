@@ -114,6 +114,17 @@ export interface ContractInfo {
   researchPeriod?: ResearchPeriod;
   fiscalConditions?: FiscalConditions;
   historicalNotes?: string[];
+  adminFeePerYear?: number;           // Taxa de administração da associação (USD/ano)
+  adminFeePeriod?: string;            // Período da taxa admin (e.g. "2022-2050")
+  abandonmentProvisionPerYear?: number; // Aprovisionamento para abandono (USD/ano)
+  abandonmentProvisionStart?: string;   // Data início do aprovisionamento
+  originalDecree?: string;            // Decreto original de concessão
+  extensionDecree?: string;           // Decreto de prorrogação
+  extensionYears?: number;            // Anos de prorrogação
+  extensionStage?: string;            // Estágio da prorrogação (e.g. "3.º estágio 2030-2050")
+  royaltyRates?: { period: string; rate: number }[]; // Taxas de royalty por período
+  amortizationRate?: number;          // Taxa de amortização %
+  ttpRate?: number;                   // TTP %
 }
 
 export interface InvestmentPlanYear {
@@ -192,6 +203,8 @@ export interface FacilityData {
   productionLossesBbls?: number;
   overallEfficiency?: number; // percentage
   capacityBOPD?: number;
+  waterInjectionCapacityBWIPD?: number;   // Capacidade de injecção de água
+  producedWaterCapacityBWP?: number;      // Capacidade de água produzida
   terminalName?: string;
   productionStartYear?: number;
   endOfLifeYear?: number;
@@ -380,7 +393,7 @@ export const oilBlocks: OilBlock[] = [
       base: [142000, 140000, 138000, 135000, 132000, 128000, 124000, 120000, 116000, 112000],
       expansion: [142000, 145000, 148000, 150000, 152000, 150000, 148000, 145000, 142000, 138000],
     },
-    areaKm2: 5800,
+    areaKm2: 5042,
     waterDepthRange: "15-200m",
     contractInfo: {
       decretoLei: "Decreto Lei n.° 2/04, de 7 de Maio",
@@ -394,15 +407,15 @@ export const oilBlocks: OilBlock[] = [
         { name: "TOTAL", share: 10.0 },
         { name: "ENI", share: 9.8 },
       ],
-      signatureBonus: 210000000,
-      socialBonus: 80000000,
+      signatureBonus: 100000000,
+      socialBonus: 40000000,
       socialProjects: 2250000,
       socialProjectsPeriod: "2004-2023",
       regulatoryContribution: 1750000,
       regulatoryContributionPeriod: "2004-2023",
       productionBonus: 10000000,
       productionPeriodStart: "1977-01-01",
-      productionPeriodEnd: "2030-12-31",
+      productionPeriodEnd: "2050-12-31",
       researchPeriod: {
         initialPhaseYears: 7,
         initialPhaseWells: 7,
@@ -427,6 +440,20 @@ export const oilBlocks: OilBlock[] = [
         "Nos termos do Decreto 29/86 de 30 de Dezembro, entre as Associações das Áreas A, B e C.",
         "Com efeito a partir de 1 de Junho de 2002, as Áreas B e C são consolidadas numa só Área designada B.",
       ],
+      adminFeePerYear: 2500000,
+      adminFeePeriod: "2022-2050",
+      abandonmentProvisionPerYear: 50000000,
+      abandonmentProvisionStart: "2023-01-01",
+      originalDecree: "Decreto n.º 47380, de 14 de Novembro de 1957",
+      extensionDecree: "DLP n.º 1/23, de 21 de Abril",
+      extensionYears: 20,
+      extensionStage: "3.º estágio 2030-2050",
+      royaltyRates: [
+        { period: "Até 2026", rate: 20 },
+        { period: "2027-2050", rate: 15 },
+      ],
+      amortizationRate: 16,
+      ttpRate: 70,
     },
     seismicData: [
       { year: 1960, seismic2D: 195, seismic3D: 0, seismic4D: 0 },
@@ -583,9 +610,11 @@ export const oilBlocks: OilBlock[] = [
       geologicalTargets: "Cretáceo (Pinda/Pós-sal, Toca e Lucula/Pré-sal)",
     },
     legislationDocs: [
+      { title: "Decreto n.º 47380", type: "decreto-lei", reference: "Decreto n.º 47380, de 14 de Novembro de 1957", date: "1957-11-14", description: "Concessão original do Bloco 0 à CABGOC (Cabinda Gulf Oil Company)" },
       { title: "Decreto Lei n.° 2/04", type: "decreto-lei", reference: "Decreto Lei n.° 2/04, de 7 de Maio", date: "2004-05-07", description: "Aprovação do Contrato de Associação do Bloco 0 (Áreas A e B)" },
       { title: "Decreto 29/86", type: "decreto-lei", reference: "Decreto 29/86, de 30 de Dezembro", date: "1986-12-30", description: "Associações das Áreas A, B e C do Bloco 0" },
       { title: "Decreto Legislativo Presidencial n.° 3/12", type: "decreto-lei", reference: "DLP n.° 3/12, de 16 de Março", date: "2012-03-16", description: "Regime fiscal especial — IRP 30% para empresas petrolíferas angolanas" },
+      { title: "DLP n.º 1/23", type: "decreto-lei", reference: "DLP n.º 1/23, de 21 de Abril", date: "2023-04-21", description: "Prorrogação do Bloco 0 por 20 anos (3.º estágio 2030-2050), com revisão dos termos fiscais e taxa de royalty" },
       { title: "Contrato de Associação (2004)", type: "contrato", date: "2004-05-13", description: "Contrato de Associação entre SNL, CABGOC, TOTAL e ENI para exploração e produção do Bloco 0" },
       { title: "Consolidação Áreas B e C", type: "nota", date: "2002-06-01", description: "Com efeito a partir de 1 de Junho de 2002, as Áreas B e C são consolidadas numa só Área designada B" },
     ],
@@ -663,24 +692,24 @@ export const oilBlocks: OilBlock[] = [
     },
     // HSE Safety Indicators (2018–2025) — Dados oficiais ANPG
     hseData: [
-      { year: 2018, fat: 0, lti: 0, rwc: 0, mtc: 0, fac: 0, nmi: 0, hhr: 20.33, trir: 0.10, ltir: 0.00 },
-      { year: 2019, fat: 0, lti: 0, rwc: 0, mtc: 0, fac: 0, nmi: 0, hhr: 22.21, trir: 0.13, ltir: 0.00 },
-      { year: 2020, fat: 0, lti: 0, rwc: 0, mtc: 0, fac: 0, nmi: 0, hhr: 13.82, trir: 0.13, ltir: 0.00 },
-      { year: 2021, fat: 0, lti: 0, rwc: 0, mtc: 0, fac: 16, nmi: 0, hhr: 11.80, trir: 0.12, ltir: 0.00 },
-      { year: 2022, fat: 0, lti: 0, rwc: 0, mtc: 1, fac: 20, nmi: 0, hhr: 19.65, trir: 0.10, ltir: 0.00 },
-      { year: 2023, fat: 0, lti: 0, rwc: 0, mtc: 11, fac: 24, nmi: 0, hhr: 15.44, trir: 0.18, ltir: 0.00 },
-      { year: 2024, fat: 0, lti: 0, rwc: 0, mtc: 16, fac: 28, nmi: 35, hhr: 17.16, trir: 0.24, ltir: 0.00 },
-      { year: 2025, fat: 0, lti: 0, rwc: 0, mtc: 7, fac: 34, nmi: 0, hhr: 16.04, trir: 0.11, ltir: 0.00 },
+      { year: 2018, fat: 0, lti: 0, rwc: 3, mtc: 0, fac: 0, nmi: 0, hhr: 20.33, trir: 0.10, ltir: 0.00 },
+      { year: 2019, fat: 0, lti: 0, rwc: 7, mtc: 0, fac: 0, nmi: 0, hhr: 22.21, trir: 0.13, ltir: 0.00 },
+      { year: 2020, fat: 0, lti: 0, rwc: 2, mtc: 0, fac: 0, nmi: 0, hhr: 13.82, trir: 0.13, ltir: 0.00 },
+      { year: 2021, fat: 0, lti: 0, rwc: 3, mtc: 0, fac: 16, nmi: 0, hhr: 11.80, trir: 0.12, ltir: 0.00 },
+      { year: 2022, fat: 0, lti: 0, rwc: 9, mtc: 1, fac: 20, nmi: 0, hhr: 19.65, trir: 0.10, ltir: 0.00 },
+      { year: 2023, fat: 0, lti: 0, rwc: 3, mtc: 11, fac: 24, nmi: 0, hhr: 15.44, trir: 0.18, ltir: 0.00 },
+      { year: 2024, fat: 0, lti: 0, rwc: 5, mtc: 16, fac: 28, nmi: 35, hhr: 17.16, trir: 0.24, ltir: 0.00 },
+      { year: 2025, fat: 0, lti: 0, rwc: 2, mtc: 7, fac: 34, nmi: 0, hhr: 16.04, trir: 0.11, ltir: 0.00 },
     ],
     // Environmental data (2019–2025) — Dados oficiais ANPG
     environmentalData: [
-      { year: 2019, oilSpillCount: 0, oilSpillVolumeBbl: 0, oilInWaterPPM: 4.80, co2EmissionsTonCO2eq: 3898642, gasFlaredMMSCFD: 27.98, gasFlaredTarget: 25 },
-      { year: 2020, oilSpillCount: 0, oilSpillVolumeBbl: 0, oilInWaterPPM: 5.00, co2EmissionsTonCO2eq: 3750000, gasFlaredMMSCFD: 27.06, gasFlaredTarget: 24 },
-      { year: 2021, oilSpillCount: 0, oilSpillVolumeBbl: 0, oilInWaterPPM: 5.17, co2EmissionsTonCO2eq: 3600000, gasFlaredMMSCFD: 17.52, gasFlaredTarget: 20 },
+      { year: 2019, oilSpillCount: 0, oilSpillVolumeBbl: 0, oilInWaterPPM: 5.97, co2EmissionsTonCO2eq: 3898642, gasFlaredMMSCFD: 27.98, gasFlaredTarget: 0 },
+      { year: 2020, oilSpillCount: 0, oilSpillVolumeBbl: 0, oilInWaterPPM: 5.76, co2EmissionsTonCO2eq: 3750000, gasFlaredMMSCFD: 27.06, gasFlaredTarget: 24 },
+      { year: 2021, oilSpillCount: 0, oilSpillVolumeBbl: 0, oilInWaterPPM: 5.17, co2EmissionsTonCO2eq: 3600000, gasFlaredMMSCFD: 17.52, gasFlaredTarget: 24 },
       { year: 2022, oilSpillCount: 0, oilSpillVolumeBbl: 0, oilInWaterPPM: 5.10, co2EmissionsTonCO2eq: 3450000, gasFlaredMMSCFD: 18.70, gasFlaredTarget: 18 },
-      { year: 2023, oilSpillCount: 0, oilSpillVolumeBbl: 0, oilInWaterPPM: 4.75, co2EmissionsTonCO2eq: 3300000, gasFlaredMMSCFD: 14.63, gasFlaredTarget: 16 },
-      { year: 2024, oilSpillCount: 0, oilSpillVolumeBbl: 0, oilInWaterPPM: 4.66, co2EmissionsTonCO2eq: 3200000, gasFlaredMMSCFD: 14.01, gasFlaredTarget: 14 },
-      { year: 2025, oilSpillCount: 1, oilSpillVolumeBbl: 4.81, oilInWaterPPM: 6.53, co2EmissionsTonCO2eq: 3100000, gasFlaredMMSCFD: 10.54, gasFlaredTarget: 12 },
+      { year: 2023, oilSpillCount: 0, oilSpillVolumeBbl: 0, oilInWaterPPM: 4.75, co2EmissionsTonCO2eq: 3300000, gasFlaredMMSCFD: 14.63, gasFlaredTarget: 14.0 },
+      { year: 2024, oilSpillCount: 0, oilSpillVolumeBbl: 0, oilInWaterPPM: 4.66, co2EmissionsTonCO2eq: 3200000, gasFlaredMMSCFD: 14.01, gasFlaredTarget: 12.7 },
+      { year: 2025, oilSpillCount: 1, oilSpillVolumeBbl: 4.81, oilInWaterPPM: 6.53, co2EmissionsTonCO2eq: 3100000, gasFlaredMMSCFD: 10.54, gasFlaredTarget: 12.5 },
     ],
     // Facility status
     facilityData: {
@@ -711,10 +740,12 @@ export const oilBlocks: OilBlock[] = [
       productionLossesBbls: 2830691,
       overallEfficiency: 88,
       capacityBOPD: 400000,
+      waterInjectionCapacityBWIPD: 570000,
+      producedWaterCapacityBWP: 300000,
       terminalName: "Malongo Terminal",
       productionStartYear: 1968,
-      endOfLifeYear: 2040,
-      endOfLifeField: "Mafumeira Sul",
+      endOfLifeYear: 2045,
+      endOfLifeField: "N'Dola Sul",
       cumulativeProductionBO: 290043686705,
       recommendations: [
         "Realizar avaliações de estudos de engenharia e aumentar a frequência de inspecções de nível 3 e 4, de modo a identificar prioridades",
