@@ -3073,7 +3073,7 @@ export const oilBlocks: OilBlock[] = [
       { name: "SNL P&P", share: 50.0, isOperator: true },
       { name: "AJOCO", share: 20.0 },
       { name: "ENI", share: 12.0 },
-      { name: "SOMOIL", share: 10.0 },
+      { name: "SOMOIL", share: 9.0 },
       { name: "NIS-NAFTASGAS", share: 5.0 },
       { name: "INA", share: 4.0 },
     ],
