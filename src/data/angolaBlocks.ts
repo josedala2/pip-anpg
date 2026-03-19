@@ -3761,7 +3761,7 @@ export const oilBlocks: OilBlock[] = [
     concession: [
       { name: "RANGER", share: 35.0, isOperator: true },
       { name: "SONANGOL UEE", share: 35.0 },
-      { name: "BHP PETROLEUM PTY LDA", share: 20.0 },
+      { name: "BHP PETROLEUM PTY LDA", share: 30.0 },
     ],
     dailyProduction: 2835,
     estimatedReserves: 60,
