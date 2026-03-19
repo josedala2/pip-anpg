@@ -703,11 +703,11 @@ export const oilBlocks: OilBlock[] = [
     environmentalData: [
       { year: 2019, oilSpillCount: 0, oilSpillVolumeBbl: 0, oilInWaterPPM: 5.97, co2EmissionsTonCO2eq: 3898642, gasFlaredMMSCFD: 27.98, gasFlaredTarget: 0 },
       { year: 2020, oilSpillCount: 0, oilSpillVolumeBbl: 0, oilInWaterPPM: 5.76, co2EmissionsTonCO2eq: 3750000, gasFlaredMMSCFD: 27.06, gasFlaredTarget: 24 },
-      { year: 2021, oilSpillCount: 0, oilSpillVolumeBbl: 0, oilInWaterPPM: 5.17, co2EmissionsTonCO2eq: 3600000, gasFlaredMMSCFD: 17.52, gasFlaredTarget: 20 },
+      { year: 2021, oilSpillCount: 0, oilSpillVolumeBbl: 0, oilInWaterPPM: 5.17, co2EmissionsTonCO2eq: 3600000, gasFlaredMMSCFD: 17.52, gasFlaredTarget: 24 },
       { year: 2022, oilSpillCount: 0, oilSpillVolumeBbl: 0, oilInWaterPPM: 5.10, co2EmissionsTonCO2eq: 3450000, gasFlaredMMSCFD: 18.70, gasFlaredTarget: 18 },
-      { year: 2023, oilSpillCount: 0, oilSpillVolumeBbl: 0, oilInWaterPPM: 4.75, co2EmissionsTonCO2eq: 3300000, gasFlaredMMSCFD: 14.63, gasFlaredTarget: 16 },
-      { year: 2024, oilSpillCount: 0, oilSpillVolumeBbl: 0, oilInWaterPPM: 4.66, co2EmissionsTonCO2eq: 3200000, gasFlaredMMSCFD: 14.01, gasFlaredTarget: 14 },
-      { year: 2025, oilSpillCount: 1, oilSpillVolumeBbl: 4.81, oilInWaterPPM: 6.53, co2EmissionsTonCO2eq: 3100000, gasFlaredMMSCFD: 10.54, gasFlaredTarget: 12 },
+      { year: 2023, oilSpillCount: 0, oilSpillVolumeBbl: 0, oilInWaterPPM: 4.75, co2EmissionsTonCO2eq: 3300000, gasFlaredMMSCFD: 14.63, gasFlaredTarget: 14.0 },
+      { year: 2024, oilSpillCount: 0, oilSpillVolumeBbl: 0, oilInWaterPPM: 4.66, co2EmissionsTonCO2eq: 3200000, gasFlaredMMSCFD: 14.01, gasFlaredTarget: 12.7 },
+      { year: 2025, oilSpillCount: 1, oilSpillVolumeBbl: 4.81, oilInWaterPPM: 6.53, co2EmissionsTonCO2eq: 3100000, gasFlaredMMSCFD: 10.54, gasFlaredTarget: 12.5 },
     ],
     // Facility status
     facilityData: {
