@@ -285,6 +285,10 @@ export interface EconomicData {
   opexPerBarrel?: number;   // USD/BO
   opexPerBarrelYear?: number;
   sonangolDebt?: number;
+  recoverableCosts?: {
+    porRecuperar: number;
+    recuperados: number;
+  };
   stateRevenueShare?: { period: string; percentage: number }[];
   observations?: string[];
 }
