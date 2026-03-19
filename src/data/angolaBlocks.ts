@@ -738,6 +738,8 @@ export const oilBlocks: OilBlock[] = [
       productionLossesBbls: 2830691,
       overallEfficiency: 88,
       capacityBOPD: 400000,
+      waterInjectionCapacityBWIPD: 570000,
+      producedWaterCapacityBWP: 300000,
       terminalName: "Malongo Terminal",
       productionStartYear: 1968,
       endOfLifeYear: 2045,
