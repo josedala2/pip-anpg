@@ -393,7 +393,7 @@ export const oilBlocks: OilBlock[] = [
       base: [142000, 140000, 138000, 135000, 132000, 128000, 124000, 120000, 116000, 112000],
       expansion: [142000, 145000, 148000, 150000, 152000, 150000, 148000, 145000, 142000, 138000],
     },
-    areaKm2: 5800,
+    areaKm2: 5042,
     waterDepthRange: "15-200m",
     contractInfo: {
       decretoLei: "Decreto Lei n.° 2/04, de 7 de Maio",
