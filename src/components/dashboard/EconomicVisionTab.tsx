@@ -101,6 +101,9 @@ export const EconomicVisionTab = ({ block }: Props) => {
                 <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => v.toLocaleString()} />
                 <Legend wrapperStyle={{ fontSize: 11 }} />
                 <Bar dataKey="ge" name="GE" fill={GE_COLOR} radius={[4, 4, 0, 0]} />
+                {npvByPeriod.some(d => d.conc != null) && (
+                  <Bar dataKey="conc" name="Concessionária" fill={CONC_COLOR} radius={[4, 4, 0, 0]} />
+                )}
                 <Bar dataKey="impostos" name="Impostos" fill={TAX_COLOR} radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
