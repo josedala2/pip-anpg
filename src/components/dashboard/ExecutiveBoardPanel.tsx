@@ -197,6 +197,7 @@ export const ExecutiveBoardPanel = () => {
             <CardTitle className="text-sm font-semibold flex items-center gap-2">
               <Gauge className="w-4 h-4 text-primary" />
               Saúde Nacional — 6 Dimensões
+              <InfoTooltip text={tooltipDescriptions["Saúde Nacional — 6 Dimensões"]} />
             </CardTitle>
           </CardHeader>
           <CardContent className="p-4 pt-0">
