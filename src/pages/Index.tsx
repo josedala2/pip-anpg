@@ -33,6 +33,7 @@ import { Badge } from "@/components/ui/badge";
 
 const allPanels = [
   "Home Executiva",
+  "Conselho CA",
   "Concessões",
   "Produção & Declínio",
   "Exploração",
