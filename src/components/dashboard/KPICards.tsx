@@ -5,7 +5,8 @@ import { Activity, BarChart3, Boxes, DollarSign, TrendingUp, AlertTriangle, Land
 
 const blocksInProduction = () => getBlocksByPhase("Production").length;
 const blocksInExploration = () => getBlocksByPhase("Exploration").length;
-const blocksNoProduction = () => oilBlocks.filter(b => b.dailyProduction === 0).length;
+const blocksInBidding = () => getBlocksByPhase("Bidding").length;
+const blocksNoProduction = () => oilBlocks.filter(b => b.phase !== "Bidding" && b.dailyProduction === 0).length;
 const blocksCriticalRisk = () => oilBlocks.filter(b => b.riskScore >= 7).length;
 const criticalFacilities = () => oilBlocks.filter(b => b.facilityData && b.facilityData.overallEfficiency < 70).length;
 const estimatedStateRevenue = () => {
@@ -82,10 +83,10 @@ const kpis = [
   { label: "Produção Nacional", value: getTotalProduction(), suffix: " BOPD", icon: Activity, variation: -2.1, variationLabel: "m/m", sparkline: prodSpark, status: "neutral" as SemaphoreStatus, drill: "Produção agregada de todos os blocos activos" },
   { label: "Reservas Estimadas", value: getTotalReserves(), suffix: " Mb", icon: BarChart3, sparkline: reservesSpark, status: "neutral" as SemaphoreStatus, drill: "Soma de reservas P1+P2 de todas as concessões" },
   { label: "Variação Produção", value: -4.8, suffix: "%", icon: TrendingUp, status: "warning" as SemaphoreStatus, drill: "Variação anual da produção nacional" },
-  { label: "Concessões Activas", value: getActiveBlocks(), suffix: "", icon: Boxes, status: "neutral" as SemaphoreStatus, drill: "Total de blocos com actividade operacional" },
+  { label: "Concessões Activas", value: getActiveBlocks(), suffix: ` / ${oilBlocks.length}`, icon: Boxes, status: "neutral" as SemaphoreStatus, drill: "Concessões activas vs total adjudicado" },
   { label: "Blocos em Produção", value: blocksInProduction(), suffix: "", icon: Pickaxe, status: "healthy" as SemaphoreStatus, drill: "Blocos com produção de hidrocarbonetos activa" },
-  { label: "Sem Produção", value: blocksNoProduction(), suffix: "", icon: Boxes, status: getStatus("Sem Produção", blocksNoProduction()), drill: "Blocos sem produção activa" },
-  { label: "Risco Crítico", value: blocksCriticalRisk(), suffix: "", icon: AlertTriangle, status: getStatus("Risco Crítico", blocksCriticalRisk()), drill: "Blocos com score de risco ≥ 7" },
+  { label: "Em Exploração", value: blocksInExploration(), suffix: "", icon: Search, status: "neutral" as SemaphoreStatus, drill: "Blocos em fase de exploração pura" },
+  { label: "Em Aprovação", value: blocksInBidding(), suffix: "", icon: Boxes, status: "neutral" as SemaphoreStatus, drill: "Blocos em fase de aprovação / licitação" },
   { label: "Instalações Críticas", value: criticalFacilities(), suffix: "", icon: Wrench, status: getStatus("Instalações Críticas", criticalFacilities()), drill: "Instalações com eficiência < 70%" },
   { label: "Receita Estado", value: estimatedStateRevenue(), prefix: "$", suffix: "M", icon: Landmark, status: "neutral" as SemaphoreStatus, drill: "Estimativa anual de receita fiscal petrolífera" },
   { label: "Contratos a Expirar", value: contractsExpiring(), suffix: "", icon: DollarSign, status: getStatus("Contratos a Expirar", contractsExpiring()), drill: "Contratos com vencimento em < 24 meses" },

@@ -6726,7 +6726,7 @@ export const getTotalProduction = () => oilBlocks.reduce((sum, b) => sum + b.dai
 
 export const getTotalReserves = () => oilBlocks.reduce((sum, b) => sum + b.estimatedReserves, 0);
 
-export const getActiveBlocks = () => oilBlocks.filter(b => b.phase !== "Suspended").length;
+export const getActiveBlocks = () => oilBlocks.filter(b => b.phase !== "Bidding").length;
 
 export const getTotalCapex = () => oilBlocks.reduce((sum, b) => sum + b.accumulatedInvestment, 0);
 
