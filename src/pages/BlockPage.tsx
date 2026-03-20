@@ -1917,7 +1917,7 @@ const BlockPage = () => {
                                 )}
                                 {fc.ipp != null && (
                                   <div className="glass-card rounded-lg p-3 text-center">
-                                    <div className="text-[9px] uppercase text-muted-foreground">IPP</div>
+                                    <div className="text-[9px] uppercase text-muted-foreground flex items-center gap-0.5">IPP <InfoTooltip text={tooltipDescriptions["IPP"]} /></div>
                                     <div className="font-bold font-mono text-2xl">{fc.ipp}%</div>
                                     <div className="text-[8px] text-muted-foreground">Prod. Petróleo</div>
                                   </div>
