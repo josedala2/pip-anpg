@@ -225,6 +225,7 @@ export const EconomicVisionTab = ({ block }: Props) => {
               <CardTitle className="text-sm 2xl:text-base flex items-center gap-2">
                 <TrendingDown className="w-4 h-4 text-warning" />
                 Custo Técnico (USD/BO)
+                {tooltipDescriptions["Custo Técnico (USD/BO)"] && <InfoTooltip text={tooltipDescriptions["Custo Técnico (USD/BO)"]} />}
               </CardTitle>
             </CardHeader>
             <CardContent className="p-4 pt-0 space-y-4">

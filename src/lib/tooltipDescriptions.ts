@@ -114,6 +114,18 @@ export const tooltipDescriptions: Record<string, string> = {
   "Previsão de Produção Nacional": "Projecção da produção nacional a longo prazo, com cenários de base, com FID e sem FID",
   "Contribuição por Bloco (%)": "Percentagem de contribuição de cada bloco para a produção nacional total",
 
+  // ── HSE Charts ──
+  "Evolução TRIR & LTIR": "Tendência anual das taxas de incidentes registáveis (TRIR) e com tempo perdido (LTIR)",
+  "Emissões CO₂ (ton CO₂eq)": "Volume anual de emissões de dióxido de carbono equivalente das operações do bloco",
+  "Gás Queimado (MMSCFD)": "Volume diário médio de gás natural queimado em tocha (flaring) nas instalações",
+  "Custos Incorridos e Previsão (MMUSD)": "Evolução dos custos CAPEX e OPEX incorridos e previstos por período",
+  "Custos de Abandono (MMUSD)": "Detalhamento dos custos estimados para descomissionamento e abandono das instalações",
+  "Custo Técnico (USD/BO)": "Custo técnico unitário por barril de óleo, decomposto em CAPEX e OPEX",
+  "NPV por Período (MMUSD)": "Valor Actual Líquido calculado para diferentes períodos — GE, Concessionária e Impostos",
+  "Fluxo de Caixa (MMUSD)": "Evolução temporal do fluxo de caixa decomposto entre GE, Concessionária e Impostos",
+  "Repartição de Receitas (MMUSD & MMBO)": "Distribuição percentual das receitas entre o Estado (GE) e Impostos por período",
+  "Indicadores de Segurança (HSE)": "Tabela consolidada de todos os indicadores de segurança operacional por ano",
+
   // ── Visão Económica ──
   "NPV por Período": "Valor Actual Líquido calculado para diferentes horizontes temporais (GE, Concessionária e Impostos)",
   "Fluxo de Caixa Acumulado": "Evolução temporal do fluxo de caixa acumulado, mostrando o ponto de payback e retorno do investimento",
