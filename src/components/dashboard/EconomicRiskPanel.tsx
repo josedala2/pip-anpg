@@ -202,6 +202,7 @@ export const EconomicRiskPanel = () => {
             <CardTitle className="text-sm font-semibold flex items-center gap-2">
               <ShieldOff className="w-4 h-4 text-danger" />
               Risco de Abandono Sub-financiado
+              <InfoTooltip text={tooltipDescriptions["Risco de Abandono Sub-financiado"]} />
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
