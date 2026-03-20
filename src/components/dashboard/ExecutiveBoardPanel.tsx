@@ -467,7 +467,8 @@ export const ExecutiveBoardPanel = () => {
         <CardHeader className="pb-2 p-4">
           <CardTitle className="text-sm font-semibold flex items-center gap-2">
             <Crown className="w-4 h-4 text-primary" />
-            Síntese Executiva — Recomendações Prioritárias
+            Recomendações Prioritárias
+            <InfoTooltip text={tooltipDescriptions["Recomendações Prioritárias"]} />
           </CardTitle>
         </CardHeader>
         <CardContent className="p-4 pt-0">
