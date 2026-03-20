@@ -400,6 +400,7 @@ const BlockPage = () => {
                      <div className="flex items-center gap-2 mb-2">
                        <kpi.icon className={`w-4 h-4 2xl:w-5 2xl:h-5 ${kpi.color}`} />
                        <span className="text-xs 2xl:text-sm text-muted-foreground">{kpi.label}</span>
+                       {tooltipDescriptions[kpi.label] && <InfoTooltip text={tooltipDescriptions[kpi.label]} />}
                      </div>
                      <div className="text-2xl 2xl:text-3xl font-bold font-mono">{kpi.value}</div>
                   </CardContent>
