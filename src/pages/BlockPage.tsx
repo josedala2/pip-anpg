@@ -1622,7 +1622,7 @@ const BlockPage = () => {
                                         <div className="text-lg 2xl:text-xl font-bold font-mono text-primary">${c.capex.toLocaleString()}</div>
                                       </div>
                                       <div>
-                                        <div className="text-[9px] uppercase text-muted-foreground">OPEX</div>
+                                        <div className="text-[9px] uppercase text-muted-foreground flex items-center gap-1">OPEX <InfoTooltip text={tooltipDescriptions["OPEX"]} /></div>
                                         <div className="text-lg 2xl:text-xl font-bold font-mono text-warning">${c.opex.toLocaleString()}</div>
                                       </div>
                                     </div>
