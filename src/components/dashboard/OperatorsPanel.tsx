@@ -127,7 +127,7 @@ function OperatorListView({ operators }: { operators: OperatorSummary[] }) {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <Card className="glass-card">
           <CardContent className="p-4 text-center">
-            <p className="text-xs text-muted-foreground mb-1">Operadores</p>
+            <p className="text-xs text-muted-foreground mb-1 flex items-center justify-center gap-1">Operadores <InfoTooltip text={tooltipDescriptions["Operadores"]} /></p>
             <p className="text-2xl font-bold text-primary"><AnimatedCounter target={operators.length} /></p>
           </CardContent>
         </Card>
