@@ -107,7 +107,7 @@ export const FacilitiesTab = ({ facilityData }: Props) => {
       <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3">
         <Card className="glass-card">
           <CardContent className="p-4 text-center">
-            <div className="text-[9px] uppercase text-muted-foreground">Eficiência Global</div>
+            <div className="text-[9px] uppercase text-muted-foreground flex items-center justify-center gap-1">Eficiência Global <InfoTooltip text={tooltipDescriptions["Eficiência Global"]} /></div>
             <div className="text-2xl font-bold font-mono text-success">{facilityData.overallEfficiency}%</div>
           </CardContent>
         </Card>
