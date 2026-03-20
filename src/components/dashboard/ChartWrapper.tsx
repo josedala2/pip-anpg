@@ -8,6 +8,8 @@ import { Download, Maximize2, X } from "lucide-react";
 import { toast } from "sonner";
 import anpgLogoColor from "@/assets/anpg-logo-color.svg";
 import anpgLogoWhite from "@/assets/anpg-logo-white.svg";
+import { InfoTooltip } from "@/components/ui/info-tooltip";
+import { tooltipDescriptions } from "@/lib/tooltipDescriptions";
 
 interface ChartWrapperProps {
   title: string;
