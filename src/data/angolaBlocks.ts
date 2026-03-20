@@ -6493,7 +6493,7 @@ export const oilBlocks: OilBlock[] = [
     operator: "MTI Energy",
     partners: ["Sonangol E.P"],
     basin: "Kwanza",
-    phase: "Exploration",
+    phase: "Bidding",
     waterDepth: "Onshore",
     contractDate: "2022-06-01",
     dailyProduction: 0,
