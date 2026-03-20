@@ -1618,7 +1618,7 @@ const BlockPage = () => {
                                     <div className="text-xs 2xl:text-sm text-muted-foreground mb-2 font-medium">{c.period}</div>
                                     <div className="grid grid-cols-2 gap-3">
                                       <div>
-                                        <div className="text-[9px] uppercase text-muted-foreground">CAPEX</div>
+                                        <div className="text-[9px] uppercase text-muted-foreground flex items-center gap-1">CAPEX <InfoTooltip text={tooltipDescriptions["CAPEX"]} /></div>
                                         <div className="text-lg 2xl:text-xl font-bold font-mono text-primary">${c.capex.toLocaleString()}</div>
                                       </div>
                                       <div>
