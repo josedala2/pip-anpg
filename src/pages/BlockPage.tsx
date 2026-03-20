@@ -1100,28 +1100,28 @@ const BlockPage = () => {
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
                     {block.explorationSummary.totalSeismic2DKm != null && (
                       <div className="glass-card rounded-lg p-3 text-center">
-                        <div className="text-[9px] uppercase text-muted-foreground">Sísmica 2D</div>
+                        <div className="text-[9px] uppercase text-muted-foreground flex items-center justify-center gap-1">Sísmica 2D <InfoTooltip text={tooltipDescriptions["Sísmica 2D"]} /></div>
                         <div className="text-lg font-bold font-mono">{block.explorationSummary.totalSeismic2DKm.toLocaleString()}</div>
                         <div className="text-[10px] text-muted-foreground">km</div>
                       </div>
                     )}
                     {block.explorationSummary.totalSeismic3DKm2 != null && (
                       <div className="glass-card rounded-lg p-3 text-center">
-                        <div className="text-[9px] uppercase text-muted-foreground">Sísmica 3D</div>
+                        <div className="text-[9px] uppercase text-muted-foreground flex items-center justify-center gap-1">Sísmica 3D <InfoTooltip text={tooltipDescriptions["Sísmica 3D"]} /></div>
                         <div className="text-lg font-bold font-mono">{block.explorationSummary.totalSeismic3DKm2.toLocaleString()}</div>
                         <div className="text-[10px] text-muted-foreground">km²</div>
                       </div>
                     )}
                     {block.explorationSummary.totalSeismic4DKm2 != null && (
                       <div className="glass-card rounded-lg p-3 text-center">
-                        <div className="text-[9px] uppercase text-muted-foreground">Sísmica 4D</div>
+                        <div className="text-[9px] uppercase text-muted-foreground flex items-center justify-center gap-1">Sísmica 4D <InfoTooltip text={tooltipDescriptions["Sísmica 4D"]} /></div>
                         <div className="text-lg font-bold font-mono">{block.explorationSummary.totalSeismic4DKm2.toLocaleString()}</div>
                         <div className="text-[10px] text-muted-foreground">km²</div>
                       </div>
                     )}
                     {block.explorationSummary.stooipMMBO != null && (
                       <div className="glass-card rounded-lg p-3 text-center">
-                        <div className="text-[9px] uppercase text-muted-foreground">STOOIP</div>
+                        <div className="text-[9px] uppercase text-muted-foreground flex items-center justify-center gap-1">STOOIP <InfoTooltip text={tooltipDescriptions["STOOIP"]} /></div>
                         <div className="text-lg font-bold font-mono text-warning">{block.explorationSummary.stooipMMBO.toLocaleString()}</div>
                         <div className="text-[10px] text-muted-foreground">MMBO</div>
                       </div>
