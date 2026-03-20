@@ -25,6 +25,8 @@ import { HSEEnvironmentTab } from "@/components/dashboard/HSEEnvironmentTab";
 import { FacilitiesTab } from "@/components/dashboard/FacilitiesTab";
 import { HomologacoesPanel } from "@/components/dashboard/HomologacoesPanel";
 import type { LegislationDocument, ContractInfo } from "@/data/angolaBlocks";
+import { InfoTooltip } from "@/components/ui/info-tooltip";
+import { tooltipDescriptions } from "@/lib/tooltipDescriptions";
 import {
   PieChart, Pie, Cell, AreaChart, Area, BarChart, Bar, LineChart, Line,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend,
