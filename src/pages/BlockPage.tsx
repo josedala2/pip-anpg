@@ -1240,8 +1240,8 @@ const BlockPage = () => {
                    </Card>
                    <Card className="glass-card">
                      <CardContent className="p-4 flex flex-col items-center text-center">
-                       <Layers className="w-5 h-5 text-success mb-1" />
-                       <span className="text-xs text-muted-foreground">Campos em Produção</span>
+                        <Layers className="w-5 h-5 text-success mb-1" />
+                        <span className="text-xs text-muted-foreground flex items-center gap-1">Campos em Produção {tooltipDescriptions["Campos em Produção"] && <InfoTooltip text={tooltipDescriptions["Campos em Produção"]} />}</span>
                        <span className="text-lg font-bold text-foreground">{producingFields.length}</span>
                        <span className="text-[10px] text-muted-foreground">de {block.fields?.length || 0} total</span>
                      </CardContent>
