@@ -1530,7 +1530,7 @@ const BlockPage = () => {
                       </Card>
                       <Card className="glass-card">
                         <CardContent className="p-4 2xl:p-6">
-                          <div className="text-xs 2xl:text-sm text-muted-foreground mb-2">Taxa de Execução</div>
+                          <div className="text-xs 2xl:text-sm text-muted-foreground mb-2 flex items-center gap-1">Taxa de Execução {tooltipDescriptions["Taxa Execução"] && <InfoTooltip text={tooltipDescriptions["Taxa Execução"]} />}</div>
                           <div className="text-2xl 2xl:text-3xl font-bold font-mono">{block.executionRate}%</div>
                           <div className={`text-xs mt-1 ${block.executionRate >= 85 ? "text-success" : block.executionRate >= 70 ? "text-warning" : "text-danger"}`}>
                             {block.executionRate >= 85 ? "Excelente" : block.executionRate >= 70 ? "Moderado" : "Baixo"}
