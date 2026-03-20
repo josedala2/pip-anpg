@@ -51,7 +51,7 @@ export const HSEEnvironmentTab = ({ hseData, environmentalData, facilityData, ec
             </Card>
             <Card className="glass-card">
               <CardContent className="p-4 text-center">
-                <div className="text-[9px] uppercase text-muted-foreground">Poços WI</div>
+                <div className="text-[9px] uppercase text-muted-foreground flex items-center justify-center gap-1">Poços WI <InfoTooltip text={tooltipDescriptions["Poços WI"]} /></div>
                 <div className="text-2xl font-bold font-mono">{facilityData.activeWells.wi}</div>
               </CardContent>
             </Card>
