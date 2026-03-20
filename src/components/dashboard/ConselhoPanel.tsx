@@ -160,7 +160,11 @@ export const ConselhoPanel = () => {
     const healthOrder: Record<HealthStatus, number> = { red: 0, yellow: 1, green: 2 };
     const urgencyOrder: Record<string, number> = { "Imediata": 0, "Elevada": 1, "Moderada": 2, "Baixa": 3 };
 
-    return [...concessions].sort((a, b) => {
+    const filtered = classFilter === "all"
+      ? concessions
+      : concessions.filter(c => c.strategic.classification === classFilter);
+
+    return [...filtered].sort((a, b) => {
       let cmp = 0;
       switch (sortBy) {
         case "health": cmp = healthOrder[a.health] - healthOrder[b.health]; break;
@@ -170,7 +174,7 @@ export const ConselhoPanel = () => {
       }
       return sortAsc ? cmp : -cmp;
     });
-  }, [concessions, sortBy, sortAsc]);
+  }, [concessions, sortBy, sortAsc, classFilter]);
 
   const toggleSort = (col: typeof sortBy) => {
     if (sortBy === col) setSortAsc(!sortAsc);
