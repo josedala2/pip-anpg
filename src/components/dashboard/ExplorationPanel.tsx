@@ -285,9 +285,9 @@ export const ExplorationPanel = () => {
           <Card key={s.label} className="glass-card">
            <CardContent className="p-4 2xl:p-5 3xl:p-6 flex items-center gap-3 3xl:gap-4">
                <s.icon className={`w-5 h-5 2xl:w-6 2xl:h-6 3xl:w-7 3xl:h-7 ${s.color} shrink-0`} />
-               <div>
-                 <div className="text-[10px] 2xl:text-xs 3xl:text-sm uppercase tracking-wider text-muted-foreground">{s.label}</div>
-                 <div className="text-lg 2xl:text-xl 3xl:text-2xl font-bold font-mono">{s.value}</div>
+                <div>
+                  <div className="text-[10px] 2xl:text-xs 3xl:text-sm uppercase tracking-wider text-muted-foreground flex items-center gap-1">{s.label} {tooltipDescriptions[s.label] && <InfoTooltip text={tooltipDescriptions[s.label]} />}</div>
+                  <div className="text-lg 2xl:text-xl 3xl:text-2xl font-bold font-mono">{s.value}</div>
               </div>
             </CardContent>
           </Card>
