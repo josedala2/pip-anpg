@@ -134,7 +134,7 @@ export const HSEEnvironmentTab = ({ hseData, environmentalData, facilityData, ec
             {facilityData.productionStartYear && (
               <Card className="glass-card">
                 <CardContent className="p-4 text-center">
-                  <div className="text-[9px] uppercase text-muted-foreground">Início Produção</div>
+                  <div className="text-[9px] uppercase text-muted-foreground flex items-center justify-center gap-1">Início Produção <InfoTooltip text={tooltipDescriptions["Início Produção"]} /></div>
                   <div className="text-xl font-bold font-mono">{facilityData.productionStartYear}</div>
                 </CardContent>
               </Card>
