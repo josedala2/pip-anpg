@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { oilBlocks, type OilBlock } from "@/data/angolaBlocks";
 import { calculateStrategicScore, type StrategicScore, type StrategicClassification, classificationConfig, urgencyConfig } from "@/lib/strategicScoring";
-import { calculateEconomicScore, type EconomicScoreResult, getNationalEconomicOverview, classificationColors } from "@/lib/economicScoring";
+import { calculateEconomicScore, type EconomicScoreResult, getNationalEconomicKPIs, classificationColors } from "@/lib/economicScoring";
 import { evaluateAlerts, evaluateForecastAlerts } from "@/lib/alertsEngine";
 import {
   BarChart3, Shield, AlertTriangle, TrendingDown, TrendingUp,
