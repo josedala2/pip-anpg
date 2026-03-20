@@ -4,6 +4,8 @@ import { Badge } from "@/components/ui/badge";
 import { oilBlocks, type OilBlock } from "@/data/angolaBlocks";
 import { AnimatedCounter } from "./AnimatedCounter";
 import { AlertTriangle, Calendar, CheckCircle2, Clock, FileWarning, Scale, Shield, XCircle } from "lucide-react";
+import { InfoTooltip } from "@/components/ui/info-tooltip";
+import { tooltipDescriptions } from "@/lib/tooltipDescriptions";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, CartesianGrid, ScatterChart, Scatter, ZAxis } from "recharts";
