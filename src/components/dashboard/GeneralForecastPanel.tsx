@@ -247,6 +247,7 @@ export const GeneralForecastPanel = () => {
           <CardTitle className="text-sm font-semibold flex items-center gap-2">
             <BarChart3 className="w-4 h-4 text-primary" />
             Previsão Consolidada — Produção, Receita, Custos (Cenário Base, 15 Anos)
+            <InfoTooltip text={tooltipDescriptions["Previsão Consolidada — Produção, Receita, Custos"]} />
             {isFiltered && <Badge variant="outline" className="text-[9px] ml-auto">Filtrado</Badge>}
           </CardTitle>
         </CardHeader>
