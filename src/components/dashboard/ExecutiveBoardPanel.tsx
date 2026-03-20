@@ -179,14 +179,14 @@ export const ExecutiveBoardPanel = () => {
 
       {/* ── Row 1: Headline KPIs ── */}
       <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-8 gap-3">
-        <KPITile icon={<Activity className="w-4 h-4" />} label="Produção Nacional" value={`${(totalProduction / 1000).toFixed(0)}k`} unit="BOPD" />
-        <KPITile icon={<DollarSign className="w-4 h-4" />} label="Receita Estado" value={fmtUSD(kpis.totalStateRevenue)} positive />
-        <KPITile icon={<TrendingUp className="w-4 h-4" />} label="NPV Nacional" value={fmtUSD(kpis.totalNPV)} positive={kpis.totalNPV >= 0} />
-        <KPITile icon={<Gauge className="w-4 h-4" />} label="OPEX Médio" value={`$${kpis.avgOpexPerBarrel.toFixed(1)}`} unit="/bbl" />
-        <KPITile icon={<Target className="w-4 h-4" />} label="Break-even" value={`$${kpis.avgBreakeven.toFixed(0)}`} unit="/bbl" />
-        <KPITile icon={<ShieldAlert className="w-4 h-4" />} label="Em Risco" value={`${(kpis.atRiskProduction / 1000).toFixed(0)}k`} unit="BOPD" negative />
-        <KPITile icon={<TrendingUp className="w-4 h-4" />} label="Melhor NPV" value={fmtUSD(bestScenario.npv)} subtitle={bestScenario.scenario.name} positive />
-        <KPITile icon={<Bell className="w-4 h-4" />} label="Alertas Forecast" value={`${forecastAlerts.length}`} negative={criticalAlerts.length > 0} />
+        <KPITile icon={<Activity className="w-4 h-4" />} label="Produção Nacional" value={`${(totalProduction / 1000).toFixed(0)}k`} unit="BOPD" tooltip={tooltipDescriptions["Produção Nacional"]} />
+        <KPITile icon={<DollarSign className="w-4 h-4" />} label="Receita Estado" value={fmtUSD(kpis.totalStateRevenue)} positive tooltip={tooltipDescriptions["Receita Estado"]} />
+        <KPITile icon={<TrendingUp className="w-4 h-4" />} label="NPV Nacional" value={fmtUSD(kpis.totalNPV)} positive={kpis.totalNPV >= 0} tooltip={tooltipDescriptions["NPV Total Concessões"]} />
+        <KPITile icon={<Gauge className="w-4 h-4" />} label="OPEX Médio" value={`$${kpis.avgOpexPerBarrel.toFixed(1)}`} unit="/bbl" tooltip={tooltipDescriptions["OPEX Médio/Barril"]} />
+        <KPITile icon={<Target className="w-4 h-4" />} label="Break-even" value={`$${kpis.avgBreakeven.toFixed(0)}`} unit="/bbl" tooltip={tooltipDescriptions["Break-even Médio"]} />
+        <KPITile icon={<ShieldAlert className="w-4 h-4" />} label="Em Risco" value={`${(kpis.atRiskProduction / 1000).toFixed(0)}k`} unit="BOPD" negative tooltip={tooltipDescriptions["Produção em Risco"]} />
+        <KPITile icon={<TrendingUp className="w-4 h-4" />} label="Melhor NPV" value={fmtUSD(bestScenario.npv)} subtitle={bestScenario.scenario.name} positive tooltip={tooltipDescriptions["NPV Melhor Cenário"]} />
+        <KPITile icon={<Bell className="w-4 h-4" />} label="Alertas Forecast" value={`${forecastAlerts.length}`} negative={criticalAlerts.length > 0} tooltip={tooltipDescriptions["Alertas de Previsão"]} />
       </div>
 
       {/* ── Row 2: Health Radar + Classification Distributions ── */}
