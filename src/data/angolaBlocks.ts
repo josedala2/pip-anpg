@@ -3832,7 +3832,7 @@ export const oilBlocks: OilBlock[] = [
       { name: "Sonangol E.P", share: 25.0 },
       { name: "ACREP", share: 10.0 },
     ],
-    dailyProduction: 22000,
+    dailyProduction: 0,
     estimatedReserves: 420,
     accumulatedInvestment: 1600,
     plannedInvestment: 3200,
