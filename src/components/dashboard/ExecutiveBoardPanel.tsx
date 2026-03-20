@@ -77,6 +77,10 @@ export const ExecutiveBoardPanel = () => {
   const scenarioOutputs = useMemo(() => runAllScenarios(), []);
   const strategicScores = useMemo(() => calculateAllScores(oilBlocks), []);
   const forecastAlerts = useMemo(() => evaluateForecastAlerts(), []);
+  const economicScores = useMemo(
+    () => kpis.scores.filter((score): score is NonNullable<(typeof kpis.scores)[number]> => Boolean(score?.classification)),
+    [kpis.scores],
+  );
 
   const totalProduction = oilBlocks.reduce((s, b) => s + b.dailyProduction, 0);
   const producingBlocks = oilBlocks.filter(b => b.dailyProduction > 0).length;
@@ -104,19 +108,19 @@ export const ExecutiveBoardPanel = () => {
 
   // Top risk concessions
   const topRisks = useMemo(() => {
-    return [...kpis.scores]
+    return [...economicScores]
       .filter(s => s.classification === "Activo de Alto Risco" || s.classification === "Activo Inviável")
-      .sort((a, b) => (a.totalScore ?? 0) - (b.totalScore ?? 0))
+      .sort((a, b) => a.totalScore - b.totalScore)
       .slice(0, 5);
-  }, [kpis]);
+  }, [economicScores]);
 
   // Top performing
   const topPerformers = useMemo(() => {
-    return [...kpis.scores]
+    return [...economicScores]
       .filter(s => s.classification === "Activo Estratégico" || s.classification === "Activo Rentável")
-      .sort((a, b) => (b.npvTotal ?? 0) - (a.npvTotal ?? 0))
+      .sort((a, b) => b.npvTotal - a.npvTotal)
       .slice(0, 5);
-  }, [kpis]);
+  }, [economicScores]);
 
   // Scenario comparison data for mini bar chart
   const scenarioCompare = useMemo(() => {
@@ -142,7 +146,7 @@ export const ExecutiveBoardPanel = () => {
   // Radar: national health across 6 dimensions
   const healthRadar = useMemo(() => {
     const avgStrategic = strategicScores.reduce((s, x) => s + x.totalScore, 0) / (strategicScores.length || 1);
-    const avgEconomic = kpis.scores.reduce((s, x) => s + x.totalScore, 0) / (kpis.scores.length || 1);
+    const avgEconomic = economicScores.reduce((s, x) => s + x.totalScore, 0) / (economicScores.length || 1);
     const viabilityRatio = totalProduction > 0 ? (kpis.viableProduction / totalProduction) * 100 : 0;
     const scenarioHealth = baseScenario.npv > 0 ? Math.min(100, (baseScenario.npv / (bestScenario.npv || 1)) * 100) : 20;
     const fiscalStrength = Math.min(100, (kpis.totalStateRevenue / 5000) * 100);
@@ -156,7 +160,7 @@ export const ExecutiveBoardPanel = () => {
       { dimension: "Receita Fiscal", value: Math.round(Math.max(0, fiscalStrength)) },
       { dimension: "Risco Controlado", value: Math.round(Math.max(0, riskScore)) },
     ];
-  }, [strategicScores, kpis, baseScenario, bestScenario, forecastAlerts, totalProduction]);
+  }, [strategicScores, economicScores, kpis, baseScenario, bestScenario, forecastAlerts, totalProduction]);
 
   const criticalAlerts = forecastAlerts.filter(a => a.severity === "critical");
   const highAlerts = forecastAlerts.filter(a => a.severity === "high");
