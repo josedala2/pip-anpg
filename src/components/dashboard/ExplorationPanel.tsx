@@ -4,6 +4,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { oilBlocks } from "@/data/angolaBlocks";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend, Brush } from "recharts";
 import { AlertTriangle, Target, Layers, Droplets, Filter, ChevronDown, AlignVerticalJustifyStart, AlignHorizontalJustifyStart } from "lucide-react";
+import { InfoTooltip } from "@/components/ui/info-tooltip";
+import { tooltipDescriptions } from "@/lib/tooltipDescriptions";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { ExplorationSummaryTable } from "./ExplorationSummaryTable";
 import { ChartWrapper } from "./ChartWrapper";
