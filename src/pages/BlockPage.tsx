@@ -1910,7 +1910,7 @@ const BlockPage = () => {
                               <div className="grid grid-cols-3 gap-2">
                                 {fc.irp != null && (
                                   <div className="glass-card rounded-lg p-3 text-center border border-primary/20">
-                                    <div className="text-[9px] uppercase text-muted-foreground">IRP</div>
+                                    <div className="text-[9px] uppercase text-muted-foreground flex items-center gap-0.5">IRP <InfoTooltip text={tooltipDescriptions["IRP"]} /></div>
                                     <div className="font-bold font-mono text-2xl text-primary">{fc.irp}%</div>
                                     <div className="text-[8px] text-muted-foreground">Rend. Petróleo</div>
                                   </div>
