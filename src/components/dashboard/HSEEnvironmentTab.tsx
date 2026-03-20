@@ -142,7 +142,7 @@ export const HSEEnvironmentTab = ({ hseData, environmentalData, facilityData, ec
             {facilityData.endOfLifeYear && (
               <Card className="glass-card">
                 <CardContent className="p-4 text-center">
-                  <div className="text-[9px] uppercase text-muted-foreground">Vida Útil Até</div>
+                  <div className="text-[9px] uppercase text-muted-foreground flex items-center justify-center gap-1">Vida Útil Até <InfoTooltip text={tooltipDescriptions["Vida Útil Até"]} /></div>
                   <div className="text-xl font-bold font-mono">{facilityData.endOfLifeYear}</div>
                   {facilityData.endOfLifeField && <div className="text-[9px] text-muted-foreground">{facilityData.endOfLifeField}</div>}
                 </CardContent>
