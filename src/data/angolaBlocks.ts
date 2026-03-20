@@ -6404,7 +6404,7 @@ export const oilBlocks: OilBlock[] = [
     operator: "Alfort",
     partners: ["Sonangol E.P"],
     basin: "Kwanza",
-    phase: "Exploration",
+    phase: "Bidding",
     waterDepth: "Onshore",
     contractDate: "2020-01-01",
     dailyProduction: 0,
