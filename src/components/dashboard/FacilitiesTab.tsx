@@ -12,6 +12,8 @@ import {
   Target, Lightbulb,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { InfoTooltip } from "@/components/ui/info-tooltip";
+import { tooltipDescriptions } from "@/lib/tooltipDescriptions";
 import { FacilitiesSchematic } from "./FacilitiesSchematic";
 import { FacilityDetailCard } from "./FacilityDetailCard";
 
@@ -105,13 +107,13 @@ export const FacilitiesTab = ({ facilityData }: Props) => {
       <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3">
         <Card className="glass-card">
           <CardContent className="p-4 text-center">
-            <div className="text-[9px] uppercase text-muted-foreground">Eficiência Global</div>
+            <div className="text-[9px] uppercase text-muted-foreground flex items-center justify-center gap-1">Eficiência Global <InfoTooltip text={tooltipDescriptions["Eficiência Global"]} /></div>
             <div className="text-2xl font-bold font-mono text-success">{facilityData.overallEfficiency}%</div>
           </CardContent>
         </Card>
         <Card className="glass-card">
           <CardContent className="p-4 text-center">
-            <div className="text-[9px] uppercase text-muted-foreground">Poços Activos</div>
+            <div className="text-[9px] uppercase text-muted-foreground flex items-center justify-center gap-1">Poços Activos <InfoTooltip text={tooltipDescriptions["Poços Activos"]} /></div>
             <div className="text-2xl font-bold font-mono">{facilityData.activeWells.op + facilityData.activeWells.wi + facilityData.activeWells.gi}</div>
             <div className="text-[9px] text-muted-foreground">{facilityData.activeWells.op} OP · {facilityData.activeWells.wi} WI · {facilityData.activeWells.gi} GI</div>
           </CardContent>
@@ -119,7 +121,7 @@ export const FacilitiesTab = ({ facilityData }: Props) => {
         {facilityData.capacityBOPD && (
           <Card className="glass-card">
             <CardContent className="p-4 text-center">
-              <div className="text-[9px] uppercase text-muted-foreground">Capacidade</div>
+              <div className="text-[9px] uppercase text-muted-foreground flex items-center justify-center gap-1">Capacidade <InfoTooltip text={tooltipDescriptions["Capacidade"]} /></div>
               <div className="text-2xl font-bold font-mono">{(facilityData.capacityBOPD / 1000).toFixed(0)}k</div>
               <div className="text-[9px] text-muted-foreground">BOPD</div>
             </CardContent>

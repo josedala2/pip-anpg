@@ -6,6 +6,8 @@ import {
   AlertTriangle, CheckCircle2, Clock, DollarSign, TrendingDown,
   ShieldCheck, Landmark, Scale, Calendar, Droplets, Activity, Factory, Gauge,
 } from "lucide-react";
+import { InfoTooltip } from "@/components/ui/info-tooltip";
+import { tooltipDescriptions } from "@/lib/tooltipDescriptions";
 import { SemaphoreForecastPanel } from "./SemaphoreForecastPanel";
 import { SemaphoreHistoryPanel } from "./SemaphoreHistoryPanel";
 import { SemaphoreTimelineChart } from "./SemaphoreTimelineChart";
@@ -235,6 +237,7 @@ export const ConcessionStatusTab = ({ block }: ConcessionStatusTabProps) => {
               <div className="flex items-center gap-2 mb-1.5">
                 <kpi.icon className={`w-4 h-4 ${kpi.color}`} />
                 <span className="text-[10px] 2xl:text-xs text-muted-foreground uppercase tracking-wider">{kpi.label}</span>
+                {tooltipDescriptions[kpi.label] && <InfoTooltip text={tooltipDescriptions[kpi.label]} />}
               </div>
               <div className={`text-2xl 2xl:text-3xl font-bold font-mono ${kpi.color}`}>{kpi.value}</div>
               {"sub" in kpi && kpi.sub && <div className="text-[10px] 2xl:text-xs text-muted-foreground mt-1">{kpi.sub}</div>}

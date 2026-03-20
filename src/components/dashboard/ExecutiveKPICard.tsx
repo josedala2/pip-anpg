@@ -1,4 +1,6 @@
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { InfoTooltip } from "@/components/ui/info-tooltip";
+import { tooltipDescriptions } from "@/lib/tooltipDescriptions";
 import { AnimatedCounter } from "./AnimatedCounter";
 import { ArrowUpRight, ArrowDownRight, Minus } from "lucide-react";
 import { type LucideIcon } from "lucide-react";
@@ -105,6 +107,9 @@ export const ExecutiveKPICard = ({
                 <span className="text-[10px] md:text-xs font-bold text-muted-foreground uppercase tracking-wider">
                   {label}
                 </span>
+                {tooltipDescriptions[label] && (
+                  <InfoTooltip text={tooltipDescriptions[label]} />
+                )}
               </div>
               <span className={`w-2 h-2 rounded-full ${statusColors[status]}`} />
             </div>

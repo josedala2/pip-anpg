@@ -4,6 +4,8 @@ import { ChartWrapper } from "@/components/dashboard/ChartWrapper";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import type { HSEIndicators, EnvironmentalYearData, FacilityData, EconomicVision, RevitalizationScenario } from "@/data/angolaBlocks";
 import { ShieldCheck, Flame, Droplets, Wind, Factory, AlertTriangle, Lightbulb, TrendingDown } from "lucide-react";
+import { InfoTooltip } from "@/components/ui/info-tooltip";
+import { tooltipDescriptions } from "@/lib/tooltipDescriptions";
 import { Tooltip as UITooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
 import { SortableHead } from "@/components/ui/sortable-head";
 import { useTableSort } from "@/hooks/useTableSort";
@@ -43,32 +45,32 @@ export const HSEEnvironmentTab = ({ hseData, environmentalData, facilityData, ec
           <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-6 gap-3">
             <Card className="glass-card">
               <CardContent className="p-4 text-center">
-                <div className="text-[9px] uppercase text-muted-foreground">Poços OP</div>
+                <div className="text-[9px] uppercase text-muted-foreground flex items-center justify-center gap-1">Poços OP <InfoTooltip text={tooltipDescriptions["Poços OP"]} /></div>
                 <div className="text-2xl font-bold font-mono text-primary">{facilityData.activeWells.op}</div>
               </CardContent>
             </Card>
             <Card className="glass-card">
               <CardContent className="p-4 text-center">
-                <div className="text-[9px] uppercase text-muted-foreground">Poços WI</div>
+                <div className="text-[9px] uppercase text-muted-foreground flex items-center justify-center gap-1">Poços WI <InfoTooltip text={tooltipDescriptions["Poços WI"]} /></div>
                 <div className="text-2xl font-bold font-mono">{facilityData.activeWells.wi}</div>
               </CardContent>
             </Card>
             <Card className="glass-card">
               <CardContent className="p-4 text-center">
-                <div className="text-[9px] uppercase text-muted-foreground">Poços GI</div>
+                <div className="text-[9px] uppercase text-muted-foreground flex items-center justify-center gap-1">Poços GI <InfoTooltip text={tooltipDescriptions["Poços GI"]} /></div>
                 <div className="text-2xl font-bold font-mono">{facilityData.activeWells.gi}</div>
               </CardContent>
             </Card>
             <Card className="glass-card">
               <CardContent className="p-4 text-center">
-                <div className="text-[9px] uppercase text-muted-foreground">Eficiência</div>
+                <div className="text-[9px] uppercase text-muted-foreground flex items-center justify-center gap-1">Eficiência <InfoTooltip text={tooltipDescriptions["Eficiência"]} /></div>
                 <div className="text-2xl font-bold font-mono text-success">{facilityData.overallEfficiency}%</div>
               </CardContent>
             </Card>
             {facilityData.capacityBOPD && (
               <Card className="glass-card">
                 <CardContent className="p-4 text-center">
-                  <div className="text-[9px] uppercase text-muted-foreground">Capacidade</div>
+                  <div className="text-[9px] uppercase text-muted-foreground flex items-center justify-center gap-1">Capacidade <InfoTooltip text={tooltipDescriptions["Capacidade"]} /></div>
                   <div className="text-2xl font-bold font-mono">{(facilityData.capacityBOPD / 1000).toFixed(0)}k</div>
                   <div className="text-[9px] text-muted-foreground">BOPD</div>
                 </CardContent>
