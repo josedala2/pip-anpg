@@ -372,6 +372,7 @@ export interface OilBlock {
   hseData?: HSEIndicators[];
   environmentalData?: EnvironmentalYearData[];
   facilityData?: FacilityData;
+  developmentProjects?: DevelopmentProject[];
   economicVision?: EconomicVision;
   revitalizationScenarios?: RevitalizationScenario[];
 }
