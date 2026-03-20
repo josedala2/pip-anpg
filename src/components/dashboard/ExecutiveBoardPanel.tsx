@@ -335,6 +335,7 @@ export const ExecutiveBoardPanel = () => {
             <CardTitle className="text-sm font-semibold flex items-center gap-2">
               <Activity className="w-4 h-4 text-primary" />
               Trajectória de Produção (Cenário Base)
+              <InfoTooltip text={tooltipDescriptions["Trajectória de Produção (Cenário Base)"]} />
             </CardTitle>
           </CardHeader>
           <CardContent className="p-4 pt-0">
