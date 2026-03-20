@@ -352,6 +352,7 @@ function KPICard({ icon: Icon, label, value, sub, status }: {
       <div className="flex items-center gap-1.5 mb-1">
         <Icon className="w-3.5 h-3.5 opacity-70" />
         <span className="text-[10px] font-semibold uppercase tracking-wider opacity-80">{label}</span>
+        {tooltipDescriptions[label] && <InfoTooltip text={tooltipDescriptions[label]} />}
       </div>
       <div className="text-xl font-bold text-foreground">{value}</div>
       <div className="text-[10px] text-muted-foreground mt-0.5">{sub}</div>

@@ -147,7 +147,7 @@ function OperatorListView({ operators }: { operators: OperatorSummary[] }) {
         </Card>
         <Card className="glass-card">
           <CardContent className="p-4 text-center">
-            <p className="text-xs text-muted-foreground mb-1">Investimento Acumulado</p>
+            <p className="text-xs text-muted-foreground mb-1 flex items-center justify-center gap-1">Investimento Acumulado <InfoTooltip text={tooltipDescriptions["Investimento Acumulado"]} /></p>
             <p className="text-2xl font-bold text-primary">
               <AnimatedCounter target={operators.reduce((s, o) => s + o.totalAccumulatedInvestment, 0)} prefix="$" suffix="MM" />
             </p>

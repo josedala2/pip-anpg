@@ -310,7 +310,7 @@ export const ExplorationPanel = () => {
         </Card>
         <Card className="glass-card">
            <CardContent className="p-4 2xl:p-6 3xl:p-8 text-center">
-             <div className="text-xs 2xl:text-sm 3xl:text-base text-muted-foreground mb-1">Avaliação</div>
+             <div className="text-xs 2xl:text-sm 3xl:text-base text-muted-foreground mb-1 flex items-center justify-center gap-1">Avaliação <InfoTooltip text={tooltipDescriptions["Avaliação"]} /></div>
              <div className="text-3xl 2xl:text-4xl 3xl:text-5xl font-bold font-mono text-warning">{explorationStats.avaliacaoWells}</div>
           </CardContent>
         </Card>

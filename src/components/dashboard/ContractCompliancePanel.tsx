@@ -154,6 +154,7 @@ export const ContractCompliancePanel = () => {
               <div className="flex items-center gap-1.5 mb-1">
                 <kpi.icon className={`w-3.5 h-3.5 ${kpi.color}`} />
                 <span className="text-muted-foreground uppercase tracking-wider font-semibold text-[10px]">{kpi.label}</span>
+                {tooltipDescriptions[kpi.label] && <InfoTooltip text={tooltipDescriptions[kpi.label]} />}
               </div>
               <AnimatedCounter target={kpi.value} className={`font-bold ${kpi.color} text-2xl md:text-3xl`} />
             </CardContent>
