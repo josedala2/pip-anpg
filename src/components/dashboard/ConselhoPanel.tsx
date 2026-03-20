@@ -129,16 +129,20 @@ export const ConselhoPanel = () => {
     };
 
     // Alerts summary
-    const opAlerts = evaluateAlerts();
-    const fAlerts = evaluateForecastAlerts();
-    const allAlerts = [...opAlerts, ...fAlerts];
-    const critAlerts = allAlerts.filter(a => a.severity === "critical").slice(0, 5);
+    let critAlerts: any[] = [];
+    try {
+      const opAlerts = evaluateAlerts();
+      const fAlerts = evaluateForecastAlerts();
+      const allAlerts = [...opAlerts, ...fAlerts];
+      critAlerts = allAlerts.filter(a => a.severity === "critical").slice(0, 5);
+    } catch { /* safe fallback */ }
 
-    // Trends - production by year
+    // Trends - use capexHistory years as proxy for annual production
     const yearMap: Record<number, number> = {};
     activeBlocks.forEach(b => {
-      b.productionHistory.forEach(h => {
-        yearMap[h.year] = (yearMap[h.year] || 0) + h.value;
+      b.capexHistory.forEach(h => {
+        const yr = parseInt(h.year);
+        if (!isNaN(yr)) yearMap[yr] = (yearMap[yr] || 0) + b.dailyProduction;
       });
     });
     const trends = Object.entries(yearMap)
