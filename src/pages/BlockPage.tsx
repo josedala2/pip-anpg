@@ -1739,7 +1739,7 @@ const BlockPage = () => {
                               {eco.opexPerBarrel != null && (
                                 <Card className="glass-card">
                                   <CardContent className="p-4 text-center">
-                                    <div className="text-[9px] uppercase text-muted-foreground mb-1">OPEX/Barril ({eco.opexPerBarrelYear})</div>
+                                    <div className="text-[9px] uppercase text-muted-foreground mb-1 flex items-center gap-1">OPEX/Barril ({eco.opexPerBarrelYear}) <InfoTooltip text={tooltipDescriptions["OPEX/Barril"]} /></div>
                                     <div className="text-2xl font-bold font-mono text-warning">${eco.opexPerBarrel}</div>
                                     <div className="text-[9px] text-muted-foreground">USD/bbl</div>
                                   </CardContent>
