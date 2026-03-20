@@ -242,7 +242,7 @@ export const EconomicScenariosPanel = () => {
       {/* ── KPI Comparison ── */}
       <Card className="border-border/40">
         <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-semibold">Comparação de Indicadores por Cenário</CardTitle>
+          <CardTitle className="text-sm font-semibold flex items-center gap-1.5">Comparação de Indicadores por Cenário <InfoTooltip text={tooltipDescriptions["Comparação de Indicadores por Cenário"]} /></CardTitle>
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
