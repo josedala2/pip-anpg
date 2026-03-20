@@ -12,6 +12,8 @@ import {
   Target, Lightbulb,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { InfoTooltip } from "@/components/ui/info-tooltip";
+import { tooltipDescriptions } from "@/lib/tooltipDescriptions";
 import { FacilitiesSchematic } from "./FacilitiesSchematic";
 import { FacilityDetailCard } from "./FacilityDetailCard";
 
