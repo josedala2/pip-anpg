@@ -203,6 +203,14 @@ export interface AssetTier {
   fields: string[];
 }
 
+export interface RecoveryHistoryPoint {
+  year: number;
+  planCumulative: number;   // MMBO
+  actualCumulative: number; // MMBO
+  annualPlan?: number;
+  annualActual?: number;
+}
+
 export interface DevelopmentProject {
   name: string;
   planRecoveryMMBO: number;
@@ -210,6 +218,8 @@ export interface DevelopmentProject {
   percentOfPlan: number;
   status: "On Track" | "Below Plan" | "Above Plan" | "Critical";
   observations: string;
+  startYear?: number;
+  recoveryHistory?: RecoveryHistoryPoint[];
 }
 
 export interface FacilityData {
