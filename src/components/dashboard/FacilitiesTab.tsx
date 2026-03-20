@@ -113,7 +113,7 @@ export const FacilitiesTab = ({ facilityData }: Props) => {
         </Card>
         <Card className="glass-card">
           <CardContent className="p-4 text-center">
-            <div className="text-[9px] uppercase text-muted-foreground">Poços Activos</div>
+            <div className="text-[9px] uppercase text-muted-foreground flex items-center justify-center gap-1">Poços Activos <InfoTooltip text={tooltipDescriptions["Poços Activos"]} /></div>
             <div className="text-2xl font-bold font-mono">{facilityData.activeWells.op + facilityData.activeWells.wi + facilityData.activeWells.gi}</div>
             <div className="text-[9px] text-muted-foreground">{facilityData.activeWells.op} OP · {facilityData.activeWells.wi} WI · {facilityData.activeWells.gi} GI</div>
           </CardContent>
