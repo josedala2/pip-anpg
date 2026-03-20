@@ -226,6 +226,7 @@ export const ExecutiveBoardPanel = () => {
             <CardTitle className="text-sm font-semibold flex items-center gap-2">
               <BarChart3 className="w-4 h-4 text-primary" />
               Classificação Económica
+              <InfoTooltip text={tooltipDescriptions["Classificação Económica"]} />
             </CardTitle>
           </CardHeader>
           <CardContent className="p-4 pt-0">
