@@ -518,6 +518,7 @@ function KPITile({
   subtitle,
   positive,
   negative,
+  tooltip,
 }: {
   icon: React.ReactNode;
   label: string;
@@ -526,12 +527,17 @@ function KPITile({
   subtitle?: string;
   positive?: boolean;
   negative?: boolean;
+  tooltip?: string;
 }) {
   const color = negative ? "text-danger" : positive ? "text-success" : "text-foreground";
   return (
     <Card className="border-border/40">
       <CardContent className="p-3 space-y-1">
-        <div className="flex items-center gap-1.5 text-muted-foreground">{icon}<span className="text-[10px] font-semibold uppercase tracking-wider">{label}</span></div>
+        <div className="flex items-center gap-1.5 text-muted-foreground">
+          {icon}
+          <span className="text-[10px] font-semibold uppercase tracking-wider">{label}</span>
+          {tooltip && <InfoTooltip text={tooltip} />}
+        </div>
         <div className={`text-lg font-bold tabular-nums ${color}`}>
           {value}{unit && <span className="text-xs font-normal text-muted-foreground ml-0.5">{unit}</span>}
         </div>
