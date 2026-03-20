@@ -13,6 +13,8 @@ import {
   Tooltip as RechartsTooltip, Cell, ReferenceLine,
 } from "recharts";
 import { AlertTriangle, TrendingDown, DollarSign, ShieldOff } from "lucide-react";
+import { InfoTooltip } from "@/components/ui/info-tooltip";
+import { tooltipDescriptions } from "@/lib/tooltipDescriptions";
 
 const BRENT_PRICE = 78;
 
