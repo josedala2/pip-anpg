@@ -99,6 +99,7 @@ export const ChartWrapper = ({
               <CardTitle className="text-sm 2xl:text-base flex items-center gap-2">
                 {icon}
                 {title}
+                {tooltipDescriptions[title] && <InfoTooltip text={tooltipDescriptions[title]} />}
               </CardTitle>
               <div className="flex items-center gap-1" data-chart-toolbar="true">
                 {headerExtra}
