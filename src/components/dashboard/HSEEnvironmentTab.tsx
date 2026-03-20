@@ -79,7 +79,7 @@ export const HSEEnvironmentTab = ({ hseData, environmentalData, facilityData, ec
             {facilityData.cumulativeProductionBO && (
               <Card className="glass-card">
                 <CardContent className="p-4 text-center">
-                  <div className="text-[9px] uppercase text-muted-foreground">Prod. Acumulada</div>
+                  <div className="text-[9px] uppercase text-muted-foreground flex items-center justify-center gap-1">Prod. Acumulada <InfoTooltip text={tooltipDescriptions["Prod. Acumulada"]} /></div>
                   <div className="text-lg font-bold font-mono">{(facilityData.cumulativeProductionBO / 1e9).toFixed(1)}B</div>
                   <div className="text-[9px] text-muted-foreground">BO</div>
                 </CardContent>
@@ -134,7 +134,7 @@ export const HSEEnvironmentTab = ({ hseData, environmentalData, facilityData, ec
             {facilityData.productionStartYear && (
               <Card className="glass-card">
                 <CardContent className="p-4 text-center">
-                  <div className="text-[9px] uppercase text-muted-foreground">Início Produção</div>
+                  <div className="text-[9px] uppercase text-muted-foreground flex items-center justify-center gap-1">Início Produção <InfoTooltip text={tooltipDescriptions["Início Produção"]} /></div>
                   <div className="text-xl font-bold font-mono">{facilityData.productionStartYear}</div>
                 </CardContent>
               </Card>
@@ -142,7 +142,7 @@ export const HSEEnvironmentTab = ({ hseData, environmentalData, facilityData, ec
             {facilityData.endOfLifeYear && (
               <Card className="glass-card">
                 <CardContent className="p-4 text-center">
-                  <div className="text-[9px] uppercase text-muted-foreground">Vida Útil Até</div>
+                  <div className="text-[9px] uppercase text-muted-foreground flex items-center justify-center gap-1">Vida Útil Até <InfoTooltip text={tooltipDescriptions["Vida Útil Até"]} /></div>
                   <div className="text-xl font-bold font-mono">{facilityData.endOfLifeYear}</div>
                   {facilityData.endOfLifeField && <div className="text-[9px] text-muted-foreground">{facilityData.endOfLifeField}</div>}
                 </CardContent>
@@ -151,7 +151,7 @@ export const HSEEnvironmentTab = ({ hseData, environmentalData, facilityData, ec
             {facilityData.production2025Bbls && (
               <Card className="glass-card">
                 <CardContent className="p-4 text-center">
-                  <div className="text-[9px] uppercase text-muted-foreground">Produção 2025</div>
+                  <div className="text-[9px] uppercase text-muted-foreground flex items-center justify-center gap-1">Produção 2025 <InfoTooltip text={tooltipDescriptions["Produção 2025"]} /></div>
                   <div className="text-lg font-bold font-mono">{(facilityData.production2025Bbls / 1e6).toFixed(1)}M</div>
                   <div className="text-[9px] text-muted-foreground">bbls</div>
                 </CardContent>
@@ -160,7 +160,7 @@ export const HSEEnvironmentTab = ({ hseData, environmentalData, facilityData, ec
             {facilityData.productionLossesBbls && (
               <Card className="glass-card">
                 <CardContent className="p-4 text-center">
-                  <div className="text-[9px] uppercase text-muted-foreground">Perdas 2025</div>
+                  <div className="text-[9px] uppercase text-muted-foreground flex items-center justify-center gap-1">Perdas 2025 <InfoTooltip text={tooltipDescriptions["Perdas 2025"]} /></div>
                   <div className="text-lg font-bold font-mono text-danger">{(facilityData.productionLossesBbls / 1e6).toFixed(1)}M</div>
                   <div className="text-[9px] text-muted-foreground">bbls</div>
                 </CardContent>

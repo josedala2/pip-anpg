@@ -400,6 +400,7 @@ const BlockPage = () => {
                      <div className="flex items-center gap-2 mb-2">
                        <kpi.icon className={`w-4 h-4 2xl:w-5 2xl:h-5 ${kpi.color}`} />
                        <span className="text-xs 2xl:text-sm text-muted-foreground">{kpi.label}</span>
+                       {tooltipDescriptions[kpi.label] && <InfoTooltip text={tooltipDescriptions[kpi.label]} />}
                      </div>
                      <div className="text-2xl 2xl:text-3xl font-bold font-mono">{kpi.value}</div>
                   </CardContent>
@@ -1223,32 +1224,32 @@ const BlockPage = () => {
                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                    <Card className="glass-card">
                      <CardContent className="p-4 flex flex-col items-center text-center">
-                       <Gauge className="w-5 h-5 text-primary mb-1" />
-                       <span className="text-xs text-muted-foreground">Produção Actual</span>
+                        <Gauge className="w-5 h-5 text-primary mb-1" />
+                        <span className="text-xs text-muted-foreground flex items-center gap-1">Produção Actual {tooltipDescriptions["Produção Actual"] && <InfoTooltip text={tooltipDescriptions["Produção Actual"]} />}</span>
                        <span className="text-lg font-bold text-foreground">{block.dailyProduction.toLocaleString()}</span>
                        <span className="text-[10px] text-muted-foreground">BOPD</span>
                      </CardContent>
                    </Card>
                    <Card className="glass-card">
                      <CardContent className="p-4 flex flex-col items-center text-center">
-                       <TrendingUp className="w-5 h-5 text-warning mb-1" />
-                       <span className="text-xs text-muted-foreground">Actual vs Pico</span>
+                        <TrendingUp className="w-5 h-5 text-warning mb-1" />
+                        <span className="text-xs text-muted-foreground flex items-center gap-1">Actual vs Pico {tooltipDescriptions["Actual vs Pico"] && <InfoTooltip text={tooltipDescriptions["Actual vs Pico"]} />}</span>
                        <span className="text-lg font-bold text-foreground">{peakVsActual}%</span>
                        <span className="text-[10px] text-muted-foreground">do pico agregado</span>
                      </CardContent>
                    </Card>
                    <Card className="glass-card">
                      <CardContent className="p-4 flex flex-col items-center text-center">
-                       <Layers className="w-5 h-5 text-success mb-1" />
-                       <span className="text-xs text-muted-foreground">Campos em Produção</span>
+                        <Layers className="w-5 h-5 text-success mb-1" />
+                        <span className="text-xs text-muted-foreground flex items-center gap-1">Campos em Produção {tooltipDescriptions["Campos em Produção"] && <InfoTooltip text={tooltipDescriptions["Campos em Produção"]} />}</span>
                        <span className="text-lg font-bold text-foreground">{producingFields.length}</span>
                        <span className="text-[10px] text-muted-foreground">de {block.fields?.length || 0} total</span>
                      </CardContent>
                    </Card>
                    <Card className="glass-card">
                      <CardContent className="p-4 flex flex-col items-center text-center">
-                       <Activity className="w-5 h-5 text-danger mb-1" />
-                       <span className="text-xs text-muted-foreground">Taxa de Declínio</span>
+                        <Activity className="w-5 h-5 text-danger mb-1" />
+                        <span className="text-xs text-muted-foreground flex items-center gap-1">Taxa de Declínio {tooltipDescriptions["Taxa de Declínio"] && <InfoTooltip text={tooltipDescriptions["Taxa de Declínio"]} />}</span>
                        <span className="text-lg font-bold text-foreground">{declineRate}{typeof declineRate === "string" && declineRate !== "N/A" ? "" : ""}%</span>
                        <span className="text-[10px] text-muted-foreground">12 meses</span>
                      </CardContent>
@@ -1518,7 +1519,7 @@ const BlockPage = () => {
                     <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 2xl:gap-5">
                       <Card className="glass-card">
                         <CardContent className="p-4 2xl:p-6">
-                          <div className="text-xs 2xl:text-sm text-muted-foreground mb-2">Investimento Acum. vs Planeado</div>
+                          <div className="text-xs 2xl:text-sm text-muted-foreground mb-2 flex items-center gap-1">Investimento Acum. vs Planeado {tooltipDescriptions["Investimento Acum."] && <InfoTooltip text={tooltipDescriptions["Investimento Acum."]} />}</div>
                           <div className="text-2xl 2xl:text-3xl font-bold font-mono">${(block.accumulatedInvestment / 1000).toFixed(1)}B</div>
                           <div className="text-xs text-muted-foreground mb-2">de ${(block.plannedInvestment / 1000).toFixed(1)}B planeado</div>
                           <div className="relative h-2 w-full overflow-hidden rounded-full bg-secondary">
@@ -1529,7 +1530,7 @@ const BlockPage = () => {
                       </Card>
                       <Card className="glass-card">
                         <CardContent className="p-4 2xl:p-6">
-                          <div className="text-xs 2xl:text-sm text-muted-foreground mb-2">Taxa de Execução</div>
+                          <div className="text-xs 2xl:text-sm text-muted-foreground mb-2 flex items-center gap-1">Taxa de Execução {tooltipDescriptions["Taxa Execução"] && <InfoTooltip text={tooltipDescriptions["Taxa Execução"]} />}</div>
                           <div className="text-2xl 2xl:text-3xl font-bold font-mono">{block.executionRate}%</div>
                           <div className={`text-xs mt-1 ${block.executionRate >= 85 ? "text-success" : block.executionRate >= 70 ? "text-warning" : "text-danger"}`}>
                             {block.executionRate >= 85 ? "Excelente" : block.executionRate >= 70 ? "Moderado" : "Baixo"}
@@ -1538,7 +1539,7 @@ const BlockPage = () => {
                       </Card>
                       <Card className="glass-card">
                         <CardContent className="p-4 2xl:p-6">
-                          <div className="text-xs 2xl:text-sm text-muted-foreground mb-2">Bónus Total</div>
+                          <div className="text-xs 2xl:text-sm text-muted-foreground mb-2 flex items-center gap-1">Bónus Total {tooltipDescriptions["Bónus de Assinatura"] && <InfoTooltip text="Soma dos bónus de assinatura, social e produção pagos ao Estado" />}</div>
                           <div className="text-2xl 2xl:text-3xl font-bold font-mono text-warning">
                             {totalBonus > 0 ? `$${(totalBonus / 1e6).toFixed(0)}M` : "—"}
                           </div>
@@ -1617,11 +1618,11 @@ const BlockPage = () => {
                                     <div className="text-xs 2xl:text-sm text-muted-foreground mb-2 font-medium">{c.period}</div>
                                     <div className="grid grid-cols-2 gap-3">
                                       <div>
-                                        <div className="text-[9px] uppercase text-muted-foreground">CAPEX</div>
+                                        <div className="text-[9px] uppercase text-muted-foreground flex items-center gap-1">CAPEX <InfoTooltip text={tooltipDescriptions["CAPEX"]} /></div>
                                         <div className="text-lg 2xl:text-xl font-bold font-mono text-primary">${c.capex.toLocaleString()}</div>
                                       </div>
                                       <div>
-                                        <div className="text-[9px] uppercase text-muted-foreground">OPEX</div>
+                                        <div className="text-[9px] uppercase text-muted-foreground flex items-center gap-1">OPEX <InfoTooltip text={tooltipDescriptions["OPEX"]} /></div>
                                         <div className="text-lg 2xl:text-xl font-bold font-mono text-warning">${c.opex.toLocaleString()}</div>
                                       </div>
                                     </div>
@@ -1738,7 +1739,7 @@ const BlockPage = () => {
                               {eco.opexPerBarrel != null && (
                                 <Card className="glass-card">
                                   <CardContent className="p-4 text-center">
-                                    <div className="text-[9px] uppercase text-muted-foreground mb-1">OPEX/Barril ({eco.opexPerBarrelYear})</div>
+                                    <div className="text-[9px] uppercase text-muted-foreground mb-1 flex items-center gap-1">OPEX/Barril ({eco.opexPerBarrelYear}) <InfoTooltip text={tooltipDescriptions["OPEX/Barril"]} /></div>
                                     <div className="text-2xl font-bold font-mono text-warning">${eco.opexPerBarrel}</div>
                                     <div className="text-[9px] text-muted-foreground">USD/bbl</div>
                                   </CardContent>
@@ -1885,7 +1886,7 @@ const BlockPage = () => {
                             {/* Cost Recovery */}
                             {(fc.costRecoveryPreProd != null || fc.costRecoveryPostProd != null) && (
                               <div>
-                                <div className="text-[10px] 2xl:text-xs uppercase tracking-wider text-muted-foreground mb-2 font-medium">Cost Recovery</div>
+                                <div className="text-[10px] 2xl:text-xs uppercase tracking-wider text-muted-foreground mb-2 font-medium flex items-center gap-1">Cost Recovery <InfoTooltip text={tooltipDescriptions["Cost Recovery"]} /></div>
                                 <div className="grid grid-cols-2 gap-2">
                                   {fc.costRecoveryPreProd != null && (
                                     <div className="glass-card rounded-lg p-3 text-center">
@@ -1909,21 +1910,21 @@ const BlockPage = () => {
                               <div className="grid grid-cols-3 gap-2">
                                 {fc.irp != null && (
                                   <div className="glass-card rounded-lg p-3 text-center border border-primary/20">
-                                    <div className="text-[9px] uppercase text-muted-foreground">IRP</div>
+                                    <div className="text-[9px] uppercase text-muted-foreground flex items-center gap-0.5">IRP <InfoTooltip text={tooltipDescriptions["IRP"]} /></div>
                                     <div className="font-bold font-mono text-2xl text-primary">{fc.irp}%</div>
                                     <div className="text-[8px] text-muted-foreground">Rend. Petróleo</div>
                                   </div>
                                 )}
                                 {fc.ipp != null && (
                                   <div className="glass-card rounded-lg p-3 text-center">
-                                    <div className="text-[9px] uppercase text-muted-foreground">IPP</div>
+                                    <div className="text-[9px] uppercase text-muted-foreground flex items-center gap-0.5">IPP <InfoTooltip text={tooltipDescriptions["IPP"]} /></div>
                                     <div className="font-bold font-mono text-2xl">{fc.ipp}%</div>
                                     <div className="text-[8px] text-muted-foreground">Prod. Petróleo</div>
                                   </div>
                                 )}
                                 {fc.itp != null && (
                                   <div className="glass-card rounded-lg p-3 text-center">
-                                    <div className="text-[9px] uppercase text-muted-foreground">ITP</div>
+                                    <div className="text-[9px] uppercase text-muted-foreground flex items-center gap-0.5">ITP <InfoTooltip text={tooltipDescriptions["ITP"]} /></div>
                                     <div className="font-bold font-mono text-2xl">{fc.itp}%</div>
                                     <div className="text-[8px] text-muted-foreground">Trans. Petróleo</div>
                                   </div>

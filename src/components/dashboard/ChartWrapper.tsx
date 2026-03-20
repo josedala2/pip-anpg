@@ -8,6 +8,8 @@ import { Download, Maximize2, X } from "lucide-react";
 import { toast } from "sonner";
 import anpgLogoColor from "@/assets/anpg-logo-color.svg";
 import anpgLogoWhite from "@/assets/anpg-logo-white.svg";
+import { InfoTooltip } from "@/components/ui/info-tooltip";
+import { tooltipDescriptions } from "@/lib/tooltipDescriptions";
 
 interface ChartWrapperProps {
   title: string;
@@ -97,6 +99,7 @@ export const ChartWrapper = ({
               <CardTitle className="text-sm 2xl:text-base flex items-center gap-2">
                 {icon}
                 {title}
+                {tooltipDescriptions[title] && <InfoTooltip text={tooltipDescriptions[title]} />}
               </CardTitle>
               <div className="flex items-center gap-1" data-chart-toolbar="true">
                 {headerExtra}
@@ -137,6 +140,7 @@ export const ChartWrapper = ({
                 <DialogTitle className="text-lg flex items-center gap-2">
                   {icon}
                   {title}
+                  {tooltipDescriptions[title] && <InfoTooltip text={tooltipDescriptions[title]} />}
                 </DialogTitle>
                 <div className="flex items-center gap-1" data-chart-toolbar="true">
                   <Button
