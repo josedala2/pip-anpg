@@ -462,8 +462,13 @@ export function evaluateAlerts(blocks: OilBlock[] = oilBlocks, rules: AlertRule[
   const enabledRules = rules.filter(r => r.enabled);
 
   for (const block of blocks) {
+    if (!block) continue;
     for (const rule of enabledRules) {
-      alerts.push(...rule.evaluate(block));
+      try {
+        alerts.push(...rule.evaluate(block));
+      } catch {
+        // skip blocks missing expected properties
+      }
     }
   }
 
