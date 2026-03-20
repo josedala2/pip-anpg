@@ -317,6 +317,7 @@ export const GeneralForecastPanel = () => {
             <CardTitle className="text-sm font-semibold flex items-center gap-2">
               <AlertTriangle className="w-4 h-4 text-destructive" />
               Top Riscos Activos
+              <InfoTooltip text={tooltipDescriptions["Top Riscos Activos"]} />
             </CardTitle>
           </CardHeader>
           <CardContent>
