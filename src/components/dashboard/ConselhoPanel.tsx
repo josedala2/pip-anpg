@@ -388,7 +388,7 @@ export const ConselhoPanel = () => {
                       <span className="mt-0.5 w-1.5 h-1.5 rounded-full bg-danger shrink-0" />
                       <div>
                         <p className="text-[11px] font-medium text-foreground">{a.blockName}: {a.title}</p>
-                        <p className="text-[10px] text-muted-foreground">{a.message}</p>
+                        <p className="text-[10px] text-muted-foreground">{a.description}</p>
                       </div>
                     </div>
                   ))}
