@@ -6070,7 +6070,7 @@ export const oilBlocks: OilBlock[] = [
     phase: "Development",
     waterDepth: "Shallow Water",
     contractDate: "2006-01-01",
-    dailyProduction: 5500,
+    dailyProduction: 0,
     estimatedReserves: 28,
     accumulatedInvestment: 110,
     plannedInvestment: 160,
