@@ -5504,7 +5504,7 @@ export const oilBlocks: OilBlock[] = [
     operator: "ETU Energias",
     partners: ["Sonangol E.P"],
     basin: "Lower Congo",
-    phase: "Production",
+    phase: "Exploration",
     waterDepth: "Onshore",
     contractDate: "2005-01-01",
     dailyProduction: 0,
