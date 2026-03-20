@@ -196,6 +196,22 @@ export interface FacilityArea {
   issues?: string[];
 }
 
+export interface AssetTier {
+  tier: 1 | 2 | 3;
+  label: string;
+  description: string;
+  fields: string[];
+}
+
+export interface DevelopmentProject {
+  name: string;
+  planRecoveryMMBO: number;
+  actualRecoveryMMBO: number;
+  percentOfPlan: number;
+  status: "On Track" | "Below Plan" | "Above Plan" | "Critical";
+  observations: string;
+}
+
 export interface FacilityData {
   areas: FacilityArea[];
   activeWells: { op: number; wi: number; gi: number };
@@ -203,8 +219,8 @@ export interface FacilityData {
   productionLossesBbls?: number;
   overallEfficiency?: number; // percentage
   capacityBOPD?: number;
-  waterInjectionCapacityBWIPD?: number;   // Capacidade de injecção de água
-  producedWaterCapacityBWP?: number;      // Capacidade de água produzida
+  waterInjectionCapacityBWIPD?: number;
+  producedWaterCapacityBWP?: number;
   terminalName?: string;
   productionStartYear?: number;
   endOfLifeYear?: number;
@@ -215,6 +231,16 @@ export interface FacilityData {
   platformSpecs?: PlatformSpec[];
   maintenancePlan?: { period: string; scope: string; status: "Concluído" | "Em Curso" | "Planeado" }[];
   recommendations?: string[];
+  // Infrastructure details
+  wellheadPlatforms?: number;
+  processingPlatforms?: number;
+  pipelinesMainKm?: number;
+  pipelinesSecondarySegments?: number;
+  gasTurbines?: number;
+  pumps?: number;
+  utilizationRate?: number; // percentage
+  storageCapacityMMBBL?: number;
+  assetTiering?: AssetTier[];
 }
 
 export interface NPVBreakdown {
