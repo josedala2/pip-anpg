@@ -106,7 +106,7 @@ export const ExecutiveBoardPanel = () => {
   const topRisks = useMemo(() => {
     return [...kpis.scores]
       .filter(s => s.classification === "Activo de Alto Risco" || s.classification === "Activo Inviável")
-      .sort((a, b) => a.totalScore - b.totalScore)
+      .sort((a, b) => (a.totalScore ?? 0) - (b.totalScore ?? 0))
       .slice(0, 5);
   }, [kpis]);
 
