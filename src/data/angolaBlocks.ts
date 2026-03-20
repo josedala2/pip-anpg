@@ -6183,7 +6183,7 @@ export const oilBlocks: OilBlock[] = [
     operator: "Azule Energy",
     partners: ["Sonangol E.P"],
     basin: "Lower Congo",
-    phase: "Development",
+    phase: "Exploration",
     waterDepth: "Shallow Water",
     contractDate: "2015-01-01",
     dailyProduction: 0,
