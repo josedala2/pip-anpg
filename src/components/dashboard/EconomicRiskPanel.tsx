@@ -110,7 +110,7 @@ export const EconomicRiskPanel = () => {
       {/* Risk scatter plot */}
       <Card className="border-border/40">
         <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-semibold">Mapa de Risco Económico — Break-even vs Produção</CardTitle>
+          <CardTitle className="text-sm font-semibold flex items-center gap-1.5">Mapa de Risco Económico — Break-even vs Produção <InfoTooltip text={tooltipDescriptions["Mapa de Risco Económico — Break-even vs Produção"]} /></CardTitle>
         </CardHeader>
         <CardContent>
           <div className="h-80">
