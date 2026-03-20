@@ -19,6 +19,8 @@ import {
   Search, ArrowLeft, Building2, Layers, BarChart3, Droplets, FileText, ShieldCheck, Factory, TrendingUp, MapPin,
   ChevronUp, ChevronDown, Minus,
 } from "lucide-react";
+import { InfoTooltip } from "@/components/ui/info-tooltip";
+import { tooltipDescriptions } from "@/lib/tooltipDescriptions";
 import { SortableHead } from "@/components/ui/sortable-head";
 import { useTableSort } from "@/hooks/useTableSort";
 
