@@ -274,13 +274,36 @@ export const ConselhoPanel = () => {
         {/* Zone C: Decision Matrix (2/3) */}
         <Card className="xl:col-span-2 border-border/60">
           <CardHeader className="pb-2 pt-4 px-4">
-            <CardTitle className="text-sm font-bold flex items-center gap-2">
-              <Shield className="w-4 h-4 text-primary" />
-              Matriz de Decisão — Concessões
-            </CardTitle>
-            <p className="text-[10px] text-muted-foreground">
-              Semáforo de saúde combinado (Score Estratégico + Económico). Clique numa linha para detalhes.
-            </p>
+            <div className="flex items-center justify-between flex-wrap gap-2">
+              <div>
+                <CardTitle className="text-sm font-bold flex items-center gap-2">
+                  <Shield className="w-4 h-4 text-primary" />
+                  Matriz de Decisão — Concessões
+                </CardTitle>
+                <p className="text-[10px] text-muted-foreground">
+                  Semáforo de saúde combinado (Score Estratégico + Económico). Clique numa linha para detalhes.
+                </p>
+              </div>
+              <div className="flex items-center gap-2">
+                <Select value={classFilter} onValueChange={setClassFilter}>
+                  <SelectTrigger className="h-7 w-[180px] text-[11px]">
+                    <SelectValue placeholder="Todas classificações" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Todas classificações</SelectItem>
+                    <SelectItem value="Manter & Optimizar">Manter & Optimizar</SelectItem>
+                    <SelectItem value="Revitalizar">Revitalizar</SelectItem>
+                    <SelectItem value="Renegociar">Renegociar</SelectItem>
+                    <SelectItem value="Monitorar">Monitorar</SelectItem>
+                    <SelectItem value="Preparar Abandono">Preparar Abandono</SelectItem>
+                    <SelectItem value="Relicitar">Relicitar</SelectItem>
+                  </SelectContent>
+                </Select>
+                {classFilter !== "all" && (
+                  <span className="text-[10px] text-muted-foreground">{sorted.length} resultado(s)</span>
+                )}
+              </div>
+            </div>
           </CardHeader>
           <CardContent className="px-2 pb-3">
             <div className="max-h-[480px] overflow-auto rounded-md border border-border/40">
