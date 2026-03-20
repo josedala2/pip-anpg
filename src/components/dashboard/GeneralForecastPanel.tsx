@@ -18,6 +18,8 @@ import {
   Activity, DollarSign, TrendingUp, TrendingDown, ShieldAlert,
   Target, Gauge, Layers, AlertTriangle, Lightbulb, BarChart3, Clock, Filter,
 } from "lucide-react";
+import { InfoTooltip } from "@/components/ui/info-tooltip";
+import { tooltipDescriptions } from "@/lib/tooltipDescriptions";
 
 const fmtUSD = (v: number) => v >= 1000 ? `$${(v / 1000).toFixed(1)}B` : `$${v.toFixed(0)}MM`;
 const fmtK = (v: number) => `${(v / 1000).toFixed(0)}k`;
