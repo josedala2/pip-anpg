@@ -286,6 +286,7 @@ export const GeneralForecastPanel = () => {
           <CardTitle className="text-sm font-semibold flex items-center gap-2">
             <Clock className="w-4 h-4 text-primary" />
             Mapa Temporal — Evolução por Horizonte
+            <InfoTooltip text={tooltipDescriptions["Mapa Temporal — Evolução por Horizonte"]} />
           </CardTitle>
         </CardHeader>
         <CardContent className="p-0">
