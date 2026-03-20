@@ -1886,7 +1886,7 @@ const BlockPage = () => {
                             {/* Cost Recovery */}
                             {(fc.costRecoveryPreProd != null || fc.costRecoveryPostProd != null) && (
                               <div>
-                                <div className="text-[10px] 2xl:text-xs uppercase tracking-wider text-muted-foreground mb-2 font-medium">Cost Recovery</div>
+                                <div className="text-[10px] 2xl:text-xs uppercase tracking-wider text-muted-foreground mb-2 font-medium flex items-center gap-1">Cost Recovery <InfoTooltip text={tooltipDescriptions["Cost Recovery"]} /></div>
                                 <div className="grid grid-cols-2 gap-2">
                                   {fc.costRecoveryPreProd != null && (
                                     <div className="glass-card rounded-lg p-3 text-center">
