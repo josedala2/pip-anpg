@@ -24,6 +24,7 @@ import { InstitutionalFooter } from "@/components/InstitutionalFooter";
 import { HSEEnvironmentTab } from "@/components/dashboard/HSEEnvironmentTab";
 import { FacilitiesTab } from "@/components/dashboard/FacilitiesTab";
 import { HomologacoesPanel } from "@/components/dashboard/HomologacoesPanel";
+import { DevelopmentProjectsPanel } from "@/components/dashboard/DevelopmentProjectsPanel";
 import type { LegislationDocument, ContractInfo } from "@/data/angolaBlocks";
 import { InfoTooltip } from "@/components/ui/info-tooltip";
 import { tooltipDescriptions } from "@/lib/tooltipDescriptions";
@@ -855,6 +856,11 @@ const BlockPage = () => {
                 </Card>
               );
             })()}
+
+            {/* Development Projects */}
+            {block.developmentProjects && block.developmentProjects.length > 0 && (
+              <DevelopmentProjectsPanel projects={block.developmentProjects} />
+            )}
 
             {/* Facility Summary - compact in overview */}
             {block.facilityData && (
