@@ -182,6 +182,7 @@ export const EconomicRiskPanel = () => {
             <CardTitle className="text-sm font-semibold flex items-center gap-2">
               <AlertTriangle className="w-4 h-4 text-warning" />
               Concessões Próximas do Break-even
+              <InfoTooltip text={tooltipDescriptions["Concessões Próximas do Break-even"]} />
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
