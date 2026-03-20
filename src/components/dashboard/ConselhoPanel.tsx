@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { oilBlocks, type OilBlock } from "@/data/angolaBlocks";
@@ -89,6 +90,7 @@ export const ConselhoPanel = () => {
   const [sortBy, setSortBy] = useState<"health" | "score" | "contract" | "action">("health");
   const [sortAsc, setSortAsc] = useState(false);
   const [expandedRow, setExpandedRow] = useState<string | null>(null);
+  const [classFilter, setClassFilter] = useState<string>("all");
 
   // ── Compute all data ──
   const { concessions, macro, alerts, trends } = useMemo(() => {
@@ -158,7 +160,11 @@ export const ConselhoPanel = () => {
     const healthOrder: Record<HealthStatus, number> = { red: 0, yellow: 1, green: 2 };
     const urgencyOrder: Record<string, number> = { "Imediata": 0, "Elevada": 1, "Moderada": 2, "Baixa": 3 };
 
-    return [...concessions].sort((a, b) => {
+    const filtered = classFilter === "all"
+      ? concessions
+      : concessions.filter(c => c.strategic.classification === classFilter);
+
+    return [...filtered].sort((a, b) => {
       let cmp = 0;
       switch (sortBy) {
         case "health": cmp = healthOrder[a.health] - healthOrder[b.health]; break;
@@ -168,7 +174,7 @@ export const ConselhoPanel = () => {
       }
       return sortAsc ? cmp : -cmp;
     });
-  }, [concessions, sortBy, sortAsc]);
+  }, [concessions, sortBy, sortAsc, classFilter]);
 
   const toggleSort = (col: typeof sortBy) => {
     if (sortBy === col) setSortAsc(!sortAsc);
@@ -268,13 +274,36 @@ export const ConselhoPanel = () => {
         {/* Zone C: Decision Matrix (2/3) */}
         <Card className="xl:col-span-2 border-border/60">
           <CardHeader className="pb-2 pt-4 px-4">
-            <CardTitle className="text-sm font-bold flex items-center gap-2">
-              <Shield className="w-4 h-4 text-primary" />
-              Matriz de Decisão — Concessões
-            </CardTitle>
-            <p className="text-[10px] text-muted-foreground">
-              Semáforo de saúde combinado (Score Estratégico + Económico). Clique numa linha para detalhes.
-            </p>
+            <div className="flex items-center justify-between flex-wrap gap-2">
+              <div>
+                <CardTitle className="text-sm font-bold flex items-center gap-2">
+                  <Shield className="w-4 h-4 text-primary" />
+                  Matriz de Decisão — Concessões
+                </CardTitle>
+                <p className="text-[10px] text-muted-foreground">
+                  Semáforo de saúde combinado (Score Estratégico + Económico). Clique numa linha para detalhes.
+                </p>
+              </div>
+              <div className="flex items-center gap-2">
+                <Select value={classFilter} onValueChange={setClassFilter}>
+                  <SelectTrigger className="h-7 w-[180px] text-[11px]">
+                    <SelectValue placeholder="Todas classificações" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Todas classificações</SelectItem>
+                    <SelectItem value="Manter & Optimizar">Manter & Optimizar</SelectItem>
+                    <SelectItem value="Revitalizar">Revitalizar</SelectItem>
+                    <SelectItem value="Renegociar">Renegociar</SelectItem>
+                    <SelectItem value="Monitorar">Monitorar</SelectItem>
+                    <SelectItem value="Preparar Abandono">Preparar Abandono</SelectItem>
+                    <SelectItem value="Relicitar">Relicitar</SelectItem>
+                  </SelectContent>
+                </Select>
+                {classFilter !== "all" && (
+                  <span className="text-[10px] text-muted-foreground">{sorted.length} resultado(s)</span>
+                )}
+              </div>
+            </div>
           </CardHeader>
           <CardContent className="px-2 pb-3">
             <div className="max-h-[480px] overflow-auto rounded-md border border-border/40">
