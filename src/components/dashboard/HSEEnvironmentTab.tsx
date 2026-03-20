@@ -151,7 +151,7 @@ export const HSEEnvironmentTab = ({ hseData, environmentalData, facilityData, ec
             {facilityData.production2025Bbls && (
               <Card className="glass-card">
                 <CardContent className="p-4 text-center">
-                  <div className="text-[9px] uppercase text-muted-foreground">Produção 2025</div>
+                  <div className="text-[9px] uppercase text-muted-foreground flex items-center justify-center gap-1">Produção 2025 <InfoTooltip text={tooltipDescriptions["Produção 2025"]} /></div>
                   <div className="text-lg font-bold font-mono">{(facilityData.production2025Bbls / 1e6).toFixed(1)}M</div>
                   <div className="text-[9px] text-muted-foreground">bbls</div>
                 </CardContent>
