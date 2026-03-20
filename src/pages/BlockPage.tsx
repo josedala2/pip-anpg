@@ -1232,8 +1232,8 @@ const BlockPage = () => {
                    </Card>
                    <Card className="glass-card">
                      <CardContent className="p-4 flex flex-col items-center text-center">
-                       <TrendingUp className="w-5 h-5 text-warning mb-1" />
-                       <span className="text-xs text-muted-foreground">Actual vs Pico</span>
+                        <TrendingUp className="w-5 h-5 text-warning mb-1" />
+                        <span className="text-xs text-muted-foreground flex items-center gap-1">Actual vs Pico {tooltipDescriptions["Actual vs Pico"] && <InfoTooltip text={tooltipDescriptions["Actual vs Pico"]} />}</span>
                        <span className="text-lg font-bold text-foreground">{peakVsActual}%</span>
                        <span className="text-[10px] text-muted-foreground">do pico agregado</span>
                      </CardContent>
