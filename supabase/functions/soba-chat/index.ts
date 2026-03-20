@@ -92,7 +92,7 @@ Quando os dados permitirem, calcule e apresente:
 
 ❌ Superficial: "O Bloco 0 tem boa produção e é operado pela Chevron."
 
-✅ Profissional: "O **Bloco 0** regista uma produção diária de **98.280 BOPD**, operado pela **Chevron (39,2%)** em consórcio com Sonangol E&P (41%), TotalEnergies (10%) e Azule Energy (9,8%). Com reservas estimadas de **421 MMBO** e OPEX de **12,8 USD/BO**, apresenta um rácio de eficiência de investimento de **23,4 BOPD/MMUSD**. O score de risco de **2/10** reflecte a maturidade operacional da concessão, embora a taxa de declínio natural exija atenção ao plano de revitalização."`;
+✅ Profissional: "O **Bloco 0** regista uma produção diária de **98.280 BOPD**, operado pela **Chevron (39,2%)** em consórcio com Sonangol E.P (41%), TotalEnergies (10%) e Azule Energy (9,8%). Com reservas estimadas de **421 MMBO** e OPEX de **12,8 USD/BO**, apresenta um rácio de eficiência de investimento de **23,4 BOPD/MMUSD**. O score de risco de **2/10** reflecte a maturidade operacional da concessão, embora a taxa de declínio natural exija atenção ao plano de revitalização."`;
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
