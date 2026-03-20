@@ -371,6 +371,7 @@ export const ExecutiveBoardPanel = () => {
             <CardTitle className="text-sm font-semibold flex items-center gap-2">
               <Target className="w-4 h-4 text-success" />
               Top 5 Concessões por Valor
+              <InfoTooltip text={tooltipDescriptions["Top 5 Concessões por Valor"]} />
             </CardTitle>
           </CardHeader>
           <CardContent className="p-4 pt-0">
