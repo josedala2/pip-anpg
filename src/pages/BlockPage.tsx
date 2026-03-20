@@ -1539,7 +1539,7 @@ const BlockPage = () => {
                       </Card>
                       <Card className="glass-card">
                         <CardContent className="p-4 2xl:p-6">
-                          <div className="text-xs 2xl:text-sm text-muted-foreground mb-2">Bónus Total</div>
+                          <div className="text-xs 2xl:text-sm text-muted-foreground mb-2 flex items-center gap-1">Bónus Total {tooltipDescriptions["Bónus de Assinatura"] && <InfoTooltip text="Soma dos bónus de assinatura, social e produção pagos ao Estado" />}</div>
                           <div className="text-2xl 2xl:text-3xl font-bold font-mono text-warning">
                             {totalBonus > 0 ? `$${(totalBonus / 1e6).toFixed(0)}M` : "—"}
                           </div>
