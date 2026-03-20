@@ -114,7 +114,7 @@ export const ExecutiveBoardPanel = () => {
   const topPerformers = useMemo(() => {
     return [...kpis.scores]
       .filter(s => s.classification === "Activo Estratégico" || s.classification === "Activo Rentável")
-      .sort((a, b) => b.npvTotal - a.npvTotal)
+      .sort((a, b) => (b.npvTotal ?? 0) - (a.npvTotal ?? 0))
       .slice(0, 5);
   }, [kpis]);
 
