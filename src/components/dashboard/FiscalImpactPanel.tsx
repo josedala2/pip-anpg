@@ -157,7 +157,7 @@ export const FiscalImpactPanel = () => {
       {data.stateVsOperator.length > 0 && (
         <Card className="border-border/40">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-semibold">Repartição Estado vs Operador (%)</CardTitle>
+            <CardTitle className="text-sm font-semibold flex items-center gap-1.5">Repartição Estado vs Operador (%) <InfoTooltip text={tooltipDescriptions["Repartição Estado vs Operador (%)"]} /></CardTitle>
           </CardHeader>
           <CardContent>
             <div className="h-56">
