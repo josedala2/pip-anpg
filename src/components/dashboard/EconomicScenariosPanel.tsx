@@ -291,7 +291,7 @@ export const EconomicScenariosPanel = () => {
         {/* Cash Flow Projection */}
         <Card className="border-border/40">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-semibold">Projecção de Cash Flow por Cenário</CardTitle>
+            <CardTitle className="text-sm font-semibold flex items-center gap-1.5">Projecção de Cash Flow por Cenário <InfoTooltip text={tooltipDescriptions["Projecção de Cash Flow por Cenário"]} /></CardTitle>
           </CardHeader>
           <CardContent>
             <div className="h-72">
