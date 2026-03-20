@@ -126,6 +126,43 @@ export const tooltipDescriptions: Record<string, string> = {
   "Repartição de Receitas (MMUSD & MMBO)": "Distribuição percentual das receitas entre o Estado (GE) e Impostos por período",
   "Indicadores de Segurança (HSE)": "Tabela consolidada de todos os indicadores de segurança operacional por ano",
 
+  // ── Dashboard Nacional — Módulo Económico ──
+  "Receita Estado (anual)": "Estimativa da receita fiscal petrolífera anual para o Estado angolano, agregada de todas as concessões",
+  "NPV Total Concessões": "Soma do Valor Actual Líquido (Full-cycle + Point Forward) de todas as concessões activas",
+  "OPEX Médio/Barril": "Média ponderada do custo operacional por barril, usando a produção de cada bloco como peso",
+  "Break-even Médio": "Preço médio ponderado de breakeven — preço do barril abaixo do qual as operações se tornam deficitárias",
+  "Produção Viável": "Volume de produção diária (BOPD) de blocos com breakeven abaixo de 80% do preço do Brent",
+  "Produção em Risco": "Volume de produção diária (BOPD) de blocos com breakeven acima de 80% do preço do Brent",
+  "Classificação Económica das Concessões": "Categorização das concessões em classes (Premium, Rentável, Marginal, Crítica, Inviável) com base num score económico multi-dimensional",
+  "Ranking de Valor das Concessões": "Score económico de 0-100 calculado em 5 dimensões: Rentabilidade, Eficiência de Custos, Sustentabilidade, Contribuição Fiscal e Risco Económico",
+  "Evolução da Receita Petrolífera": "Evolução histórica e projecção da receita fiscal petrolífera, decomposta entre GE e Impostos",
+  "Receita por Bacia Petrolífera": "Distribuição da receita fiscal por bacia sedimentar (Congo, Kwanza, Namibe, etc.)",
+  "Receita Estado por Operador": "Ranking da contribuição de cada operador para a receita fiscal do Estado",
+
+  // ── Dashboard Nacional — Contratos & Compliance ──
+  "Expiram em 12 meses": "Número de contratos de concessão com vencimento nos próximos 12 meses — prioridade máxima de renegociação",
+  "Expiram em 24 meses": "Número de contratos de concessão com vencimento nos próximos 24 meses",
+  "Expiram em 36 meses": "Número de contratos de concessão com vencimento nos próximos 36 meses",
+  "Compliance < 80%": "Número de blocos com score de cumprimento contratual inferior a 80% — requerem atenção regulatória",
+  "Com Dados Contratuais": "Número de blocos com informação contratual detalhada disponível na plataforma",
+  "Expiração de Contratos por Ano": "Distribuição temporal dos contratos por ano de vencimento — permite antecipar picos de renegociação",
+  "Compliance por Operador": "Semáforo de conformidade e execução financeira por operador, com código de cores (verde/amarelo/vermelho)",
+
+  // ── Dashboard Nacional — Exploração ──
+  "Sísmica Total Adquirida": "Soma total de todos os levantamentos sísmicos (2D, 3D e 4D) adquiridos em todos os blocos",
+  "Total Poços Exploração": "Número total de poços de exploração (pesquisa + avaliação) perfurados em todos os blocos",
+  "Pesquisa": "Poços de pesquisa (wildcats) — perfurados em áreas sem produção prévia para testar novas estruturas",
+  "Avaliação": "Poços de avaliação (appraisal) — perfurados para delimitar e estimar o volume de uma descoberta",
+  "Reservas Totais": "Soma das reservas provadas e prováveis de todos os blocos, em milhões de barris",
+  "Desafios do Sector": "Principais constrangimentos estruturais da actividade exploratória em Angola",
+
+  // ── Dashboard Nacional — Operadores ──
+  "Operadores": "Número total de empresas operadoras activas nas concessões angolanas",
+  "Produção Total": "Soma da produção diária de todos os operadores, em barris por dia (BOPD)",
+  "Reservas Totais (Operadores)": "Soma das reservas estimadas de todos os operadores, em milhões de barris",
+  "Investimento Acumulado": "Total de investimento realizado por todos os operadores em todas as concessões",
+  "Produção por Operador (BOPD)": "Ranking dos operadores por volume de produção diária",
+
   // ── Visão Económica ──
   "NPV por Período": "Valor Actual Líquido calculado para diferentes horizontes temporais (GE, Concessionária e Impostos)",
   "Fluxo de Caixa Acumulado": "Evolução temporal do fluxo de caixa acumulado, mostrando o ponto de payback e retorno do investimento",
