@@ -155,7 +155,7 @@ export const ConselhoPanel = () => {
       const strategic = calculateStrategicScore(block);
       const economic = calculateEconomicScore(block);
       const remainingYears = getContractRemainingYears(block);
-      const { health, label } = computeHealth(strategic, economic, remainingYears);
+      const { health, label, flags } = computeHealth({ strategic, economic, remainingYears, block });
       const { action, urgency } = getSuggestedAction(strategic, remainingYears);
 
       return {
@@ -164,6 +164,7 @@ export const ConselhoPanel = () => {
         economic,
         health,
         healthLabel: label,
+        healthFlags: flags,
         remainingYears,
         suggestedAction: action,
         actionUrgency: urgency,
