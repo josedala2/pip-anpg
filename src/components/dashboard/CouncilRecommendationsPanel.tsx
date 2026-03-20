@@ -4,6 +4,8 @@ import { Badge } from "@/components/ui/badge";
 import { oilBlocks } from "@/data/angolaBlocks";
 import { AnimatedCounter } from "./AnimatedCounter";
 import { AlertTriangle, Award, BarChart3, ChevronDown, ChevronUp, Eye, Lightbulb, Shield, Target, Zap } from "lucide-react";
+import { InfoTooltip } from "@/components/ui/info-tooltip";
+import { tooltipDescriptions } from "@/lib/tooltipDescriptions";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid, Cell } from "recharts";
