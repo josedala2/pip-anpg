@@ -1145,7 +1145,7 @@ const BlockPage = () => {
                     </div>
                     {block.explorationSummary.geologicalSuccessRate != null && (
                       <div className="glass-card rounded-lg p-3">
-                        <div className="text-[9px] uppercase text-muted-foreground mb-1">Taxa Sucesso Geológico</div>
+                        <div className="text-[9px] uppercase text-muted-foreground mb-1">Taxa de Sucesso</div>
                         <div className="text-base font-bold font-mono text-success">{block.explorationSummary.geologicalSuccessRate}%</div>
                       </div>
                     )}

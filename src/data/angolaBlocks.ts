@@ -598,7 +598,7 @@ export const oilBlocks: OilBlock[] = [
       commercialDiscoveries: 57,
       nonCommercialDiscoveries: 32,
       dryWells: 55,
-      geologicalSuccessRate: 40,
+      geologicalSuccessRate: 62,
       stooipMMBO: 21000,
       explorationCostsUSD: 1700000000,
       prospectivitySTOOIPMMBOE: 470,
