@@ -131,7 +131,7 @@ export const CostStructurePanel = () => {
         {/* Cost by operator */}
         <Card className="border-border/40">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-semibold">CAPEX vs OPEX por Operador</CardTitle>
+            <CardTitle className="text-sm font-semibold flex items-center gap-1.5">CAPEX vs OPEX por Operador <InfoTooltip text={tooltipDescriptions["CAPEX vs OPEX por Operador"]} /></CardTitle>
           </CardHeader>
           <CardContent>
             <div className="h-72">
