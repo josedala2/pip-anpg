@@ -183,7 +183,7 @@ export const FiscalImpactPanel = () => {
       {/* Fiscal conditions table */}
       <Card className="border-border/40">
         <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-semibold">Condições Fiscais por Concessão</CardTitle>
+          <CardTitle className="text-sm font-semibold flex items-center gap-1.5">Condições Fiscais por Concessão <InfoTooltip text={tooltipDescriptions["Condições Fiscais por Concessão"]} /></CardTitle>
         </CardHeader>
         <CardContent className="p-0">
           <div className="overflow-x-auto">
