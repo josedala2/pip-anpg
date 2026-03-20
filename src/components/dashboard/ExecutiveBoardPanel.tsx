@@ -262,6 +262,7 @@ export const ExecutiveBoardPanel = () => {
             <CardTitle className="text-sm font-semibold flex items-center gap-2">
               <Layers className="w-4 h-4 text-primary" />
               Classificação Estratégica
+              <InfoTooltip text={tooltipDescriptions["Classificação Estratégica"]} />
             </CardTitle>
           </CardHeader>
           <CardContent className="p-4 pt-0">
