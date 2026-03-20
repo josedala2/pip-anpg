@@ -1,5 +1,7 @@
 import { useMemo, useState } from "react";
 import { oilBlocks } from "@/data/angolaBlocks";
+import { InfoTooltip } from "@/components/ui/info-tooltip";
+import { tooltipDescriptions } from "@/lib/tooltipDescriptions";
 import {
   getNationalEconomicKPIs,
   getRevenueByBasin,
