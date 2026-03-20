@@ -13,6 +13,8 @@ import {
   Tooltip as RechartsTooltip, Cell, ReferenceLine,
 } from "recharts";
 import { AlertTriangle, TrendingDown, DollarSign, ShieldOff } from "lucide-react";
+import { InfoTooltip } from "@/components/ui/info-tooltip";
+import { tooltipDescriptions } from "@/lib/tooltipDescriptions";
 
 const BRENT_PRICE = 78;
 
@@ -77,6 +79,7 @@ export const EconomicRiskPanel = () => {
           value={`${data.criticalCount}`}
           sub="Alto Risco + Inviável"
           severity={data.criticalCount > 0 ? "danger" : "success"}
+          tooltip={tooltipDescriptions["Activos Críticos"]}
         />
         <RiskKPI
           icon={TrendingDown}
@@ -84,6 +87,7 @@ export const EconomicRiskPanel = () => {
           value={`${data.nearBreakeven.length}`}
           sub="Margem < 30%"
           severity={data.nearBreakeven.length > 3 ? "warning" : "success"}
+          tooltip={tooltipDescriptions["Próximos do Break-even"]}
         />
         <RiskKPI
           icon={DollarSign}
@@ -91,6 +95,7 @@ export const EconomicRiskPanel = () => {
           value={`${(data.atRiskProduction / 1000).toFixed(0)}k BOPD`}
           sub="Margem < 20%"
           severity={data.atRiskProduction > 50000 ? "danger" : "warning"}
+          tooltip={tooltipDescriptions["Produção em Risco (BOPD)"]}
         />
         <RiskKPI
           icon={ShieldOff}
@@ -98,13 +103,14 @@ export const EconomicRiskPanel = () => {
           value={`${data.highOpex.length}`}
           sub="Acima $20/bbl"
           severity={data.highOpex.length > 5 ? "warning" : "success"}
+          tooltip={tooltipDescriptions["OPEX Elevado"]}
         />
       </div>
 
       {/* Risk scatter plot */}
       <Card className="border-border/40">
         <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-semibold">Mapa de Risco Económico — Break-even vs Produção</CardTitle>
+          <CardTitle className="text-sm font-semibold flex items-center gap-1.5">Mapa de Risco Económico — Break-even vs Produção <InfoTooltip text={tooltipDescriptions["Mapa de Risco Económico — Break-even vs Produção"]} /></CardTitle>
         </CardHeader>
         <CardContent>
           <div className="h-80">
@@ -176,6 +182,7 @@ export const EconomicRiskPanel = () => {
             <CardTitle className="text-sm font-semibold flex items-center gap-2">
               <AlertTriangle className="w-4 h-4 text-warning" />
               Concessões Próximas do Break-even
+              <InfoTooltip text={tooltipDescriptions["Concessões Próximas do Break-even"]} />
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
@@ -195,6 +202,7 @@ export const EconomicRiskPanel = () => {
             <CardTitle className="text-sm font-semibold flex items-center gap-2">
               <ShieldOff className="w-4 h-4 text-danger" />
               Risco de Abandono Sub-financiado
+              <InfoTooltip text={tooltipDescriptions["Risco de Abandono Sub-financiado"]} />
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
@@ -223,12 +231,13 @@ export const EconomicRiskPanel = () => {
   );
 };
 
-function RiskKPI({ icon: Icon, label, value, sub, severity }: {
+function RiskKPI({ icon: Icon, label, value, sub, severity, tooltip }: {
   icon: React.ElementType;
   label: string;
   value: string;
   sub: string;
   severity: "success" | "warning" | "danger";
+  tooltip?: string;
 }) {
   const colors = {
     success: "border-success/20 bg-success/5",
@@ -246,6 +255,7 @@ function RiskKPI({ icon: Icon, label, value, sub, severity }: {
       <div className="flex items-center gap-1.5 mb-1">
         <Icon className={`w-3.5 h-3.5 ${textColors[severity]}`} />
         <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">{label}</span>
+        {tooltip && <InfoTooltip text={tooltip} />}
       </div>
       <div className="text-xl font-bold text-foreground">{value}</div>
       <div className="text-[10px] text-muted-foreground mt-0.5">{sub}</div>

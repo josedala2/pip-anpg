@@ -25,6 +25,8 @@ import {
   Play, Settings2, TrendingUp, DollarSign, Percent, BarChart3,
   ChevronDown, ChevronUp, MapPin, Building2,
 } from "lucide-react";
+import { InfoTooltip } from "@/components/ui/info-tooltip";
+import { tooltipDescriptions } from "@/lib/tooltipDescriptions";
 
 const producingBlocks = oilBlocks.filter(b => b.dailyProduction > 0).sort((a, b) => b.dailyProduction - a.dailyProduction);
 const operators = [...new Set(oilBlocks.filter(b => b.dailyProduction > 0).map(b => b.operator))].sort();
@@ -240,7 +242,7 @@ export const EconomicScenariosPanel = () => {
       {/* ── KPI Comparison ── */}
       <Card className="border-border/40">
         <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-semibold">Comparação de Indicadores por Cenário</CardTitle>
+          <CardTitle className="text-sm font-semibold flex items-center gap-1.5">Comparação de Indicadores por Cenário <InfoTooltip text={tooltipDescriptions["Comparação de Indicadores por Cenário"]} /></CardTitle>
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
@@ -289,7 +291,7 @@ export const EconomicScenariosPanel = () => {
         {/* Cash Flow Projection */}
         <Card className="border-border/40">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-semibold">Projecção de Cash Flow por Cenário</CardTitle>
+            <CardTitle className="text-sm font-semibold flex items-center gap-1.5">Projecção de Cash Flow por Cenário <InfoTooltip text={tooltipDescriptions["Projecção de Cash Flow por Cenário"]} /></CardTitle>
           </CardHeader>
           <CardContent>
             <div className="h-72">
@@ -326,7 +328,7 @@ export const EconomicScenariosPanel = () => {
         {/* Production Projection */}
         <Card className="border-border/40">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-semibold">Projecção de Produção (kBOPD)</CardTitle>
+            <CardTitle className="text-sm font-semibold flex items-center gap-1.5">Projecção de Produção (kBOPD) <InfoTooltip text={tooltipDescriptions["Projecção de Produção (kBOPD)"]} /></CardTitle>
           </CardHeader>
           <CardContent>
             <div className="h-72">
@@ -363,7 +365,7 @@ export const EconomicScenariosPanel = () => {
       {/* State Revenue Comparison */}
       <Card className="border-border/40">
         <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-semibold">Receita do Estado por Cenário</CardTitle>
+          <CardTitle className="text-sm font-semibold flex items-center gap-1.5">Receita do Estado por Cenário <InfoTooltip text={tooltipDescriptions["Receita do Estado por Cenário"]} /></CardTitle>
         </CardHeader>
         <CardContent>
           <div className="h-64">

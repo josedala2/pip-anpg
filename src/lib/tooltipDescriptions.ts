@@ -88,7 +88,7 @@ export const tooltipDescriptions: Record<string, string> = {
   "Reinjecção de Gás": "Volume de gás natural reinjectado no reservatório para manutenção de pressão ou armazenamento",
 
   // ── Produção — BlockPage ──
-  "Produção Actual": "Volume diário actual de produção de óleo bruto do bloco, em barris por dia (BOPD)",
+  "Produção Actual (Bloco)": "Volume diário actual de produção de óleo bruto do bloco, em barris por dia (BOPD)",
   "Actual vs Pico": "Rácio entre a produção actual e o pico histórico agregado de todos os campos",
   "Campos em Produção": "Número de campos com produção activa em relação ao total de campos do bloco",
   "Taxa de Declínio": "Variação percentual negativa da produção ao longo dos últimos 12 meses",
@@ -191,4 +191,72 @@ export const tooltipDescriptions: Record<string, string> = {
   "Processo Homologação": "Pedido formal de aprovação de investimentos ou actividades pelo regulador (ANPG)",
   "Montante Homologado": "Valor financeiro aprovado num processo de homologação de investimento",
   "Estado do Processo": "Situação actual do processo de homologação: Aprovado, Pendente, Rejeitado ou Em Análise",
+
+  // ── Estrutura de Custos ──
+  "CAPEX Total Acumulado": "Soma de todo o investimento de capital realizado em todas as concessões desde o início das operações",
+  "OPEX Total Acumulado": "Soma de todos os custos operacionais incorridos em todas as concessões desde o início das operações",
+  "Custos de Abandono (total)": "Estimativa total dos custos de descomissionamento e abandono de todas as instalações",
+  "Fundo de Abandono": "Percentagem dos custos de abandono já depositados em fundo dedicado — valores baixos indicam risco financeiro",
+  "Custo por Barril por Concessão": "Comparação do OPEX e custo técnico por barril entre concessões — identifica as mais e menos eficientes",
+  "CAPEX vs OPEX por Operador": "Distribuição do investimento (CAPEX) e custos operacionais (OPEX) por empresa operadora",
+  "Custos de Abandono — Gap de Financiamento": "Diferença entre o custo estimado de abandono e o valor já depositado em fundo — 'gap' indica exposição financeira",
+
+  // ── Impacto Fiscal ──
+  "Receita Fiscal Total": "Soma anual estimada de todas as receitas fiscais petrolíferas: royalties (IPP), impostos (IRP) e outras contribuições",
+  "Royalties (IPP)": "Receita anual estimada do Imposto sobre a Produção de Petróleo — royalty aplicado sobre o volume bruto",
+  "Impostos (IRP)": "Receita anual estimada do Imposto sobre o Rendimento do Petróleo — incide sobre o lucro líquido",
+  "Outras Receitas": "Receitas fiscais adicionais: bónus, contribuições sociais e outras obrigações contratuais",
+  "Repartição da Receita Fiscal": "Decomposição percentual da receita fiscal entre Royalties (IPP), Impostos (IRP) e Outras fontes",
+  "Contribuição Fiscal por Concessão": "Ranking das concessões pela sua contribuição fiscal para o Estado, decomposta em royalties e impostos",
+  "Repartição Estado vs Operador (%)": "Percentagem da receita atribuída ao Estado vs. ao operador, segundo os termos de partilha de cada contrato",
+  "Condições Fiscais por Concessão": "Tabela detalhada das condições fiscais (IPP, IRP, Cost Recovery) de cada concessão activa",
+
+  // ── Risco Económico ──
+  "Activos Críticos": "Número de concessões classificadas como 'Alto Risco' ou 'Inviável' — requerem atenção imediata",
+  "Próximos do Break-even": "Concessões com margem económica inferior a 30% — vulneráveis a quedas no preço do petróleo",
+  "Produção em Risco (BOPD)": "Volume total de produção diária de concessões com margem económica inferior a 20%",
+  "OPEX Elevado": "Número de concessões com custo operacional superior a $20/bbl — candidatas a optimização de custos",
+  "Mapa de Risco Económico — Break-even vs Produção": "Dispersão das concessões por break-even e volume de produção — pontos acima da linha Brent indicam risco",
+  "Concessões Próximas do Break-even": "Lista de concessões com margem económica reduzida, ordenadas por proximidade ao ponto de break-even",
+  "Risco de Abandono Sub-financiado": "Concessões com gap significativo entre os custos estimados de abandono e o fundo já constituído",
+
+  // ── Cenários Económicos ──
+  "Cenários Económicos": "Simulação de 5 cenários macroeconómicos (Continuidade, Optimização, Revitalização, Declínio, Abandono) sobre a produção nacional",
+  "Comparação de Indicadores por Cenário": "Tabela comparativa de NPV, IRR, Cash Flow, Receita Estado e Custo/bbl para cada cenário simulado",
+  "Projecção de Cash Flow por Cenário": "Evolução temporal do fluxo de caixa líquido sob cada cenário, do ano actual até 2040",
+  "Projecção de Produção (kBOPD)": "Evolução da produção nacional sob cada cenário, mostrando trajectórias de declínio ou crescimento",
+  "Receita do Estado por Cenário": "Comparação da receita fiscal acumulada para o Estado em cada cenário simulado",
+  "Impacto por Concessão (Cenário)": "Efeito de cada cenário sobre concessões individuais — identifica os blocos mais sensíveis",
+
+  // ── Previsão Geral ──
+  "Produção Actual": "Volume diário actual de produção de óleo bruto agregado, em barris por dia (BOPD)",
+  "Proj. 2030 (Base)": "Projecção de produção para 2030 no cenário base (continuidade das operações actuais)",
+  "Proj. 2035 (Base)": "Projecção de produção para 2035 no cenário base — indica a trajectória de declínio natural",
+  "Receita Estado Acum.": "Receita fiscal acumulada estimada para o Estado ao longo de 15 anos no cenário base",
+  "NPV Nacional (Base)": "Valor Actual Líquido nacional no cenário base, com taxa de desconto de 10%",
+  "NPV Melhor Cenário": "Valor Actual Líquido nacional no cenário mais favorável entre os 5 simulados",
+  "Alertas Activos": "Número total de alertas operacionais e de previsão activos em todas as concessões",
+  "Blocos em Risco": "Número de concessões com pelo menos um alerta de severidade crítica",
+  "Previsão Consolidada — Produção, Receita, Custos": "Projecção multi-métrica a 15 anos: produção, receita do Estado, OPEX e cash flow no cenário base",
+  "Mapa Temporal — Evolução por Horizonte": "Mapa de calor temporal mostrando a evolução de métricas críticas em horizontes seleccionados (2026-2040)",
+  "Top Riscos Activos": "Os 5 alertas de maior severidade activos — riscos críticos e altos que requerem atenção",
+  "Top Oportunidades por NPV": "As 5 concessões com maior potencial de valor (NPV) entre os activos estratégicos e rentáveis",
+
+  // ── Conselho de Administração ──
+  "Acções Prioritárias": "Número de concessões com urgência 'Imediata' ou 'Elevada' que requerem decisão do Conselho",
+  "Score Médio Nacional": "Média ponderada do score estratégico de todas as concessões (escala 0-100)",
+  "A Revitalizar": "Concessões classificadas como 'Revitalizar' — com potencial de recuperação mediante investimento adicional",
+  "A Renegociar": "Concessões classificadas como 'Renegociar' — termos contratuais desfavoráveis ou desactualizados",
+  "Abandono/Relicitação": "Concessões a preparar para abandono ou relicitação — fim de vida útil ou inviabilidade económica",
+  "Saúde Nacional — 6 Dimensões": "Radar com 6 dimensões: Score Estratégico, Económico, Viabilidade da Produção, Cenário Base, Receita Fiscal e Risco",
+  "Classificação Económica": "Distribuição das concessões por classe económica: Estratégico, Rentável, Observação, Alto Risco, Inviável",
+  "Classificação Estratégica": "Distribuição das concessões por acção estratégica: Revitalizar, Manter, Renegociar, Monitorar, Abandono, Relicitar",
+  "Cenários — NPV vs Receita Estado": "Comparação do NPV e receita fiscal acumulada entre os 5 cenários macroeconómicos simulados",
+  "Trajectória de Produção (Cenário Base)": "Evolução da produção e receita no cenário de continuidade, mostrando a curva de declínio natural",
+  "Top 5 Concessões por Valor": "As 5 concessões com maior NPV — activos estratégicos e rentáveis que geram mais valor",
+  "Top 5 Concessões de Risco": "As 5 concessões com pior classificação económica — alto risco ou inviáveis",
+  "Alertas de Previsão": "Alertas gerados automaticamente pelo motor de previsão com base em tendências e limiares críticos",
+  "Recomendações Prioritárias": "Lista priorizada de acções estratégicas recomendadas com base na análise integrada de todos os módulos",
+  "Distribuição de Classificações Estratégicas": "Gráfico de barras com a contagem de concessões em cada classificação estratégica",
+  "Radar de Saúde": "Análise multidimensional de uma concessão — avalia 6 dimensões de desempenho operacional e económico",
 };

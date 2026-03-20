@@ -1225,7 +1225,7 @@ const BlockPage = () => {
                    <Card className="glass-card">
                      <CardContent className="p-4 flex flex-col items-center text-center">
                         <Gauge className="w-5 h-5 text-primary mb-1" />
-                        <span className="text-xs text-muted-foreground flex items-center gap-1">Produção Actual {tooltipDescriptions["Produção Actual"] && <InfoTooltip text={tooltipDescriptions["Produção Actual"]} />}</span>
+                        <span className="text-xs text-muted-foreground flex items-center gap-1">Produção Actual {tooltipDescriptions["Produção Actual (Bloco)"] && <InfoTooltip text={tooltipDescriptions["Produção Actual (Bloco)"]} />}</span>
                        <span className="text-lg font-bold text-foreground">{block.dailyProduction.toLocaleString()}</span>
                        <span className="text-[10px] text-muted-foreground">BOPD</span>
                      </CardContent>

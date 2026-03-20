@@ -7,6 +7,8 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer,
   PieChart, Pie, Cell, Tooltip as RechartsTooltip, Legend,
 } from "recharts";
+import { InfoTooltip } from "@/components/ui/info-tooltip";
+import { tooltipDescriptions } from "@/lib/tooltipDescriptions";
 
 const CHART_COLORS = [
   "hsl(200, 45%, 28%)", "hsl(152, 50%, 38%)", "hsl(38, 75%, 48%)",
@@ -83,17 +85,17 @@ export const FiscalImpactPanel = () => {
     <div className="space-y-4">
       {/* KPI strip */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <MiniKPI label="Receita Fiscal Total" value={`$${(data.totalStateRevenue / 1000).toFixed(1)}B/ano`} />
-        <MiniKPI label="Royalties (IPP)" value={`$${data.totalRoyalties.toFixed(0)}MM/ano`} />
-        <MiniKPI label="Impostos (IRP)" value={`$${data.totalTaxes.toFixed(0)}MM/ano`} />
-        <MiniKPI label="Outras Receitas" value={`$${data.totalOther.toFixed(0)}MM/ano`} />
+        <MiniKPI label="Receita Fiscal Total" value={`$${(data.totalStateRevenue / 1000).toFixed(1)}B/ano`} tooltip={tooltipDescriptions["Receita Fiscal Total"]} />
+        <MiniKPI label="Royalties (IPP)" value={`$${data.totalRoyalties.toFixed(0)}MM/ano`} tooltip={tooltipDescriptions["Royalties (IPP)"]} />
+        <MiniKPI label="Impostos (IRP)" value={`$${data.totalTaxes.toFixed(0)}MM/ano`} tooltip={tooltipDescriptions["Impostos (IRP)"]} />
+        <MiniKPI label="Outras Receitas" value={`$${data.totalOther.toFixed(0)}MM/ano`} tooltip={tooltipDescriptions["Outras Receitas"]} />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Revenue split pie */}
         <Card className="border-border/40">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-semibold">Repartição da Receita Fiscal</CardTitle>
+            <CardTitle className="text-sm font-semibold flex items-center gap-1.5">Repartição da Receita Fiscal <InfoTooltip text={tooltipDescriptions["Repartição da Receita Fiscal"]} /></CardTitle>
           </CardHeader>
           <CardContent>
             <div className="h-64">
@@ -128,7 +130,7 @@ export const FiscalImpactPanel = () => {
         {/* Top concessions by fiscal contribution */}
         <Card className="border-border/40">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-semibold">Contribuição Fiscal por Concessão</CardTitle>
+            <CardTitle className="text-sm font-semibold flex items-center gap-1.5">Contribuição Fiscal por Concessão <InfoTooltip text={tooltipDescriptions["Contribuição Fiscal por Concessão"]} /></CardTitle>
           </CardHeader>
           <CardContent>
             <div className="h-64">
@@ -155,7 +157,7 @@ export const FiscalImpactPanel = () => {
       {data.stateVsOperator.length > 0 && (
         <Card className="border-border/40">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-semibold">Repartição Estado vs Operador (%)</CardTitle>
+            <CardTitle className="text-sm font-semibold flex items-center gap-1.5">Repartição Estado vs Operador (%) <InfoTooltip text={tooltipDescriptions["Repartição Estado vs Operador (%)"]} /></CardTitle>
           </CardHeader>
           <CardContent>
             <div className="h-56">
@@ -181,7 +183,7 @@ export const FiscalImpactPanel = () => {
       {/* Fiscal conditions table */}
       <Card className="border-border/40">
         <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-semibold">Condições Fiscais por Concessão</CardTitle>
+          <CardTitle className="text-sm font-semibold flex items-center gap-1.5">Condições Fiscais por Concessão <InfoTooltip text={tooltipDescriptions["Condições Fiscais por Concessão"]} /></CardTitle>
         </CardHeader>
         <CardContent className="p-0">
           <div className="overflow-x-auto">
@@ -219,10 +221,13 @@ export const FiscalImpactPanel = () => {
   );
 };
 
-function MiniKPI({ label, value, alert }: { label: string; value: string; alert?: boolean }) {
+function MiniKPI({ label, value, alert, tooltip }: { label: string; value: string; alert?: boolean; tooltip?: string }) {
   return (
     <div className={`rounded-lg border p-3 ${alert ? "border-danger/30 bg-danger/5" : "border-border/40 bg-card"}`}>
-      <div className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">{label}</div>
+      <div className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-1">
+        {label}
+        {tooltip && <InfoTooltip text={tooltip} />}
+      </div>
       <div className={`text-lg font-bold mt-0.5 ${alert ? "text-danger" : "text-foreground"}`}>{value}</div>
     </div>
   );

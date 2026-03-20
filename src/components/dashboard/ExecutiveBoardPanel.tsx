@@ -28,6 +28,8 @@ import {
   AlertTriangle, Target, Gauge, ArrowRight, Bell,
   Building2, BarChart3, Layers,
 } from "lucide-react";
+import { InfoTooltip } from "@/components/ui/info-tooltip";
+import { tooltipDescriptions } from "@/lib/tooltipDescriptions";
 
 // ── Helpers ──
 
@@ -177,14 +179,14 @@ export const ExecutiveBoardPanel = () => {
 
       {/* ── Row 1: Headline KPIs ── */}
       <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-8 gap-3">
-        <KPITile icon={<Activity className="w-4 h-4" />} label="Produção Nacional" value={`${(totalProduction / 1000).toFixed(0)}k`} unit="BOPD" />
-        <KPITile icon={<DollarSign className="w-4 h-4" />} label="Receita Estado" value={fmtUSD(kpis.totalStateRevenue)} positive />
-        <KPITile icon={<TrendingUp className="w-4 h-4" />} label="NPV Nacional" value={fmtUSD(kpis.totalNPV)} positive={kpis.totalNPV >= 0} />
-        <KPITile icon={<Gauge className="w-4 h-4" />} label="OPEX Médio" value={`$${kpis.avgOpexPerBarrel.toFixed(1)}`} unit="/bbl" />
-        <KPITile icon={<Target className="w-4 h-4" />} label="Break-even" value={`$${kpis.avgBreakeven.toFixed(0)}`} unit="/bbl" />
-        <KPITile icon={<ShieldAlert className="w-4 h-4" />} label="Em Risco" value={`${(kpis.atRiskProduction / 1000).toFixed(0)}k`} unit="BOPD" negative />
-        <KPITile icon={<TrendingUp className="w-4 h-4" />} label="Melhor NPV" value={fmtUSD(bestScenario.npv)} subtitle={bestScenario.scenario.name} positive />
-        <KPITile icon={<Bell className="w-4 h-4" />} label="Alertas Forecast" value={`${forecastAlerts.length}`} negative={criticalAlerts.length > 0} />
+        <KPITile icon={<Activity className="w-4 h-4" />} label="Produção Nacional" value={`${(totalProduction / 1000).toFixed(0)}k`} unit="BOPD" tooltip={tooltipDescriptions["Produção Nacional"]} />
+        <KPITile icon={<DollarSign className="w-4 h-4" />} label="Receita Estado" value={fmtUSD(kpis.totalStateRevenue)} positive tooltip={tooltipDescriptions["Receita Estado"]} />
+        <KPITile icon={<TrendingUp className="w-4 h-4" />} label="NPV Nacional" value={fmtUSD(kpis.totalNPV)} positive={kpis.totalNPV >= 0} tooltip={tooltipDescriptions["NPV Total Concessões"]} />
+        <KPITile icon={<Gauge className="w-4 h-4" />} label="OPEX Médio" value={`$${kpis.avgOpexPerBarrel.toFixed(1)}`} unit="/bbl" tooltip={tooltipDescriptions["OPEX Médio/Barril"]} />
+        <KPITile icon={<Target className="w-4 h-4" />} label="Break-even" value={`$${kpis.avgBreakeven.toFixed(0)}`} unit="/bbl" tooltip={tooltipDescriptions["Break-even Médio"]} />
+        <KPITile icon={<ShieldAlert className="w-4 h-4" />} label="Em Risco" value={`${(kpis.atRiskProduction / 1000).toFixed(0)}k`} unit="BOPD" negative tooltip={tooltipDescriptions["Produção em Risco"]} />
+        <KPITile icon={<TrendingUp className="w-4 h-4" />} label="Melhor NPV" value={fmtUSD(bestScenario.npv)} subtitle={bestScenario.scenario.name} positive tooltip={tooltipDescriptions["NPV Melhor Cenário"]} />
+        <KPITile icon={<Bell className="w-4 h-4" />} label="Alertas Forecast" value={`${forecastAlerts.length}`} negative={criticalAlerts.length > 0} tooltip={tooltipDescriptions["Alertas de Previsão"]} />
       </div>
 
       {/* ── Row 2: Health Radar + Classification Distributions ── */}
@@ -195,6 +197,7 @@ export const ExecutiveBoardPanel = () => {
             <CardTitle className="text-sm font-semibold flex items-center gap-2">
               <Gauge className="w-4 h-4 text-primary" />
               Saúde Nacional — 6 Dimensões
+              <InfoTooltip text={tooltipDescriptions["Saúde Nacional — 6 Dimensões"]} />
             </CardTitle>
           </CardHeader>
           <CardContent className="p-4 pt-0">
@@ -223,6 +226,7 @@ export const ExecutiveBoardPanel = () => {
             <CardTitle className="text-sm font-semibold flex items-center gap-2">
               <BarChart3 className="w-4 h-4 text-primary" />
               Classificação Económica
+              <InfoTooltip text={tooltipDescriptions["Classificação Económica"]} />
             </CardTitle>
           </CardHeader>
           <CardContent className="p-4 pt-0">
@@ -258,6 +262,7 @@ export const ExecutiveBoardPanel = () => {
             <CardTitle className="text-sm font-semibold flex items-center gap-2">
               <Layers className="w-4 h-4 text-primary" />
               Classificação Estratégica
+              <InfoTooltip text={tooltipDescriptions["Classificação Estratégica"]} />
             </CardTitle>
           </CardHeader>
           <CardContent className="p-4 pt-0">
@@ -296,6 +301,7 @@ export const ExecutiveBoardPanel = () => {
             <CardTitle className="text-sm font-semibold flex items-center gap-2">
               <TrendingUp className="w-4 h-4 text-primary" />
               Cenários — NPV vs Receita Estado
+              <InfoTooltip text={tooltipDescriptions["Cenários — NPV vs Receita Estado"]} />
             </CardTitle>
           </CardHeader>
           <CardContent className="p-4 pt-0">
@@ -329,6 +335,7 @@ export const ExecutiveBoardPanel = () => {
             <CardTitle className="text-sm font-semibold flex items-center gap-2">
               <Activity className="w-4 h-4 text-primary" />
               Trajectória de Produção (Cenário Base)
+              <InfoTooltip text={tooltipDescriptions["Trajectória de Produção (Cenário Base)"]} />
             </CardTitle>
           </CardHeader>
           <CardContent className="p-4 pt-0">
@@ -364,6 +371,7 @@ export const ExecutiveBoardPanel = () => {
             <CardTitle className="text-sm font-semibold flex items-center gap-2">
               <Target className="w-4 h-4 text-success" />
               Top 5 Concessões por Valor
+              <InfoTooltip text={tooltipDescriptions["Top 5 Concessões por Valor"]} />
             </CardTitle>
           </CardHeader>
           <CardContent className="p-4 pt-0">
@@ -390,7 +398,8 @@ export const ExecutiveBoardPanel = () => {
           <CardHeader className="pb-2 p-4">
             <CardTitle className="text-sm font-semibold flex items-center gap-2">
               <ShieldAlert className="w-4 h-4 text-danger" />
-              Concessões em Risco
+              Top 5 Concessões de Risco
+              <InfoTooltip text={tooltipDescriptions["Top 5 Concessões de Risco"]} />
             </CardTitle>
           </CardHeader>
           <CardContent className="p-4 pt-0">
@@ -419,7 +428,8 @@ export const ExecutiveBoardPanel = () => {
           <CardHeader className="pb-2 p-4">
             <CardTitle className="text-sm font-semibold flex items-center gap-2">
               <AlertTriangle className="w-4 h-4 text-warning" />
-              Alertas Preditivos ({forecastAlerts.length})
+              Alertas de Previsão ({forecastAlerts.length})
+              <InfoTooltip text={tooltipDescriptions["Alertas de Previsão"]} />
             </CardTitle>
           </CardHeader>
           <CardContent className="p-4 pt-0">
@@ -457,7 +467,8 @@ export const ExecutiveBoardPanel = () => {
         <CardHeader className="pb-2 p-4">
           <CardTitle className="text-sm font-semibold flex items-center gap-2">
             <Crown className="w-4 h-4 text-primary" />
-            Síntese Executiva — Recomendações Prioritárias
+            Recomendações Prioritárias
+            <InfoTooltip text={tooltipDescriptions["Recomendações Prioritárias"]} />
           </CardTitle>
         </CardHeader>
         <CardContent className="p-4 pt-0">
@@ -507,6 +518,7 @@ function KPITile({
   subtitle,
   positive,
   negative,
+  tooltip,
 }: {
   icon: React.ReactNode;
   label: string;
@@ -515,12 +527,17 @@ function KPITile({
   subtitle?: string;
   positive?: boolean;
   negative?: boolean;
+  tooltip?: string;
 }) {
   const color = negative ? "text-danger" : positive ? "text-success" : "text-foreground";
   return (
     <Card className="border-border/40">
       <CardContent className="p-3 space-y-1">
-        <div className="flex items-center gap-1.5 text-muted-foreground">{icon}<span className="text-[10px] font-semibold uppercase tracking-wider">{label}</span></div>
+        <div className="flex items-center gap-1.5 text-muted-foreground">
+          {icon}
+          <span className="text-[10px] font-semibold uppercase tracking-wider">{label}</span>
+          {tooltip && <InfoTooltip text={tooltip} />}
+        </div>
         <div className={`text-lg font-bold tabular-nums ${color}`}>
           {value}{unit && <span className="text-xs font-normal text-muted-foreground ml-0.5">{unit}</span>}
         </div>

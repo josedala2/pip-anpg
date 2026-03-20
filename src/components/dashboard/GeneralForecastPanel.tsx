@@ -18,6 +18,8 @@ import {
   Activity, DollarSign, TrendingUp, TrendingDown, ShieldAlert,
   Target, Gauge, Layers, AlertTriangle, Lightbulb, BarChart3, Clock, Filter,
 } from "lucide-react";
+import { InfoTooltip } from "@/components/ui/info-tooltip";
+import { tooltipDescriptions } from "@/lib/tooltipDescriptions";
 
 const fmtUSD = (v: number) => v >= 1000 ? `$${(v / 1000).toFixed(1)}B` : `$${v.toFixed(0)}MM`;
 const fmtK = (v: number) => `${(v / 1000).toFixed(0)}k`;
@@ -229,14 +231,14 @@ export const GeneralForecastPanel = () => {
 
       {/* ── Macro KPI Strip ── */}
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3">
-        <MacroKPI icon={Activity} label="Produção Actual" value={fmtK(currentProduction)} sub="BOPD" />
-        <MacroKPI icon={TrendingUp} label="Proj. 2030 (Base)" value={fmtK(baseScenario.projections[4]?.production || 0)} sub="BOPD" />
-        <MacroKPI icon={TrendingDown} label="Proj. 2035 (Base)" value={fmtK(baseScenario.projections[9]?.production || 0)} sub="BOPD" />
-        <MacroKPI icon={DollarSign} label="Receita Estado Acum." value={fmtUSD(baseScenario.totalStateRevenue)} sub="15 anos (base)" />
-        <MacroKPI icon={Target} label="NPV Nacional (Base)" value={fmtUSD(baseScenario.npv)} sub="10% discount" />
-        <MacroKPI icon={Gauge} label="NPV Melhor Cenário" value={fmtUSD(bestScenario.npv)} sub={bestScenario.scenario.name} color="text-success" />
-        <MacroKPI icon={ShieldAlert} label="Alertas Activos" value={`${allAlerts.length}`} sub={`${allAlerts.filter(a => a.severity === "critical").length} críticos`} color={allAlerts.filter(a => a.severity === "critical").length > 0 ? "text-destructive" : undefined} />
-        <MacroKPI icon={Layers} label="Blocos em Risco" value={`${blockSynthesis.filter(b => b.hasCritical).length}`} sub={`de ${blockSynthesis.length}`} color="text-warning" />
+        <MacroKPI icon={Activity} label="Produção Actual" value={fmtK(currentProduction)} sub="BOPD" tooltip={tooltipDescriptions["Produção Actual"]} />
+        <MacroKPI icon={TrendingUp} label="Proj. 2030 (Base)" value={fmtK(baseScenario.projections[4]?.production || 0)} sub="BOPD" tooltip={tooltipDescriptions["Proj. 2030 (Base)"]} />
+        <MacroKPI icon={TrendingDown} label="Proj. 2035 (Base)" value={fmtK(baseScenario.projections[9]?.production || 0)} sub="BOPD" tooltip={tooltipDescriptions["Proj. 2035 (Base)"]} />
+        <MacroKPI icon={DollarSign} label="Receita Estado Acum." value={fmtUSD(baseScenario.totalStateRevenue)} sub="15 anos (base)" tooltip={tooltipDescriptions["Receita Estado Acum."]} />
+        <MacroKPI icon={Target} label="NPV Nacional (Base)" value={fmtUSD(baseScenario.npv)} sub="10% discount" tooltip={tooltipDescriptions["NPV Nacional (Base)"]} />
+        <MacroKPI icon={Gauge} label="NPV Melhor Cenário" value={fmtUSD(bestScenario.npv)} sub={bestScenario.scenario.name} color="text-success" tooltip={tooltipDescriptions["NPV Melhor Cenário"]} />
+        <MacroKPI icon={ShieldAlert} label="Alertas Activos" value={`${allAlerts.length}`} sub={`${allAlerts.filter(a => a.severity === "critical").length} críticos`} color={allAlerts.filter(a => a.severity === "critical").length > 0 ? "text-destructive" : undefined} tooltip={tooltipDescriptions["Alertas Activos"]} />
+        <MacroKPI icon={Layers} label="Blocos em Risco" value={`${blockSynthesis.filter(b => b.hasCritical).length}`} sub={`de ${blockSynthesis.length}`} color="text-warning" tooltip={tooltipDescriptions["Blocos em Risco"]} />
       </div>
 
       {/* ── Multi-Metric Consolidated Chart ── */}
@@ -245,6 +247,7 @@ export const GeneralForecastPanel = () => {
           <CardTitle className="text-sm font-semibold flex items-center gap-2">
             <BarChart3 className="w-4 h-4 text-primary" />
             Previsão Consolidada — Produção, Receita, Custos (Cenário Base, 15 Anos)
+            <InfoTooltip text={tooltipDescriptions["Previsão Consolidada — Produção, Receita, Custos"]} />
             {isFiltered && <Badge variant="outline" className="text-[9px] ml-auto">Filtrado</Badge>}
           </CardTitle>
         </CardHeader>
@@ -283,6 +286,7 @@ export const GeneralForecastPanel = () => {
           <CardTitle className="text-sm font-semibold flex items-center gap-2">
             <Clock className="w-4 h-4 text-primary" />
             Mapa Temporal — Evolução por Horizonte
+            <InfoTooltip text={tooltipDescriptions["Mapa Temporal — Evolução por Horizonte"]} />
           </CardTitle>
         </CardHeader>
         <CardContent className="p-0">
@@ -313,6 +317,7 @@ export const GeneralForecastPanel = () => {
             <CardTitle className="text-sm font-semibold flex items-center gap-2">
               <AlertTriangle className="w-4 h-4 text-destructive" />
               Top Riscos Activos
+              <InfoTooltip text={tooltipDescriptions["Top Riscos Activos"]} />
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -341,6 +346,7 @@ export const GeneralForecastPanel = () => {
             <CardTitle className="text-sm font-semibold flex items-center gap-2">
               <Lightbulb className="w-4 h-4 text-success" />
               Top Oportunidades por NPV
+              <InfoTooltip text={tooltipDescriptions["Top Oportunidades por NPV"]} />
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -465,14 +471,15 @@ export const GeneralForecastPanel = () => {
 
 // ── Sub-components ──
 
-function MacroKPI({ icon: Icon, label, value, sub, color }: {
-  icon: React.ElementType; label: string; value: string; sub: string; color?: string;
+function MacroKPI({ icon: Icon, label, value, sub, color, tooltip }: {
+  icon: React.ElementType; label: string; value: string; sub: string; color?: string; tooltip?: string;
 }) {
   return (
     <div className="rounded-lg border border-border/40 p-3 bg-card/50">
       <div className="flex items-center gap-1 mb-1">
         <Icon className="w-3 h-3 text-muted-foreground" />
         <span className="text-[9px] font-semibold uppercase tracking-wider text-muted-foreground truncate">{label}</span>
+        {tooltip && <InfoTooltip text={tooltip} />}
       </div>
       <div className={`text-lg font-bold font-mono ${color || "text-foreground"}`}>{value}</div>
       <div className="text-[9px] text-muted-foreground">{sub}</div>

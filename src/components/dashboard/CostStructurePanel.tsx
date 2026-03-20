@@ -6,6 +6,8 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer,
   Tooltip as RechartsTooltip, Legend, Cell,
 } from "recharts";
+import { InfoTooltip } from "@/components/ui/info-tooltip";
+import { tooltipDescriptions } from "@/lib/tooltipDescriptions";
 
 const CHART_COLORS = [
   "hsl(200, 45%, 28%)", "hsl(152, 50%, 38%)", "hsl(38, 75%, 48%)",
@@ -89,13 +91,14 @@ export const CostStructurePanel = () => {
     <div className="space-y-4">
       {/* KPI strip */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <MiniKPI label="CAPEX Total Acumulado" value={`$${(data.totalCapex / 1000).toFixed(1)}B`} />
-        <MiniKPI label="OPEX Total Acumulado" value={`$${(data.totalOpex / 1000).toFixed(1)}B`} />
-        <MiniKPI label="Custos de Abandono" value={`$${(data.totalAbandonment / 1000).toFixed(1)}B`} />
+        <MiniKPI label="CAPEX Total Acumulado" value={`$${(data.totalCapex / 1000).toFixed(1)}B`} tooltip={tooltipDescriptions["CAPEX Total Acumulado"]} />
+        <MiniKPI label="OPEX Total Acumulado" value={`$${(data.totalOpex / 1000).toFixed(1)}B`} tooltip={tooltipDescriptions["OPEX Total Acumulado"]} />
+        <MiniKPI label="Custos de Abandono" value={`$${(data.totalAbandonment / 1000).toFixed(1)}B`} tooltip={tooltipDescriptions["Custos de Abandono (total)"]} />
         <MiniKPI
           label="Fundo de Abandono"
           value={`${((data.totalAbandonmentFunded / Math.max(data.totalAbandonment, 1)) * 100).toFixed(0)}%`}
           alert={data.totalAbandonmentFunded < data.totalAbandonment * 0.3}
+          tooltip={tooltipDescriptions["Fundo de Abandono"]}
         />
       </div>
 
@@ -103,7 +106,7 @@ export const CostStructurePanel = () => {
         {/* OPEX/bbl comparison */}
         <Card className="border-border/40">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-semibold">Custo por Barril por Concessão</CardTitle>
+            <CardTitle className="text-sm font-semibold flex items-center gap-1.5">Custo por Barril por Concessão <InfoTooltip text={tooltipDescriptions["Custo por Barril por Concessão"]} /></CardTitle>
           </CardHeader>
           <CardContent>
             <div className="h-72">
@@ -128,7 +131,7 @@ export const CostStructurePanel = () => {
         {/* Cost by operator */}
         <Card className="border-border/40">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-semibold">CAPEX vs OPEX por Operador</CardTitle>
+            <CardTitle className="text-sm font-semibold flex items-center gap-1.5">CAPEX vs OPEX por Operador <InfoTooltip text={tooltipDescriptions["CAPEX vs OPEX por Operador"]} /></CardTitle>
           </CardHeader>
           <CardContent>
             <div className="h-72">
@@ -155,7 +158,7 @@ export const CostStructurePanel = () => {
       {data.abandonmentData.length > 0 && (
         <Card className="border-border/40">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-semibold">Custos de Abandono — Gap de Financiamento</CardTitle>
+            <CardTitle className="text-sm font-semibold flex items-center gap-1.5">Custos de Abandono — Gap de Financiamento <InfoTooltip text={tooltipDescriptions["Custos de Abandono — Gap de Financiamento"]} /></CardTitle>
           </CardHeader>
           <CardContent>
             <div className="h-56">
@@ -181,10 +184,13 @@ export const CostStructurePanel = () => {
   );
 };
 
-function MiniKPI({ label, value, alert }: { label: string; value: string; alert?: boolean }) {
+function MiniKPI({ label, value, alert, tooltip }: { label: string; value: string; alert?: boolean; tooltip?: string }) {
   return (
     <div className={`rounded-lg border p-3 ${alert ? "border-danger/30 bg-danger/5" : "border-border/40 bg-card"}`}>
-      <div className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">{label}</div>
+      <div className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-1">
+        {label}
+        {tooltip && <InfoTooltip text={tooltip} />}
+      </div>
       <div className={`text-lg font-bold mt-0.5 ${alert ? "text-danger" : "text-foreground"}`}>{value}</div>
     </div>
   );
