@@ -88,7 +88,7 @@ export const tooltipDescriptions: Record<string, string> = {
   "Reinjecção de Gás": "Volume de gás natural reinjectado no reservatório para manutenção de pressão ou armazenamento",
 
   // ── Produção — BlockPage ──
-  "Produção Actual": "Volume diário actual de produção de óleo bruto do bloco, em barris por dia (BOPD)",
+  "Produção Actual (Bloco)": "Volume diário actual de produção de óleo bruto do bloco, em barris por dia (BOPD)",
   "Actual vs Pico": "Rácio entre a produção actual e o pico histórico agregado de todos os campos",
   "Campos em Produção": "Número de campos com produção activa em relação ao total de campos do bloco",
   "Taxa de Declínio": "Variação percentual negativa da produção ao longo dos últimos 12 meses",

@@ -346,6 +346,7 @@ export const GeneralForecastPanel = () => {
             <CardTitle className="text-sm font-semibold flex items-center gap-2">
               <Lightbulb className="w-4 h-4 text-success" />
               Top Oportunidades por NPV
+              <InfoTooltip text={tooltipDescriptions["Top Oportunidades por NPV"]} />
             </CardTitle>
           </CardHeader>
           <CardContent>

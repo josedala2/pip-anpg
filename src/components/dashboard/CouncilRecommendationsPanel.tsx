@@ -248,6 +248,7 @@ export const CouncilRecommendationsPanel = () => {
               <CardTitle className="text-sm font-semibold flex items-center gap-2">
                 <Target className="w-4 h-4 text-primary" />
                 Distribuição de Classificações Estratégicas
+                <InfoTooltip text={tooltipDescriptions["Distribuição de Classificações Estratégicas"]} />
               </CardTitle>
             </CardHeader>
             <CardContent>

@@ -28,6 +28,8 @@ import {
   AlertTriangle, Target, Gauge, ArrowRight, Bell,
   Building2, BarChart3, Layers,
 } from "lucide-react";
+import { InfoTooltip } from "@/components/ui/info-tooltip";
+import { tooltipDescriptions } from "@/lib/tooltipDescriptions";
 
 // ── Helpers ──
 
