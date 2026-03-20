@@ -428,7 +428,8 @@ export const ExecutiveBoardPanel = () => {
           <CardHeader className="pb-2 p-4">
             <CardTitle className="text-sm font-semibold flex items-center gap-2">
               <AlertTriangle className="w-4 h-4 text-warning" />
-              Alertas Preditivos ({forecastAlerts.length})
+              Alertas de Previsão ({forecastAlerts.length})
+              <InfoTooltip text={tooltipDescriptions["Alertas de Previsão"]} />
             </CardTitle>
           </CardHeader>
           <CardContent className="p-4 pt-0">
