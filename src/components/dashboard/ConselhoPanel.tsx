@@ -25,6 +25,7 @@ interface ConcessionHealth {
   economic: EconomicScoreResult;
   health: HealthStatus;
   healthLabel: string;
+  healthFlags: string[];
   remainingYears: number | null;
   suggestedAction: string;
   actionUrgency: string;
@@ -38,13 +39,67 @@ function getContractRemainingYears(block: OilBlock): number | null {
   return endYear - 2026;
 }
 
-function computeHealth(strategic: StrategicScore, economic: EconomicScoreResult, remainingYears: number | null): { health: HealthStatus; label: string } {
-  const combined = (strategic.totalScore * 0.5) + (economic.totalScore * 0.5);
-  const contractRisk = remainingYears !== null && remainingYears < 2;
+interface HealthFactors {
+  strategic: StrategicScore;
+  economic: EconomicScoreResult;
+  remainingYears: number | null;
+  block: OilBlock;
+}
 
-  if (combined >= 60 && !contractRisk) return { health: "green", label: "Saudável" };
-  if (combined >= 35 && !contractRisk) return { health: "yellow", label: "Atenção" };
-  return { health: "red", label: "Crítico" };
+function computeHealth({ strategic, economic, remainingYears, block }: HealthFactors): { health: HealthStatus; label: string; flags: string[] } {
+  const combined = (strategic.totalScore * 0.5) + (economic.totalScore * 0.5);
+  const flags: string[] = [];
+  let redFlags = 0;
+  let yellowFlags = 0;
+
+  // 1. Contract risk
+  if (remainingYears !== null && remainingYears < 2) { redFlags++; flags.push("Prazo contratual < 2 anos"); }
+  else if (remainingYears !== null && remainingYears < 5) { yellowFlags++; flags.push("Prazo contratual < 5 anos"); }
+
+  // 2. Facility age (from productionStartYear)
+  const startYear = block.facilityData?.productionStartYear;
+  if (startYear) {
+    const age = 2026 - startYear;
+    if (age > 40) { redFlags++; flags.push(`Instalações com ${age} anos (>40)`); }
+    else if (age > 30) { yellowFlags++; flags.push(`Instalações com ${age} anos (>30)`); }
+  }
+
+  // 3. Capacity utilization
+  const capacity = block.facilityData?.capacityBOPD;
+  if (capacity && capacity > 0 && block.dailyProduction > 0) {
+    const utilization = (block.dailyProduction / capacity) * 100;
+    if (utilization < 40) { redFlags++; flags.push(`Utilização ${utilization.toFixed(0)}% (<40%)`); }
+    else if (utilization < 60) { yellowFlags++; flags.push(`Utilização ${utilization.toFixed(0)}% (<60%)`); }
+  }
+
+  // 4. Production decline (3-vs-3 method)
+  const ph = block.productionHistory;
+  if (ph && ph.length >= 6) {
+    const first3Avg = (ph[0].value + ph[1].value + ph[2].value) / 3;
+    const last3Avg = (ph[ph.length - 3].value + ph[ph.length - 2].value + ph[ph.length - 1].value) / 3;
+    if (first3Avg > 0) {
+      const declinePct = ((last3Avg - first3Avg) / first3Avg) * 100;
+      if (declinePct < -25) { redFlags++; flags.push(`Declínio ${declinePct.toFixed(0)}% (>25%)`); }
+      else if (declinePct < -15) { yellowFlags++; flags.push(`Declínio ${declinePct.toFixed(0)}% (>15%)`); }
+    }
+  }
+
+  // 5. Low production volume (absolute threshold)
+  if (block.phase === "Production" && block.dailyProduction < 1000) {
+    redFlags++; flags.push(`Produção residual: ${block.dailyProduction.toLocaleString()} BOPD`);
+  } else if (block.phase === "Production" && block.dailyProduction < 5000) {
+    yellowFlags++; flags.push(`Produção baixa: ${block.dailyProduction.toLocaleString()} BOPD`);
+  }
+
+  // 6. Combined score baseline
+  if (combined < 35) { redFlags++; flags.push(`Score combinado baixo: ${combined.toFixed(0)}`); }
+  else if (combined < 60) { yellowFlags++; flags.push(`Score combinado moderado: ${combined.toFixed(0)}`); }
+
+  // Final verdict: any red flag or 3+ yellow flags → escalate
+  if (redFlags >= 1) return { health: "red", label: "Crítico", flags };
+  if (yellowFlags >= 2) return { health: "yellow", label: "Atenção", flags };
+  if (yellowFlags >= 1 && combined < 70) return { health: "yellow", label: "Atenção", flags };
+  return { health: "green", label: "Saudável", flags };
 }
 
 function getSuggestedAction(strategic: StrategicScore, remainingYears: number | null): { action: string; urgency: string } {
@@ -100,7 +155,7 @@ export const ConselhoPanel = () => {
       const strategic = calculateStrategicScore(block);
       const economic = calculateEconomicScore(block);
       const remainingYears = getContractRemainingYears(block);
-      const { health, label } = computeHealth(strategic, economic, remainingYears);
+      const { health, label, flags } = computeHealth({ strategic, economic, remainingYears, block });
       const { action, urgency } = getSuggestedAction(strategic, remainingYears);
 
       return {
@@ -109,6 +164,7 @@ export const ConselhoPanel = () => {
         economic,
         health,
         healthLabel: label,
+        healthFlags: flags,
         remainingYears,
         suggestedAction: action,
         actionUrgency: urgency,
@@ -341,7 +397,16 @@ export const ConselhoPanel = () => {
                           <TooltipProvider>
                             <Tooltip>
                               <TooltipTrigger><HealthDot status={c.health} /></TooltipTrigger>
-                              <TooltipContent className="text-xs">{c.healthLabel}</TooltipContent>
+                              <TooltipContent className="text-xs max-w-[280px]">
+                                <p className="font-semibold mb-1">{c.healthLabel}</p>
+                                {c.healthFlags.length > 0 && (
+                                  <ul className="space-y-0.5 text-[10px] text-muted-foreground">
+                                    {c.healthFlags.map((f, i) => (
+                                      <li key={i}>• {f}</li>
+                                    ))}
+                                  </ul>
+                                )}
+                              </TooltipContent>
                             </Tooltip>
                           </TooltipProvider>
                         </TableCell>
