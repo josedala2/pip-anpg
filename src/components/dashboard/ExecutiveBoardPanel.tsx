@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { oilBlocks } from "@/data/angolaBlocks";
+import { oilBlocks, type DevelopmentProject, type AssetTier } from "@/data/angolaBlocks";
 import {
   getNationalEconomicKPIs,
   classificationColors,
@@ -17,6 +17,7 @@ import {
 import { evaluateForecastAlerts, type ForecastAlert } from "@/lib/alertsEngine";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer,
   Tooltip as RechartsTooltip, Legend, RadarChart, Radar,
@@ -26,7 +27,8 @@ import {
 import {
   Crown, DollarSign, TrendingUp, ShieldAlert, Activity,
   AlertTriangle, Target, Gauge, ArrowRight, Bell,
-  Building2, BarChart3, Layers,
+  Building2, BarChart3, Layers, Factory, Pipette, Zap, Fuel,
+  HardHat, Wrench,
 } from "lucide-react";
 import { InfoTooltip } from "@/components/ui/info-tooltip";
 import { tooltipDescriptions } from "@/lib/tooltipDescriptions";
@@ -69,6 +71,19 @@ const SEV_STYLES: Record<string, { bg: string; text: string }> = {
   high: { bg: "bg-warning/10", text: "text-warning" },
   medium: { bg: "bg-primary/10", text: "text-primary" },
   low: { bg: "bg-muted/20", text: "text-muted-foreground" },
+};
+
+const TIER_COLORS: Record<number, { bg: string; text: string; border: string }> = {
+  1: { bg: "bg-success/10", text: "text-success", border: "border-success/30" },
+  2: { bg: "bg-warning/10", text: "text-warning", border: "border-warning/30" },
+  3: { bg: "bg-danger/10", text: "text-danger", border: "border-danger/30" },
+};
+
+const PROJECT_STATUS_COLORS: Record<string, string> = {
+  "On Track": "text-success",
+  "Above Plan": "text-primary",
+  "Below Plan": "text-warning",
+  "Critical": "text-danger",
 };
 
 export const ExecutiveBoardPanel = () => {
@@ -132,17 +147,6 @@ export const ExecutiveBoardPanel = () => {
     }));
   }, [scenarioOutputs]);
 
-  // Production projection from base scenario (5yr summary)
-  const productionForecast = useMemo(() => {
-    return baseScenario.projections
-      .filter((_, i) => i % 3 === 0 || i === baseScenario.projections.length - 1)
-      .map(p => ({
-        year: p.year,
-        production: Math.round(p.production / 1000),
-        revenue: p.revenue,
-      }));
-  }, [baseScenario]);
-
   // Radar: national health across 6 dimensions
   const healthRadar = useMemo(() => {
     const avgStrategic = strategicScores.reduce((s, x) => s + x.totalScore, 0) / (strategicScores.length || 1);
@@ -162,6 +166,60 @@ export const ExecutiveBoardPanel = () => {
     ];
   }, [strategicScores, economicScores, kpis, baseScenario, bestScenario, forecastAlerts, totalProduction]);
 
+  // ── Infrastructure aggregation ──
+  const infraSummary = useMemo(() => {
+    let totalWHP = 0, totalProcessing = 0, totalPipelines = 0, totalTurbines = 0, totalPumps = 0;
+    let totalCapacity = 0, totalPlatformSpecs = 0;
+    const allTiers: { tier: number; label: string; count: number }[] = [];
+    const tierMap: Record<number, { label: string; fields: string[] }> = {};
+
+    oilBlocks.forEach(b => {
+      const fd = b.facilityData;
+      if (!fd) return;
+      totalWHP += fd.wellheadPlatforms || 0;
+      totalProcessing += fd.processingPlatforms || 0;
+      totalPipelines += fd.pipelinesMainKm || 0;
+      totalTurbines += fd.gasTurbines || 0;
+      totalPumps += fd.pumps || 0;
+      totalCapacity += fd.capacityBOPD || 0;
+      totalPlatformSpecs += fd.platformSpecs?.length || 0;
+
+      fd.assetTiering?.forEach(at => {
+        if (!tierMap[at.tier]) tierMap[at.tier] = { label: at.label, fields: [] };
+        tierMap[at.tier].fields.push(...at.fields);
+      });
+    });
+
+    Object.entries(tierMap).forEach(([tier, data]) => {
+      allTiers.push({ tier: parseInt(tier), label: data.label, count: data.fields.length });
+    });
+
+    return { totalWHP, totalProcessing, totalPipelines, totalTurbines, totalPumps, totalCapacity, totalPlatformSpecs, allTiers };
+  }, []);
+
+  // ── Development Projects aggregation ──
+  const devProjects = useMemo(() => {
+    const projects: (DevelopmentProject & { blockName: string })[] = [];
+    oilBlocks.forEach(b => {
+      b.developmentProjects?.forEach(dp => {
+        projects.push({ ...dp, blockName: b.name });
+      });
+    });
+    return projects.sort((a, b) => a.percentOfPlan - b.percentOfPlan);
+  }, []);
+
+  // ── Utilization rates ──
+  const utilizationData = useMemo(() => {
+    return oilBlocks
+      .filter(b => b.facilityData?.utilizationRate != null && b.facilityData.utilizationRate > 0)
+      .map(b => ({
+        name: b.name.replace("Block ", "B").replace(" (Área A, B)", ""),
+        utilization: b.facilityData!.utilizationRate!,
+        capacity: b.facilityData!.capacityBOPD || 0,
+      }))
+      .sort((a, b) => a.utilization - b.utilization);
+  }, []);
+
   const criticalAlerts = forecastAlerts.filter(a => a.severity === "critical");
   const highAlerts = forecastAlerts.filter(a => a.severity === "high");
 
@@ -172,7 +230,7 @@ export const ExecutiveBoardPanel = () => {
         <Crown className="w-6 h-6 text-primary" />
         <div>
           <h2 className="text-base font-bold text-foreground">Painel Executivo Integrado</h2>
-          <p className="text-xs text-muted-foreground">Visão consolidada para o Conselho de Administração — {producingBlocks} concessões activas</p>
+          <p className="text-xs text-muted-foreground">Visão consolidada para o Conselho de Administração — {producingBlocks} concessões activas · {infraSummary.totalPlatformSpecs} instalações monitorizadas</p>
         </div>
         {criticalAlerts.length > 0 && (
           <Badge variant="destructive" className="ml-auto text-[10px] animate-pulse">
@@ -296,6 +354,134 @@ export const ExecutiveBoardPanel = () => {
           </CardContent>
         </Card>
       </div>
+
+      {/* ── Row 2.5: Infrastructure & Asset Tiering ── */}
+      {(infraSummary.totalWHP > 0 || infraSummary.totalPlatformSpecs > 0) && (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          {/* Infrastructure Summary */}
+          <Card className="border-border/40">
+            <CardHeader className="pb-2 p-4">
+              <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                <Factory className="w-4 h-4 text-primary" />
+                Resumo de Infraestruturas
+                <InfoTooltip text="Visão agregada de toda a infraestrutura offshore e onshore monitorizada." />
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-4 pt-0">
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                <InfraStat icon={<Building2 className="w-4 h-4" />} label="Plataformas WHP" value={infraSummary.totalWHP} />
+                <InfraStat icon={<Factory className="w-4 h-4" />} label="Plat. Processamento" value={infraSummary.totalProcessing} />
+                <InfraStat icon={<Wrench className="w-4 h-4" />} label="Instalações Totais" value={infraSummary.totalPlatformSpecs} />
+                <InfraStat icon={<HardHat className="w-4 h-4" />} label="Pipelines Principais" value={`${infraSummary.totalPipelines.toLocaleString()} km`} />
+                <InfraStat icon={<Zap className="w-4 h-4" />} label="Turbinas a Gás" value={infraSummary.totalTurbines} />
+                <InfraStat icon={<Gauge className="w-4 h-4" />} label="Capacidade Total" value={`${(infraSummary.totalCapacity / 1000).toFixed(0)}k BOPD`} />
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Asset Tiering */}
+          <Card className="border-border/40">
+            <CardHeader className="pb-2 p-4">
+              <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                <Layers className="w-4 h-4 text-primary" />
+                Classificação de Activos (Asset Tiering)
+                <InfoTooltip text="Tier 1: Manter · Tier 2: Extensão de Vida · Tier 3: Abandonar" />
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-4 pt-0">
+              {infraSummary.allTiers.length > 0 ? (
+                <div className="space-y-3">
+                  {infraSummary.allTiers.map(t => {
+                    const style = TIER_COLORS[t.tier] || TIER_COLORS[1];
+                    return (
+                      <div key={t.tier} className={`p-3 rounded-lg border ${style.bg} ${style.border}`}>
+                        <div className="flex items-center justify-between mb-1">
+                          <span className={`text-xs font-bold ${style.text}`}>
+                            Tier {t.tier} — {t.label}
+                          </span>
+                          <Badge variant="outline" className={`text-[10px] ${style.text} ${style.border}`}>
+                            {t.count} activo{t.count !== 1 ? "s" : ""}
+                          </Badge>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <p className="text-xs text-muted-foreground py-4 text-center">Sem dados de tiering disponíveis</p>
+              )}
+
+              {/* Utilization rates if available */}
+              {utilizationData.length > 0 && (
+                <div className="mt-4 pt-3 border-t border-border/30">
+                  <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-2">Taxa de Utilização</p>
+                  <div className="space-y-2">
+                    {utilizationData.slice(0, 5).map(u => (
+                      <div key={u.name} className="space-y-0.5">
+                        <div className="flex items-center justify-between text-[11px]">
+                          <span className="text-foreground font-medium truncate">{u.name}</span>
+                          <span className={`font-bold ${u.utilization < 50 ? "text-warning" : "text-success"}`}>{u.utilization}%</span>
+                        </div>
+                        <Progress value={u.utilization} className="h-1.5" />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {/* ── Row 2.75: Development Projects Performance ── */}
+      {devProjects.length > 0 && (
+        <Card className="border-border/40">
+          <CardHeader className="pb-2 p-4">
+            <CardTitle className="text-sm font-semibold flex items-center gap-2">
+              <Target className="w-4 h-4 text-primary" />
+              Desempenho de Projectos de Desenvolvimento
+              <InfoTooltip text="Recuperação cumulativa Plan vs Actual dos projectos de desenvolvimento activos." />
+              <Badge variant="outline" className="ml-auto text-[10px]">{devProjects.length} projectos</Badge>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-4 pt-0">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
+              {devProjects.map(dp => {
+                const statusColor = PROJECT_STATUS_COLORS[dp.status] || "text-muted-foreground";
+                return (
+                  <div key={`${dp.blockName}-${dp.name}`} className="p-3 rounded-lg border border-border/30 bg-muted/5 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <span className="text-xs font-bold text-foreground">{dp.name}</span>
+                        <span className="text-[10px] text-muted-foreground ml-1.5">({dp.blockName.replace("Block ", "B").replace(" (Área A, B)", "")})</span>
+                      </div>
+                      <Badge variant="outline" className={`text-[9px] ${statusColor}`}>
+                        {dp.status}
+                      </Badge>
+                    </div>
+                    <div className="space-y-1">
+                      <div className="flex items-center justify-between text-[11px]">
+                        <span className="text-muted-foreground">Recuperação</span>
+                        <span className="font-semibold">
+                          {dp.actualRecoveryMMBO} / {dp.planRecoveryMMBO} MMBO
+                          <span className={`ml-1 ${dp.percentOfPlan >= 90 ? "text-success" : dp.percentOfPlan >= 80 ? "text-warning" : "text-danger"}`}>
+                            ({dp.percentOfPlan}%)
+                          </span>
+                        </span>
+                      </div>
+                      <Progress
+                        value={dp.percentOfPlan}
+                        className="h-2"
+                      />
+                    </div>
+                    <p className="text-[10px] text-muted-foreground leading-relaxed line-clamp-2">{dp.observations}</p>
+                  </div>
+                );
+              })}
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* ── Row 3: Scenarios + Production Forecast ── */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -548,5 +734,19 @@ function KPITile({
         {subtitle && <div className="text-[10px] text-muted-foreground truncate">{subtitle}</div>}
       </CardContent>
     </Card>
+  );
+}
+
+// ── Infrastructure Stat ──
+
+function InfraStat({ icon, label, value }: { icon: React.ReactNode; label: string; value: string | number }) {
+  return (
+    <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/10 border border-border/20">
+      <div className="p-2 rounded-md bg-primary/10 text-primary shrink-0">{icon}</div>
+      <div className="min-w-0">
+        <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wide">{label}</p>
+        <p className="text-sm font-bold text-foreground tabular-nums">{typeof value === "number" ? value.toLocaleString() : value}</p>
+      </div>
+    </div>
   );
 }
