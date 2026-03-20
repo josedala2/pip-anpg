@@ -255,6 +255,7 @@ function RiskKPI({ icon: Icon, label, value, sub, severity, tooltip }: {
       <div className="flex items-center gap-1.5 mb-1">
         <Icon className={`w-3.5 h-3.5 ${textColors[severity]}`} />
         <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">{label}</span>
+        {tooltip && <InfoTooltip text={tooltip} />}
       </div>
       <div className="text-xl font-bold text-foreground">{value}</div>
       <div className="text-[10px] text-muted-foreground mt-0.5">{sub}</div>

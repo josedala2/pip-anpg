@@ -184,10 +184,13 @@ export const CostStructurePanel = () => {
   );
 };
 
-function MiniKPI({ label, value, alert }: { label: string; value: string; alert?: boolean }) {
+function MiniKPI({ label, value, alert, tooltip }: { label: string; value: string; alert?: boolean; tooltip?: string }) {
   return (
     <div className={`rounded-lg border p-3 ${alert ? "border-danger/30 bg-danger/5" : "border-border/40 bg-card"}`}>
-      <div className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">{label}</div>
+      <div className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-1">
+        {label}
+        {tooltip && <InfoTooltip text={tooltip} />}
+      </div>
       <div className={`text-lg font-bold mt-0.5 ${alert ? "text-danger" : "text-foreground"}`}>{value}</div>
     </div>
   );

@@ -231,14 +231,14 @@ export const GeneralForecastPanel = () => {
 
       {/* ── Macro KPI Strip ── */}
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3">
-        <MacroKPI icon={Activity} label="Produção Actual" value={fmtK(currentProduction)} sub="BOPD" />
-        <MacroKPI icon={TrendingUp} label="Proj. 2030 (Base)" value={fmtK(baseScenario.projections[4]?.production || 0)} sub="BOPD" />
-        <MacroKPI icon={TrendingDown} label="Proj. 2035 (Base)" value={fmtK(baseScenario.projections[9]?.production || 0)} sub="BOPD" />
-        <MacroKPI icon={DollarSign} label="Receita Estado Acum." value={fmtUSD(baseScenario.totalStateRevenue)} sub="15 anos (base)" />
-        <MacroKPI icon={Target} label="NPV Nacional (Base)" value={fmtUSD(baseScenario.npv)} sub="10% discount" />
-        <MacroKPI icon={Gauge} label="NPV Melhor Cenário" value={fmtUSD(bestScenario.npv)} sub={bestScenario.scenario.name} color="text-success" />
-        <MacroKPI icon={ShieldAlert} label="Alertas Activos" value={`${allAlerts.length}`} sub={`${allAlerts.filter(a => a.severity === "critical").length} críticos`} color={allAlerts.filter(a => a.severity === "critical").length > 0 ? "text-destructive" : undefined} />
-        <MacroKPI icon={Layers} label="Blocos em Risco" value={`${blockSynthesis.filter(b => b.hasCritical).length}`} sub={`de ${blockSynthesis.length}`} color="text-warning" />
+        <MacroKPI icon={Activity} label="Produção Actual" value={fmtK(currentProduction)} sub="BOPD" tooltip={tooltipDescriptions["Produção Actual"]} />
+        <MacroKPI icon={TrendingUp} label="Proj. 2030 (Base)" value={fmtK(baseScenario.projections[4]?.production || 0)} sub="BOPD" tooltip={tooltipDescriptions["Proj. 2030 (Base)"]} />
+        <MacroKPI icon={TrendingDown} label="Proj. 2035 (Base)" value={fmtK(baseScenario.projections[9]?.production || 0)} sub="BOPD" tooltip={tooltipDescriptions["Proj. 2035 (Base)"]} />
+        <MacroKPI icon={DollarSign} label="Receita Estado Acum." value={fmtUSD(baseScenario.totalStateRevenue)} sub="15 anos (base)" tooltip={tooltipDescriptions["Receita Estado Acum."]} />
+        <MacroKPI icon={Target} label="NPV Nacional (Base)" value={fmtUSD(baseScenario.npv)} sub="10% discount" tooltip={tooltipDescriptions["NPV Nacional (Base)"]} />
+        <MacroKPI icon={Gauge} label="NPV Melhor Cenário" value={fmtUSD(bestScenario.npv)} sub={bestScenario.scenario.name} color="text-success" tooltip={tooltipDescriptions["NPV Melhor Cenário"]} />
+        <MacroKPI icon={ShieldAlert} label="Alertas Activos" value={`${allAlerts.length}`} sub={`${allAlerts.filter(a => a.severity === "critical").length} críticos`} color={allAlerts.filter(a => a.severity === "critical").length > 0 ? "text-destructive" : undefined} tooltip={tooltipDescriptions["Alertas Activos"]} />
+        <MacroKPI icon={Layers} label="Blocos em Risco" value={`${blockSynthesis.filter(b => b.hasCritical).length}`} sub={`de ${blockSynthesis.length}`} color="text-warning" tooltip={tooltipDescriptions["Blocos em Risco"]} />
       </div>
 
       {/* ── Multi-Metric Consolidated Chart ── */}
