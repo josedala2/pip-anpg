@@ -116,7 +116,7 @@ export const ConselhoPanel = () => {
     // Macro KPIs
     const producing = activeBlocks.filter(b => b.phase === "Production");
     const totalProduction = producing.reduce((s, b) => s + b.dailyProduction, 0);
-    const overview = getNationalEconomicOverview(activeBlocks);
+    const overview = getNationalEconomicKPIs(activeBlocks);
     const criticalCount = concessions.filter(c => c.health === "red").length;
     const renewSoon = concessions.filter(c => c.remainingYears !== null && c.remainingYears <= 3).length;
 
