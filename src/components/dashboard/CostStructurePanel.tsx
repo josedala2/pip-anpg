@@ -158,7 +158,7 @@ export const CostStructurePanel = () => {
       {data.abandonmentData.length > 0 && (
         <Card className="border-border/40">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-semibold">Custos de Abandono — Gap de Financiamento</CardTitle>
+            <CardTitle className="text-sm font-semibold flex items-center gap-1.5">Custos de Abandono — Gap de Financiamento <InfoTooltip text={tooltipDescriptions["Custos de Abandono — Gap de Financiamento"]} /></CardTitle>
           </CardHeader>
           <CardContent>
             <div className="h-56">
