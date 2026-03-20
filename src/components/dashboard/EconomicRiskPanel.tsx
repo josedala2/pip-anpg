@@ -79,6 +79,7 @@ export const EconomicRiskPanel = () => {
           value={`${data.criticalCount}`}
           sub="Alto Risco + Inviável"
           severity={data.criticalCount > 0 ? "danger" : "success"}
+          tooltip={tooltipDescriptions["Activos Críticos"]}
         />
         <RiskKPI
           icon={TrendingDown}
@@ -86,6 +87,7 @@ export const EconomicRiskPanel = () => {
           value={`${data.nearBreakeven.length}`}
           sub="Margem < 30%"
           severity={data.nearBreakeven.length > 3 ? "warning" : "success"}
+          tooltip={tooltipDescriptions["Próximos do Break-even"]}
         />
         <RiskKPI
           icon={DollarSign}
@@ -93,6 +95,7 @@ export const EconomicRiskPanel = () => {
           value={`${(data.atRiskProduction / 1000).toFixed(0)}k BOPD`}
           sub="Margem < 20%"
           severity={data.atRiskProduction > 50000 ? "danger" : "warning"}
+          tooltip={tooltipDescriptions["Produção em Risco (BOPD)"]}
         />
         <RiskKPI
           icon={ShieldOff}
@@ -100,6 +103,7 @@ export const EconomicRiskPanel = () => {
           value={`${data.highOpex.length}`}
           sub="Acima $20/bbl"
           severity={data.highOpex.length > 5 ? "warning" : "success"}
+          tooltip={tooltipDescriptions["OPEX Elevado"]}
         />
       </div>
 
