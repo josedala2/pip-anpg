@@ -71,17 +71,18 @@ export const CouncilRecommendationsPanel = () => {
       {/* KPIs */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
         {[
-          { label: "Acções Prioritárias", value: immediateActions, icon: Zap, color: "text-danger" },
-          { label: "Score Médio Nacional", value: avgScore, suffix: "/100", icon: Target, color: "text-primary" },
-          { label: "A Revitalizar", value: revitalize, icon: Lightbulb, color: "text-[hsl(var(--chart-5))]" },
-          { label: "A Renegociar", value: renegotiate, icon: AlertTriangle, color: "text-warning" },
-          { label: "Abandono/Relicitação", value: abandon, icon: Shield, color: "text-danger" },
+          { label: "Acções Prioritárias", value: immediateActions, icon: Zap, color: "text-danger", tooltip: tooltipDescriptions["Acções Prioritárias"] },
+          { label: "Score Médio Nacional", value: avgScore, suffix: "/100", icon: Target, color: "text-primary", tooltip: tooltipDescriptions["Score Médio Nacional"] },
+          { label: "A Revitalizar", value: revitalize, icon: Lightbulb, color: "text-[hsl(var(--chart-5))]", tooltip: tooltipDescriptions["A Revitalizar"] },
+          { label: "A Renegociar", value: renegotiate, icon: AlertTriangle, color: "text-warning", tooltip: tooltipDescriptions["A Renegociar"] },
+          { label: "Abandono/Relicitação", value: abandon, icon: Shield, color: "text-danger", tooltip: tooltipDescriptions["Abandono/Relicitação"] },
         ].map((kpi) => (
           <Card key={kpi.label} className="glass-card overflow-hidden">
             <CardContent className="p-4">
               <div className="flex items-center gap-1.5 mb-1">
                 <kpi.icon className={`w-3.5 h-3.5 ${kpi.color}`} />
                 <span className="text-muted-foreground uppercase tracking-wider font-semibold text-[10px]">{kpi.label}</span>
+                {kpi.tooltip && <InfoTooltip text={kpi.tooltip} />}
               </div>
               <AnimatedCounter target={kpi.value} suffix={kpi.suffix || ""} className={`font-bold ${kpi.color} text-2xl md:text-3xl`} />
             </CardContent>
