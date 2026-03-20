@@ -857,6 +857,11 @@ const BlockPage = () => {
               );
             })()}
 
+            {/* Development Projects */}
+            {block.developmentProjects && block.developmentProjects.length > 0 && (
+              <DevelopmentProjectsPanel projects={block.developmentProjects} />
+            )}
+
             {/* Facility Summary - compact in overview */}
             {block.facilityData && (
               <Card className="glass-card hover:border-primary/30 transition-colors cursor-pointer" onClick={() => { setActiveTab("facilities"); window.scrollTo({ top: 0, behavior: "smooth" }); }}>
