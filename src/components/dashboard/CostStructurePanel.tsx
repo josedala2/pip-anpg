@@ -91,13 +91,14 @@ export const CostStructurePanel = () => {
     <div className="space-y-4">
       {/* KPI strip */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <MiniKPI label="CAPEX Total Acumulado" value={`$${(data.totalCapex / 1000).toFixed(1)}B`} />
-        <MiniKPI label="OPEX Total Acumulado" value={`$${(data.totalOpex / 1000).toFixed(1)}B`} />
-        <MiniKPI label="Custos de Abandono" value={`$${(data.totalAbandonment / 1000).toFixed(1)}B`} />
+        <MiniKPI label="CAPEX Total Acumulado" value={`$${(data.totalCapex / 1000).toFixed(1)}B`} tooltip={tooltipDescriptions["CAPEX Total Acumulado"]} />
+        <MiniKPI label="OPEX Total Acumulado" value={`$${(data.totalOpex / 1000).toFixed(1)}B`} tooltip={tooltipDescriptions["OPEX Total Acumulado"]} />
+        <MiniKPI label="Custos de Abandono" value={`$${(data.totalAbandonment / 1000).toFixed(1)}B`} tooltip={tooltipDescriptions["Custos de Abandono (total)"]} />
         <MiniKPI
           label="Fundo de Abandono"
           value={`${((data.totalAbandonmentFunded / Math.max(data.totalAbandonment, 1)) * 100).toFixed(0)}%`}
           alert={data.totalAbandonmentFunded < data.totalAbandonment * 0.3}
+          tooltip={tooltipDescriptions["Fundo de Abandono"]}
         />
       </div>
 
