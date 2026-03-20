@@ -133,7 +133,7 @@ function OperatorListView({ operators }: { operators: OperatorSummary[] }) {
         </Card>
         <Card className="glass-card">
           <CardContent className="p-4 text-center">
-            <p className="text-xs text-muted-foreground mb-1">Produção Total</p>
+            <p className="text-xs text-muted-foreground mb-1 flex items-center justify-center gap-1">Produção Total <InfoTooltip text={tooltipDescriptions["Produção Total"]} /></p>
             <p className="text-2xl font-bold text-primary"><AnimatedCounter target={totalProd} suffix=" BOPD" /></p>
           </CardContent>
         </Card>
