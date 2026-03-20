@@ -2361,7 +2361,7 @@ export const oilBlocks: OilBlock[] = [
       { name: "Equinor Angola", share: 13.33 },
       { name: "ExxonMobil", share: 13.0 },
     ],
-    dailyProduction: 36540,
+    dailyProduction: 47919,
     estimatedReserves: 950,
     accumulatedInvestment: 6200,
     plannedInvestment: 6800,
