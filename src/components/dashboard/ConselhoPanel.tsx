@@ -90,6 +90,7 @@ export const ConselhoPanel = () => {
   const [sortBy, setSortBy] = useState<"health" | "score" | "contract" | "action">("health");
   const [sortAsc, setSortAsc] = useState(false);
   const [expandedRow, setExpandedRow] = useState<string | null>(null);
+  const [classFilter, setClassFilter] = useState<string>("all");
 
   // ── Compute all data ──
   const { concessions, macro, alerts, trends } = useMemo(() => {
