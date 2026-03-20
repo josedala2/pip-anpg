@@ -315,15 +315,17 @@ export const ConselhoPanel = () => {
                     </TableHead>
                     <TableHead className="text-[10px]">Concessão</TableHead>
                     <TableHead className="text-[10px]">Operador</TableHead>
+                    <TableHead className="text-[10px] text-right">Produção</TableHead>
                     <TableHead className="text-[10px] text-right cursor-pointer" onClick={() => toggleSort("score")}>
-                      Score <SortIcon col="score" />
+                      Score Est. <SortIcon col="score" />
                     </TableHead>
+                    <TableHead className="text-[10px] text-right">Score Econ.</TableHead>
                     <TableHead className="text-[10px] text-right cursor-pointer" onClick={() => toggleSort("contract")}>
                       Prazo <SortIcon col="contract" />
                     </TableHead>
                     <TableHead className="text-[10px]">Classificação</TableHead>
                     <TableHead className="text-[10px] cursor-pointer" onClick={() => toggleSort("action")}>
-                      Acção Sugerida <SortIcon col="action" />
+                      Acção <SortIcon col="action" />
                     </TableHead>
                   </TableRow>
                 </TableHeader>
@@ -345,8 +347,22 @@ export const ConselhoPanel = () => {
                         </TableCell>
                         <TableCell className="py-2 text-xs font-medium">{c.block.name}</TableCell>
                         <TableCell className="py-2 text-[11px] text-muted-foreground">{c.block.operator}</TableCell>
+                        <TableCell className="py-2 text-xs text-right font-mono">
+                          {c.block.dailyProduction > 0
+                            ? <span className="text-foreground">{(c.block.dailyProduction / 1000).toFixed(1)}k</span>
+                            : <span className="text-muted-foreground">—</span>
+                          }
+                        </TableCell>
                         <TableCell className="py-2 text-xs text-right font-mono font-semibold">
                           {c.strategic.totalScore}
+                        </TableCell>
+                        <TableCell className="py-2 text-xs text-right font-mono">
+                          <span className={
+                            c.economic.totalScore >= 60 ? "text-success" :
+                            c.economic.totalScore >= 40 ? "text-warning" : "text-danger"
+                          }>
+                            {c.economic.totalScore}
+                          </span>
                         </TableCell>
                         <TableCell className="py-2 text-xs text-right">
                           {c.remainingYears !== null ? (
@@ -371,8 +387,8 @@ export const ConselhoPanel = () => {
                       </TableRow>
                       {expandedRow === c.block.id && (
                         <TableRow key={`${c.block.id}-detail`} className="bg-accent/20">
-                          <TableCell colSpan={7} className="py-3 px-4">
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                          <TableCell colSpan={9} className="py-3 px-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
                               <div>
                                 <p className="font-semibold text-foreground mb-1">Recomendação</p>
                                 <p className="text-muted-foreground">{c.strategic.recommendation}</p>
@@ -384,6 +400,37 @@ export const ConselhoPanel = () => {
                               <div>
                                 <p className="font-semibold text-foreground mb-1">Impacto Esperado</p>
                                 <p className="text-muted-foreground">{c.strategic.expectedImpact}</p>
+                              </div>
+                              <div className="space-y-1.5">
+                                <p className="font-semibold text-foreground mb-1">Indicadores-Chave</p>
+                                <div className="flex justify-between text-[11px]">
+                                  <span className="text-muted-foreground">Reservas</span>
+                                  <span className="font-medium">{c.block.estimatedReserves > 0 ? `${c.block.estimatedReserves} MMbbl` : "—"}</span>
+                                </div>
+                                <div className="flex justify-between text-[11px]">
+                                  <span className="text-muted-foreground">OPEX/bbl</span>
+                                  <span className="font-medium">${c.economic.opexPerBarrel.toFixed(1)}</span>
+                                </div>
+                                <div className="flex justify-between text-[11px]">
+                                  <span className="text-muted-foreground">Break-even</span>
+                                  <span className="font-medium">${c.economic.breakeven.toFixed(0)}/bbl</span>
+                                </div>
+                                <div className="flex justify-between text-[11px]">
+                                  <span className="text-muted-foreground">Compliance</span>
+                                  <span className="font-medium">{c.block.complianceScore}%</span>
+                                </div>
+                                {c.block.facilityData?.utilizationRate != null && (
+                                  <div className="flex justify-between text-[11px]">
+                                    <span className="text-muted-foreground">Utilização</span>
+                                    <span className="font-medium">{c.block.facilityData.utilizationRate}%</span>
+                                  </div>
+                                )}
+                                {c.block.developmentProjects && c.block.developmentProjects.length > 0 && (
+                                  <div className="flex justify-between text-[11px]">
+                                    <span className="text-muted-foreground">Proj. Desenv.</span>
+                                    <span className="font-medium">{c.block.developmentProjects.length} activos</span>
+                                  </div>
+                                )}
                               </div>
                             </div>
                           </TableCell>
