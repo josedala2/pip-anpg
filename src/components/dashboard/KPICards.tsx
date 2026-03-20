@@ -5,7 +5,8 @@ import { Activity, BarChart3, Boxes, DollarSign, TrendingUp, AlertTriangle, Land
 
 const blocksInProduction = () => getBlocksByPhase("Production").length;
 const blocksInExploration = () => getBlocksByPhase("Exploration").length;
-const blocksNoProduction = () => oilBlocks.filter(b => b.dailyProduction === 0).length;
+const blocksInBidding = () => getBlocksByPhase("Bidding").length;
+const blocksNoProduction = () => oilBlocks.filter(b => b.phase !== "Bidding" && b.dailyProduction === 0).length;
 const blocksCriticalRisk = () => oilBlocks.filter(b => b.riskScore >= 7).length;
 const criticalFacilities = () => oilBlocks.filter(b => b.facilityData && b.facilityData.overallEfficiency < 70).length;
 const estimatedStateRevenue = () => {
