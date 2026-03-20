@@ -1519,7 +1519,7 @@ const BlockPage = () => {
                     <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 2xl:gap-5">
                       <Card className="glass-card">
                         <CardContent className="p-4 2xl:p-6">
-                          <div className="text-xs 2xl:text-sm text-muted-foreground mb-2">Investimento Acum. vs Planeado</div>
+                          <div className="text-xs 2xl:text-sm text-muted-foreground mb-2 flex items-center gap-1">Investimento Acum. vs Planeado {tooltipDescriptions["Investimento Acum."] && <InfoTooltip text={tooltipDescriptions["Investimento Acum."]} />}</div>
                           <div className="text-2xl 2xl:text-3xl font-bold font-mono">${(block.accumulatedInvestment / 1000).toFixed(1)}B</div>
                           <div className="text-xs text-muted-foreground mb-2">de ${(block.plannedInvestment / 1000).toFixed(1)}B planeado</div>
                           <div className="relative h-2 w-full overflow-hidden rounded-full bg-secondary">
