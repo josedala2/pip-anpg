@@ -19,6 +19,8 @@ import {
   Search, ArrowLeft, Building2, Layers, BarChart3, Droplets, FileText, ShieldCheck, Factory, TrendingUp, MapPin,
   ChevronUp, ChevronDown, Minus,
 } from "lucide-react";
+import { InfoTooltip } from "@/components/ui/info-tooltip";
+import { tooltipDescriptions } from "@/lib/tooltipDescriptions";
 import { SortableHead } from "@/components/ui/sortable-head";
 import { useTableSort } from "@/hooks/useTableSort";
 
@@ -125,19 +127,19 @@ function OperatorListView({ operators }: { operators: OperatorSummary[] }) {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <Card className="glass-card">
           <CardContent className="p-4 text-center">
-            <p className="text-xs text-muted-foreground mb-1">Operadores</p>
+            <p className="text-xs text-muted-foreground mb-1 flex items-center justify-center gap-1">Operadores <InfoTooltip text={tooltipDescriptions["Operadores"]} /></p>
             <p className="text-2xl font-bold text-primary"><AnimatedCounter target={operators.length} /></p>
           </CardContent>
         </Card>
         <Card className="glass-card">
           <CardContent className="p-4 text-center">
-            <p className="text-xs text-muted-foreground mb-1">Produção Total</p>
+            <p className="text-xs text-muted-foreground mb-1 flex items-center justify-center gap-1">Produção Total <InfoTooltip text={tooltipDescriptions["Produção Total"]} /></p>
             <p className="text-2xl font-bold text-primary"><AnimatedCounter target={totalProd} suffix=" BOPD" /></p>
           </CardContent>
         </Card>
         <Card className="glass-card">
           <CardContent className="p-4 text-center">
-            <p className="text-xs text-muted-foreground mb-1">Reservas Totais</p>
+            <p className="text-xs text-muted-foreground mb-1 flex items-center justify-center gap-1">Reservas Totais <InfoTooltip text={tooltipDescriptions["Reservas Totais"]} /></p>
             <p className="text-2xl font-bold text-primary">
               <AnimatedCounter target={operators.reduce((s, o) => s + o.totalReserves, 0)} suffix=" MMbbl" />
             </p>
@@ -145,7 +147,7 @@ function OperatorListView({ operators }: { operators: OperatorSummary[] }) {
         </Card>
         <Card className="glass-card">
           <CardContent className="p-4 text-center">
-            <p className="text-xs text-muted-foreground mb-1">Investimento Acumulado</p>
+            <p className="text-xs text-muted-foreground mb-1 flex items-center justify-center gap-1">Investimento Acumulado <InfoTooltip text={tooltipDescriptions["Investimento Acumulado"]} /></p>
             <p className="text-2xl font-bold text-primary">
               <AnimatedCounter target={operators.reduce((s, o) => s + o.totalAccumulatedInvestment, 0)} prefix="$" suffix="MM" />
             </p>

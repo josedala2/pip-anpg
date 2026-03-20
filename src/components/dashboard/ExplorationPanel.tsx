@@ -4,6 +4,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { oilBlocks } from "@/data/angolaBlocks";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend, Brush } from "recharts";
 import { AlertTriangle, Target, Layers, Droplets, Filter, ChevronDown, AlignVerticalJustifyStart, AlignHorizontalJustifyStart } from "lucide-react";
+import { InfoTooltip } from "@/components/ui/info-tooltip";
+import { tooltipDescriptions } from "@/lib/tooltipDescriptions";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { ExplorationSummaryTable } from "./ExplorationSummaryTable";
 import { ChartWrapper } from "./ChartWrapper";
@@ -283,9 +285,9 @@ export const ExplorationPanel = () => {
           <Card key={s.label} className="glass-card">
            <CardContent className="p-4 2xl:p-5 3xl:p-6 flex items-center gap-3 3xl:gap-4">
                <s.icon className={`w-5 h-5 2xl:w-6 2xl:h-6 3xl:w-7 3xl:h-7 ${s.color} shrink-0`} />
-               <div>
-                 <div className="text-[10px] 2xl:text-xs 3xl:text-sm uppercase tracking-wider text-muted-foreground">{s.label}</div>
-                 <div className="text-lg 2xl:text-xl 3xl:text-2xl font-bold font-mono">{s.value}</div>
+                <div>
+                  <div className="text-[10px] 2xl:text-xs 3xl:text-sm uppercase tracking-wider text-muted-foreground flex items-center gap-1">{s.label} {tooltipDescriptions[s.label] && <InfoTooltip text={tooltipDescriptions[s.label]} />}</div>
+                  <div className="text-lg 2xl:text-xl 3xl:text-2xl font-bold font-mono">{s.value}</div>
               </div>
             </CardContent>
           </Card>
@@ -296,19 +298,19 @@ export const ExplorationPanel = () => {
       <div className="grid grid-cols-3 gap-3 2xl:gap-4 3xl:gap-6">
         <Card className="glass-card">
            <CardContent className="p-4 2xl:p-6 3xl:p-8 text-center">
-             <div className="text-xs 2xl:text-sm 3xl:text-base text-muted-foreground mb-1">Total Poços Exploração</div>
+             <div className="text-xs 2xl:text-sm 3xl:text-base text-muted-foreground mb-1 flex items-center justify-center gap-1">Total Poços Exploração <InfoTooltip text={tooltipDescriptions["Total Poços Exploração"]} /></div>
              <div className="text-3xl 2xl:text-4xl 3xl:text-5xl font-bold font-mono">{explorationStats.totalWells}</div>
           </CardContent>
         </Card>
         <Card className="glass-card">
            <CardContent className="p-4 2xl:p-6 3xl:p-8 text-center">
-             <div className="text-xs 2xl:text-sm 3xl:text-base text-muted-foreground mb-1">Pesquisa</div>
+             <div className="text-xs 2xl:text-sm 3xl:text-base text-muted-foreground mb-1 flex items-center justify-center gap-1">Pesquisa <InfoTooltip text={tooltipDescriptions["Pesquisa"]} /></div>
              <div className="text-3xl 2xl:text-4xl 3xl:text-5xl font-bold font-mono text-primary">{explorationStats.pesquisaWells}</div>
           </CardContent>
         </Card>
         <Card className="glass-card">
            <CardContent className="p-4 2xl:p-6 3xl:p-8 text-center">
-             <div className="text-xs 2xl:text-sm 3xl:text-base text-muted-foreground mb-1">Avaliação</div>
+             <div className="text-xs 2xl:text-sm 3xl:text-base text-muted-foreground mb-1 flex items-center justify-center gap-1">Avaliação <InfoTooltip text={tooltipDescriptions["Avaliação"]} /></div>
              <div className="text-3xl 2xl:text-4xl 3xl:text-5xl font-bold font-mono text-warning">{explorationStats.avaliacaoWells}</div>
           </CardContent>
         </Card>
