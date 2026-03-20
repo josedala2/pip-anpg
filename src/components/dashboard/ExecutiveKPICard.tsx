@@ -1,4 +1,6 @@
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { InfoTooltip } from "@/components/ui/info-tooltip";
+import { tooltipDescriptions } from "@/lib/tooltipDescriptions";
 import { AnimatedCounter } from "./AnimatedCounter";
 import { ArrowUpRight, ArrowDownRight, Minus } from "lucide-react";
 import { type LucideIcon } from "lucide-react";
