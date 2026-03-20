@@ -1129,14 +1129,14 @@ const BlockPage = () => {
                   </div>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-4">
                     <div className="glass-card rounded-lg p-3">
-                      <div className="text-[9px] uppercase text-muted-foreground mb-1">Poços Perfurados</div>
+                      <div className="text-[9px] uppercase text-muted-foreground mb-1 flex items-center gap-1">Poços Perfurados <InfoTooltip text={tooltipDescriptions["Poços Perfurados"]} /></div>
                       <div className="flex items-baseline gap-2">
                         <span className="text-base font-bold font-mono">{(block.explorationSummary.totalWellsPesquisa || 0) + (block.explorationSummary.totalWellsAvaliacao || 0)}</span>
                         <span className="text-[10px] text-muted-foreground">({block.explorationSummary.totalWellsPesquisa} pesq. + {block.explorationSummary.totalWellsAvaliacao} aval.)</span>
                       </div>
                     </div>
                     <div className="glass-card rounded-lg p-3">
-                      <div className="text-[9px] uppercase text-muted-foreground mb-1">Resultados</div>
+                      <div className="text-[9px] uppercase text-muted-foreground mb-1 flex items-center gap-1">Resultados <InfoTooltip text={tooltipDescriptions["Resultados"]} /></div>
                       <div className="flex items-center gap-2 text-xs">
                         <span className="text-success font-bold font-mono">{block.explorationSummary.commercialDiscoveries}</span><span className="text-muted-foreground">com.</span>
                         <span className="text-warning font-bold font-mono">{block.explorationSummary.nonCommercialDiscoveries}</span><span className="text-muted-foreground">n/com.</span>
@@ -1145,7 +1145,7 @@ const BlockPage = () => {
                     </div>
                     {block.explorationSummary.geologicalSuccessRate != null && (
                       <div className="glass-card rounded-lg p-3">
-                        <div className="text-[9px] uppercase text-muted-foreground mb-1">Taxa de Sucesso</div>
+                        <div className="text-[9px] uppercase text-muted-foreground mb-1 flex items-center gap-1">Taxa de Sucesso <InfoTooltip text={tooltipDescriptions["Taxa de Sucesso"]} /></div>
                         <div className="text-base font-bold font-mono text-success">{block.explorationSummary.geologicalSuccessRate}%</div>
                       </div>
                     )}
