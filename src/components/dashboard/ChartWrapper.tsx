@@ -140,6 +140,7 @@ export const ChartWrapper = ({
                 <DialogTitle className="text-lg flex items-center gap-2">
                   {icon}
                   {title}
+                  {tooltipDescriptions[title] && <InfoTooltip text={tooltipDescriptions[title]} />}
                 </DialogTitle>
                 <div className="flex items-center gap-1" data-chart-toolbar="true">
                   <Button
