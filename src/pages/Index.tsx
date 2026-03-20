@@ -15,6 +15,7 @@ import { OperatorsPanel } from "@/components/dashboard/OperatorsPanel";
 import { AlertsPanel } from "@/components/dashboard/AlertsPanel";
 import { CouncilRecommendationsPanel } from "@/components/dashboard/CouncilRecommendationsPanel";
 import { HomologacoesPanel } from "@/components/dashboard/HomologacoesPanel";
+import { ConselhoPanel } from "@/components/dashboard/ConselhoPanel";
 import { RiskPerformance } from "@/components/dashboard/RiskPerformance";
 import { SobaChat } from "@/components/dashboard/SobaChat";
 import { type OilBlock, oilBlocks } from "@/data/angolaBlocks";
@@ -32,6 +33,7 @@ import { Badge } from "@/components/ui/badge";
 
 const allPanels = [
   "Home Executiva",
+  "Conselho CA",
   "Concessões",
   "Produção & Declínio",
   "Exploração",
@@ -270,6 +272,7 @@ const Index = () => {
           {panels[activePanel] === "Home Executiva" && <ExecutiveHome initialDrillDown={homeDrillDown} />}
 
           <div className="p-4 md:p-6 2xl:p-8 3xl:p-10 max-w-[1920px] 3xl:max-w-[2400px] mx-auto">
+            {panels[activePanel] === "Conselho CA" && <ConselhoPanel />}
             {panels[activePanel] === "Concessões" && <BlocksPanel />}
             {panels[activePanel] === "Produção & Declínio" && <ProductionPanel />}
             {panels[activePanel] === "Exploração" && <ExplorationPanel />}
