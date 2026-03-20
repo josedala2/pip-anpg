@@ -25,6 +25,7 @@ interface ConcessionHealth {
   economic: EconomicScoreResult;
   health: HealthStatus;
   healthLabel: string;
+  healthFlags: string[];
   remainingYears: number | null;
   suggestedAction: string;
   actionUrgency: string;
