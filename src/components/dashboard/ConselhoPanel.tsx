@@ -397,7 +397,16 @@ export const ConselhoPanel = () => {
                           <TooltipProvider>
                             <Tooltip>
                               <TooltipTrigger><HealthDot status={c.health} /></TooltipTrigger>
-                              <TooltipContent className="text-xs">{c.healthLabel}</TooltipContent>
+                              <TooltipContent className="text-xs max-w-[280px]">
+                                <p className="font-semibold mb-1">{c.healthLabel}</p>
+                                {c.healthFlags.length > 0 && (
+                                  <ul className="space-y-0.5 text-[10px] text-muted-foreground">
+                                    {c.healthFlags.map((f, i) => (
+                                      <li key={i}>• {f}</li>
+                                    ))}
+                                  </ul>
+                                )}
+                              </TooltipContent>
                             </Tooltip>
                           </TooltipProvider>
                         </TableCell>
