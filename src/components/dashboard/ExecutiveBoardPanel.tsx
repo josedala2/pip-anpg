@@ -398,7 +398,8 @@ export const ExecutiveBoardPanel = () => {
           <CardHeader className="pb-2 p-4">
             <CardTitle className="text-sm font-semibold flex items-center gap-2">
               <ShieldAlert className="w-4 h-4 text-danger" />
-              Concessões em Risco
+              Top 5 Concessões de Risco
+              <InfoTooltip text={tooltipDescriptions["Top 5 Concessões de Risco"]} />
             </CardTitle>
           </CardHeader>
           <CardContent className="p-4 pt-0">
