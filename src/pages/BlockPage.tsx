@@ -1248,8 +1248,8 @@ const BlockPage = () => {
                    </Card>
                    <Card className="glass-card">
                      <CardContent className="p-4 flex flex-col items-center text-center">
-                       <Activity className="w-5 h-5 text-danger mb-1" />
-                       <span className="text-xs text-muted-foreground">Taxa de Declínio</span>
+                        <Activity className="w-5 h-5 text-danger mb-1" />
+                        <span className="text-xs text-muted-foreground flex items-center gap-1">Taxa de Declínio {tooltipDescriptions["Taxa de Declínio"] && <InfoTooltip text={tooltipDescriptions["Taxa de Declínio"]} />}</span>
                        <span className="text-lg font-bold text-foreground">{declineRate}{typeof declineRate === "string" && declineRate !== "N/A" ? "" : ""}%</span>
                        <span className="text-[10px] text-muted-foreground">12 meses</span>
                      </CardContent>
