@@ -85,10 +85,10 @@ export const FiscalImpactPanel = () => {
     <div className="space-y-4">
       {/* KPI strip */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <MiniKPI label="Receita Fiscal Total" value={`$${(data.totalStateRevenue / 1000).toFixed(1)}B/ano`} />
-        <MiniKPI label="Royalties (IPP)" value={`$${data.totalRoyalties.toFixed(0)}MM/ano`} />
-        <MiniKPI label="Impostos (IRP)" value={`$${data.totalTaxes.toFixed(0)}MM/ano`} />
-        <MiniKPI label="Outras Receitas" value={`$${data.totalOther.toFixed(0)}MM/ano`} />
+        <MiniKPI label="Receita Fiscal Total" value={`$${(data.totalStateRevenue / 1000).toFixed(1)}B/ano`} tooltip={tooltipDescriptions["Receita Fiscal Total"]} />
+        <MiniKPI label="Royalties (IPP)" value={`$${data.totalRoyalties.toFixed(0)}MM/ano`} tooltip={tooltipDescriptions["Royalties (IPP)"]} />
+        <MiniKPI label="Impostos (IRP)" value={`$${data.totalTaxes.toFixed(0)}MM/ano`} tooltip={tooltipDescriptions["Impostos (IRP)"]} />
+        <MiniKPI label="Outras Receitas" value={`$${data.totalOther.toFixed(0)}MM/ano`} tooltip={tooltipDescriptions["Outras Receitas"]} />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
