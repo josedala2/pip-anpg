@@ -4706,7 +4706,7 @@ export const oilBlocks: OilBlock[] = [
     operator: "ACREP",
     partners: ["Sonangol E.P"],
     basin: "Lower Congo",
-    phase: "Production",
+    phase: "Exploration",
     waterDepth: "Onshore",
     contractDate: "2010-01-01",
     dailyProduction: 0,
