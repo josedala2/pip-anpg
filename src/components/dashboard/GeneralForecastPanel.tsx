@@ -467,14 +467,15 @@ export const GeneralForecastPanel = () => {
 
 // ── Sub-components ──
 
-function MacroKPI({ icon: Icon, label, value, sub, color }: {
-  icon: React.ElementType; label: string; value: string; sub: string; color?: string;
+function MacroKPI({ icon: Icon, label, value, sub, color, tooltip }: {
+  icon: React.ElementType; label: string; value: string; sub: string; color?: string; tooltip?: string;
 }) {
   return (
     <div className="rounded-lg border border-border/40 p-3 bg-card/50">
       <div className="flex items-center gap-1 mb-1">
         <Icon className="w-3 h-3 text-muted-foreground" />
         <span className="text-[9px] font-semibold uppercase tracking-wider text-muted-foreground truncate">{label}</span>
+        {tooltip && <InfoTooltip text={tooltip} />}
       </div>
       <div className={`text-lg font-bold font-mono ${color || "text-foreground"}`}>{value}</div>
       <div className="text-[9px] text-muted-foreground">{sub}</div>
