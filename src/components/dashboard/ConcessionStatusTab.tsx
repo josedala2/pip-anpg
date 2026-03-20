@@ -6,6 +6,8 @@ import {
   AlertTriangle, CheckCircle2, Clock, DollarSign, TrendingDown,
   ShieldCheck, Landmark, Scale, Calendar, Droplets, Activity, Factory, Gauge,
 } from "lucide-react";
+import { InfoTooltip } from "@/components/ui/info-tooltip";
+import { tooltipDescriptions } from "@/lib/tooltipDescriptions";
 import { SemaphoreForecastPanel } from "./SemaphoreForecastPanel";
 import { SemaphoreHistoryPanel } from "./SemaphoreHistoryPanel";
 import { SemaphoreTimelineChart } from "./SemaphoreTimelineChart";
