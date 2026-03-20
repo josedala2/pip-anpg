@@ -231,12 +231,13 @@ export const EconomicRiskPanel = () => {
   );
 };
 
-function RiskKPI({ icon: Icon, label, value, sub, severity }: {
+function RiskKPI({ icon: Icon, label, value, sub, severity, tooltip }: {
   icon: React.ElementType;
   label: string;
   value: string;
   sub: string;
   severity: "success" | "warning" | "danger";
+  tooltip?: string;
 }) {
   const colors = {
     success: "border-success/20 bg-success/5",
