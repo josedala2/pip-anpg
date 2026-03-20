@@ -25,6 +25,8 @@ import {
   Play, Settings2, TrendingUp, DollarSign, Percent, BarChart3,
   ChevronDown, ChevronUp, MapPin, Building2,
 } from "lucide-react";
+import { InfoTooltip } from "@/components/ui/info-tooltip";
+import { tooltipDescriptions } from "@/lib/tooltipDescriptions";
 
 const producingBlocks = oilBlocks.filter(b => b.dailyProduction > 0).sort((a, b) => b.dailyProduction - a.dailyProduction);
 const operators = [...new Set(oilBlocks.filter(b => b.dailyProduction > 0).map(b => b.operator))].sort();
