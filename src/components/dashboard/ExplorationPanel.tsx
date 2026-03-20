@@ -298,7 +298,7 @@ export const ExplorationPanel = () => {
       <div className="grid grid-cols-3 gap-3 2xl:gap-4 3xl:gap-6">
         <Card className="glass-card">
            <CardContent className="p-4 2xl:p-6 3xl:p-8 text-center">
-             <div className="text-xs 2xl:text-sm 3xl:text-base text-muted-foreground mb-1">Total Poços Exploração</div>
+             <div className="text-xs 2xl:text-sm 3xl:text-base text-muted-foreground mb-1 flex items-center justify-center gap-1">Total Poços Exploração <InfoTooltip text={tooltipDescriptions["Total Poços Exploração"]} /></div>
              <div className="text-3xl 2xl:text-4xl 3xl:text-5xl font-bold font-mono">{explorationStats.totalWells}</div>
           </CardContent>
         </Card>
