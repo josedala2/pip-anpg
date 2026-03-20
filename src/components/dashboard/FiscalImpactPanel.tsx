@@ -130,7 +130,7 @@ export const FiscalImpactPanel = () => {
         {/* Top concessions by fiscal contribution */}
         <Card className="border-border/40">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-semibold">Contribuição Fiscal por Concessão</CardTitle>
+            <CardTitle className="text-sm font-semibold flex items-center gap-1.5">Contribuição Fiscal por Concessão <InfoTooltip text={tooltipDescriptions["Contribuição Fiscal por Concessão"]} /></CardTitle>
           </CardHeader>
           <CardContent>
             <div className="h-64">
