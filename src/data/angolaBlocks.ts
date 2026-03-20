@@ -591,7 +591,7 @@ export const oilBlocks: OilBlock[] = [
     ],
     explorationSummary: {
       totalSeismic2DKm: 23816,
-      totalSeismic3DKm2: 20451,
+      totalSeismic3DKm2: 20583,
       totalSeismic4DKm2: 8082,
       totalWellsPesquisa: 144,
       totalWellsAvaliacao: 84,
