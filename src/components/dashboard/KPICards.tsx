@@ -1,7 +1,7 @@
 import { ExecutiveKPICard, type SemaphoreStatus } from "./ExecutiveKPICard";
 import { getTotalProduction, getTotalReserves, getActiveBlocks, getTotalCapex, getAvgExecutionRate, oilBlocks, getBlocksByPhase } from "@/data/angolaBlocks";
 import { homologacoesData } from "@/data/homologacoesData";
-import { Activity, BarChart3, Boxes, DollarSign, TrendingUp, AlertTriangle, Landmark, Pickaxe, Search, Wrench, FileText, CheckCircle } from "lucide-react";
+import { Activity, BarChart3, Boxes, DollarSign, Landmark, Pickaxe, Search, Wrench, FileText, CheckCircle } from "lucide-react";
 
 const blocksInProduction = () => getBlocksByPhase("Production").length;
 const blocksInExploration = () => getBlocksByPhase("Exploration").length;
