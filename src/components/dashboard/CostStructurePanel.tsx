@@ -171,6 +171,10 @@ export const CostStructurePanel = () => {
                 </BarChart>
               </ResponsiveContainer>
             </div>
+            <div className="flex items-center gap-1.5 mt-2 justify-end">
+              <span className="inline-block w-3 h-2 rounded-sm bg-muted-foreground/25 border border-border/40" />
+              <span className="text-[9px] text-muted-foreground">Transparência = valor estimado ($20/bbl padrão)</span>
+            </div>
           </CardContent>
         </Card>
 
