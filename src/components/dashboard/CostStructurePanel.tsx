@@ -24,6 +24,8 @@ interface CostRow {
   technicalCostPerBarrel: number;
   abandonmentTotal: number;
   abandonmentFunded: number;
+  isEstimatedOpex: boolean;
+  isEstimatedTechnical: boolean;
 }
 
 export const CostStructurePanel = () => {
