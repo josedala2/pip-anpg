@@ -22,7 +22,7 @@ const computeTrendData = () => {
   oilBlocks.forEach((block) => {
     if (block.pendingRealData || !block.productionHistory || block.productionHistory.length === 0) return;
     block.productionHistory.forEach((entry) => {
-      monthMap.set(entry.month, (monthMap.get(entry.month) || 0) + entry.production);
+      monthMap.set(entry.month, (monthMap.get(entry.month) || 0) + entry.value);
     });
   });
   return Array.from(monthMap.entries())
