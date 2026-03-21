@@ -859,7 +859,7 @@ const BlockPage = () => {
 
             {/* Facility Summary - compact in overview */}
             {block.facilityData && (
-              <Card className="glass-card hover:border-primary/30 transition-colors cursor-pointer" onClick={() => { setActiveTab("facilities"); window.scrollTo({ top: 0, behavior: "smooth" }); }}>
+              <Card className="glass-card hover:border-primary/30 transition-colors cursor-pointer" onClick={() => { setActiveTab("facilities-hse"); window.scrollTo({ top: 0, behavior: "smooth" }); }}>
                 <CardContent className="p-4 flex items-center justify-between gap-4">
                   <div className="flex items-center gap-3">
                     <Building2 className="w-5 h-5 text-primary shrink-0" />
