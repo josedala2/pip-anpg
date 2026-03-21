@@ -129,9 +129,6 @@ export const OverviewSidebar = ({
                     <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">{kpi.label}</span>
                   </div>
                   <AnimatedCounter target={kpi.value} prefix={kpi.prefix || ""} suffix={kpi.suffix} className={`text-sm font-bold tabular-nums ${colorClass}`} />
-                  <div className="mt-1">
-                    <Sparkline data={kpi.spark} color={`hsl(${kpi.accent})`} />
-                  </div>
                 </div>
                 );
               })}
