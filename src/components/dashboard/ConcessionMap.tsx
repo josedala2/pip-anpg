@@ -545,7 +545,7 @@ export const ConcessionMap = ({
         )}
 
         {/* Zoom-responsive block labels */}
-        <BlockLabels blocks={blocks} blockPolygons={blockPolygons} showBlocks={showBlocks} orphanIds={orphanPolygonIds} />
+        <BlockLabels blocks={blocks} blockPolygons={blockPolygons} showBlocks={showBlocks} />
       </MapContainer>
 
       {/* Layers Panel */}
