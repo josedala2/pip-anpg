@@ -10,7 +10,7 @@ import { AlertsPanel } from "./AlertsPanel";
 import { CouncilRecommendationsPanel } from "./CouncilRecommendationsPanel";
 import { HomologacoesPanel } from "./HomologacoesPanel";
 import { type OilBlock, oilBlocks } from "@/data/angolaBlocks";
-import { ChevronDown, ChevronUp, Users, Bell, Target, FileCheck } from "lucide-react";
+import { ChevronDown, ChevronUp, Users, Bell, Target, FileCheck, AlertTriangle } from "lucide-react";
 
 type DrillDown = "operadores" | "alertas" | "recomendacoes" | "homologacoes" | null;
 
