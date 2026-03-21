@@ -66,13 +66,15 @@ export const OverviewSidebar = ({
   onFilterChange,
 }: OverviewSidebarProps) => {
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const trendData = computeTrendData();
+  const investData = computeInvestData();
 
   return (
     <div className="h-full flex flex-col overview-panel border-t md:border-t-0 md:border-l border-border/50">
       {/* Panel header */}
       <div className="px-4 py-3 border-b border-border/40">
         <h3 className="text-sm font-bold tracking-tight text-foreground">Command Center</h3>
-        <p className="text-xs text-muted-foreground">Visão consolidada · Q4 2024</p>
+        <p className="text-xs text-muted-foreground">Visão consolidada · Dados reais</p>
       </div>
 
       <ScrollArea className="flex-1">
