@@ -1147,14 +1147,14 @@ export const oilBlocks: OilBlock[] = [
       { name: "SNPC", share: 7.5 },
       { name: "Azule Energy", share: 20 },
       { name: "TotalEnergies", share: 12.5 },
-    ],,
+    ],
     mapPosition: { x: 15, y: 68 },
     productionHistory: [],
     capexHistory: [],
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 4000,
     pendingRealData: true,
-  }
+  },
   {
     id: "block-14k",
     name: "Block 14K",
@@ -1178,14 +1178,14 @@ export const oilBlocks: OilBlock[] = [
       { name: "Azule Energy", share: 15 },
       { name: "Galp", share: 9 },
       { name: "Petrogal", share: 5 },
-    ],,
+    ],
     mapPosition: { x: 26, y: 57 },
     productionHistory: [],
     capexHistory: [],
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 5080,
     pendingRealData: true,
-  }
+  },
   {
     id: "block-15",
     name: "Block 15",
@@ -1209,14 +1209,14 @@ export const oilBlocks: OilBlock[] = [
       { name: "Equinor Angola", share: 12.16 },
       { name: "Sonangol E.P", share: 10 },
       { name: "Total E&P Chissonga", share: 15.52 },
-    ],,
+    ],
     mapPosition: { x: 12, y: 72 },
     productionHistory: [],
     capexHistory: [],
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 5500,
     pendingRealData: true,
-  }
+  },
   {
     id: "block-17",
     name: "Block 17",
@@ -1240,14 +1240,14 @@ export const oilBlocks: OilBlock[] = [
       { name: "Equinor Angola", share: 10 },
       { name: "Falcon Oil", share: 5 },
       { name: "ETU Energias", share: 6.16 },
-    ],,
+    ],
     mapPosition: { x: 10, y: 76 },
     productionHistory: [],
     capexHistory: [],
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 8000,
     pendingRealData: true,
-  }
+  },
   {
     id: "block-18",
     name: "Block 18",
@@ -1270,14 +1270,14 @@ export const oilBlocks: OilBlock[] = [
       { name: "Azule Exploration Beta", share: 9.66 },
       { name: "SSI", share: 20 },
       { name: "Outros", share: 17.72 },
-    ],,
+    ],
     mapPosition: { x: 8, y: 80 },
     productionHistory: [],
     capexHistory: [],
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 6200,
     pendingRealData: true,
-  }
+  },
   {
     id: "block-31",
     name: "Block 31",
@@ -1301,14 +1301,14 @@ export const oilBlocks: OilBlock[] = [
       { name: "Sonangol E.P", share: 15 },
       { name: "Equinor Angola", share: 13.33 },
       { name: "ESSO", share: 16.67 },
-    ],,
+    ],
     mapPosition: { x: 6, y: 84 },
     productionHistory: [],
     capexHistory: [],
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 5400,
     pendingRealData: true,
-  }
+  },
   {
     id: "block-32",
     name: "Block 32",
@@ -1329,14 +1329,14 @@ export const oilBlocks: OilBlock[] = [
       { name: "TotalEnergies", share: 26.6, isOperator: true },
       { name: "Equinor Angola", share: 50 },
       { name: "Sonangol E.P", share: 23.4 },
-    ],,
+    ],
     mapPosition: { x: 20, y: 55 },
     productionHistory: [],
     capexHistory: [],
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 6800,
     pendingRealData: true,
-  }
+  },
   {
     id: "block-15-06",
     name: "Block 15/06",
@@ -1357,14 +1357,14 @@ export const oilBlocks: OilBlock[] = [
       { name: "Azule Energy", share: 36.84, isOperator: true },
       { name: "Sonangol E.P", share: 36.84 },
       { name: "SSI", share: 26.32 },
-    ],,
+    ],
     mapPosition: { x: 14, y: 65 },
     productionHistory: [],
     capexHistory: [],
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 4200,
     pendingRealData: true,
-  }
+  },
   {
     id: "block-16",
     name: "Block 16",
@@ -1386,14 +1386,14 @@ export const oilBlocks: OilBlock[] = [
       { name: "Sonangol E.P", share: 10 },
       { name: "Total E&P Chissonga", share: 15 },
       { name: "Outros", share: 10 },
-    ],,
+    ],
     mapPosition: { x: 22, y: 58 },
     productionHistory: [],
     capexHistory: [],
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 5600,
     pendingRealData: true,
-  }
+  },
   {
     id: "block-20",
     name: "Block 20",
@@ -1413,14 +1413,14 @@ export const oilBlocks: OilBlock[] = [
     concession: [
       { name: "Sonangol E.P", share: 50.0, isOperator: true },
       { name: "China Sonangol", share: 50.0 },
-    ],,
+    ],
     mapPosition: { x: 28, y: 48 },
     productionHistory: [],
     capexHistory: [],
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 4800,
     pendingRealData: true,
-  }
+  },
   {
     id: "block-21",
     name: "Block 21",
@@ -1441,14 +1441,14 @@ export const oilBlocks: OilBlock[] = [
       { name: "Equinor", share: 40.0, isOperator: true },
       { name: "Sonangol E.P", share: 30.0 },
       { name: "BP", share: 30.0 },
-    ],,
+    ],
     mapPosition: { x: 32, y: 43 },
     productionHistory: [],
     capexHistory: [],
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 5200,
     pendingRealData: true,
-  }
+  },
   {
     id: "block-3",
     name: "Block 3/05",
@@ -1838,14 +1838,14 @@ export const oilBlocks: OilBlock[] = [
       { name: "ENI", share: 60.0, isOperator: true },
       { name: "Sonangol E.P", share: 20.0 },
       { name: "Equinor", share: 20.0 },
-    ],,
+    ],
     mapPosition: { x: 16, y: 88 },
     productionHistory: [],
     capexHistory: [],
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 7200,
     pendingRealData: true,
-  }
+  },
   {
     id: "block-1",
     name: "Block 1/14",
@@ -2064,7 +2064,7 @@ export const oilBlocks: OilBlock[] = [
       { name: "ACREP", share: 19.75 },
       { name: "ETU Energias", share: 18.75 },
       { name: "Outros", share: 11.5 },
-    ],,
+    ],
     mapPosition: { x: 26, y: 52 },
     productionHistory: [],
     capexHistory: [],
@@ -2131,14 +2131,14 @@ export const oilBlocks: OilBlock[] = [
       { name: "Equinor Angola", share: 7.5 },
       { name: "SSI", share: 12.5 },
       { name: "Sonangol E.P (additional)", share: 5 },
-    ],,
+    ],
     mapPosition: { x: 14, y: 56 },
     productionHistory: [],
     capexHistory: [],
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 4500,
     pendingRealData: true,
-  }
+  },
   {
     id: "block-fs-fst",
     name: "FS/FST",
@@ -2157,7 +2157,7 @@ export const oilBlocks: OilBlock[] = [
     complianceScore: 0,
     concession: [
       { name: "Sonangol E.P", share: 100.0, isOperator: true },
-    ],,
+    ],
     mapPosition: { x: 21, y: 63 },
     productionHistory: [],
     capexHistory: [],
@@ -2188,14 +2188,14 @@ export const oilBlocks: OilBlock[] = [
       { name: "ESSO", share: 15 },
       { name: "Sonangol E.P", share: 15 },
       { name: "Equinor Angola", share: 13 },
-    ],,
+    ],
     mapPosition: { x: 5, y: 86 },
     productionHistory: [],
     capexHistory: [],
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 5000,
     pendingRealData: true,
-  }
+  },
   {
     id: "block-44",
     name: "Block 44",
@@ -2215,14 +2215,14 @@ export const oilBlocks: OilBlock[] = [
     concession: [
       { name: "Esso Expl. Prod. Ang. (Bloco 44) Ltd", share: 60.0, isOperator: true },
       { name: "Sonangol E.P", share: 40.0 },
-    ],,
+    ],
     mapPosition: { x: 8, y: 90 },
     productionHistory: [],
     capexHistory: [],
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 5231,
     pendingRealData: true,
-  }
+  },
   {
     id: "block-45",
     name: "Block 45",
@@ -2242,14 +2242,14 @@ export const oilBlocks: OilBlock[] = [
     concession: [
       { name: "Esso Expl. Prod. Ang. (Bloco 44) Ltd", share: 60.0, isOperator: true },
       { name: "Sonangol E.P", share: 40.0 },
-    ],,
+    ],
     mapPosition: { x: 10, y: 92 },
     productionHistory: [],
     capexHistory: [],
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 5118,
     pendingRealData: true,
-  }
+  },
   {
     id: "block-46",
     name: "Block 46",
@@ -2270,14 +2270,14 @@ export const oilBlocks: OilBlock[] = [
       { name: "Azule Energy Angola B.V.", share: 40.0, isOperator: true },
       { name: "Equinor", share: 40.0 },
       { name: "Sonangol E.P", share: 20.0 },
-    ],,
+    ],
     mapPosition: { x: 12, y: 94 },
     productionHistory: [],
     capexHistory: [],
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 5050,
     pendingRealData: true,
-  }
+  },
   {
     id: "block-47",
     name: "Block 47",
@@ -2298,14 +2298,14 @@ export const oilBlocks: OilBlock[] = [
       { name: "Azule Energy Angola B.V.", share: 40.0, isOperator: true },
       { name: "Equinor", share: 40.0 },
       { name: "Sonangol E.P", share: 20.0 },
-    ],,
+    ],
     mapPosition: { x: 14, y: 96 },
     productionHistory: [],
     capexHistory: [],
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 4980,
     pendingRealData: true,
-  }
+  },
   {
     id: "block-49",
     name: "Block 49",
@@ -2326,14 +2326,14 @@ export const oilBlocks: OilBlock[] = [
       { name: "CABGOC (Chevron)", share: 45.0, isOperator: true },
       { name: "BG International", share: 35.0 },
       { name: "Sonangol E.P", share: 20.0 },
-    ],,
+    ],
     mapPosition: { x: 6, y: 98 },
     productionHistory: [],
     capexHistory: [],
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 5400,
     pendingRealData: true,
-  }
+  },
   {
     id: "block-50",
     name: "Block 50",
@@ -2354,14 +2354,14 @@ export const oilBlocks: OilBlock[] = [
       { name: "CABGOC (Chevron)", share: 45.0, isOperator: true },
       { name: "BG International", share: 35.0 },
       { name: "Sonangol E.P", share: 20.0 },
-    ],,
+    ],
     mapPosition: { x: 4, y: 100 },
     productionHistory: [],
     capexHistory: [],
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 5350,
     pendingRealData: true,
-  }
+  },
   {
     id: "block-15-14",
     name: "Block 15/14 (LIRA)",
@@ -2384,7 +2384,7 @@ export const oilBlocks: OilBlock[] = [
       { name: "Sonangol E.P", share: 19.8 },
       { name: "TotalEnergies", share: 11.8 },
       { name: "Azule Ltd", share: 11.8 },
-    ],,
+    ],
     mapPosition: { x: 16, y: 66 },
     productionHistory: [],
     capexHistory: [],
@@ -2412,14 +2412,14 @@ export const oilBlocks: OilBlock[] = [
     concession: [
       { name: "ACREP", share: 74.36, isOperator: true },
       { name: "Sonangol E.P", share: 25.64 },
-    ],,
+    ],
     mapPosition: { x: 22, y: 15 },
     productionHistory: [],
     capexHistory: [],
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 520,
     pendingRealData: true,
-  }
+  },
   {
     id: "cabinda-centro",
     name: "Cabinda Centro",
@@ -2440,14 +2440,14 @@ export const oilBlocks: OilBlock[] = [
       { name: "Azule Energy", share: 42.5, isOperator: true },
       { name: "ExxonMobil", share: 32.5 },
       { name: "Sonangol E.P", share: 25.0 },
-    ],,
+    ],
     mapPosition: { x: 22, y: 18 },
     productionHistory: [],
     capexHistory: [],
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 680,
     pendingRealData: true,
-  }
+  },
   {
     id: "cabinda-sul",
     name: "Cabinda Sul",
@@ -2469,14 +2469,14 @@ export const oilBlocks: OilBlock[] = [
       { name: "INTA Energias", share: 40 },
       { name: "Monka Oil", share: 4 },
       { name: "Omega", share: 1 },
-    ],,
+    ],
     mapPosition: { x: 22, y: 21 },
     productionHistory: [],
     capexHistory: [],
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 450,
     pendingRealData: true,
-  }
+  },
   {
     id: "block-con1",
     name: "Block CON1",
@@ -2498,14 +2498,14 @@ export const oilBlocks: OilBlock[] = [
       { name: "Intank", share: 10.0 },
       { name: "Omega", share: 10.0 },
       { name: "Sonangol E.P", share: 40.0 },
-    ],,
+    ],
     mapPosition: { x: 24, y: 24 },
     productionHistory: [],
     capexHistory: [],
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 820,
     pendingRealData: true,
-  }
+  },
   {
     id: "block-con2",
     name: "Block CON2",
@@ -2525,14 +2525,14 @@ export const oilBlocks: OilBlock[] = [
     concession: [
       { name: "ETU Energias", share: 50.0, isOperator: true },
       { name: "14K & A-IMI", share: 50.0 },
-    ],,
+    ],
     mapPosition: { x: 26, y: 24 },
     productionHistory: [],
     capexHistory: [],
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 750,
     pendingRealData: true,
-  }
+  },
   {
     id: "block-con3",
     name: "Block CON3",
@@ -2554,14 +2554,14 @@ export const oilBlocks: OilBlock[] = [
       { name: "Effimax Energy", share: 30 },
       { name: "Simples Oil", share: 20 },
       { name: "Gesprocon", share: 12.5 },
-    ],,
+    ],
     mapPosition: { x: 28, y: 24 },
     productionHistory: [],
     capexHistory: [],
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 900,
     pendingRealData: true,
-  }
+  },
   {
     id: "block-con4",
     name: "Block CON4",
@@ -2580,14 +2580,14 @@ export const oilBlocks: OilBlock[] = [
     complianceScore: 0,
     concession: [
       { name: "Walcot Limited", share: 100.0, isOperator: true },
-    ],,
+    ],
     mapPosition: { x: 24, y: 27 },
     productionHistory: [],
     capexHistory: [],
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 680,
     pendingRealData: true,
-  }
+  },
   {
     id: "block-con5",
     name: "Block CON5",
@@ -2609,14 +2609,14 @@ export const oilBlocks: OilBlock[] = [
       { name: "Prodoil", share: 15 },
       { name: "Effimax Energy", share: 10 },
       { name: "Sonangol E.P", share: 25 },
-    ],,
+    ],
     mapPosition: { x: 26, y: 27 },
     productionHistory: [],
     capexHistory: [],
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 710,
     pendingRealData: true,
-  }
+  },
   {
     id: "block-con6",
     name: "Block CON6",
@@ -2640,14 +2640,14 @@ export const oilBlocks: OilBlock[] = [
       { name: "Prodoil", share: 12.5 },
       { name: "Enagol", share: 10 },
       { name: "Servicab", share: 5.83 },
-    ],,
+    ],
     mapPosition: { x: 28, y: 27 },
     productionHistory: [],
     capexHistory: [],
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 730,
     pendingRealData: true,
-  }
+  },
   {
     id: "block-con8",
     name: "Block CON8",
@@ -2668,7 +2668,7 @@ export const oilBlocks: OilBlock[] = [
       { name: "ETU Energias", share: 43.75, isOperator: true },
       { name: "Mineral One", share: 43.75 },
       { name: "Prodoil", share: 12.5 },
-    ],,
+    ],
     mapPosition: { x: 30, y: 27 },
     productionHistory: [],
     capexHistory: [],
@@ -2697,14 +2697,14 @@ export const oilBlocks: OilBlock[] = [
       { name: "MTI Energy", share: 10, isOperator: true },
       { name: "Intank Group", share: 50, isOperator: true },
       { name: "MTI Energy Inc.", share: 40 },
-    ],,
+    ],
     mapPosition: { x: 32, y: 35 },
     productionHistory: [],
     capexHistory: [],
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 1200,
     pendingRealData: true,
-  }
+  },
   {
     id: "block-kon5",
     name: "Block KON5",
@@ -2721,14 +2721,14 @@ export const oilBlocks: OilBlock[] = [
     executionRate: 0,
     riskScore: 0,
     complianceScore: 0,
-    concession: [],,
+    concession: [],
     mapPosition: { x: 34, y: 38 },
     productionHistory: [],
     capexHistory: [],
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 1050,
     pendingRealData: true,
-  }
+  },
   {
     id: "block-kon6",
     name: "Block KON6",
@@ -2752,14 +2752,14 @@ export const oilBlocks: OilBlock[] = [
       { name: "Apex", share: 20 },
       { name: "Simples Oil (additional)", share: 20 },
       { name: "Omega Risk Solution Angola", share: 5 },
-    ],,
+    ],
     mapPosition: { x: 36, y: 38 },
     productionHistory: [],
     capexHistory: [],
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 1100,
     pendingRealData: true,
-  }
+  },
   {
     id: "block-kon8",
     name: "Block KON8",
@@ -2782,14 +2782,14 @@ export const oilBlocks: OilBlock[] = [
       { name: "Apex", share: 20 },
       { name: "Simples Oil", share: 20 },
       { name: "Omega Risk Solution Angola", share: 5 },
-    ],,
+    ],
     mapPosition: { x: 38, y: 38 },
     productionHistory: [],
     capexHistory: [],
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 1150,
     pendingRealData: true,
-  }
+  },
   {
     id: "block-kon12",
     name: "Block KON12",
@@ -2811,14 +2811,14 @@ export const oilBlocks: OilBlock[] = [
       { name: "MTI Energy Inc.", share: 30.0 },
       { name: "Apex", share: 25.0 },
       { name: "Omega Risk Solution Angola", share: 15.0 },
-    ],,
+    ],
     mapPosition: { x: 34, y: 42 },
     productionHistory: [],
     capexHistory: [],
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 1250,
     pendingRealData: true,
-  }
+  },
   {
     id: "block-kon15",
     name: "Block KON15",
@@ -2838,14 +2838,14 @@ export const oilBlocks: OilBlock[] = [
     concession: [
       { name: "Sonangol E.P", share: 55, isOperator: true },
       { name: "Afentra", share: 45 },
-    ],,
+    ],
     mapPosition: { x: 36, y: 45 },
     productionHistory: [],
     capexHistory: [],
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 1300,
     pendingRealData: true,
-  }
+  },
   {
     id: "block-kon16",
     name: "Block KON16",
@@ -2867,14 +2867,14 @@ export const oilBlocks: OilBlock[] = [
       { name: "Sonangol E.P", share: 30 },
       { name: "MTI Energy Inc.", share: 20 },
       { name: "Brite's Oil and Gas", share: 15 },
-    ],,
+    ],
     mapPosition: { x: 38, y: 45 },
     productionHistory: [],
     capexHistory: [],
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 1180,
     pendingRealData: true,
-  }
+  },
   {
     id: "block-kon17",
     name: "Block KON17",
@@ -2896,14 +2896,14 @@ export const oilBlocks: OilBlock[] = [
       { name: "Brite's", share: 20 },
       { name: "Mineral One", share: 20 },
       { name: "Enagol", share: 10 },
-    ],,
+    ],
     mapPosition: { x: 40, y: 45 },
     productionHistory: [],
     capexHistory: [],
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 1080,
     pendingRealData: true,
-  }
+  },
   {
     id: "block-kon19",
     name: "Block KON19",
@@ -2926,14 +2926,14 @@ export const oilBlocks: OilBlock[] = [
       { name: "Afentra", share: 25 },
       { name: "Mineral One", share: 20 },
       { name: "Enagol", share: 10 },
-    ],,
+    ],
     mapPosition: { x: 36, y: 48 },
     productionHistory: [],
     capexHistory: [],
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 1020,
     pendingRealData: true,
-  }
+  },
   {
     id: "block-kon20",
     name: "Block KON20",
@@ -2953,7 +2953,7 @@ export const oilBlocks: OilBlock[] = [
     concession: [
       { name: "MTI Energy", share: 50, isOperator: true },
       { name: "Brite's", share: 50 },
-    ],,
+    ],
     mapPosition: { x: 38, y: 48 },
     productionHistory: [],
     capexHistory: [],
@@ -2982,14 +2982,14 @@ export const oilBlocks: OilBlock[] = [
       { name: "ETU Energias", share: 15, isOperator: true },
       { name: "Sonangol E.P", share: 63.6 },
       { name: "Sonangol", share: 21.4 },
-    ],,
+    ],
     mapPosition: { x: 20, y: 12 },
     productionHistory: [],
     capexHistory: [],
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 420,
     pendingRealData: true,
-  }
+  },
   {
     id: "fst-associacoes",
     name: "FST Associações",
@@ -3010,7 +3010,7 @@ export const oilBlocks: OilBlock[] = [
       { name: "ETU Energias", share: 31.33, isOperator: true },
       { name: "Sonangol E.P", share: 63.63 },
       { name: "Sonangol", share: 5.04 },
-    ],,
+    ],
     mapPosition: { x: 20, y: 14 },
     productionHistory: [],
     capexHistory: [],
@@ -3267,14 +3267,14 @@ export const oilBlocks: OilBlock[] = [
       { name: "ETU Energias", share: 10 },
       { name: "NIS-Naftgas", share: 4 },
       { name: "Outros", share: 6 },
-    ],,
+    ],
     mapPosition: { x: 23, y: 58 },
     productionHistory: [],
     capexHistory: [],
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 0,
     pendingRealData: true,
-  }
+  },
   {
     id: "block-3-05a",
     name: "Block 3/05A",
@@ -3296,14 +3296,14 @@ export const oilBlocks: OilBlock[] = [
       { name: "Maurel & Prom", share: 40 },
       { name: "Afentra", share: 21.34 },
       { name: "NIS-Naftgas", share: 5.33 },
-    ],,
+    ],
     mapPosition: { x: 25, y: 57 },
     productionHistory: [],
     capexHistory: [],
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 850,
     pendingRealData: true,
-  }
+  },
   {
     id: "block-5-06",
     name: "Block 5/06",
@@ -3322,14 +3322,14 @@ export const oilBlocks: OilBlock[] = [
     complianceScore: 0,
     concession: [
       { name: "Sonangol E.P", share: 100.0, isOperator: true },
-    ],,
+    ],
     mapPosition: { x: 21, y: 50 },
     productionHistory: [],
     capexHistory: [],
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 680,
     pendingRealData: true,
-  }
+  },
   {
     id: "block-6-24",
     name: "Block 6/24",
@@ -3349,14 +3349,14 @@ export const oilBlocks: OilBlock[] = [
     concession: [
       { name: "Sonangol E.P", share: 50.0, isOperator: true },
       { name: "Other partners", share: 50.0 },
-    ],,
+    ],
     mapPosition: { x: 23, y: 48 },
     productionHistory: [],
     capexHistory: [],
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 950,
     pendingRealData: true,
-  }
+  },
   {
     id: "block-3-15",
     name: "Block 3/15 (Alce Gunga)",
@@ -3376,14 +3376,14 @@ export const oilBlocks: OilBlock[] = [
     concession: [
       { name: "Sonangol E.P", share: 55.0, isOperator: true },
       { name: "TotalEnergies", share: 45.0 },
-    ],,
+    ],
     mapPosition: { x: 21, y: 54 },
     productionHistory: [],
     capexHistory: [],
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 780,
     pendingRealData: true,
-  }
+  },
   {
     id: "block-2-15",
     name: "Block 2/15 (Garoupa Oeste)",
@@ -3404,7 +3404,7 @@ export const oilBlocks: OilBlock[] = [
       { name: "Azule Energy", share: 45.0, isOperator: true },
       { name: "Sonangol E.P", share: 35.0 },
       { name: "Other partners", share: 20.0 },
-    ],,
+    ],
     mapPosition: { x: 17, y: 60 },
     productionHistory: [],
     capexHistory: [],
@@ -3431,14 +3431,14 @@ export const oilBlocks: OilBlock[] = [
     complianceScore: 0,
     concession: [
       { name: "Sonangol E.P", share: 100.0, isOperator: true },
-    ],,
+    ],
     mapPosition: { x: 42, y: 72 },
     productionHistory: [],
     capexHistory: [],
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 420,
     pendingRealData: true,
-  }
+  },
   {
     id: "block-kon3",
     name: "Block KON3",
@@ -3458,14 +3458,14 @@ export const oilBlocks: OilBlock[] = [
     concession: [
       { name: "MTI Energy", share: 55.0, isOperator: true },
       { name: "Sonangol E.P", share: 45.0 },
-    ],,
+    ],
     mapPosition: { x: 44, y: 74 },
     productionHistory: [],
     capexHistory: [],
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 380,
     pendingRealData: true,
-  }
+  },
   {
     id: "block-kon4",
     name: "Block KON4",
@@ -3486,14 +3486,14 @@ export const oilBlocks: OilBlock[] = [
       { name: "Sonangol E.P", share: 60, isOperator: true },
       { name: "Intank Group", share: 30 },
       { name: "Outros", share: 10 },
-    ],,
+    ],
     mapPosition: { x: 46, y: 76 },
     productionHistory: [],
     capexHistory: [],
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 350,
     pendingRealData: true,
-  }
+  },
   {
     id: "block-kon7",
     name: "Block KON7",
@@ -3512,14 +3512,14 @@ export const oilBlocks: OilBlock[] = [
     complianceScore: 0,
     concession: [
       { name: "Sonangol E.P", share: 100.0, isOperator: true },
-    ],,
+    ],
     mapPosition: { x: 48, y: 73 },
     productionHistory: [],
     capexHistory: [],
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 510,
     pendingRealData: true,
-  }
+  },
   {
     id: "block-kon9",
     name: "Block KON9",
@@ -3539,14 +3539,14 @@ export const oilBlocks: OilBlock[] = [
     concession: [
       { name: "ACREP", share: 55.0, isOperator: true },
       { name: "Sonangol E.P", share: 45.0 },
-    ],,
+    ],
     mapPosition: { x: 50, y: 75 },
     productionHistory: [],
     capexHistory: [],
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 390,
     pendingRealData: true,
-  }
+  },
   {
     id: "block-kon10",
     name: "Block KON10",
@@ -3566,14 +3566,14 @@ export const oilBlocks: OilBlock[] = [
     concession: [
       { name: "Sonangol E.P", share: 60.0, isOperator: true },
       { name: "MTI Energy", share: 40.0 },
-    ],,
+    ],
     mapPosition: { x: 52, y: 77 },
     productionHistory: [],
     capexHistory: [],
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 440,
     pendingRealData: true,
-  }
+  },
   {
     id: "block-kon11",
     name: "Block KON11",
@@ -3596,14 +3596,14 @@ export const oilBlocks: OilBlock[] = [
       { name: "Apex", share: 20 },
       { name: "Simples Oil", share: 20 },
       { name: "Omega Risk Solution Angola", share: 5 },
-    ],,
+    ],
     mapPosition: { x: 49, y: 79 },
     productionHistory: [],
     capexHistory: [],
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 480,
     pendingRealData: true,
-  }
+  },
   {
     id: "block-kon13",
     name: "Block KON13",
@@ -3622,14 +3622,14 @@ export const oilBlocks: OilBlock[] = [
     complianceScore: 0,
     concession: [
       { name: "Sonangol E.P", share: 100.0, isOperator: true },
-    ],,
+    ],
     mapPosition: { x: 47, y: 81 },
     productionHistory: [],
     capexHistory: [],
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 360,
     pendingRealData: true,
-  }
+  },
   {
     id: "block-kon14",
     name: "Block KON14",
@@ -3649,14 +3649,14 @@ export const oilBlocks: OilBlock[] = [
     concession: [
       { name: "Apex", share: 55.0, isOperator: true },
       { name: "Sonangol E.P", share: 45.0 },
-    ],,
+    ],
     mapPosition: { x: 51, y: 80 },
     productionHistory: [],
     capexHistory: [],
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 400,
     pendingRealData: true,
-  }
+  },
   {
     id: "block-kon18",
     name: "Block KON18",
@@ -3676,7 +3676,7 @@ export const oilBlocks: OilBlock[] = [
     concession: [
       { name: "MTI Energy", share: 55.0, isOperator: true },
       { name: "Sonangol E.P", share: 45.0 },
-    ],,
+    ],
     mapPosition: { x: 53, y: 82 },
     productionHistory: [],
     capexHistory: [],
@@ -3701,14 +3701,14 @@ export const oilBlocks: OilBlock[] = [
     executionRate: 0,
     riskScore: 0,
     complianceScore: 0,
-    concession: [],,
+    concession: [],
     mapPosition: { x: 18, y: 55 },
     productionHistory: [],
     capexHistory: [],
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 2800,
     pendingRealData: true,
-  }
+  },
   {
     id: "block-con10",
     name: "Block CON10",
@@ -3725,7 +3725,7 @@ export const oilBlocks: OilBlock[] = [
     executionRate: 0,
     riskScore: 0,
     complianceScore: 0,
-    concession: [],,
+    concession: [],
     mapPosition: { x: 22, y: 57 },
     productionHistory: [],
     capexHistory: [],
@@ -3752,14 +3752,14 @@ export const oilBlocks: OilBlock[] = [
     complianceScore: 0,
     concession: [
       { name: "ETU Energias", share: 100, isOperator: true },
-    ],,
+    ],
     mapPosition: { x: 30, y: 24 },
     productionHistory: [],
     capexHistory: [],
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 0,
     pendingRealData: true,
-  }
+  },
   {
     id: "block-16-21",
     name: "Block 16/21",
@@ -3778,14 +3778,14 @@ export const oilBlocks: OilBlock[] = [
     complianceScore: 0,
     concession: [
       { name: "TotalEnergies", share: 100, isOperator: true },
-    ],,
+    ],
     mapPosition: { x: 18, y: 64 },
     productionHistory: [],
     capexHistory: [],
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 0,
     pendingRealData: true,
-  }
+  },
   {
     id: "block-18-15",
     name: "Block 18/15",
@@ -3805,14 +3805,14 @@ export const oilBlocks: OilBlock[] = [
     concession: [
       { name: "Azule Energy", share: 80, isOperator: true },
       { name: "Sonangol E.P", share: 20 },
-    ],,
+    ],
     mapPosition: { x: 6, y: 82 },
     productionHistory: [],
     capexHistory: [],
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 0,
     pendingRealData: true,
-  }
+  },
   {
     id: "block-20-11",
     name: "Block 20/11",
@@ -3833,14 +3833,14 @@ export const oilBlocks: OilBlock[] = [
       { name: "TotalEnergies", share: 40, isOperator: true },
       { name: "Sonangol E.P", share: 37.7 },
       { name: "Petronas", share: 22.3 },
-    ],,
+    ],
     mapPosition: { x: 16, y: 70 },
     productionHistory: [],
     capexHistory: [],
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 0,
     pendingRealData: true,
-  }
+  },
   {
     id: "block-22-11",
     name: "Block 22/11",
@@ -3859,14 +3859,14 @@ export const oilBlocks: OilBlock[] = [
     complianceScore: 0,
     concession: [
       { name: "Sonangol E.P", share: 100, isOperator: true },
-    ],,
+    ],
     mapPosition: { x: 22, y: 52 },
     productionHistory: [],
     capexHistory: [],
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 0,
     pendingRealData: true,
-  }
+  },
   {
     id: "block-23",
     name: "Block 23",
@@ -3886,14 +3886,14 @@ export const oilBlocks: OilBlock[] = [
     concession: [
       { name: "Afentra", share: 40, isOperator: true },
       { name: "Sonangol E.P", share: 60 },
-    ],,
+    ],
     mapPosition: { x: 12, y: 74 },
     productionHistory: [],
     capexHistory: [],
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 0,
     pendingRealData: true,
-  }
+  },
   {
     id: "block-24",
     name: "Block 24",
@@ -3916,14 +3916,14 @@ export const oilBlocks: OilBlock[] = [
       { name: "Sonangol E.P", share: 20 },
       { name: "TipTop Energy", share: 8.8 },
       { name: "Petronas", share: 5.6 },
-    ],,
+    ],
     mapPosition: { x: 14, y: 76 },
     productionHistory: [],
     capexHistory: [],
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 0,
     pendingRealData: true,
-  }
+  },
   {
     id: "block-27",
     name: "Block 27",
@@ -3942,14 +3942,14 @@ export const oilBlocks: OilBlock[] = [
     complianceScore: 0,
     concession: [
       { name: "Sonangol E.P", share: 100, isOperator: true },
-    ],,
+    ],
     mapPosition: { x: 10, y: 78 },
     productionHistory: [],
     capexHistory: [],
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 0,
     pendingRealData: true,
-  }
+  },
   {
     id: "block-28",
     name: "Block 28",
@@ -3969,14 +3969,14 @@ export const oilBlocks: OilBlock[] = [
     concession: [
       { name: "TotalEnergies", share: 60, isOperator: true },
       { name: "Sonangol E.P", share: 40 },
-    ],,
+    ],
     mapPosition: { x: 8, y: 84 },
     productionHistory: [],
     capexHistory: [],
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 0,
     pendingRealData: true,
-  }
+  },
   {
     id: "block-29",
     name: "Block 29",
@@ -3995,14 +3995,14 @@ export const oilBlocks: OilBlock[] = [
     complianceScore: 0,
     concession: [
       { name: "Sonangol E.P", share: 100, isOperator: true },
-    ],,
+    ],
     mapPosition: { x: 10, y: 86 },
     productionHistory: [],
     capexHistory: [],
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 0,
     pendingRealData: true,
-  }
+  },
   {
     id: "block-30",
     name: "Block 30",
@@ -4023,14 +4023,14 @@ export const oilBlocks: OilBlock[] = [
       { name: "ESSO", share: 60, isOperator: true },
       { name: "Sonangol E.P", share: 20 },
       { name: "Azule Energy", share: 20 },
-    ],,
+    ],
     mapPosition: { x: 8, y: 88 },
     productionHistory: [],
     capexHistory: [],
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 0,
     pendingRealData: true,
-  }
+  },
   {
     id: "block-34",
     name: "Block 34",
@@ -4049,14 +4049,14 @@ export const oilBlocks: OilBlock[] = [
     complianceScore: 0,
     concession: [
 ,
-    ],,
+    ],
     mapPosition: { x: 4, y: 92 },
     productionHistory: [],
     capexHistory: [],
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 0,
     pendingRealData: true,
-  }
+  },
   {
     id: "block-37-11",
     name: "Block 37/11",
@@ -4075,14 +4075,14 @@ export const oilBlocks: OilBlock[] = [
     complianceScore: 0,
     concession: [
       { name: "Sonangol E.P", share: 100, isOperator: true },
-    ],,
+    ],
     mapPosition: { x: 20, y: 46 },
     productionHistory: [],
     capexHistory: [],
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 0,
     pendingRealData: true,
-  }
+  },
   {
     id: "block-38",
     name: "Block 38",
@@ -4101,14 +4101,14 @@ export const oilBlocks: OilBlock[] = [
     complianceScore: 0,
     concession: [
       { name: "Sonangol E.P", share: 100, isOperator: true },
-    ],,
+    ],
     mapPosition: { x: 22, y: 44 },
     productionHistory: [],
     capexHistory: [],
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 0,
     pendingRealData: true,
-  }
+  },
   {
     id: "block-kon23",
     name: "Block KON23",
@@ -4127,14 +4127,14 @@ export const oilBlocks: OilBlock[] = [
     complianceScore: 0,
     concession: [
       { name: "Sonangol E.P", share: 100, isOperator: true },
-    ],,
+    ],
     mapPosition: { x: 40, y: 52 },
     productionHistory: [],
     capexHistory: [],
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 0,
     pendingRealData: true,
-  }
+  },
   {
     id: "block-14-23-zic",
     name: "Block 14/23-ZIC",
@@ -4154,7 +4154,7 @@ export const oilBlocks: OilBlock[] = [
     concession: [
       { name: "CABGOC", share: 50, isOperator: true },
       { name: "Sonangol E.P", share: 50 },
-    ],,
+    ],
     mapPosition: { x: 14, y: 66 },
     productionHistory: [],
     capexHistory: [],
@@ -4254,7 +4254,7 @@ export const seismicHistory: SeismicData[] = [
   { year: 2009, seismic2D: 0, seismic3D: 0, seismic4D: 0 },
   { year: 2010, seismic2D: 0, seismic3D: 3160, seismic4D: 0 },
   { year: 2011, seismic2D: 0, seismic3D: 0, seismic4D: 0 },
-  { year: 2012, seismic2D: 0, seismic3D: 1050, seismic4D: 0 },
+  { year: 2012, seismic2D: 0, seismic3D: 1050, seismic4D: 0 }
 ];
 
 export const wellsHistory: WellsData[] = [
@@ -4305,7 +4305,7 @@ export const wellsHistory: WellsData[] = [
   { year: 2014, pesquisa: 0, avaliacao: 1 },
   { year: 2015, pesquisa: 0, avaliacao: 1 },
   { year: 2019, pesquisa: 1, avaliacao: 0 },
-  { year: 2025, pesquisa: 0, avaliacao: 1 },
+  { year: 2025, pesquisa: 0, avaliacao: 1 }
 ];
 
 export const getBlocksByPhase = (phase: BlockPhase) => oilBlocks.filter(b => b.phase === phase);
