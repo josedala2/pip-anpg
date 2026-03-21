@@ -56,6 +56,8 @@ export const CostStructurePanel = () => {
         technicalCostPerBarrel,
         abandonmentTotal,
         abandonmentFunded,
+        isEstimatedOpex: !hasRealOpex,
+        isEstimatedTechnical: !hasRealTechnical,
       });
 
       if (!operatorCosts[b.operator]) operatorCosts[b.operator] = { capex: 0, opex: 0, operator: b.operator };
