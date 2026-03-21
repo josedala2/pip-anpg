@@ -606,7 +606,7 @@ const BlockPage = () => {
                       </div>
                     )}
                     <button
-                      onClick={() => { setActiveTab("financial"); window.scrollTo({ top: 0, behavior: "smooth" }); }}
+                      onClick={() => { setActiveTab("econ-financial"); window.scrollTo({ top: 0, behavior: "smooth" }); }}
                       className="inline-flex items-center gap-1.5 text-xs text-primary hover:underline mt-2 transition-colors"
                     >
                       <Scale className="w-3 h-3" />Ver todas as condições fiscais<ArrowRight className="w-3 h-3" />
