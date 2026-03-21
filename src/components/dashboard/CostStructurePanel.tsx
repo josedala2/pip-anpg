@@ -137,10 +137,36 @@ export const CostStructurePanel = () => {
                   <YAxis type="category" dataKey="name" tick={{ fontSize: 9 }} className="fill-muted-foreground" width={55} />
                   <RechartsTooltip
                     contentStyle={{ fontSize: 11, borderRadius: 8, border: "1px solid hsl(var(--border))", background: "hsl(var(--card))" }}
-                    formatter={(v: number, name: string) => [`$${v.toFixed(1)}/bbl`, name === "opex" ? "OPEX" : "Custo Técnico"]}
+                    content={({ active, payload, label }) => {
+                      if (!active || !payload?.length) return null;
+                      const entry = payload[0]?.payload;
+                      return (
+                        <div className="rounded-lg border border-border bg-card px-3 py-2 shadow-md text-[11px]">
+                          <p className="font-semibold mb-1">{label}</p>
+                          {payload.map((p: any) => (
+                            <div key={p.dataKey} className="flex items-center gap-1.5">
+                              <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: p.fill }} />
+                              <span className="text-muted-foreground">{p.dataKey === "opex" ? "OPEX" : "Custo Técnico"}:</span>
+                              <span className="font-semibold">${p.value.toFixed(1)}/bbl</span>
+                              {((p.dataKey === "opex" && entry?.isEstimatedOpex) || (p.dataKey === "technical" && entry?.isEstimatedTechnical)) && (
+                                <span className="ml-1 px-1 py-0 rounded text-[8px] font-bold uppercase bg-warning/15 text-warning border border-warning/20">Est.</span>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      );
+                    }}
                   />
-                  <Bar dataKey="opex" fill="hsl(200, 45%, 28%)" radius={[0, 2, 2, 0]} barSize={10} name="OPEX" />
-                  <Bar dataKey="technical" fill="hsl(38, 75%, 48%)" radius={[0, 2, 2, 0]} barSize={10} name="Custo Técnico" />
+                  <Bar dataKey="opex" fill="hsl(200, 45%, 28%)" radius={[0, 2, 2, 0]} barSize={10} name="OPEX">
+                    {data.opexComparison.map((entry, i) => (
+                      <Cell key={i} fill="hsl(200, 45%, 28%)" fillOpacity={entry.isEstimatedOpex ? 0.4 : 1} />
+                    ))}
+                  </Bar>
+                  <Bar dataKey="technical" fill="hsl(38, 75%, 48%)" radius={[0, 2, 2, 0]} barSize={10} name="Custo Técnico">
+                    {data.opexComparison.map((entry, i) => (
+                      <Cell key={i} fill="hsl(38, 75%, 48%)" fillOpacity={entry.isEstimatedTechnical ? 0.4 : 1} />
+                    ))}
+                  </Bar>
                   <Legend wrapperStyle={{ fontSize: 10 }} />
                 </BarChart>
               </ResponsiveContainer>
