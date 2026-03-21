@@ -1316,15 +1316,19 @@ const BlockPage = () => {
               </div>
            </TabsContent>
 
-          {/* Tab: Instalações */}
-          {block.facilityData && (
-            <TabsContent value="facilities" className="space-y-4 2xl:space-y-6">
-              <FacilitiesTab facilityData={block.facilityData} />
-            </TabsContent>
-          )}
-
-          {/* Tab: HSE & Ambiente */}
-          <TabsContent value="hse" className="space-y-4 2xl:space-y-6">
+          {/* Tab: Instalações & HSE */}
+          <TabsContent value="facilities-hse" className="space-y-6 2xl:space-y-8">
+            {block.facilityData && (
+              <>
+                <h3 className="text-sm 2xl:text-base font-semibold flex items-center gap-2">
+                  <Building2 className="w-4 h-4 text-primary" />Instalações & Facilidades
+                </h3>
+                <FacilitiesTab facilityData={block.facilityData} />
+              </>
+            )}
+            <h3 className="text-sm 2xl:text-base font-semibold flex items-center gap-2">
+              <Leaf className="w-4 h-4 text-success" />HSE & Ambiente
+            </h3>
             <HSEEnvironmentTab
               hseData={block.hseData}
               environmentalData={block.environmentalData}
