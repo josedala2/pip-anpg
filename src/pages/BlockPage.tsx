@@ -374,17 +374,12 @@ const BlockPage = () => {
            <TabsList className="glass-card p-1 2xl:p-1.5 h-auto flex-wrap">
                 <TabsTrigger value="overview" className="gap-1.5 text-xs 2xl:text-sm"><Activity className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Visão Geral</TabsTrigger>
                 <TabsTrigger value="concession-status" className="gap-1.5 text-xs 2xl:text-sm"><Landmark className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Estado da Concessão</TabsTrigger>
-                {(block.economicVision || block.economicData) && <TabsTrigger value="economic-vision" className="gap-1.5 text-xs 2xl:text-sm"><Scale className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Visão Económica</TabsTrigger>}
-               <TabsTrigger value="financial" className="gap-1.5 text-xs 2xl:text-sm"><DollarSign className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Financeiro & Contratual</TabsTrigger>
-              <TabsTrigger value="consortium" className="gap-1.5 text-xs 2xl:text-sm"><Users className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Consórcio</TabsTrigger>
-             <TabsTrigger value="exploration" className="gap-1.5 text-xs 2xl:text-sm"><Target className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Exploração</TabsTrigger>
-              <TabsTrigger value="production" className="gap-1.5 text-xs 2xl:text-sm"><BarChart3 className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Produção</TabsTrigger>
-               <TabsTrigger value="projections" className="gap-1.5 text-xs 2xl:text-sm"><TrendingUp className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Projecções</TabsTrigger>
-               {block.facilityData && <TabsTrigger value="facilities" className="gap-1.5 text-xs 2xl:text-sm"><Building2 className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Instalações</TabsTrigger>}
-                <TabsTrigger value="hse" className="gap-1.5 text-xs 2xl:text-sm"><Leaf className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />HSE & Ambiente</TabsTrigger>
+                <TabsTrigger value="econ-financial" className="gap-1.5 text-xs 2xl:text-sm"><DollarSign className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Económico & Financeiro</TabsTrigger>
+                <TabsTrigger value="exploration" className="gap-1.5 text-xs 2xl:text-sm"><Target className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Exploração</TabsTrigger>
+                <TabsTrigger value="prod-proj" className="gap-1.5 text-xs 2xl:text-sm"><BarChart3 className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Produção & Projecções</TabsTrigger>
+                <TabsTrigger value="facilities-hse" className="gap-1.5 text-xs 2xl:text-sm"><Building2 className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Instalações & HSE</TabsTrigger>
                 <TabsTrigger value="swot" className="gap-1.5 text-xs 2xl:text-sm"><Brain className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Análise SWOT</TabsTrigger>
-                <TabsTrigger value="legislation" className="gap-1.5 text-xs 2xl:text-sm"><BookOpen className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Documentos & Legislação</TabsTrigger>
-                <TabsTrigger value="homologacoes" className="gap-1.5 text-xs 2xl:text-sm"><FileText className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Homologações</TabsTrigger>
+                <TabsTrigger value="documents" className="gap-1.5 text-xs 2xl:text-sm"><BookOpen className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Documentos</TabsTrigger>
             </TabsList>
 
           {/* Tab 1: Visão Geral */}
@@ -491,7 +486,7 @@ const BlockPage = () => {
                     {block.contractInfo.initialConsortium && (
                       <div className="mt-2">
                         <button
-                          onClick={() => { setActiveTab("consortium"); window.scrollTo({ top: 0, behavior: "smooth" }); }}
+                          onClick={() => { setActiveTab("econ-financial"); window.scrollTo({ top: 0, behavior: "smooth" }); }}
                           className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors"
                         >
                           <Building2 className="w-3 h-3" />
@@ -501,7 +496,7 @@ const BlockPage = () => {
                       </div>
                     )}
                     <button
-                      onClick={() => { setActiveTab("financial"); window.scrollTo({ top: 0, behavior: "smooth" }); }}
+                      onClick={() => { setActiveTab("econ-financial"); window.scrollTo({ top: 0, behavior: "smooth" }); }}
                       className="inline-flex items-center gap-1.5 text-xs text-primary hover:underline mt-2 transition-colors"
                     >
                       <DollarSign className="w-3 h-3" />Ver Financeiro & Contratual completo<ArrowRight className="w-3 h-3" />
@@ -611,7 +606,7 @@ const BlockPage = () => {
                       </div>
                     )}
                     <button
-                      onClick={() => { setActiveTab("financial"); window.scrollTo({ top: 0, behavior: "smooth" }); }}
+                      onClick={() => { setActiveTab("econ-financial"); window.scrollTo({ top: 0, behavior: "smooth" }); }}
                       className="inline-flex items-center gap-1.5 text-xs text-primary hover:underline mt-2 transition-colors"
                     >
                       <Scale className="w-3 h-3" />Ver todas as condições fiscais<ArrowRight className="w-3 h-3" />
@@ -650,7 +645,7 @@ const BlockPage = () => {
                      "Risco elevado — necessário plano de mitigação activo."}
                   </div>
                   <button
-                    onClick={() => { setActiveTab("hse"); window.scrollTo({ top: 0, behavior: "smooth" }); }}
+                    onClick={() => { setActiveTab("facilities-hse"); window.scrollTo({ top: 0, behavior: "smooth" }); }}
                     className="inline-flex items-center gap-1.5 text-xs text-primary hover:underline mt-2 transition-colors"
                   >
                     <Leaf className="w-3 h-3" />Ver HSE & Ambiente<ArrowRight className="w-3 h-3" />
@@ -864,7 +859,7 @@ const BlockPage = () => {
 
             {/* Facility Summary - compact in overview */}
             {block.facilityData && (
-              <Card className="glass-card hover:border-primary/30 transition-colors cursor-pointer" onClick={() => { setActiveTab("facilities"); window.scrollTo({ top: 0, behavior: "smooth" }); }}>
+              <Card className="glass-card hover:border-primary/30 transition-colors cursor-pointer" onClick={() => { setActiveTab("facilities-hse"); window.scrollTo({ top: 0, behavior: "smooth" }); }}>
                 <CardContent className="p-4 flex items-center justify-between gap-4">
                   <div className="flex items-center gap-3">
                     <Building2 className="w-5 h-5 text-primary shrink-0" />
@@ -888,139 +883,7 @@ const BlockPage = () => {
             )}
           </TabsContent>
 
-          {/* Tab 2: Consórcio */}
-          <TabsContent value="consortium" className="space-y-4 2xl:space-y-6">
-            {/* GE Inicial → GE Actual comparative */}
-            {block.contractInfo?.initialConsortium && (
-              <Card className="glass-card">
-                <CardHeader className="p-4 pb-2">
-                  <CardTitle className="text-sm 2xl:text-base flex items-center gap-2"><History className="w-4 h-4 text-primary" />Evolução do Grupo Empreiteiro</CardTitle>
-                </CardHeader>
-                <CardContent className="p-4 pt-2">
-                  <div className="grid grid-cols-1 lg:grid-cols-[1fr,auto,1fr] gap-4 items-start">
-                    {/* GE Inicial */}
-                    <div className="space-y-3">
-                      <div className="flex items-center gap-2 mb-3">
-                        <div className="w-2 h-2 rounded-full bg-muted-foreground" />
-                        <span className="text-xs 2xl:text-sm font-semibold uppercase tracking-wider text-muted-foreground">GE Inicial</span>
-                        {block.contractInfo.signingDate && <span className="text-[10px] text-muted-foreground">({new Date(block.contractInfo.signingDate).getFullYear()})</span>}
-                      </div>
-                      {block.contractInfo.initialConsortium.map((p, i) => (
-                        <div key={p.name} className="flex items-center gap-3">
-                          <div className="w-2.5 h-2.5 rounded-full shrink-0 opacity-50" style={{ backgroundColor: CONSORTIUM_COLORS[i % CONSORTIUM_COLORS.length] }} />
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2">
-                              <span className="text-sm font-medium truncate">{p.name}</span>
-                              {p.isOperator && <Badge variant="outline" className="text-[8px] bg-primary/10 text-primary border-primary/30 py-0 px-1">Op.</Badge>}
-                            </div>
-                            <div className="w-full h-1.5 bg-secondary rounded-full mt-1 overflow-hidden">
-                              <div className="h-full rounded-full opacity-50" style={{ width: `${p.share}%`, backgroundColor: CONSORTIUM_COLORS[i % CONSORTIUM_COLORS.length] }} />
-                            </div>
-                          </div>
-                          <span className="font-mono text-sm font-bold w-14 text-right text-muted-foreground">{p.share.toFixed(1)}%</span>
-                        </div>
-                      ))}
-                    </div>
-
-                    {/* Arrow */}
-                    <div className="hidden lg:flex flex-col items-center justify-center gap-2 py-8">
-                      <div className="w-px h-8 bg-border" />
-                      <div className="w-10 h-10 rounded-full glass-card flex items-center justify-center border border-primary/30">
-                        <ArrowRight className="w-4 h-4 text-primary" />
-                      </div>
-                      <div className="w-px h-8 bg-border" />
-                      <span className="text-[9px] uppercase tracking-widest text-muted-foreground font-medium">Evolução</span>
-                    </div>
-                    <div className="lg:hidden flex items-center justify-center py-2">
-                      <div className="flex items-center gap-2 text-muted-foreground">
-                        <div className="h-px w-12 bg-border" />
-                        <ArrowRight className="w-4 h-4 text-primary rotate-90 lg:rotate-0" />
-                        <div className="h-px w-12 bg-border" />
-                      </div>
-                    </div>
-
-                    {/* GE Actual */}
-                    <div className="space-y-3">
-                      <div className="flex items-center gap-2 mb-3">
-                        <div className="w-2 h-2 rounded-full bg-primary" />
-                        <span className="text-xs 2xl:text-sm font-semibold uppercase tracking-wider text-primary">GE Actual</span>
-                        <span className="text-[10px] text-muted-foreground">(Presente)</span>
-                      </div>
-                      {block.concession.map((p, i) => (
-                        <div key={i} className="flex items-center gap-3">
-                          <div className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: CONSORTIUM_COLORS[i % CONSORTIUM_COLORS.length] }} />
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2">
-                              <span className="text-sm font-medium truncate">{p.name}</span>
-                              {p.isOperator && <Badge variant="outline" className="text-[9px] bg-primary/10 text-primary border-primary/30">Operador</Badge>}
-                            </div>
-                            <div className="w-full h-2 bg-secondary rounded-full mt-1 overflow-hidden">
-                              <div className="h-full rounded-full transition-all" style={{ width: `${p.share}%`, backgroundColor: CONSORTIUM_COLORS[i % CONSORTIUM_COLORS.length] }} />
-                            </div>
-                          </div>
-                          <span className="font-mono text-sm font-bold w-14 text-right">{p.share.toFixed(1)}%</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Change summary */}
-                  {(() => {
-                    const initial = block.contractInfo.initialConsortium;
-                    const actual = block.concession;
-                    const allNames = new Set([...initial.map(p => p.name), ...actual.map(p => p.name)]);
-                    const changes: { name: string; from: number; to: number }[] = [];
-                    allNames.forEach(name => {
-                      const ini = initial.find(p => p.name === name)?.share || 0;
-                      const act = actual.find(p => p.name === name)?.share || 0;
-                      if (Math.abs(ini - act) > 0.01) {
-                        changes.push({ name, from: ini, to: act });
-                      }
-                    });
-                    if (changes.length === 0) return null;
-                    return (
-                      <div className="mt-4 pt-4 border-t border-border/30">
-                        <div className="text-[10px] uppercase tracking-wider text-muted-foreground mb-2 font-medium">Alterações Relevantes</div>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
-                          {changes.map(c => (
-                            <div key={c.name} className="glass-card rounded-lg p-2.5 flex items-center justify-between text-xs">
-                              <span className="truncate font-medium">{c.name}</span>
-                              <div className="flex items-center gap-1 font-mono shrink-0 ml-2">
-                                <span className="text-muted-foreground">{c.from > 0 ? `${c.from.toFixed(1)}%` : "—"}</span>
-                                <ArrowRight className="w-3 h-3 text-primary" />
-                                <span className={c.to > 0 ? "font-bold" : "text-danger"}>{c.to > 0 ? `${c.to.toFixed(1)}%` : "Saiu"}</span>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    );
-                  })()}
-                </CardContent>
-              </Card>
-            )}
-
-            {/* Pie chart - full width */}
-            <Card className="glass-card">
-              <CardHeader className="p-4 pb-2">
-                <CardTitle className="text-sm 2xl:text-base">Distribuição de Participações</CardTitle>
-              </CardHeader>
-              <CardContent className="p-4 pt-0">
-                <ResponsiveContainer width="100%" height={280}>
-                  <PieChart>
-                    <Pie data={block.concession.map(p => ({ name: p.name, value: p.share }))}
-                      cx="50%" cy="50%" innerRadius={60} outerRadius={100} paddingAngle={2} dataKey="value"
-                      label={({ name, value }) => `${name.split(" ")[0]} ${value.toFixed(0)}%`}>
-                      {block.concession.map((_, i) => (
-                        <Cell key={i} fill={CONSORTIUM_COLORS[i % CONSORTIUM_COLORS.length]} />
-                      ))}
-                    </Pie>
-                    <Tooltip formatter={(val: number) => `${val.toFixed(1)}%`} />
-                  </PieChart>
-                </ResponsiveContainer>
-              </CardContent>
-            </Card>
-          </TabsContent>
+          {/* Consortium content moved to econ-financial tab */}
 
           {/* Tab 3: Exploração */}
           <TabsContent value="exploration" className="space-y-4 2xl:space-y-6">
@@ -1216,7 +1079,7 @@ const BlockPage = () => {
           </TabsContent>
 
           {/* Tab 4: Produção */}
-           <TabsContent value="production" className="space-y-4 2xl:space-y-6">
+           <TabsContent value="prod-proj" className="space-y-4 2xl:space-y-6">
              {/* Production KPIs */}
              {(() => {
                const producingFields = block.fields?.filter(f => f.status === "Producing") || [];
@@ -1430,35 +1293,42 @@ const BlockPage = () => {
                  </Card>
                );
              })()}
+              {/* Projecções */}
+              <div className="pt-2">
+                <h3 className="text-sm 2xl:text-base font-semibold flex items-center gap-2 mb-4">
+                  <TrendingUp className="w-4 h-4 text-primary" />Projecções de Produção (2025–2034)
+                </h3>
+                <ChartWrapper title="Projecções de Produção (3 Cenários)" height={450} fullscreenHeight={700}>
+                    <ResponsiveContainer width="100%" height="100%">
+                      <LineChart data={projectionYears}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                        <XAxis dataKey="year" tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} />
+                        <YAxis tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} tickFormatter={v => `${(v / 1000).toFixed(0)}k`} />
+                        <Tooltip contentStyle={tooltipStyle}
+                          formatter={(val: number, name: string) => [`${val.toLocaleString()} BOPD`, name]} />
+                        <Legend wrapperStyle={legendStyle} />
+                        <Line type="monotone" dataKey="conservative" name="Conservador" stroke="hsl(0, 72%, 51%)" strokeWidth={2} strokeDasharray="5 5" dot={false} animationDuration={1000} />
+                        <Line type="monotone" dataKey="base" name="Base" stroke="hsl(199, 89%, 48%)" strokeWidth={2.5} dot={false} animationDuration={1000} animationBegin={200} />
+                        <Line type="monotone" dataKey="expansion" name="Expansão" stroke="hsl(152, 69%, 40%)" strokeWidth={2} strokeDasharray="5 5" dot={false} animationDuration={1000} animationBegin={400} />
+                      </LineChart>
+                    </ResponsiveContainer>
+                </ChartWrapper>
+              </div>
            </TabsContent>
 
-          <TabsContent value="projections">
-            <ChartWrapper title="Projecções de Produção (2025–2034)" height={450} fullscreenHeight={700}>
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={projectionYears}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                    <XAxis dataKey="year" tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} />
-                    <YAxis tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} tickFormatter={v => `${(v / 1000).toFixed(0)}k`} />
-                    <Tooltip contentStyle={tooltipStyle}
-                      formatter={(val: number, name: string) => [`${val.toLocaleString()} BOPD`, name]} />
-                    <Legend wrapperStyle={legendStyle} />
-                    <Line type="monotone" dataKey="conservative" name="Conservador" stroke="hsl(0, 72%, 51%)" strokeWidth={2} strokeDasharray="5 5" dot={false} animationDuration={1000} />
-                    <Line type="monotone" dataKey="base" name="Base" stroke="hsl(199, 89%, 48%)" strokeWidth={2.5} dot={false} animationDuration={1000} animationBegin={200} />
-                    <Line type="monotone" dataKey="expansion" name="Expansão" stroke="hsl(152, 69%, 40%)" strokeWidth={2} strokeDasharray="5 5" dot={false} animationDuration={1000} animationBegin={400} />
-                  </LineChart>
-                </ResponsiveContainer>
-            </ChartWrapper>
-          </TabsContent>
-
-          {/* Tab: Instalações */}
-          {block.facilityData && (
-            <TabsContent value="facilities" className="space-y-4 2xl:space-y-6">
-              <FacilitiesTab facilityData={block.facilityData} />
-            </TabsContent>
-          )}
-
-          {/* Tab: HSE & Ambiente */}
-          <TabsContent value="hse" className="space-y-4 2xl:space-y-6">
+          {/* Tab: Instalações & HSE */}
+          <TabsContent value="facilities-hse" className="space-y-6 2xl:space-y-8">
+            {block.facilityData && (
+              <>
+                <h3 className="text-sm 2xl:text-base font-semibold flex items-center gap-2">
+                  <Building2 className="w-4 h-4 text-primary" />Instalações & Facilidades
+                </h3>
+                <FacilitiesTab facilityData={block.facilityData} />
+              </>
+            )}
+            <h3 className="text-sm 2xl:text-base font-semibold flex items-center gap-2">
+              <Leaf className="w-4 h-4 text-success" />HSE & Ambiente
+            </h3>
             <HSEEnvironmentTab
               hseData={block.hseData}
               environmentalData={block.environmentalData}
@@ -1473,18 +1343,36 @@ const BlockPage = () => {
             <SwotAnalysis block={block} />
           </TabsContent>
 
-          {/* Tab 7: Documentos & Legislação */}
-          <TabsContent value="legislation" className="space-y-4 2xl:space-y-6">
+          {/* Tab: Documentos (Legislação + Homologações) */}
+          <TabsContent value="documents" className="space-y-6 2xl:space-y-8">
+            <h3 className="text-sm 2xl:text-base font-semibold flex items-center gap-2">
+              <BookOpen className="w-4 h-4 text-primary" />Documentos & Legislação
+            </h3>
             <LegislationSearch docs={block.legislationDocs || []} contractInfo={block.contractInfo} />
-          </TabsContent>
-
-          {/* Tab: Homologações */}
-          <TabsContent value="homologacoes" className="space-y-4 2xl:space-y-6">
+            <h3 className="text-sm 2xl:text-base font-semibold flex items-center gap-2 pt-4">
+              <FileText className="w-4 h-4 text-warning" />Homologações
+            </h3>
             <HomologacoesPanel filterBloco={block.name} />
           </TabsContent>
 
-          {/* Tab 8: Financeiro & Contratual */}
-          <TabsContent value="financial" className="space-y-6 2xl:space-y-8">
+          {/* Tab: Estado da Concessão */}
+          <TabsContent value="concession-status" className="space-y-4 2xl:space-y-6">
+            <ConcessionStatusTab block={block} />
+          </TabsContent>
+
+          {/* Tab: Económico & Financeiro (merges Visão Económica + Financeiro + Consórcio) */}
+          <TabsContent value="econ-financial" className="space-y-6 2xl:space-y-8">
+            {/* Section 1: Visão Económica ANPG */}
+            {(block.economicVision || block.economicData) && (
+              <>
+                <h3 className="text-sm 2xl:text-base font-semibold flex items-center gap-2">
+                  <Scale className="w-4 h-4 text-primary" />Visão Económica ANPG
+                </h3>
+                <EconomicVisionTab block={block} />
+              </>
+            )}
+
+            {/* Section 2: Financeiro & Contratual */}
             {(() => {
               const ci = block.contractInfo;
               const fc = ci?.fiscalConditions;
@@ -2053,16 +1941,142 @@ const BlockPage = () => {
                 </>
               );
             })()}
-          </TabsContent>
 
-          {/* Tab: Estado da Concessão */}
-          <TabsContent value="concession-status" className="space-y-4 2xl:space-y-6">
-            <ConcessionStatusTab block={block} />
-          </TabsContent>
+            {/* Section: Consórcio */}
+            <h3 className="text-sm 2xl:text-base font-semibold flex items-center gap-2 pt-4">
+              <Users className="w-4 h-4 text-primary" />Composição do Consórcio
+            </h3>
 
-          {/* Tab: Visão Económica */}
-          <TabsContent value="economic-vision" className="space-y-4 2xl:space-y-6">
-            <EconomicVisionTab block={block} />
+            {/* GE Inicial → GE Actual comparative */}
+            {block.contractInfo?.initialConsortium && (
+              <Card className="glass-card">
+                <CardHeader className="p-4 pb-2">
+                  <CardTitle className="text-sm 2xl:text-base flex items-center gap-2"><History className="w-4 h-4 text-primary" />Evolução do Grupo Empreiteiro</CardTitle>
+                </CardHeader>
+                <CardContent className="p-4 pt-2">
+                  <div className="grid grid-cols-1 lg:grid-cols-[1fr,auto,1fr] gap-4 items-start">
+                    {/* GE Inicial */}
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="w-2 h-2 rounded-full bg-muted-foreground" />
+                        <span className="text-xs 2xl:text-sm font-semibold uppercase tracking-wider text-muted-foreground">GE Inicial</span>
+                        {block.contractInfo.signingDate && <span className="text-[10px] text-muted-foreground">({new Date(block.contractInfo.signingDate).getFullYear()})</span>}
+                      </div>
+                      {block.contractInfo.initialConsortium.map((p, i) => (
+                        <div key={p.name} className="flex items-center gap-3">
+                          <div className="w-2.5 h-2.5 rounded-full shrink-0 opacity-50" style={{ backgroundColor: CONSORTIUM_COLORS[i % CONSORTIUM_COLORS.length] }} />
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2">
+                              <span className="text-sm font-medium truncate">{p.name}</span>
+                              {p.isOperator && <Badge variant="outline" className="text-[8px] bg-primary/10 text-primary border-primary/30 py-0 px-1">Op.</Badge>}
+                            </div>
+                            <div className="w-full h-1.5 bg-secondary rounded-full mt-1 overflow-hidden">
+                              <div className="h-full rounded-full opacity-50" style={{ width: `${p.share}%`, backgroundColor: CONSORTIUM_COLORS[i % CONSORTIUM_COLORS.length] }} />
+                            </div>
+                          </div>
+                          <span className="font-mono text-sm font-bold w-14 text-right text-muted-foreground">{p.share.toFixed(1)}%</span>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Arrow */}
+                    <div className="hidden lg:flex flex-col items-center justify-center gap-2 py-8">
+                      <div className="w-px h-8 bg-border" />
+                      <div className="w-10 h-10 rounded-full glass-card flex items-center justify-center border border-primary/30">
+                        <ArrowRight className="w-4 h-4 text-primary" />
+                      </div>
+                      <div className="w-px h-8 bg-border" />
+                      <span className="text-[9px] uppercase tracking-widest text-muted-foreground font-medium">Evolução</span>
+                    </div>
+                    <div className="lg:hidden flex items-center justify-center py-2">
+                      <div className="flex items-center gap-2 text-muted-foreground">
+                        <div className="h-px w-12 bg-border" />
+                        <ArrowRight className="w-4 h-4 text-primary rotate-90 lg:rotate-0" />
+                        <div className="h-px w-12 bg-border" />
+                      </div>
+                    </div>
+
+                    {/* GE Actual */}
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="w-2 h-2 rounded-full bg-primary" />
+                        <span className="text-xs 2xl:text-sm font-semibold uppercase tracking-wider text-primary">GE Actual</span>
+                        <span className="text-[10px] text-muted-foreground">(Presente)</span>
+                      </div>
+                      {block.concession.map((p, i) => (
+                        <div key={i} className="flex items-center gap-3">
+                          <div className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: CONSORTIUM_COLORS[i % CONSORTIUM_COLORS.length] }} />
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2">
+                              <span className="text-sm font-medium truncate">{p.name}</span>
+                              {p.isOperator && <Badge variant="outline" className="text-[9px] bg-primary/10 text-primary border-primary/30">Operador</Badge>}
+                            </div>
+                            <div className="w-full h-2 bg-secondary rounded-full mt-1 overflow-hidden">
+                              <div className="h-full rounded-full transition-all" style={{ width: `${p.share}%`, backgroundColor: CONSORTIUM_COLORS[i % CONSORTIUM_COLORS.length] }} />
+                            </div>
+                          </div>
+                          <span className="font-mono text-sm font-bold w-14 text-right">{p.share.toFixed(1)}%</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Change summary */}
+                  {(() => {
+                    const initial = block.contractInfo!.initialConsortium!;
+                    const actual = block.concession;
+                    const allNames = new Set([...initial.map(p => p.name), ...actual.map(p => p.name)]);
+                    const changes: { name: string; from: number; to: number }[] = [];
+                    allNames.forEach(name => {
+                      const ini = initial.find(p => p.name === name)?.share || 0;
+                      const act = actual.find(p => p.name === name)?.share || 0;
+                      if (Math.abs(ini - act) > 0.01) {
+                        changes.push({ name, from: ini, to: act });
+                      }
+                    });
+                    if (changes.length === 0) return null;
+                    return (
+                      <div className="mt-4 pt-4 border-t border-border/30">
+                        <div className="text-[10px] uppercase tracking-wider text-muted-foreground mb-2 font-medium">Alterações Relevantes</div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+                          {changes.map(c => (
+                            <div key={c.name} className="glass-card rounded-lg p-2.5 flex items-center justify-between text-xs">
+                              <span className="truncate font-medium">{c.name}</span>
+                              <div className="flex items-center gap-1 font-mono shrink-0 ml-2">
+                                <span className="text-muted-foreground">{c.from > 0 ? `${c.from.toFixed(1)}%` : "—"}</span>
+                                <ArrowRight className="w-3 h-3 text-primary" />
+                                <span className={c.to > 0 ? "font-bold" : "text-danger"}>{c.to > 0 ? `${c.to.toFixed(1)}%` : "Saiu"}</span>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  })()}
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Pie chart - full width */}
+            <Card className="glass-card">
+              <CardHeader className="p-4 pb-2">
+                <CardTitle className="text-sm 2xl:text-base">Distribuição de Participações</CardTitle>
+              </CardHeader>
+              <CardContent className="p-4 pt-0">
+                <ResponsiveContainer width="100%" height={280}>
+                  <PieChart>
+                    <Pie data={block.concession.map(p => ({ name: p.name, value: p.share }))}
+                      cx="50%" cy="50%" innerRadius={60} outerRadius={100} paddingAngle={2} dataKey="value"
+                      label={({ name, value }) => `${name.split(" ")[0]} ${value.toFixed(0)}%`}>
+                      {block.concession.map((_, i) => (
+                        <Cell key={i} fill={CONSORTIUM_COLORS[i % CONSORTIUM_COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <Tooltip formatter={(val: number) => `${val.toFixed(1)}%`} />
+                  </PieChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
           </TabsContent>
         </Tabs>
       </main>
