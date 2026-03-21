@@ -306,9 +306,14 @@ export const ConcessionMap = ({
     loadBlockPolygons().then(setRealPolygons);
   }, []);
 
-  // Merge: real polygons take priority over fallback rectangles
   // Only show blocks with real XLSX polygon data
   const blockPolygons = useMemo(() => realPolygons, [realPolygons]);
+
+  // Polygons from XLSX that don't have a matching OilBlock entry — "orphan" polygons
+  const orphanPolygonIds = useMemo(() => {
+    const blockIdSet = new Set(blocks.map(b => b.id));
+    return Object.keys(realPolygons).filter(id => !blockIdSet.has(id));
+  }, [blocks, realPolygons]);
 
   // Pre-compute strategic scores for all blocks
   const blockScores = useMemo(() => {
