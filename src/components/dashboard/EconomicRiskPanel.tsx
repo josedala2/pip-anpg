@@ -71,6 +71,13 @@ export const EconomicRiskPanel = () => {
 
   return (
     <div className="space-y-4">
+      {/* Data coverage notice */}
+      <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-warning/5 border border-warning/20">
+        <AlertTriangle className="w-4 h-4 text-warning shrink-0" />
+        <p className="text-[11px] text-muted-foreground">
+          Os indicadores de risco utilizam <span className="font-semibold text-foreground">valores estimados de OPEX ($20/bbl)</span> para concessões sem dados económicos verificados. As classificações podem variar após integração dos dados reais.
+        </p>
+      </div>
       {/* Alert KPIs */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <RiskKPI

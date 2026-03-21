@@ -114,6 +114,13 @@ export const EconomicScenariosPanel = () => {
 
   return (
     <div className="space-y-5">
+      {/* Data coverage notice */}
+      <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-warning/5 border border-warning/20">
+        <AlertTriangle className="w-4 h-4 text-warning shrink-0" />
+        <p className="text-[11px] text-muted-foreground">
+          Os cenários utilizam <span className="font-semibold text-foreground">valores estimados de OPEX ($20/bbl)</span> para concessões sem dados económicos verificados. Os resultados são indicativos até à integração completa dos dados reais.
+        </p>
+      </div>
       {/* ── Scenario Selector ── */}
       <div className="space-y-2">
         <div className="flex items-center justify-between flex-wrap gap-2">

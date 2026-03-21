@@ -90,6 +90,13 @@ export const CostStructurePanel = () => {
 
   return (
     <div className="space-y-4">
+      {/* Data coverage notice */}
+      <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-warning/5 border border-warning/20">
+        <AlertTriangle className="w-4 h-4 text-warning shrink-0" />
+        <p className="text-[11px] text-muted-foreground">
+          <span className="font-semibold text-foreground">{data.rows.filter(r => oilBlocks.find(b => b.name === r.name)?.economicData?.opexPerBarrel).length} de {data.rows.length} concessões</span> possuem dados de custos verificados. Os valores de OPEX ($20/bbl) e custo técnico ($25/bbl) são estimativas padrão para blocos sem dados reais.
+        </p>
+      </div>
       {/* KPI strip */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <MiniKPI label="CAPEX Total Acumulado" value={`$${(data.totalCapex / 1000).toFixed(1)}B`} tooltip={tooltipDescriptions["CAPEX Total Acumulado"]} />
