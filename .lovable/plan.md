@@ -1,74 +1,38 @@
 
 
-## Plano: Limpeza de Dados Mock — Manter Estrutura, Marcar como Pendente
+## Plano: Eliminar Dados Mock Restantes — Apenas Bloco 0 Real
 
-### Contexto
+### Problema
 
-O ficheiro `angolaBlocks.ts` tem ~7.400 linhas com 83 blocos. O **Bloco 0** tem dados reais verificados (contrato, instalações, HSE, visão económica). Os blocos **3/05**, **4**, **1/14** e **2/05** têm `contractInfo` real. Todos os outros blocos têm dados numéricos fabricados (produção, reservas, CAPEX, projecções, HSE, facilityData, economicVision).
+Após a limpeza anterior, ainda existem dados mock/fabricados em vários componentes do dashboard:
 
-Os dados considerados **reais** e a manter:
-- **Bloco 0**: Todos os campos (dados verificados da ANPG)
-- **Todos os blocos**: Operador, consórcio/participações, fase, bacia, tipo de água, área, data de contrato — dados do Mapa de Concessões ANPG 2026
-- **Blocos com contractInfo real**: 0, 3/05, 4, 1/14, 2/05 — manter contractInfo
-- **Homologações**: Dataset real (1.072 registos) — manter intacto
+1. **KPICards.tsx**: Sparklines fabricadas (`prodSpark`, `reservesSpark`), variação de produção hardcoded (`-4.8%`), e sparkline de reservas com valores inventados (`[9200, 9180, ...]`)
+2. **TrendProjection.tsx**: Função `generateTrendData()` que simula 12 meses históricos e 12 meses de projecção com factores multiplicativos inventados
+3. **OverviewSidebar.tsx**: Sparklines fabricadas (`sparkData`), dados de investimento hardcoded (`investData` com valores de 2020-2024), e `computeTrendData()` com factores multiplicativos
+4. **seismicHistory / wellsHistory** (angolaBlocks.ts): Estes são dados reais do Bloco 0 — manter
 
-Os dados considerados **mock** e a zerar:
-- `dailyProduction`, `estimatedReserves`, `accumulatedInvestment`, `plannedInvestment`, `executionRate`, `riskScore`, `complianceScore`
-- `productionHistory`, `capexHistory`, `projections`
-- `seismicData`, `wellsData`, `fields`, `prospects` (excepto Bloco 0 e blocos com dados reais conhecidos)
-- `facilityData`, `economicVision`, `hseData`, `environmentalData`, `developmentProjects`
-- `economicData`, `explorationSummary`
+### Alterações
 
-### Implementação
+| Ficheiro | O que fazer |
+|---|---|
+| `src/components/dashboard/KPICards.tsx` | Remover sparklines fabricadas (`prodSpark`, `reservesSpark`). Remover `variation: -2.1` hardcoded. Manter KPIs que derivam de dados reais (contagens de blocos, homologações). |
+| `src/components/dashboard/TrendProjection.tsx` | Substituir `generateTrendData()` por dados reais do `productionHistory` do Bloco 0. Remover projecções inventadas — mostrar apenas histórico real. Se não houver dados suficientes, mostrar mensagem "Dados reais pendentes". |
+| `src/components/dashboard/OverviewSidebar.tsx` | Remover `sparkData` fabricado, remover `investData` hardcoded, remover `computeTrendData()` com factores multiplicativos. Substituir por dados derivados do Bloco 0 ou mostrar "Dados pendentes". |
 
-#### 1. Adicionar flag `pendingRealData` ao tipo `OilBlock`
+### Princípio
 
-Novo campo booleano opcional na interface. Blocos com dados reais não terão o flag (ou `false`). Todos os outros terão `pendingRealData: true`.
+Nenhum valor numérico inventado deve aparecer na UI. Se um dado não existe nos datasets reais (Bloco 0, homologações, contractInfo), deve aparecer como 0, "--", ou com o badge "Dados Pendentes".
 
-#### 2. Limpar dados numéricos dos blocos sem dados reais
-
-Para todos os blocos **excepto Bloco 0** (e outros com dados contratuais reais como 3/05, 4, 1/14):
-- Zerar: `dailyProduction: 0`, `estimatedReserves: 0`, `accumulatedInvestment: 0`, `plannedInvestment: 0`, `executionRate: 0`, `riskScore: 0`, `complianceScore: 0`
-- Esvaziar arrays: `productionHistory: []`, `capexHistory: []`, `projections: { conservative: [], base: [], expansion: [] }`
-- Remover campos opcionais fabricados: `seismicData`, `wellsData`, `fields`, `prospects`, `facilityData`, `economicVision`, `hseData`, `environmentalData`, `developmentProjects`, `economicData`, `explorationSummary`
-- Adicionar `pendingRealData: true`
-
-#### 3. Indicador visual "Dados Pendentes" nos componentes UI
-
-Actualizar componentes-chave para mostrar um badge discreto quando `pendingRealData === true`:
-
-- **BlocksPanel / ConselhoPanel**: Badge "Dados Pendentes" ao lado do nome do bloco
-- **KPICards**: Os KPIs nacionais passarão a reflectir apenas dados reais (produção ~119k BOPD do Bloco 0)
-- **Painéis de detalhe** (BlockDetail, ProductionPanel, etc.): Mensagem "Dados reais ainda não carregados" quando o bloco não tem dados
-
-#### 4. Componente `PendingDataBadge`
-
-Pequeno componente reutilizável com ícone de alerta e texto "Dados Pendentes" em tom amarelo/âmbar.
-
-#### 5. Guardar funções auxiliares
-
-As funções `getTotalProduction`, `getActiveBlocks`, etc., continuarão a funcionar mas reflectirão apenas dados reais.
+### Dados reais disponíveis do Bloco 0
+- `productionHistory`: 12 meses de produção real
+- `capexHistory`: Dados CAPEX reais
+- `facilityData`: Instalações reais
+- `contractInfo`: Dados contratuais
+- `seismicData`, `wellsData`, `fields`, `prospects`: Dados de exploração reais
+- Homologações: 1.072 registos reais (manter intacto)
 
 ### Ficheiros a editar
-
-| Ficheiro | Alteração |
-|---|---|
-| `src/data/angolaBlocks.ts` | Adicionar `pendingRealData` à interface; zerar dados mock em ~80 blocos |
-| `src/components/dashboard/BlocksPanel.tsx` | Badge "Dados Pendentes" |
-| `src/components/dashboard/ConselhoPanel.tsx` | Badge na matriz de decisão |
-| `src/components/dashboard/BlockDetail.tsx` | Mensagem de dados não disponíveis |
-| `src/components/dashboard/ExecutiveHome.tsx` | Nota sobre dados parciais |
-| Novo: `src/components/ui/PendingDataBadge.tsx` | Componente reutilizável |
-
-### Impacto esperado
-
-- KPIs nacionais mostrarão apenas a realidade actual (Bloco 0: ~119k BOPD)
-- A plataforma ficará preparada para carregamento incremental de dados reais
-- Visualmente claro quais blocos têm dados reais vs pendentes
-
-### Notas técnicas
-
-- O ficheiro `angolaBlocks.ts` passará de ~7.400 para ~3.000-4.000 linhas (remoção de dados fabricados)
-- O dataset de homologações (`homologacoesData.ts`) **não será alterado** — dados reais
-- Os dados globais de exploração (`seismicHistory`, `wellsHistory` no final do ficheiro) serão avaliados — se forem do Bloco 0, mantêm-se
+- `src/components/dashboard/KPICards.tsx`
+- `src/components/dashboard/TrendProjection.tsx`
+- `src/components/dashboard/OverviewSidebar.tsx`
 
