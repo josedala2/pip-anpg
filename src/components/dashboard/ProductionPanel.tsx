@@ -309,7 +309,7 @@ export const ProductionPanel = () => {
                   <TableCell>
                     {b.productionHistory && b.productionHistory.length > 0
                       ? <Badge variant="outline" className="text-[10px] border-success/50 text-success">Verificado</Badge>
-                      : <PendingDataBadge label="Pendente" />
+                      : <PendingDataBadge compact />
                     }
                   </TableCell>
                 </TableRow>
