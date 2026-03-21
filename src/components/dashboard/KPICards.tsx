@@ -90,8 +90,6 @@ export const KPICards = ({ compact = false }: { compact?: boolean }) => (
         prefix={kpi.prefix}
         suffix={kpi.suffix}
         icon={kpi.icon}
-        variation={kpi.variation}
-        variationLabel={kpi.variationLabel}
         status={kpi.status}
         sparklineData={kpi.sparkline}
         drillDownInfo={kpi.drill}
