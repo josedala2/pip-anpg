@@ -1343,13 +1343,15 @@ const BlockPage = () => {
             <SwotAnalysis block={block} />
           </TabsContent>
 
-          {/* Tab 7: Documentos & Legislação */}
-          <TabsContent value="legislation" className="space-y-4 2xl:space-y-6">
+          {/* Tab: Documentos (Legislação + Homologações) */}
+          <TabsContent value="documents" className="space-y-6 2xl:space-y-8">
+            <h3 className="text-sm 2xl:text-base font-semibold flex items-center gap-2">
+              <BookOpen className="w-4 h-4 text-primary" />Documentos & Legislação
+            </h3>
             <LegislationSearch docs={block.legislationDocs || []} contractInfo={block.contractInfo} />
-          </TabsContent>
-
-          {/* Tab: Homologações */}
-          <TabsContent value="homologacoes" className="space-y-4 2xl:space-y-6">
+            <h3 className="text-sm 2xl:text-base font-semibold flex items-center gap-2 pt-4">
+              <FileText className="w-4 h-4 text-warning" />Homologações
+            </h3>
             <HomologacoesPanel filterBloco={block.name} />
           </TabsContent>
 
