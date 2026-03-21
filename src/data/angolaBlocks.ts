@@ -2104,8 +2104,8 @@ export const oilBlocks: OilBlock[] = [
         "Sonangol EP abandonou o Campo Kiame em 14/09/1997",
         "Concessão caducada — sem actividade desde então",
       ],
-    },,
-  }
+    },
+  },
   // ── New blocks from ANPG 2025 Production Distribution ──
   // NOTE: block-2-05 and block-3-05a moved to Shallow Water section (lines ~3314+) with full contract/seismic data
   {
