@@ -1079,7 +1079,7 @@ const BlockPage = () => {
           </TabsContent>
 
           {/* Tab 4: Produção */}
-           <TabsContent value="production" className="space-y-4 2xl:space-y-6">
+           <TabsContent value="prod-proj" className="space-y-4 2xl:space-y-6">
              {/* Production KPIs */}
              {(() => {
                const producingFields = block.fields?.filter(f => f.status === "Producing") || [];
