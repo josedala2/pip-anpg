@@ -3044,9 +3044,9 @@ export const oilBlocks: OilBlock[] = [
       { name: "ACREP S", share: 12.5 },
     ],
     mapPosition: { x: 19, y: 56 },
-    productionHistory: Array(12).fill(null).map((_, i) => ({ month: ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][i], value: 16500 + Math.round(Math.random() * 3000) })),
-    capexHistory: [{ year: "2021", planned: 60, actual: 48 }, { year: "2022", planned: 70, actual: 55 }, { year: "2023", planned: 80, actual: 62 }, { year: "2024", planned: 90, actual: 70 }],
-    projections: { conservative: [17000,16000,15000,14000,13000,12000,11000,10000,9000,8500], base: [18000,17500,17000,16500,16000,15500,15000,14500,14000,13500], expansion: [18000,19000,20000,21000,22000,22500,23000,23000,22500,22000] },
+    productionHistory: [],
+    capexHistory: [],
+    projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 3437.81,
     waterDepthRange: "20-80m",
     seismicData: [
