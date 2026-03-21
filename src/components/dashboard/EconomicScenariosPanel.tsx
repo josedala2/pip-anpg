@@ -23,7 +23,7 @@ import {
 } from "recharts";
 import {
   Play, Settings2, TrendingUp, DollarSign, Percent, BarChart3,
-  ChevronDown, ChevronUp, MapPin, Building2,
+  ChevronDown, ChevronUp, MapPin, Building2, AlertTriangle,
 } from "lucide-react";
 import { InfoTooltip } from "@/components/ui/info-tooltip";
 import { tooltipDescriptions } from "@/lib/tooltipDescriptions";
