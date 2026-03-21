@@ -3,8 +3,9 @@ import { Link } from "react-router-dom";
 import { type OilBlock } from "@/data/angolaBlocks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { X, GitCompareArrows } from "lucide-react";
+import { X, GitCompareArrows, AlertTriangle } from "lucide-react";
 import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, ReferenceLine } from "recharts";
+import { PendingDataBadge } from "@/components/ui/PendingDataBadge";
 
 interface BlockDetailProps {
   block: OilBlock;
@@ -32,7 +33,10 @@ export const BlockDetail = ({ block, onClose }: BlockDetailProps) => {
       <div className="relative w-full max-w-lg 2xl:max-w-xl bg-card border-l border-border overflow-y-auto animate-slide-in-right">
         <div className="sticky top-0 z-10 flex items-center justify-between p-4 md:p-6 bg-card/90 backdrop-blur-xl border-b border-border">
           <div>
-            <h2 className="text-xl md:text-2xl 2xl:text-3xl font-bold">{block.name}</h2>
+            <div className="flex items-center gap-2">
+              <h2 className="text-xl md:text-2xl 2xl:text-3xl font-bold">{block.name}</h2>
+              {block.pendingRealData && <PendingDataBadge />}
+            </div>
             <Badge className={PhaseColors[block.phase]}>{block.phase}</Badge>
           </div>
           <div className="flex items-center gap-2">

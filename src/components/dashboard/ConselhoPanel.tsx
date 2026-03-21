@@ -12,6 +12,7 @@ import {
   Landmark, Droplets, CircleDollarSign, Scale
 } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { PendingDataBadge } from "@/components/ui/PendingDataBadge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, BarChart, Bar, Cell } from "recharts";
 
@@ -410,7 +411,12 @@ export const ConselhoPanel = () => {
                             </Tooltip>
                           </TooltipProvider>
                         </TableCell>
-                        <TableCell className="py-2 text-xs font-medium">{c.block.name}</TableCell>
+                        <TableCell className="py-2 text-xs font-medium">
+                          <span className="flex items-center gap-1.5">
+                            {c.block.name}
+                            {c.block.pendingRealData && <PendingDataBadge compact />}
+                          </span>
+                        </TableCell>
                         <TableCell className="py-2 text-[11px] text-muted-foreground">{c.block.operator}</TableCell>
                         <TableCell className="py-2 text-xs text-right font-mono">
                           {c.block.dailyProduction > 0
