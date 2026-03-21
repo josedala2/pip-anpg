@@ -6,6 +6,7 @@ import { oilBlocks, type OilBlock, type WaterDepth } from "@/data/angolaBlocks";
 import { Badge } from "@/components/ui/badge";
 import { Filter, Map, ChevronDown, ChevronRight, ExternalLink, Search } from "lucide-react";
 import { ConcessionMap } from "./ConcessionMap";
+import { PendingDataBadge } from "@/components/ui/PendingDataBadge";
 import { Input } from "@/components/ui/input";
 import {
   Collapsible,
