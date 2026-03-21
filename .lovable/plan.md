@@ -1,38 +1,34 @@
 
 
-## Plano: Eliminar Dados Mock Restantes — Apenas Bloco 0 Real
+## Plano: Verificação e Limpeza do Mapa de Concessões
 
-### Problema
+### Diagnóstico
 
-Após a limpeza anterior, ainda existem dados mock/fabricados em vários componentes do dashboard:
+Após análise detalhada do código, identifiquei os seguintes problemas:
 
-1. **KPICards.tsx**: Sparklines fabricadas (`prodSpark`, `reservesSpark`), variação de produção hardcoded (`-4.8%`), e sparkline de reservas com valores inventados (`[9200, 9180, ...]`)
-2. **TrendProjection.tsx**: Função `generateTrendData()` que simula 12 meses históricos e 12 meses de projecção com factores multiplicativos inventados
-3. **OverviewSidebar.tsx**: Sparklines fabricadas (`sparkData`), dados de investimento hardcoded (`investData` com valores de 2020-2024), e `computeTrendData()` com factores multiplicativos
-4. **seismicHistory / wellsHistory** (angolaBlocks.ts): Estes são dados reais do Bloco 0 — manter
+#### 1. Erros de sintaxe em ~9 blocos
+Blocos em licitação (22, 25, 26, 34, 35, 36, 37, 39, 40) têm arrays `concession` com vírgulas soltas: `concession: [\n,\n]`. Isto cria arrays com slots vazios e pode causar erros runtime.
 
-### Alterações
+#### 2. Tipo `WaterDepth` inconsistente
+O tipo define `"Ultra-Deep Water"` (com hífen), mas vários blocos (33, 41, 42, 43) usam `"Ultra Deep Water"` (sem hífen) — causando potenciais erros de tipo TypeScript.
 
-| Ficheiro | O que fazer |
+#### 3. Blocos sem polígonos no XLSX (~20 blocos)
+Estes blocos existem em `oilBlocks` mas NÃO têm coordenadas no ficheiro de polígonos, portanto não aparecem no mapa:
+- Sub-blocos: 14K, 15/06, 17/06, 31/21, 15/14 (LIRA), 3/24, 3/05A, 5/06, 6/24, 3/15, 2/15, 16/21, 18/15, 20/11, 22/11, 37/11, 14/23-ZIC
+- Outros: FS/FST, FS Associações, FST Associações
+
+Estes são sub-concessões ou rondas posteriores que partilham a geometria do bloco-mãe. São concessões ANPG legítimas — devem manter-se no dataset mas não necessitam de polígono próprio.
+
+#### 4. Dados fabricados remanescentes no Bloco 2/05
+O bloco `block-2-05` ainda tem `productionHistory` gerado com `Math.random()` (linha 3047) — mock data que escapou à limpeza anterior.
+
+### Alterações propostas
+
+| Ficheiro | Alteração |
 |---|---|
-| `src/components/dashboard/KPICards.tsx` | Remover sparklines fabricadas (`prodSpark`, `reservesSpark`). Remover `variation: -2.1` hardcoded. Manter KPIs que derivam de dados reais (contagens de blocos, homologações). |
-| `src/components/dashboard/TrendProjection.tsx` | Substituir `generateTrendData()` por dados reais do `productionHistory` do Bloco 0. Remover projecções inventadas — mostrar apenas histórico real. Se não houver dados suficientes, mostrar mensagem "Dados reais pendentes". |
-| `src/components/dashboard/OverviewSidebar.tsx` | Remover `sparkData` fabricado, remover `investData` hardcoded, remover `computeTrendData()` com factores multiplicativos. Substituir por dados derivados do Bloco 0 ou mostrar "Dados pendentes". |
+| `src/data/angolaBlocks.ts` | Corrigir `concession: [,]` → `concession: []` nos 9 blocos. Corrigir `"Ultra Deep Water"` → `"Ultra-Deep Water"` em 4 blocos. Limpar `productionHistory` mock do Bloco 2/05. |
+| `src/components/dashboard/ConcessionMap.tsx` | Remover secção de polígonos órfãos (já não necessária com todos os IDs cobertos no dataset). Remover parâmetro `orphanIds` do `BlockLabels`. |
 
-### Princípio
-
-Nenhum valor numérico inventado deve aparecer na UI. Se um dado não existe nos datasets reais (Bloco 0, homologações, contractInfo), deve aparecer como 0, "--", ou com o badge "Dados Pendentes".
-
-### Dados reais disponíveis do Bloco 0
-- `productionHistory`: 12 meses de produção real
-- `capexHistory`: Dados CAPEX reais
-- `facilityData`: Instalações reais
-- `contractInfo`: Dados contratuais
-- `seismicData`, `wellsData`, `fields`, `prospects`: Dados de exploração reais
-- Homologações: 1.072 registos reais (manter intacto)
-
-### Ficheiros a editar
-- `src/components/dashboard/KPICards.tsx`
-- `src/components/dashboard/TrendProjection.tsx`
-- `src/components/dashboard/OverviewSidebar.tsx`
+### Sem remoção de elementos do mapa
+Todos os elementos actualmente no mapa (cidades, limites marítimos, bacias, reservas naturais, zonas de profundidade) correspondem a informação real do PDF do Mapa de Concessões ANPG — nenhum precisa de ser removido.
 
