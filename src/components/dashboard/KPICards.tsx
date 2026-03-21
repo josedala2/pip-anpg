@@ -59,6 +59,13 @@ const aprovacaoSpark = (() => {
     .map(([, v]) => Math.round((v.approved / v.total) * 100));
 })();
 
+const getStatus = (label: string, value: number): SemaphoreStatus => {
+  if (label === "Instalações Críticas") return value > 0 ? "critical" : "healthy";
+  if (label === "Contratos a Expirar") return value > 3 ? "warning" : value > 0 ? "warning" : "healthy";
+  if (label === "Taxa Aprovação") return value < 50 ? "critical" : value < 70 ? "warning" : "healthy";
+  return "neutral";
+};
+
 const kpis = [
   { label: "Produção Nacional", value: getTotalProduction(), suffix: " BOPD", icon: Activity, status: "neutral" as SemaphoreStatus, drill: "Produção agregada de todos os blocos activos" },
   { label: "Reservas Estimadas", value: getTotalReserves(), suffix: " Mb", icon: BarChart3, status: "neutral" as SemaphoreStatus, drill: "Soma de reservas P1+P2 de todas as concessões" },
