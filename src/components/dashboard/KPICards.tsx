@@ -1,7 +1,7 @@
 import { ExecutiveKPICard, type SemaphoreStatus } from "./ExecutiveKPICard";
 import { getTotalProduction, getTotalReserves, getActiveBlocks, getTotalCapex, getAvgExecutionRate, oilBlocks, getBlocksByPhase } from "@/data/angolaBlocks";
 import { homologacoesData } from "@/data/homologacoesData";
-import { Activity, BarChart3, Boxes, DollarSign, TrendingUp, AlertTriangle, Landmark, Pickaxe, Search, Wrench, FileText, CheckCircle } from "lucide-react";
+import { Activity, BarChart3, Boxes, DollarSign, Landmark, Pickaxe, Search, Wrench, FileText, CheckCircle } from "lucide-react";
 
 const blocksInProduction = () => getBlocksByPhase("Production").length;
 const blocksInExploration = () => getBlocksByPhase("Exploration").length;
@@ -59,30 +59,16 @@ const aprovacaoSpark = (() => {
     .map(([, v]) => Math.round((v.approved / v.total) * 100));
 })();
 
-// Sparkline data derived from current production
-const totalProd = getTotalProduction();
-const prodSpark = [
-  Math.round(totalProd * 1.05),
-  Math.round(totalProd * 1.035),
-  Math.round(totalProd * 1.02),
-  Math.round(totalProd * 1.01),
-  Math.round(totalProd * 1.003),
-  totalProd,
-];
-const reservesSpark = [9200, 9180, 9150, 9120, 9100, 9080];
-
 const getStatus = (label: string, value: number): SemaphoreStatus => {
-  if (label === "Risco Crítico" || label === "Instalações Críticas") return value > 0 ? "critical" : "healthy";
-  if (label === "Sem Produção") return value > 5 ? "warning" : "healthy";
+  if (label === "Instalações Críticas") return value > 0 ? "critical" : "healthy";
   if (label === "Contratos a Expirar") return value > 3 ? "warning" : value > 0 ? "warning" : "healthy";
   if (label === "Taxa Aprovação") return value < 50 ? "critical" : value < 70 ? "warning" : "healthy";
   return "neutral";
 };
 
 const kpis = [
-  { label: "Produção Nacional", value: getTotalProduction(), suffix: " BOPD", icon: Activity, variation: -2.1, variationLabel: "m/m", sparkline: prodSpark, status: "neutral" as SemaphoreStatus, drill: "Produção agregada de todos os blocos activos" },
-  { label: "Reservas Estimadas", value: getTotalReserves(), suffix: " Mb", icon: BarChart3, sparkline: reservesSpark, status: "neutral" as SemaphoreStatus, drill: "Soma de reservas P1+P2 de todas as concessões" },
-  { label: "Variação Produção", value: -4.8, suffix: "%", icon: TrendingUp, status: "warning" as SemaphoreStatus, drill: "Variação anual da produção nacional" },
+  { label: "Produção Nacional", value: getTotalProduction(), suffix: " BOPD", icon: Activity, status: "neutral" as SemaphoreStatus, drill: "Produção agregada de todos os blocos activos" },
+  { label: "Reservas Estimadas", value: getTotalReserves(), suffix: " Mb", icon: BarChart3, status: "neutral" as SemaphoreStatus, drill: "Soma de reservas P1+P2 de todas as concessões" },
   { label: "Concessões Activas", value: getActiveBlocks(), suffix: ` / ${oilBlocks.length}`, icon: Boxes, status: "neutral" as SemaphoreStatus, drill: "Concessões activas vs total adjudicado" },
   { label: "Blocos em Produção", value: blocksInProduction(), suffix: "", icon: Pickaxe, status: "healthy" as SemaphoreStatus, drill: "Blocos com produção de hidrocarbonetos activa" },
   { label: "Em Exploração", value: blocksInExploration(), suffix: "", icon: Search, status: "neutral" as SemaphoreStatus, drill: "Blocos em fase de exploração pura" },
@@ -104,8 +90,6 @@ export const KPICards = ({ compact = false }: { compact?: boolean }) => (
         prefix={kpi.prefix}
         suffix={kpi.suffix}
         icon={kpi.icon}
-        variation={kpi.variation}
-        variationLabel={kpi.variationLabel}
         status={kpi.status}
         sparklineData={kpi.sparkline}
         drillDownInfo={kpi.drill}

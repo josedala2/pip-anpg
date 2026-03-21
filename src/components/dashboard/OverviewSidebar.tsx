@@ -6,77 +6,43 @@ import { type OilBlock, oilBlocks, getTotalProduction, getTotalReserves, getActi
 import { Activity, BarChart3, Boxes, DollarSign, TrendingUp, Filter, ChevronDown } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, LineChart, Line } from "recharts";
-
-// Sparkline trend data per KPI (last 6 months)
-const sparkData = {
-  production: [{ v: 1180 }, { v: 1210 }, { v: 1195 }, { v: 1250 }, { v: 1280 }, { v: 1304 }],
-  reserves:   [{ v: 4800 }, { v: 4850 }, { v: 4820 }, { v: 4900 }, { v: 4950 }, { v: 4980 }],
-  blocks:     [{ v: 26 }, { v: 27 }, { v: 27 }, { v: 28 }, { v: 28 }, { v: 28 }],
-  capex:      [{ v: 42 }, { v: 44 }, { v: 45 }, { v: 47 }, { v: 48 }, { v: 50 }],
-  execution:  [{ v: 78 }, { v: 80 }, { v: 79 }, { v: 82 }, { v: 83 }, { v: 84 }],
-};
+import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 
 const kpis = [
-  { label: "Produção", value: getTotalProduction(), suffix: " BOPD", icon: Activity, accent: "var(--primary)", spark: sparkData.production },
-  { label: "Reservas", value: getTotalReserves(), suffix: " Mb", icon: BarChart3, accent: "var(--success)", spark: sparkData.reserves },
-  { label: "Blocos Ativos", value: getActiveBlocks(), suffix: "", icon: Boxes, accent: "var(--warning)", spark: sparkData.blocks },
-  { label: "CAPEX", value: getTotalCapex(), prefix: "$", suffix: "M", icon: DollarSign, accent: "var(--primary)", spark: sparkData.capex },
-  { label: "Execução", value: getAvgExecutionRate(), suffix: "%", icon: TrendingUp, accent: "var(--success)", spark: sparkData.execution },
+  { label: "Produção", value: getTotalProduction(), suffix: " BOPD", icon: Activity, accent: "var(--primary)" },
+  { label: "Reservas", value: getTotalReserves(), suffix: " Mb", icon: BarChart3, accent: "var(--success)" },
+  { label: "Blocos Ativos", value: getActiveBlocks(), suffix: "", icon: Boxes, accent: "var(--warning)" },
+  { label: "CAPEX", value: getTotalCapex(), prefix: "$", suffix: "M", icon: DollarSign, accent: "var(--primary)" },
+  { label: "Execução", value: getAvgExecutionRate(), suffix: "%", icon: TrendingUp, accent: "var(--success)" },
 ];
 
-const Sparkline = ({ data, color }: { data: { v: number }[]; color: string }) => (
-  <ResponsiveContainer width="100%" height={24}>
-    <LineChart data={data}>
-      <Line type="monotone" dataKey="v" stroke={color} strokeWidth={1.5} dot={false} />
-    </LineChart>
-  </ResponsiveContainer>
-);
-
+// Build real production trend from blocks with real data
 const computeTrendData = () => {
-  const total = getTotalProduction();
-  return [
-    { month: "Jul", value: Math.round(total * 1.12) },
-    { month: "Ago", value: Math.round(total * 1.10) },
-    { month: "Set", value: Math.round(total * 1.08) },
-    { month: "Out", value: Math.round(total * 1.05) },
-    { month: "Nov", value: Math.round(total * 1.02) },
-    { month: "Dez", value: total },
-  ];
-};
-
-const computeBasins = () => {
-  const basinMap: Record<string, number> = {};
-  oilBlocks.forEach(b => {
-    if (b.dailyProduction > 0) {
-      const basin = b.basin.includes("Congo") ? "Bacia do Congo" : b.basin.includes("Kwanza") ? "Bacia do Kwanza" : "Bacia do Namibe";
-      basinMap[basin] = (basinMap[basin] || 0) + b.dailyProduction;
-    }
+  const monthMap = new Map<string, number>();
+  oilBlocks.forEach((block) => {
+    if (block.pendingRealData || !block.productionHistory || block.productionHistory.length === 0) return;
+    block.productionHistory.forEach((entry) => {
+      monthMap.set(entry.month, (monthMap.get(entry.month) || 0) + entry.value);
+    });
   });
-  const total = Object.values(basinMap).reduce((s, v) => s + v, 0);
-  return Object.entries(basinMap)
-    .map(([name, value]) => ({ name, value, pct: Math.round((value / total) * 100) }))
-    .sort((a, b) => b.value - a.value);
+  return Array.from(monthMap.entries())
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([month, value]) => ({ month, value }));
 };
 
-const trendData = computeTrendData();
-const basins = computeBasins();
-
-const phases = [
-  { phase: "Production", count: getBlocksByPhase("Production").length, color: "hsl(var(--success))" },
-  { phase: "Development", count: getBlocksByPhase("Development").length, color: "hsl(var(--warning))" },
-  { phase: "Exploration", count: getBlocksByPhase("Exploration").length, color: "hsl(var(--primary))" },
-  { phase: "Bidding", count: getBlocksByPhase("Bidding").length, color: "hsl(var(--bidding))" },
-  { phase: "Suspended", count: getBlocksByPhase("Suspended").length, color: "hsl(var(--danger))" },
-];
-
-const investData = [
-  { year: "2020", value: 8200 },
-  { year: "2021", value: 12500 },
-  { year: "2022", value: 18700 },
-  { year: "2023", value: 32400 },
-  { year: "2024", value: 49870 },
-];
+// Build real CAPEX trend from blocks with real data
+const computeInvestData = () => {
+  const yearMap = new Map<string, number>();
+  oilBlocks.forEach((block) => {
+    if (block.pendingRealData || !block.capexHistory || block.capexHistory.length === 0) return;
+    block.capexHistory.forEach((entry) => {
+      yearMap.set(entry.year, (yearMap.get(entry.year) || 0) + entry.actual);
+    });
+  });
+  return Array.from(yearMap.entries())
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([year, value]) => ({ year, value }));
+};
 
 interface OverviewSidebarProps {
   filteredIds: string[];
@@ -100,13 +66,37 @@ export const OverviewSidebar = ({
   onFilterChange,
 }: OverviewSidebarProps) => {
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const trendData = computeTrendData();
+  const investData = computeInvestData();
+
+  const basins = (() => {
+    const basinMap: Record<string, number> = {};
+    oilBlocks.forEach(b => {
+      if (b.dailyProduction > 0) {
+        const basin = b.basin.includes("Congo") ? "Bacia do Congo" : b.basin.includes("Kwanza") ? "Bacia do Kwanza" : "Bacia do Namibe";
+        basinMap[basin] = (basinMap[basin] || 0) + b.dailyProduction;
+      }
+    });
+    const total = Object.values(basinMap).reduce((s, v) => s + v, 0);
+    return Object.entries(basinMap)
+      .map(([name, value]) => ({ name, value, pct: total > 0 ? Math.round((value / total) * 100) : 0 }))
+      .sort((a, b) => b.value - a.value);
+  })();
+
+  const phases = [
+    { phase: "Production", count: getBlocksByPhase("Production").length, color: "hsl(var(--success))" },
+    { phase: "Development", count: getBlocksByPhase("Development").length, color: "hsl(var(--warning))" },
+    { phase: "Exploration", count: getBlocksByPhase("Exploration").length, color: "hsl(var(--primary))" },
+    { phase: "Bidding", count: getBlocksByPhase("Bidding").length, color: "hsl(var(--bidding))" },
+    { phase: "Suspended", count: getBlocksByPhase("Suspended").length, color: "hsl(var(--danger))" },
+  ];
 
   return (
     <div className="h-full flex flex-col overview-panel border-t md:border-t-0 md:border-l border-border/50">
       {/* Panel header */}
       <div className="px-4 py-3 border-b border-border/40">
         <h3 className="text-sm font-bold tracking-tight text-foreground">Command Center</h3>
-        <p className="text-xs text-muted-foreground">Visão consolidada · Q4 2024</p>
+        <p className="text-xs text-muted-foreground">Visão consolidada · Dados reais</p>
       </div>
 
       <ScrollArea className="flex-1">
@@ -125,9 +115,6 @@ export const OverviewSidebar = ({
                     <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">{kpi.label}</span>
                   </div>
                   <AnimatedCounter target={kpi.value} prefix={kpi.prefix || ""} suffix={kpi.suffix} className={`text-sm font-bold tabular-nums ${colorClass}`} />
-                  <div className="mt-1">
-                    <Sparkline data={kpi.spark} color={`hsl(${kpi.accent})`} />
-                  </div>
                 </div>
                 );
               })}
@@ -142,9 +129,6 @@ export const OverviewSidebar = ({
                     <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">{kpi.label}</span>
                   </div>
                   <AnimatedCounter target={kpi.value} prefix={kpi.prefix || ""} suffix={kpi.suffix} className={`text-sm font-bold tabular-nums ${colorClass}`} />
-                  <div className="mt-1">
-                    <Sparkline data={kpi.spark} color={`hsl(${kpi.accent})`} />
-                  </div>
                 </div>
                 );
               })}
