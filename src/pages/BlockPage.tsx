@@ -486,7 +486,7 @@ const BlockPage = () => {
                     {block.contractInfo.initialConsortium && (
                       <div className="mt-2">
                         <button
-                          onClick={() => { setActiveTab("consortium"); window.scrollTo({ top: 0, behavior: "smooth" }); }}
+                          onClick={() => { setActiveTab("econ-financial"); window.scrollTo({ top: 0, behavior: "smooth" }); }}
                           className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors"
                         >
                           <Building2 className="w-3 h-3" />
