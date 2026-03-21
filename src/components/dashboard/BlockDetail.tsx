@@ -3,8 +3,9 @@ import { Link } from "react-router-dom";
 import { type OilBlock } from "@/data/angolaBlocks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { X, GitCompareArrows } from "lucide-react";
+import { X, GitCompareArrows, AlertTriangle } from "lucide-react";
 import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, ReferenceLine } from "recharts";
+import { PendingDataBadge } from "@/components/ui/PendingDataBadge";
 
 interface BlockDetailProps {
   block: OilBlock;
