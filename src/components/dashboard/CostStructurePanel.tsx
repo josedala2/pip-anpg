@@ -37,8 +37,10 @@ export const CostStructurePanel = () => {
 
       const capexTotal = ed?.costHistory?.reduce((s, c) => s + c.capex, 0) || b.accumulatedInvestment;
       const opexTotal = ed?.costHistory?.reduce((s, c) => s + c.opex, 0) || 0;
+      const hasRealOpex = !!ed?.opexPerBarrel;
       const opexPerBarrel = ed?.opexPerBarrel || 20;
       const tc = ev?.technicalCost;
+      const hasRealTechnical = !!tc;
       const technicalCostPerBarrel = tc ? tc.capexPerBarrel + tc.opexPerBarrel : opexPerBarrel + 5;
       const abandonmentTotal = ed?.abandonment?.total || 0;
       const abandonmentFunded = ed?.abandonment?.fundingDeposited || 0;
