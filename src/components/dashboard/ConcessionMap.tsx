@@ -120,7 +120,7 @@ function ProductionIndicators({ blocks, blockPolygons }: { blocks: OilBlock[]; b
 
 
 // Zoom-responsive block labels
-function BlockLabels({ blocks, blockPolygons, showBlocks }: { blocks: OilBlock[]; blockPolygons: Record<string, [number, number][]>; showBlocks: boolean }) {
+function BlockLabels({ blocks, blockPolygons, showBlocks, orphanIds = [] }: { blocks: OilBlock[]; blockPolygons: Record<string, [number, number][]>; showBlocks: boolean; orphanIds?: string[] }) {
   const zoom = useZoom();
 
   const fontSize = zoom <= 4 ? 7 : zoom <= 5 ? 8 : zoom <= 6 ? 9 : zoom <= 7 ? 10 : zoom <= 8 ? 11 : 12;
@@ -143,6 +143,26 @@ function BlockLabels({ blocks, blockPolygons, showBlocks }: { blocks: OilBlock[]
         return (
           <Marker
             key={`label-${block.id}`}
+            position={center}
+            icon={icon}
+            interactive={false}
+          />
+        );
+      })}
+      {orphanIds.map(id => {
+        const polygon = blockPolygons[id];
+        if (!polygon) return null;
+        const center = getPolygonCenter(polygon);
+        const displayName = id.replace(/^block-/, "").replace(/-/g, " ").toUpperCase();
+        const icon = L.divIcon({
+          className: 'leaflet-block-label',
+          html: `<span style="font-size:${fontSize}px;font-weight:500;opacity:0.6">${displayName}</span>`,
+          iconSize: [0, 0],
+          iconAnchor: [0, 0],
+        });
+        return (
+          <Marker
+            key={`label-orphan-${id}`}
             position={center}
             icon={icon}
             interactive={false}
