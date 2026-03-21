@@ -2,17 +2,17 @@ import { useMemo, useState } from "react";
 import { oilBlocks, getTotalProduction } from "@/data/angolaBlocks";
 import { AnimatedCounter } from "./AnimatedCounter";
 import { ChartWrapper } from "./ChartWrapper";
-import { Activity, TrendingUp, Target, ArrowUpRight, ArrowDownRight, Filter } from "lucide-react";
+import { Activity, TrendingUp, Target, ArrowUpRight, ArrowDownRight, Filter, AlertTriangle } from "lucide-react";
 import { SortableHead } from "@/components/ui/sortable-head";
 import {
   PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend,
   BarChart, Bar, XAxis, YAxis, CartesianGrid,
-  AreaChart, Area, ReferenceLine,
 } from "recharts";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { FieldProductionBreakdown } from "./FieldProductionBreakdown";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { PendingDataBadge } from "@/components/ui/PendingDataBadge";
 
 const COLORS = [
   "hsl(var(--primary))", "hsl(var(--success))", "hsl(var(--warning))",
@@ -22,55 +22,37 @@ const COLORS = [
   "hsl(0, 60%, 50%)", "hsl(240, 50%, 60%)", "hsl(90, 55%, 45%)",
 ];
 
-// National forecast data (ANPG 2025 slides)
-const nationalForecast = [
-  { year: 2020, base: 1340, withFID: 0, withoutFID: 0 },
-  { year: 2021, base: 1280, withFID: 0, withoutFID: 0 },
-  { year: 2022, base: 1200, withFID: 0, withoutFID: 0 },
-  { year: 2023, base: 1120, withFID: 0, withoutFID: 0 },
-  { year: 2024, base: 1080, withFID: 0, withoutFID: 0 },
-  { year: 2025, base: 1050, withFID: 0, withoutFID: 0 },
-  { year: 2026, base: 980, withFID: 60, withoutFID: 0 },
-  { year: 2027, base: 920, withFID: 130, withoutFID: 20 },
-  { year: 2028, base: 870, withFID: 210, withoutFID: 50 },
-  { year: 2029, base: 830, withFID: 280, withoutFID: 90 },
-  { year: 2030, base: 790, withFID: 340, withoutFID: 140 },
-  { year: 2031, base: 750, withFID: 380, withoutFID: 200 },
-  { year: 2032, base: 710, withFID: 400, withoutFID: 260 },
-  { year: 2033, base: 680, withFID: 410, withoutFID: 310 },
-  { year: 2034, base: 650, withFID: 420, withoutFID: 350 },
-  { year: 2035, base: 620, withFID: 420, withoutFID: 380 },
-  { year: 2036, base: 590, withFID: 410, withoutFID: 400 },
-  { year: 2037, base: 560, withFID: 400, withoutFID: 640 },
-  { year: 2038, base: 530, withFID: 380, withoutFID: 590 },
-  { year: 2039, base: 500, withFID: 350, withoutFID: 540 },
-  { year: 2040, base: 470, withFID: 320, withoutFID: 490 },
-  { year: 2042, base: 420, withFID: 260, withoutFID: 380 },
-  { year: 2045, base: 350, withFID: 180, withoutFID: 270 },
-  { year: 2048, base: 280, withFID: 120, withoutFID: 180 },
-  { year: 2050, base: 230, withFID: 80, withoutFID: 120 },
-];
-
-// Historical production by year (stacked by top blocks)
-const historicalByBlock = [
-  { year: "2018", "Block 15": 380, "Block 17": 290, "Block 14": 120, "Block 15/06": 150, "Block 0": 140, "Outros": 220 },
-  { year: "2019", "Block 15": 365, "Block 17": 275, "Block 14": 125, "Block 15/06": 145, "Block 0": 135, "Outros": 215 },
-  { year: "2020", "Block 15": 350, "Block 17": 260, "Block 14": 130, "Block 15/06": 140, "Block 0": 130, "Outros": 210 },
-  { year: "2021", "Block 15": 345, "Block 17": 245, "Block 14": 132, "Block 15/06": 135, "Block 0": 120, "Outros": 195 },
-  { year: "2022", "Block 15": 340, "Block 17": 230, "Block 14": 135, "Block 15/06": 128, "Block 0": 115, "Outros": 185 },
-  { year: "2023", "Block 15": 335, "Block 17": 210, "Block 14": 137, "Block 15/06": 125, "Block 0": 108, "Outros": 175 },
-  { year: "2024", "Block 15": 330, "Block 17": 195, "Block 14": 136, "Block 15/06": 122, "Block 0": 102, "Outros": 165 },
-  { year: "2025", "Block 15": 325, "Block 17": 182, "Block 14": 135, "Block 15/06": 121, "Block 0": 98, "Outros": 189 },
-];
-
-const stackKeys = ["Block 15", "Block 17", "Block 14", "Block 15/06", "Block 0", "Outros"];
-const stackColors = [COLORS[0], COLORS[1], COLORS[2], COLORS[3], COLORS[4], COLORS[7]];
-
 type SortKey = "name" | "dailyProduction" | "pct" | "operator" | "basin";
 
 const operators = [...new Set(oilBlocks.filter(b => b.dailyProduction > 0).map(b => b.operator))].sort();
 const basins = [...new Set(oilBlocks.filter(b => b.dailyProduction > 0).map(b => b.basin))].sort();
 const producingBlockNames = oilBlocks.filter(b => b.dailyProduction > 0).sort((a, b) => a.name.localeCompare(b.name));
+
+/** Build monthly stacked bar data from real productionHistory */
+function buildHistoricalFromReal() {
+  const blocksWithHistory = oilBlocks.filter(
+    b => b.dailyProduction > 0 && b.productionHistory && b.productionHistory.length > 0
+  );
+
+  if (blocksWithHistory.length === 0) return { data: [], keys: [] };
+
+  const allMonths = new Set<string>();
+  blocksWithHistory.forEach(b => b.productionHistory.forEach(e => allMonths.add(e.month)));
+  const sortedMonths = Array.from(allMonths).sort();
+
+  const keys = blocksWithHistory.map(b => b.name);
+
+  const data = sortedMonths.map(month => {
+    const row: Record<string, string | number> = { month };
+    blocksWithHistory.forEach(b => {
+      const entry = b.productionHistory.find(e => e.month === month);
+      row[b.name] = entry ? Math.round(entry.value / 1000) : 0;
+    });
+    return row;
+  });
+
+  return { data, keys };
+}
 
 export const ProductionPanel = () => {
   const [sortKey, setSortKey] = useState<SortKey>("dailyProduction");
@@ -119,6 +101,11 @@ export const ProductionPanel = () => {
     [producingBlocks]
   );
 
+  const historical = useMemo(() => buildHistoricalFromReal(), []);
+  const blocksWithHistory = useMemo(() => oilBlocks.filter(
+    b => b.dailyProduction > 0 && b.productionHistory && b.productionHistory.length > 0
+  ), []);
+
   const isFiltered = filterOperator !== "all" || filterBasin !== "all" || filterBlock !== "all";
   const prevYearTotal = 1080000;
   const yoyChange = ((nationalTotal - prevYearTotal) / prevYearTotal) * 100;
@@ -129,9 +116,6 @@ export const ProductionPanel = () => {
     if (sortKey === key) setSortAsc(!sortAsc);
     else { setSortKey(key); setSortAsc(false); }
   };
-
-  const renderPieLabel = ({ name, pct }: { name: string; pct: number }) =>
-    pct >= 3 ? `${name.replace("Block ", "B")} ${pct.toFixed(1)}%` : "";
 
   return (
     <div className="space-y-6">
@@ -255,64 +239,43 @@ export const ProductionPanel = () => {
           </ResponsiveContainer>
         </ChartWrapper>
 
-        {/* Stacked Bar Historical */}
-        <ChartWrapper title="Histórico de Produção por Blocos (kBOPD · 2018–2025)">
-          <ResponsiveContainer width="100%" height={380}>
-            <BarChart data={historicalByBlock}>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-              <XAxis dataKey="year" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }} stroke="hsl(var(--border))" />
-              <YAxis tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }} stroke="hsl(var(--border))" tickFormatter={v => `${v}k`} />
-              <Tooltip
-                contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 11, color: "hsl(var(--foreground))" }}
-                formatter={(value: number, name: string) => [`${value}k BOPD`, name]}
-              />
-              {stackKeys.map((key, i) => (
-                <Bar key={key} dataKey={key} stackId="a" fill={stackColors[i]} radius={i === stackKeys.length - 1 ? [2, 2, 0, 0] : [0, 0, 0, 0]} />
-              ))}
-              <Legend iconType="circle" wrapperStyle={{ fontSize: 10 }} />
-            </BarChart>
-          </ResponsiveContainer>
+        {/* Historical from real data */}
+        <ChartWrapper title={`Produção Mensal por Bloco (kBOPD) · ${blocksWithHistory.length} blocos com dados`}>
+          {historical.data.length > 0 ? (
+            <ResponsiveContainer width="100%" height={380}>
+              <BarChart data={historical.data}>
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                <XAxis dataKey="month" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }} stroke="hsl(var(--border))" />
+                <YAxis tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }} stroke="hsl(var(--border))" tickFormatter={v => `${v}k`} />
+                <Tooltip
+                  contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 11, color: "hsl(var(--foreground))" }}
+                  formatter={(value: number, name: string) => [`${value}k BOPD`, name]}
+                />
+                {historical.keys.map((key, i) => (
+                  <Bar key={key} dataKey={key} stackId="a" fill={COLORS[i % COLORS.length]} radius={i === historical.keys.length - 1 ? [2, 2, 0, 0] : [0, 0, 0, 0]} />
+                ))}
+                <Legend iconType="circle" wrapperStyle={{ fontSize: 10 }} />
+              </BarChart>
+            </ResponsiveContainer>
+          ) : (
+            <div className="flex items-center justify-center h-[380px] text-muted-foreground">
+              <div className="text-center space-y-2">
+                <AlertTriangle className="w-6 h-6 text-warning mx-auto" />
+                <p className="text-xs">Dados de histórico de produção pendentes</p>
+              </div>
+            </div>
+          )}
         </ChartWrapper>
       </div>
 
-      {/* Forecast */}
-      <ChartWrapper title="Previsão de Produção a Médio-Longo Prazo (kBOPD · 2020–2050)">
-        <ResponsiveContainer width="100%" height={340}>
-          <AreaChart data={nationalForecast}>
-            <defs>
-              <linearGradient id="baseGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.4} />
-                <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0} />
-              </linearGradient>
-              <linearGradient id="fidGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="hsl(var(--success))" stopOpacity={0.4} />
-                <stop offset="95%" stopColor="hsl(var(--success))" stopOpacity={0} />
-              </linearGradient>
-              <linearGradient id="noFidGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="hsl(var(--warning))" stopOpacity={0.3} />
-                <stop offset="95%" stopColor="hsl(var(--warning))" stopOpacity={0} />
-              </linearGradient>
-            </defs>
-            <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-            <XAxis dataKey="year" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }} stroke="hsl(var(--border))" />
-            <YAxis tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }} stroke="hsl(var(--border))" tickFormatter={v => `${v}k`} domain={[0, 1800]} />
-            <Tooltip
-              contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 11, color: "hsl(var(--foreground))" }}
-              formatter={(value: number, name: string) => [`${value}k BOPD`, name]}
-            />
-            <ReferenceLine y={1000} stroke="hsl(var(--danger))" strokeDasharray="6 3" label={{ value: "1M BOPD", fill: "hsl(var(--danger))", fontSize: 10, position: "insideTopRight" }} />
-            <Area type="monotone" dataKey="base" stackId="1" stroke="hsl(var(--primary))" fill="url(#baseGrad)" strokeWidth={2} name="Produção de Base" />
-            <Area type="monotone" dataKey="withFID" stackId="1" stroke="hsl(var(--success))" fill="url(#fidGrad)" strokeWidth={1.5} name="Oportunidades c/ FID" />
-            <Area type="monotone" dataKey="withoutFID" stackId="1" stroke="hsl(var(--warning))" fill="url(#noFidGrad)" strokeWidth={1.5} name="Oportunidades s/ FID" />
-            <Legend iconType="circle" wrapperStyle={{ fontSize: 10 }} />
-          </AreaChart>
-        </ResponsiveContainer>
-        <div className="mt-3 px-4 text-[10px] text-muted-foreground space-y-0.5">
-          <p>• Pico previsto: ~1.6 MMbopd em 2037 (cenário com oportunidades)</p>
-          <p>• Médias: 2025-2030: ~1.0 MMbopd | 2031-2040: ~1.4 MMbopd | 2041-2050: ~0.8 MMbopd</p>
-          <p>• Pressupostos: Preços Brent $75-85/bbl, investimento contínuo em exploração e desenvolvimento</p>
-        </div>
-      </ChartWrapper>
+      {/* Data coverage notice */}
+      <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-warning/5 border border-warning/20">
+        <AlertTriangle className="w-4 h-4 text-warning shrink-0" />
+        <p className="text-[11px] text-muted-foreground">
+          <span className="font-semibold text-foreground">{blocksWithHistory.length} de {producingBlocks.length} blocos produtores</span> possuem dados de histórico de produção verificados.
+          Os volumes nacionais são parciais até à integração completa dos dados.
+        </p>
+      </div>
 
       {/* Field-level breakdown */}
       <FieldProductionBreakdown filterOperator={filterOperator} filterBasin={filterBasin} filterBlock={filterBlock} />
@@ -329,6 +292,7 @@ export const ProductionPanel = () => {
                 <SortableHead label="% Total" colKey="pct" sortKey={sortKey} sortDir={sortAsc ? "asc" : "desc"} onSort={handleSort} align="text-right" />
                 <SortableHead label="Bacia" colKey="basin" sortKey={sortKey} sortDir={sortAsc ? "asc" : "desc"} onSort={handleSort} />
                 <TableHead>Fase</TableHead>
+                <TableHead>Dados</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -342,6 +306,12 @@ export const ProductionPanel = () => {
                   <TableCell>
                     <Badge variant="outline" className="text-[10px]">{b.phase}</Badge>
                   </TableCell>
+                  <TableCell>
+                    {b.productionHistory && b.productionHistory.length > 0
+                      ? <Badge variant="outline" className="text-[10px] border-success/50 text-success">Verificado</Badge>
+                      : <PendingDataBadge label="Pendente" />
+                    }
+                  </TableCell>
                 </TableRow>
               ))}
               <TableRow className="font-bold border-t-2 border-primary/30">
@@ -349,6 +319,7 @@ export const ProductionPanel = () => {
                 <TableCell />
                 <TableCell className="text-right font-mono">{totalProduction.toLocaleString()}</TableCell>
                 <TableCell className="text-right font-mono">100%</TableCell>
+                <TableCell />
                 <TableCell />
                 <TableCell />
               </TableRow>
