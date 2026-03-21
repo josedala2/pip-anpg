@@ -1967,7 +1967,7 @@ const BlockPage = () => {
             })()}
 
             {/* Section: Consórcio */}
-            <h3 className="text-sm 2xl:text-base font-semibold flex items-center gap-2 pt-4">
+            <h3 id="section-consorcio" className="text-sm 2xl:text-base font-semibold flex items-center gap-2 pt-4 scroll-mt-28">
               <Users className="w-4 h-4 text-primary" />Composição do Consórcio
             </h3>
 
