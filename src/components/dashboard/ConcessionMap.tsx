@@ -543,13 +543,40 @@ export const ConcessionMap = ({
           );
         })}
 
+        {/* Orphan polygons — blocks with coordinates but no OilBlock entry */}
+        {showBlocks && orphanPolygonIds.map(id => {
+          const polygon = blockPolygons[id];
+          if (!polygon) return null;
+          // Derive a display name from the ID (e.g. "block-con1" → "CON 1")
+          const displayName = id.replace(/^block-/, "").replace(/-/g, " ").toUpperCase();
+          return (
+            <Polygon
+              key={`orphan-${id}`}
+              positions={polygon}
+              pathOptions={{
+                color: "#94a3b8",
+                weight: 1,
+                fillColor: "#64748b",
+                fillOpacity: 0.2,
+                dashArray: "3 3",
+              }}
+            >
+              <LeafletTooltip sticky>
+                <span className="text-[10px] font-medium">{displayName}</span>
+                <br />
+                <span className="text-[9px] opacity-70">Sem dados no sistema</span>
+              </LeafletTooltip>
+            </Polygon>
+          );
+        })}
+
         {/* Production indicators — rendered AFTER polygons so they appear on top */}
         {showProduction && showBlocks && (
           <ProductionIndicators blocks={blocks} blockPolygons={blockPolygons} />
         )}
 
         {/* Zoom-responsive block labels */}
-        <BlockLabels blocks={blocks} blockPolygons={blockPolygons} showBlocks={showBlocks} />
+        <BlockLabels blocks={blocks} blockPolygons={blockPolygons} showBlocks={showBlocks} orphanIds={orphanPolygonIds} />
       </MapContainer>
 
       {/* Layers Panel */}
