@@ -119,6 +119,15 @@ export const ProductionPanel = () => {
 
   return (
     <div className="space-y-6">
+      {/* Data coverage notice */}
+      <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-warning/5 border border-warning/20">
+        <AlertTriangle className="w-4 h-4 text-warning shrink-0" />
+        <p className="text-[11px] text-muted-foreground">
+          <span className="font-semibold text-foreground">{blocksWithHistory.length} de {producingBlocks.length} blocos produtores</span> possuem dados de histórico de produção verificados.
+          Os volumes nacionais são parciais até à integração completa dos dados.
+        </p>
+      </div>
+
       {/* Filters */}
       <div className="flex flex-wrap items-center gap-2 md:gap-3">
         <Filter className="w-4 h-4 text-muted-foreground" />
