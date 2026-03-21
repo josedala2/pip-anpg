@@ -4161,7 +4161,7 @@ export const oilBlocks: OilBlock[] = [
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 0,
     pendingRealData: true,
-  }
+  },
 
   // ── Blocos adicionados do mapa de coordenadas (dados estruturais ANPG 2026) ──
   {
