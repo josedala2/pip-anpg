@@ -69,6 +69,28 @@ export const OverviewSidebar = ({
   const trendData = computeTrendData();
   const investData = computeInvestData();
 
+  const basins = (() => {
+    const basinMap: Record<string, number> = {};
+    oilBlocks.forEach(b => {
+      if (b.dailyProduction > 0) {
+        const basin = b.basin.includes("Congo") ? "Bacia do Congo" : b.basin.includes("Kwanza") ? "Bacia do Kwanza" : "Bacia do Namibe";
+        basinMap[basin] = (basinMap[basin] || 0) + b.dailyProduction;
+      }
+    });
+    const total = Object.values(basinMap).reduce((s, v) => s + v, 0);
+    return Object.entries(basinMap)
+      .map(([name, value]) => ({ name, value, pct: total > 0 ? Math.round((value / total) * 100) : 0 }))
+      .sort((a, b) => b.value - a.value);
+  })();
+
+  const phases = [
+    { phase: "Production", count: getBlocksByPhase("Production").length, color: "hsl(var(--success))" },
+    { phase: "Development", count: getBlocksByPhase("Development").length, color: "hsl(var(--warning))" },
+    { phase: "Exploration", count: getBlocksByPhase("Exploration").length, color: "hsl(var(--primary))" },
+    { phase: "Bidding", count: getBlocksByPhase("Bidding").length, color: "hsl(var(--bidding))" },
+    { phase: "Suspended", count: getBlocksByPhase("Suspended").length, color: "hsl(var(--danger))" },
+  ];
+
   return (
     <div className="h-full flex flex-col overview-panel border-t md:border-t-0 md:border-l border-border/50">
       {/* Panel header */}
