@@ -23,6 +23,11 @@ export const ExecutiveHome = ({ initialDrillDown = null }: { initialDrillDown?: 
 
   return (
     <div className="space-y-4 p-4 md:p-6 2xl:p-8 max-w-[1920px] 3xl:max-w-[2400px] mx-auto">
+      {/* Data disclaimer */}
+      <div className="flex items-center gap-2 px-3 py-2 rounded-lg border border-warning/30 bg-warning/5 text-warning text-[11px]">
+        <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
+        <span>Dados parciais — apenas o Bloco 0 possui informação operacional verificada. Os restantes blocos mantêm dados estruturais do Mapa de Concessões ANPG 2026.</span>
+      </div>
       {/* Zone B — Executive KPIs */}
       <KPICards />
 
