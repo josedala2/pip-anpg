@@ -69,7 +69,13 @@ export const CostStructurePanel = () => {
     const opexComparison = rows
       .filter(r => r.opexPerBarrel > 0)
       .sort((a, b) => b.opexPerBarrel - a.opexPerBarrel)
-      .map(r => ({ name: r.name.replace("Block ", "B").replace(" (Área A, B)", ""), opex: r.opexPerBarrel, technical: r.technicalCostPerBarrel }));
+      .map(r => ({
+        name: r.name.replace("Block ", "B").replace(" (Área A, B)", ""),
+        opex: r.opexPerBarrel,
+        technical: r.technicalCostPerBarrel,
+        isEstimatedOpex: r.isEstimatedOpex,
+        isEstimatedTechnical: r.isEstimatedTechnical,
+      }));
 
     // Cost by operator
     const costByOperator = Object.values(operatorCosts)
