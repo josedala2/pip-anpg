@@ -36,7 +36,7 @@ const computeInvestData = () => {
   oilBlocks.forEach((block) => {
     if (block.pendingRealData || !block.capexHistory || block.capexHistory.length === 0) return;
     block.capexHistory.forEach((entry) => {
-      yearMap.set(entry.year, (yearMap.get(entry.year) || 0) + entry.value);
+      yearMap.set(entry.year, (yearMap.get(entry.year) || 0) + entry.actual);
     });
   });
   return Array.from(yearMap.entries())
