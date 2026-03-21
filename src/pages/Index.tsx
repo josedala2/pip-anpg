@@ -35,7 +35,7 @@ const allPanels = [
   "Home Executiva",
   "CA",
   "Concessões",
-  "Produção & Declínio",
+  "Produção",
   "Exploração",
   "Instalações",
   "Contratos",
