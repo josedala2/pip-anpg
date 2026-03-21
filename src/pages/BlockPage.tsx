@@ -1410,7 +1410,7 @@ const BlockPage = () => {
                 <>
                   {/* Export dropdown */}
                   <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-sm 2xl:text-base font-semibold flex items-center gap-2">
+                    <h3 id="section-resumo-financeiro" className="text-sm 2xl:text-base font-semibold flex items-center gap-2 scroll-mt-28">
                       <DollarSign className="w-4 h-4 text-warning" />Resumo Financeiro
                     </h3>
                     <DropdownMenu>
