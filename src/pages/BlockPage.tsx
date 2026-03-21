@@ -376,7 +376,7 @@ const BlockPage = () => {
                 <TabsTrigger value="concession-status" className="gap-1.5 text-xs 2xl:text-sm"><Landmark className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Estado da Concessão</TabsTrigger>
                 <TabsTrigger value="econ-financial" className="gap-1.5 text-xs 2xl:text-sm"><DollarSign className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Económico & Financeiro</TabsTrigger>
                 <TabsTrigger value="exploration" className="gap-1.5 text-xs 2xl:text-sm"><Target className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Exploração</TabsTrigger>
-                <TabsTrigger value="prod-proj" className="gap-1.5 text-xs 2xl:text-sm"><BarChart3 className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Produção & Projecções</TabsTrigger>
+                <TabsTrigger value="prod-proj" className="gap-1.5 text-xs 2xl:text-sm"><BarChart3 className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Produção</TabsTrigger>
                 <TabsTrigger value="facilities-hse" className="gap-1.5 text-xs 2xl:text-sm"><Building2 className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Instalações & HSE</TabsTrigger>
                 <TabsTrigger value="swot" className="gap-1.5 text-xs 2xl:text-sm"><Brain className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Análise SWOT</TabsTrigger>
                 <TabsTrigger value="documents" className="gap-1.5 text-xs 2xl:text-sm"><BookOpen className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Documentos</TabsTrigger>
