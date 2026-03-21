@@ -374,17 +374,12 @@ const BlockPage = () => {
            <TabsList className="glass-card p-1 2xl:p-1.5 h-auto flex-wrap">
                 <TabsTrigger value="overview" className="gap-1.5 text-xs 2xl:text-sm"><Activity className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Visão Geral</TabsTrigger>
                 <TabsTrigger value="concession-status" className="gap-1.5 text-xs 2xl:text-sm"><Landmark className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Estado da Concessão</TabsTrigger>
-                {(block.economicVision || block.economicData) && <TabsTrigger value="economic-vision" className="gap-1.5 text-xs 2xl:text-sm"><Scale className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Visão Económica</TabsTrigger>}
-               <TabsTrigger value="financial" className="gap-1.5 text-xs 2xl:text-sm"><DollarSign className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Financeiro & Contratual</TabsTrigger>
-              <TabsTrigger value="consortium" className="gap-1.5 text-xs 2xl:text-sm"><Users className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Consórcio</TabsTrigger>
-             <TabsTrigger value="exploration" className="gap-1.5 text-xs 2xl:text-sm"><Target className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Exploração</TabsTrigger>
-              <TabsTrigger value="production" className="gap-1.5 text-xs 2xl:text-sm"><BarChart3 className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Produção</TabsTrigger>
-               <TabsTrigger value="projections" className="gap-1.5 text-xs 2xl:text-sm"><TrendingUp className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Projecções</TabsTrigger>
-               {block.facilityData && <TabsTrigger value="facilities" className="gap-1.5 text-xs 2xl:text-sm"><Building2 className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Instalações</TabsTrigger>}
-                <TabsTrigger value="hse" className="gap-1.5 text-xs 2xl:text-sm"><Leaf className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />HSE & Ambiente</TabsTrigger>
+                <TabsTrigger value="econ-financial" className="gap-1.5 text-xs 2xl:text-sm"><DollarSign className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Económico & Financeiro</TabsTrigger>
+                <TabsTrigger value="exploration" className="gap-1.5 text-xs 2xl:text-sm"><Target className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Exploração</TabsTrigger>
+                <TabsTrigger value="prod-proj" className="gap-1.5 text-xs 2xl:text-sm"><BarChart3 className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Produção & Projecções</TabsTrigger>
+                <TabsTrigger value="facilities-hse" className="gap-1.5 text-xs 2xl:text-sm"><Building2 className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Instalações & HSE</TabsTrigger>
                 <TabsTrigger value="swot" className="gap-1.5 text-xs 2xl:text-sm"><Brain className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Análise SWOT</TabsTrigger>
-                <TabsTrigger value="legislation" className="gap-1.5 text-xs 2xl:text-sm"><BookOpen className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Documentos & Legislação</TabsTrigger>
-                <TabsTrigger value="homologacoes" className="gap-1.5 text-xs 2xl:text-sm"><FileText className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Homologações</TabsTrigger>
+                <TabsTrigger value="documents" className="gap-1.5 text-xs 2xl:text-sm"><BookOpen className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />Documentos</TabsTrigger>
             </TabsList>
 
           {/* Tab 1: Visão Geral */}
