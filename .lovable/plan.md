@@ -1,34 +1,58 @@
 
 
-## Plano: Verificação e Limpeza do Mapa de Concessões
+## Plano: Consolidar 13 abas em 8
 
-### Diagnóstico
+### Estrutura actual (13 abas)
+1. Visão Geral
+2. Estado da Concessão
+3. Visão Económica
+4. Financeiro & Contratual
+5. Consórcio
+6. Exploração
+7. Produção
+8. Projecções
+9. Instalações
+10. HSE & Ambiente
+11. Análise SWOT
+12. Documentos & Legislação
+13. Homologações
 
-Após análise detalhada do código, identifiquei os seguintes problemas:
+### Nova estrutura (8 abas)
 
-#### 1. Erros de sintaxe em ~9 blocos
-Blocos em licitação (22, 25, 26, 34, 35, 36, 37, 39, 40) têm arrays `concession` com vírgulas soltas: `concession: [\n,\n]`. Isto cria arrays com slots vazios e pode causar erros runtime.
+| # | Nova aba | Conteúdo fusionado |
+|---|---|---|
+| 1 | **Visão Geral** | Mantém (KPIs, info gerais, dados contratuais resumidos) |
+| 2 | **Estado da Concessão** | Mantém (semáforo de decisão) |
+| 3 | **Económico & Financeiro** | Fusão de "Visão Económica" + "Financeiro & Contratual" + "Consórcio". Sub-secções internas com headers visuais para separar: painéis económicos ANPG, CAPEX/investimento, composição do consórcio |
+| 4 | **Exploração** | Mantém (sísmica, poços, prospectos, campos) |
+| 5 | **Produção & Projecções** | Fusão de "Produção" + "Projecções". Gráfico de produção histórica seguido das projecções num fluxo contínuo |
+| 6 | **Instalações & HSE** | Fusão de "Instalações" + "HSE & Ambiente". Secção de facilidades seguida de indicadores HSE e ambientais |
+| 7 | **Análise SWOT** | Mantém (geração IA, conteúdo dinâmico — justifica aba própria) |
+| 8 | **Documentos** | Fusão de "Documentos & Legislação" + "Homologações". Legislação + pesquisa de homologações numa só vista |
 
-#### 2. Tipo `WaterDepth` inconsistente
-O tipo define `"Ultra-Deep Water"` (com hífen), mas vários blocos (33, 41, 42, 43) usam `"Ultra Deep Water"` (sem hífen) — causando potenciais erros de tipo TypeScript.
-
-#### 3. Blocos sem polígonos no XLSX (~20 blocos)
-Estes blocos existem em `oilBlocks` mas NÃO têm coordenadas no ficheiro de polígonos, portanto não aparecem no mapa:
-- Sub-blocos: 14K, 15/06, 17/06, 31/21, 15/14 (LIRA), 3/24, 3/05A, 5/06, 6/24, 3/15, 2/15, 16/21, 18/15, 20/11, 22/11, 37/11, 14/23-ZIC
-- Outros: FS/FST, FS Associações, FST Associações
-
-Estes são sub-concessões ou rondas posteriores que partilham a geometria do bloco-mãe. São concessões ANPG legítimas — devem manter-se no dataset mas não necessitam de polígono próprio.
-
-#### 4. Dados fabricados remanescentes no Bloco 2/05
-O bloco `block-2-05` ainda tem `productionHistory` gerado com `Math.random()` (linha 3047) — mock data que escapou à limpeza anterior.
-
-### Alterações propostas
+### Alterações técnicas
 
 | Ficheiro | Alteração |
 |---|---|
-| `src/data/angolaBlocks.ts` | Corrigir `concession: [,]` → `concession: []` nos 9 blocos. Corrigir `"Ultra Deep Water"` → `"Ultra-Deep Water"` em 4 blocos. Limpar `productionHistory` mock do Bloco 2/05. |
-| `src/components/dashboard/ConcessionMap.tsx` | Remover secção de polígonos órfãos (já não necessária com todos os IDs cobertos no dataset). Remover parâmetro `orphanIds` do `BlockLabels`. |
+| `src/pages/BlockPage.tsx` | Reduzir TabsTriggers de 13 para 8. Mover conteúdo das abas fusionadas para dentro da aba-mãe com headers `<h3>` ou `<Card>` separadores. Remover states/imports que ficarem órfãos. |
 
-### Sem remoção de elementos do mapa
-Todos os elementos actualmente no mapa (cidades, limites marítimos, bacias, reservas naturais, zonas de profundidade) correspondem a informação real do PDF do Mapa de Concessões ANPG — nenhum precisa de ser removido.
+### Detalhes de fusão
+
+**Aba "Económico & Financeiro"**: Renderizar em sequência vertical:
+1. `<EconomicVisionTab>` (se existir dados)
+2. Secção CAPEX actual (gráfico + tabela)
+3. Secção Consórcio (pie chart + tabela de parceiros)
+
+**Aba "Produção & Projecções"**: Renderizar em sequência:
+1. Conteúdo actual da aba Produção (gráfico área + campos)
+2. Separador visual
+3. Conteúdo actual da aba Projecções (cenários + gráfico linhas)
+
+**Aba "Instalações & HSE"**: Renderizar em sequência:
+1. `<FacilitiesTab>` (se existir facilityData)
+2. `<HSEEnvironmentTab>`
+
+**Aba "Documentos"**: Renderizar em sequência:
+1. `<LegislationSearch>` (documentos e legislação)
+2. `<HomologacoesPanel>` (com filtro por bloco)
 
