@@ -2164,7 +2164,7 @@ export const oilBlocks: OilBlock[] = [
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 180,
     pendingRealData: true,
-  }
+  },
   // ── Additional blocks from ANPG Concessions Map 2026 ──
   {
     id: "block-31-21",
@@ -2391,7 +2391,7 @@ export const oilBlocks: OilBlock[] = [
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 4600,
     pendingRealData: true,
-  }
+  },
   // ── Onshore Blocks (Cabinda & Congo/Kwanza Interior) ──
   {
     id: "cabinda-norte",
@@ -2675,7 +2675,7 @@ export const oilBlocks: OilBlock[] = [
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 860,
     pendingRealData: true,
-  }
+  },
   // ── KON Blocks (Kwanza Onshore) ──
   {
     id: "block-kon2",
@@ -2960,7 +2960,7 @@ export const oilBlocks: OilBlock[] = [
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 980,
     pendingRealData: true,
-  }
+  },
   // ── FS/FST Associações ──
   {
     id: "fs-associacoes",
@@ -3017,7 +3017,7 @@ export const oilBlocks: OilBlock[] = [
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 380,
     pendingRealData: true,
-  }
+  },
   // ── Shallow Water Blocks (Águas Rasas) ──
   {
     id: "block-2-05",
@@ -3411,7 +3411,7 @@ export const oilBlocks: OilBlock[] = [
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 720,
     pendingRealData: true,
-  }
+  },
   // ── Missing KON Blocks (Kwanza Onshore) ──
   {
     id: "block-kon1",
@@ -3683,7 +3683,7 @@ export const oilBlocks: OilBlock[] = [
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 370,
     pendingRealData: true,
-  }
+  },
   // ── Blocos em Licitação / Fase de Aprovação ──
   {
     id: "block-con9",
@@ -3732,7 +3732,7 @@ export const oilBlocks: OilBlock[] = [
     projections: { conservative: [], base: [], expansion: [] },
     areaKm2: 3200,
     pendingRealData: true,
-  }
+  },
   // ── Blocos adicionados do Mapa ANPG Jan 2026 ──
   {
     id: "block-con7",
