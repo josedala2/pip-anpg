@@ -1293,25 +1293,28 @@ const BlockPage = () => {
                  </Card>
                );
              })()}
+              {/* Projecções */}
+              <div className="pt-2">
+                <h3 className="text-sm 2xl:text-base font-semibold flex items-center gap-2 mb-4">
+                  <TrendingUp className="w-4 h-4 text-primary" />Projecções de Produção (2025–2034)
+                </h3>
+                <ChartWrapper title="Projecções de Produção (3 Cenários)" height={450} fullscreenHeight={700}>
+                    <ResponsiveContainer width="100%" height="100%">
+                      <LineChart data={projectionYears}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                        <XAxis dataKey="year" tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} />
+                        <YAxis tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} tickFormatter={v => `${(v / 1000).toFixed(0)}k`} />
+                        <Tooltip contentStyle={tooltipStyle}
+                          formatter={(val: number, name: string) => [`${val.toLocaleString()} BOPD`, name]} />
+                        <Legend wrapperStyle={legendStyle} />
+                        <Line type="monotone" dataKey="conservative" name="Conservador" stroke="hsl(0, 72%, 51%)" strokeWidth={2} strokeDasharray="5 5" dot={false} animationDuration={1000} />
+                        <Line type="monotone" dataKey="base" name="Base" stroke="hsl(199, 89%, 48%)" strokeWidth={2.5} dot={false} animationDuration={1000} animationBegin={200} />
+                        <Line type="monotone" dataKey="expansion" name="Expansão" stroke="hsl(152, 69%, 40%)" strokeWidth={2} strokeDasharray="5 5" dot={false} animationDuration={1000} animationBegin={400} />
+                      </LineChart>
+                    </ResponsiveContainer>
+                </ChartWrapper>
+              </div>
            </TabsContent>
-
-          <TabsContent value="projections">
-            <ChartWrapper title="Projecções de Produção (2025–2034)" height={450} fullscreenHeight={700}>
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={projectionYears}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                    <XAxis dataKey="year" tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} />
-                    <YAxis tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} tickFormatter={v => `${(v / 1000).toFixed(0)}k`} />
-                    <Tooltip contentStyle={tooltipStyle}
-                      formatter={(val: number, name: string) => [`${val.toLocaleString()} BOPD`, name]} />
-                    <Legend wrapperStyle={legendStyle} />
-                    <Line type="monotone" dataKey="conservative" name="Conservador" stroke="hsl(0, 72%, 51%)" strokeWidth={2} strokeDasharray="5 5" dot={false} animationDuration={1000} />
-                    <Line type="monotone" dataKey="base" name="Base" stroke="hsl(199, 89%, 48%)" strokeWidth={2.5} dot={false} animationDuration={1000} animationBegin={200} />
-                    <Line type="monotone" dataKey="expansion" name="Expansão" stroke="hsl(152, 69%, 40%)" strokeWidth={2} strokeDasharray="5 5" dot={false} animationDuration={1000} animationBegin={400} />
-                  </LineChart>
-                </ResponsiveContainer>
-            </ChartWrapper>
-          </TabsContent>
 
           {/* Tab: Instalações */}
           {block.facilityData && (
