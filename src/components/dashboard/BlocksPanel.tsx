@@ -84,7 +84,10 @@ const CompactBlockCard = ({
       }`}
     >
       <div className="flex items-start justify-between gap-1 mb-1">
-        <span className="font-bold text-[10px] 2xl:text-xs leading-tight truncate">{block.name}</span>
+        <div className="flex items-center gap-1">
+          <span className="font-bold text-[10px] 2xl:text-xs leading-tight truncate">{block.name}</span>
+          {block.pendingRealData && <PendingDataBadge compact className="ml-0.5" />}
+        </div>
         <Badge variant="outline" className={`text-[8px] px-1 py-0 shrink-0 ${phaseColor(block.phase)}`}>
           {block.phase === "Bidding" ? "Licitação" : block.phase}
         </Badge>

@@ -410,7 +410,12 @@ export const ConselhoPanel = () => {
                             </Tooltip>
                           </TooltipProvider>
                         </TableCell>
-                        <TableCell className="py-2 text-xs font-medium">{c.block.name}</TableCell>
+                        <TableCell className="py-2 text-xs font-medium">
+                          <span className="flex items-center gap-1.5">
+                            {c.block.name}
+                            {c.block.pendingRealData && <PendingDataBadge compact />}
+                          </span>
+                        </TableCell>
                         <TableCell className="py-2 text-[11px] text-muted-foreground">{c.block.operator}</TableCell>
                         <TableCell className="py-2 text-xs text-right font-mono">
                           {c.block.dailyProduction > 0
