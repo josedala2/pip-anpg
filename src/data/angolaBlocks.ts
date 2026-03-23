@@ -1518,7 +1518,7 @@ export const oilBlocks: OilBlock[] = [
       { name: "Gazela", status: "Producing", discoveryYear: 1990, peakProduction: 12000 },
     ],
     contractInfo: {
-      decretoLei: "Decreto-Lei 73/05, 28 de Setembro",
+      decretoLei: "Decreto n.º 73/05, 28 de Setembro, alterado pelo DP 176/0 e DP 190/23",
       contractType: "CPP (Contrato de Partilha de Produção)",
       signingDate: "2005-10-04",
       effectiveDate: "2005-11-01",
