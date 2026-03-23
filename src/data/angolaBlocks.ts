@@ -1537,10 +1537,12 @@ export const oilBlocks: OilBlock[] = [
       socialProjectsPeriod: "Faseado ao longo da vida do contrato",
       productionPeriodStart: "20 anos a partir da DDC",
       fiscalConditions: {
-        costRecoveryPreProd: 50,
-        costRecoveryPostProd: 65,
+        costRecoveryPreProd: 80,
+        costRecoveryPostProd: 85,
         irp: 50,
+        irpNoteAngolan: "35% para NOC. Profit Oil GE 60% (Conc. 40%). Em caso de incumprimento das obrigações: Profit Oil 10% GE.",
       },
+      productionPeriodEnd: "2040-12-31",
       researchPeriod: {
         initialPhaseYears: 3,
       },
