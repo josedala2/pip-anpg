@@ -281,7 +281,6 @@ export const ConcessionStatusTab = ({ block }: ConcessionStatusTabProps) => {
                     <div>{yearFromISO(ci.productionPeriodStart)}</div>
                   </div>
                 )}
-                )}
                 <div className="text-center">
                   <div className="font-semibold text-foreground">Hoje</div>
                   <div>{now.getFullYear()}</div>
