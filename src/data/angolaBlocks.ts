@@ -3119,7 +3119,7 @@ export const oilBlocks: OilBlock[] = [
         { name: "POLIEDRO OIL", share: 10.0 },
       ],
       socialProjects: 500000,
-      productionPeriodStart: "1979",
+      productionPeriodStart: "1979-01-01",
       productionPeriodEnd: "2040-12-31",
       researchPeriod: {
         initialPhaseYears: 3,
