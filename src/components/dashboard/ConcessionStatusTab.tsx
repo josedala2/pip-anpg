@@ -273,7 +273,7 @@ export const ConcessionStatusTab = ({ block }: ConcessionStatusTabProps) => {
               <div className="flex justify-between mt-2 text-[10px] 2xl:text-xs text-muted-foreground">
                 <div className="text-left">
                   <div className="font-semibold text-foreground">Assinatura</div>
-                  <div>{contractStart.getFullYear()}</div>
+                  <div>{ci?.signingDate ? yearFromISO(ci.signingDate) : contractStart.getUTCFullYear()}</div>
                 </div>
                 {prodStart && (
                   <div className="text-center">
