@@ -18,6 +18,9 @@ interface ConcessionStatusTabProps {
 
 type SemaphoreLevel = "green" | "yellow" | "red";
 
+/** Extract year from ISO date string without timezone shift */
+const yearFromISO = (iso: string) => parseInt(iso.slice(0, 4), 10);
+
 interface Alert {
   severity: SemaphoreLevel;
   message: string;
@@ -270,12 +273,12 @@ export const ConcessionStatusTab = ({ block }: ConcessionStatusTabProps) => {
               <div className="flex justify-between mt-2 text-[10px] 2xl:text-xs text-muted-foreground">
                 <div className="text-left">
                   <div className="font-semibold text-foreground">Assinatura</div>
-                  <div>{contractStart.getFullYear()}</div>
+                  <div>{ci?.signingDate ? yearFromISO(ci.signingDate) : contractStart.getUTCFullYear()}</div>
                 </div>
-                {prodStart && (
+                {prodStart && ci?.productionPeriodStart && (
                   <div className="text-center">
                     <div className="font-semibold text-foreground">Início Produção</div>
-                    <div>{prodStart.getFullYear()}</div>
+                    <div>{yearFromISO(ci.productionPeriodStart)}</div>
                   </div>
                 )}
                 <div className="text-center">
@@ -284,7 +287,7 @@ export const ConcessionStatusTab = ({ block }: ConcessionStatusTabProps) => {
                 </div>
                 <div className="text-right">
                   <div className="font-semibold text-foreground">Fim do Contrato</div>
-                  <div>{contractEnd.getFullYear()}</div>
+                  <div>{ci?.productionPeriodEnd ? yearFromISO(ci.productionPeriodEnd) : contractEnd.getUTCFullYear()}</div>
                 </div>
               </div>
             </div>
@@ -332,7 +335,7 @@ export const ConcessionStatusTab = ({ block }: ConcessionStatusTabProps) => {
                 ci?.signingDate && ["Data de Assinatura", new Date(ci.signingDate).toLocaleDateString("pt-AO")],
                 ci?.productionPeriodStart && ci?.productionPeriodEnd && [
                   "Período de Produção",
-                  `${new Date(ci.productionPeriodStart).getFullYear()} — ${new Date(ci.productionPeriodEnd).getFullYear()}`,
+                  `${yearFromISO(ci.productionPeriodStart)} — ${yearFromISO(ci.productionPeriodEnd)}`,
                 ],
                 ci?.signatureBonus && ["Bónus de Assinatura", `$${ci.signatureBonus.toLocaleString()}M`],
                 ci?.socialBonus && ["Bónus Social", `$${ci.socialBonus.toLocaleString()}M`],
