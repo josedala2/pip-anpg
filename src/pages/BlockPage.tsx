@@ -1076,6 +1076,11 @@ const BlockPage = () => {
                 </div>
               </div>
             )}
+
+            {/* Development Projects */}
+            {block.developmentProjects && block.developmentProjects.length > 0 && (
+              <DevelopmentProjectsPanel projects={block.developmentProjects} />
+            )}
           </TabsContent>
 
           {/* Tab 4: Produção */}
