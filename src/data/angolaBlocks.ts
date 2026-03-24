@@ -1535,7 +1535,7 @@ export const oilBlocks: OilBlock[] = [
       signatureBonus: 17500000,
       socialProjects: 12500000,
       socialProjectsPeriod: "Faseado ao longo da vida do contrato",
-      productionPeriodStart: "20 anos a partir da DDC",
+      productionPeriodStart: "1985-01-01",
       fiscalConditions: {
         costRecoveryPreProd: 80,
         costRecoveryPostProd: 85,
