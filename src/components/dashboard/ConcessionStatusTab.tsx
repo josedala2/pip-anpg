@@ -275,11 +275,12 @@ export const ConcessionStatusTab = ({ block }: ConcessionStatusTabProps) => {
                   <div className="font-semibold text-foreground">Assinatura</div>
                   <div>{ci?.signingDate ? yearFromISO(ci.signingDate) : contractStart.getUTCFullYear()}</div>
                 </div>
-                {prodStart && (
+                {prodStart && ci?.productionPeriodStart && (
                   <div className="text-center">
                     <div className="font-semibold text-foreground">Início Produção</div>
-                    <div>{prodStart.getFullYear()}</div>
+                    <div>{yearFromISO(ci.productionPeriodStart)}</div>
                   </div>
+                )}
                 )}
                 <div className="text-center">
                   <div className="font-semibold text-foreground">Hoje</div>
