@@ -335,7 +335,7 @@ export const ConcessionStatusTab = ({ block }: ConcessionStatusTabProps) => {
                 ci?.signingDate && ["Data de Assinatura", new Date(ci.signingDate).toLocaleDateString("pt-AO")],
                 ci?.productionPeriodStart && ci?.productionPeriodEnd && [
                   "Período de Produção",
-                  `${new Date(ci.productionPeriodStart).getFullYear()} — ${new Date(ci.productionPeriodEnd).getFullYear()}`,
+                  `${yearFromISO(ci.productionPeriodStart)} — ${yearFromISO(ci.productionPeriodEnd)}`,
                 ],
                 ci?.signatureBonus && ["Bónus de Assinatura", `$${ci.signatureBonus.toLocaleString()}M`],
                 ci?.socialBonus && ["Bónus Social", `$${ci.socialBonus.toLocaleString()}M`],
