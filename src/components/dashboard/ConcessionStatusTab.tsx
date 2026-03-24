@@ -18,6 +18,9 @@ interface ConcessionStatusTabProps {
 
 type SemaphoreLevel = "green" | "yellow" | "red";
 
+/** Extract year from ISO date string without timezone shift */
+const yearFromISO = (iso: string) => parseInt(iso.slice(0, 4), 10);
+
 interface Alert {
   severity: SemaphoreLevel;
   message: string;
