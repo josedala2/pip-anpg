@@ -288,7 +288,7 @@ export const ConcessionStatusTab = ({ block }: ConcessionStatusTabProps) => {
                 </div>
                 <div className="text-right">
                   <div className="font-semibold text-foreground">Fim do Contrato</div>
-                  <div>{contractEnd.getFullYear()}</div>
+                  <div>{ci?.productionPeriodEnd ? yearFromISO(ci.productionPeriodEnd) : contractEnd.getUTCFullYear()}</div>
                 </div>
               </div>
             </div>
