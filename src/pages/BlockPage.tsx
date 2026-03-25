@@ -2050,62 +2050,9 @@ const BlockPage = () => {
                     </div>
                   </div>
 
-                  {/* Change summary */}
-                  {(() => {
-                    const initial = block.contractInfo!.initialConsortium!;
-                    const actual = block.concession;
-                    const allNames = new Set([...initial.map(p => p.name), ...actual.map(p => p.name)]);
-                    const changes: { name: string; from: number; to: number }[] = [];
-                    allNames.forEach(name => {
-                      const ini = initial.find(p => p.name === name)?.share || 0;
-                      const act = actual.find(p => p.name === name)?.share || 0;
-                      if (Math.abs(ini - act) > 0.01) {
-                        changes.push({ name, from: ini, to: act });
-                      }
-                    });
-                    if (changes.length === 0) return null;
-                    return (
-                      <div className="mt-4 pt-4 border-t border-border/30">
-                        <div className="text-[10px] uppercase tracking-wider text-muted-foreground mb-2 font-medium">Alterações Relevantes</div>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
-                          {changes.map(c => (
-                            <div key={c.name} className="glass-card rounded-lg p-2.5 flex items-center justify-between text-xs">
-                              <span className="truncate font-medium">{c.name}</span>
-                              <div className="flex items-center gap-1 font-mono shrink-0 ml-2">
-                                <span className="text-muted-foreground">{c.from > 0 ? `${c.from.toFixed(1)}%` : "—"}</span>
-                                <ArrowRight className="w-3 h-3 text-primary" />
-                                <span className={c.to > 0 ? "font-bold" : "text-danger"}>{c.to > 0 ? `${c.to.toFixed(1)}%` : "Saiu"}</span>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    );
-                  })()}
                 </CardContent>
               </Card>
             )}
-
-            {/* Pie chart - full width */}
-            <Card className="glass-card">
-              <CardHeader className="p-4 pb-2">
-                <CardTitle className="text-sm 2xl:text-base">Distribuição de Participações</CardTitle>
-              </CardHeader>
-              <CardContent className="p-4 pt-0">
-                <ResponsiveContainer width="100%" height={280}>
-                  <PieChart>
-                    <Pie data={block.concession.map(p => ({ name: p.name, value: p.share }))}
-                      cx="50%" cy="50%" innerRadius={60} outerRadius={100} paddingAngle={2} dataKey="value"
-                      label={({ name, value }) => `${name.split(" ")[0]} ${value.toFixed(0)}%`}>
-                      {block.concession.map((_, i) => (
-                        <Cell key={i} fill={CONSORTIUM_COLORS[i % CONSORTIUM_COLORS.length]} />
-                      ))}
-                    </Pie>
-                    <Tooltip formatter={(val: number) => `${val.toFixed(1)}%`} />
-                  </PieChart>
-                </ResponsiveContainer>
-              </CardContent>
-            </Card>
           </TabsContent>
         </Tabs>
       </main>
