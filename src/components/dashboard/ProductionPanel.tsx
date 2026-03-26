@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { oilBlocks, getTotalProduction } from "@/data/angolaBlocks";
 import { AnimatedCounter } from "./AnimatedCounter";
 import { ChartWrapper } from "./ChartWrapper";
-import { Activity, TrendingUp, Target, ArrowUpRight, ArrowDownRight, Filter, AlertTriangle } from "lucide-react";
+import { Activity, TrendingUp, Filter, AlertTriangle } from "lucide-react";
 import { SortableHead } from "@/components/ui/sortable-head";
 import {
   PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend,
