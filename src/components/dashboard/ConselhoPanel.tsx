@@ -300,7 +300,7 @@ export const ConselhoPanel = () => {
           label="Produção Nacional"
           value={`${(macro.totalProduction / 1000).toFixed(0)}K`}
           unit="bbl/dia"
-          trend={macro.totalProduction > 1100000 ? "up" : "down"}
+          trend="neutral"
         />
         <MacroKPI
           icon={CircleDollarSign}
