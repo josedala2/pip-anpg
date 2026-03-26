@@ -170,7 +170,7 @@ export const ProductionPanel = () => {
       </div>
 
       {/* KPIs */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="accent-border-card">
           <div className="flex items-center gap-1.5 mb-1">
             <Activity className="w-4 h-4 text-primary" />
@@ -180,30 +180,11 @@ export const ProductionPanel = () => {
         </div>
         <div className="accent-border-card">
           <div className="flex items-center gap-1.5 mb-1">
-            {yoyChange >= 0
-              ? <ArrowUpRight className="w-4 h-4 text-success" />
-              : <ArrowDownRight className="w-4 h-4 text-danger" />
-            }
-            <span className="text-xs uppercase tracking-wider text-muted-foreground font-semibold">Variação YoY</span>
+            <TrendingUp className="w-4 h-4 text-muted-foreground" />
+            <span className="text-xs uppercase tracking-wider text-muted-foreground font-semibold">Blocos Produtores</span>
           </div>
-          <span className={`text-xl font-bold tabular-nums ${yoyChange >= 0 ? "text-success" : "text-danger"}`}>
-            {yoyChange >= 0 ? "+" : ""}{yoyChange.toFixed(1)}%
-          </span>
-        </div>
-        <div className="accent-border-card">
-          <div className="flex items-center gap-1.5 mb-1">
-            <Target className="w-4 h-4 text-warning" />
-            <span className="text-xs uppercase tracking-wider text-muted-foreground font-semibold">Meta 2026</span>
-          </div>
-          <AnimatedCounter target={target2026} suffix=" BOPD" className="text-xl font-bold tabular-nums text-warning" />
-        </div>
-        <div className="accent-border-card">
-          <div className="flex items-center gap-1.5 mb-1">
-            <TrendingUp className="w-4 h-4 text-success" />
-            <span className="text-xs uppercase tracking-wider text-muted-foreground font-semibold">Cumprimento</span>
-          </div>
-          <span className="text-xl font-bold tabular-nums text-success">
-            {targetCompliance.toFixed(1)}%
+          <span className="text-xl font-bold tabular-nums text-foreground">
+            {filteredBlocks.length}
           </span>
         </div>
       </div>
