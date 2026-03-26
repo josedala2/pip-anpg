@@ -1,43 +1,46 @@
 
 
-## Remover todos os dados gerados por IA da plataforma
+# Actualizar Plataforma para 3 Blocos com Dados Reais
 
-### Contexto
-Os blocos com dados reais carregados são: **Bloco 0**, **Bloco 2/05** e **Bloco 3/05**. Dentro destes e noutros blocos, existem dados que foram gerados por IA em vez de carregados a partir de documentos oficiais.
+## Contexto
+A plataforma tem 124 blocos no dataset, mas apenas **Bloco 0, Bloco 2/05 e Bloco 3/05** possuem dados operacionais verificados. Vários componentes contêm valores hardcoded, banners desactualizados e referências que não reflectem esta realidade.
 
-### Dados a remover
+## Alterações Identificadas
 
-**Bloco 0** (`block-0`):
-- `fields` array (47 campos/descobertas, linhas ~583-629) — nomes reais mas datas e produções estimadas pela IA
-- `prospects` array (10 prospectos, linhas ~659-670) — nomes e valores inventados pela IA
+### 1. Corrigir Banner de Disclaimer
+**Ficheiro:** `ExecutiveHome.tsx` (linha 29)
+- Texto actual: *"apenas o Bloco 0 possui informação operacional verificada"*
+- Novo texto: *"Blocos 0, 2/05 e 3/05 possuem informação operacional verificada"*
 
-**Bloco 3/05** (`block-3`):
-- `fields` array (3 campos: Punja, Caco, Gazela, linhas ~1515-1519) — gerado por IA
-- `seismicData` array (linhas ~1497-1500 aprox.) — verificar se foi carregado ou gerado
-- `wellsData` array (linhas ~1501-1513) — verificar se foi carregado ou gerado
+### 2. Remover Valores Fabricados do ProductionPanel
+**Ficheiro:** `ProductionPanel.tsx` (linhas 110-113)
+- Remover `prevYearTotal = 1080000` (valor inventado)
+- Remover `target2026 = 1100000` (meta inventada)
+- Remover cálculos derivados `yoyChange` e `targetCompliance`
+- Remover da UI quaisquer indicadores YoY e "cumprimento de meta" que dependam destes valores
 
-**Bloco 1/14** (`block-1`):
-- `productionHistory` (12 meses, linhas ~1885-1890) — gerado por IA
-- `capexHistory` (5 anos, linhas ~1892-1895) — gerado por IA
-- `projections` — gerado por IA
-- `seismicData`, `wellsData`, `fields` (Caco Gazela), `explorationSummary` — gerado por IA
-- Valores numéricos: `dailyProduction`, `estimatedReserves`, `accumulatedInvestment`, etc. — gerados por IA
+### 3. Corrigir Threshold no ConselhoPanel
+**Ficheiro:** `ConselhoPanel.tsx` (linha 303)
+- Remover comparação hardcoded `macro.totalProduction > 1100000` para determinar trend
+- Substituir por lógica baseada nos dados reais (ou remover seta de trend)
 
-### O que se mantém
-- **Bloco 0**: Todos os dados excepto `fields` e `prospects` (contrato, sísmica, poços, HSE, ambiental, facilidades, económico, desenvolvimento, visão económica, cenários — tudo carregado pelo utilizador)
-- **Bloco 2/05**: Todos os dados (contrato, consórcio, sísmica, poços, campos, prospects, explorationSummary — carregados pelo utilizador)
-- **Bloco 3/05**: Dados de contrato e consórcio (carregados). Os `fields`, `seismicData` e `wellsData` precisam de confirmação
-- **Todos os outros blocos**: Metadados estruturais do Mapa ANPG 2026 (operador, consórcio, fase, bacia) mantêm-se; já têm `pendingRealData: true` e arrays vazios
+### 4. Auditar Componentes Económicos
+**Ficheiros:** `economicScoring.ts`, `StrategicForecast.tsx`, `GeneralForecastPanel.tsx`, `EconomicFinancialPanel.tsx`
+- `BRENT_PRICE = 78` — é uma referência de mercado aceitável, não dados do bloco
+- Os cenários e scorings já iteram sobre `oilBlocks` e processam os dados que existem — verificar que não geram métricas fictícias para blocos sem dados económicos reais
+- Os painéis de Cenários e Previsão Geral utilizam `economicPlan`, `opexHistory`, etc. — apenas os 3 blocos com dados reais contribuem valores significativos
 
-### Alterações técnicas
+### 5. Verificar Restantes Painéis
+- **FacilitiesIntegrityPanel**: Filtra blocos com `facilityData` — apenas Bloco 0 e 2/05 contribuem
+- **ExplorationPanel**: Usa `seismicData`, `wellsData`, `prospects` — apenas blocos com dados reais aparecem
+- **ContractCompliancePanel**: Usa `contractInfo` de todos os blocos — os 3 blocos têm dados detalhados, os restantes têm metadados estruturais do mapa ANPG (aceitável)
+- **KPICards**: Agrega de `oilBlocks` — os KPIs reflectem naturalmente os dados reais existentes
 
-1. **`src/data/angolaBlocks.ts`**:
-   - Bloco 0: remover `fields: [...]` (substituir por `fields: []`) e `prospects: [...]` (substituir por `prospects: []`)
-   - Bloco 1/14: limpar `productionHistory`, `capexHistory`, `projections`, `seismicData`, `wellsData`, `fields`, `explorationSummary`; zerar valores numéricos fabricados (`dailyProduction: 0`, etc.); adicionar `pendingRealData: true`
-   - Bloco 3/05: remover `fields` (substituir por `fields: []`) — sísmica e poços a confirmar com utilizador
-
-2. **Sem alterações de UI**: Os componentes já tratam arrays vazios graciosamente (mostram "Sem dados" ou ocultam secções)
-
-### Pergunta pendente
-Os dados de **sísmica** e **poços** do Bloco 3/05 foram carregados por si ou também foram gerados? Isto determina se os mantemos ou limpamos.
+### Resumo de Impacto
+| Componente | Acção |
+|---|---|
+| ExecutiveHome banner | Actualizar texto para 3 blocos |
+| ProductionPanel | Remover 3 constantes hardcoded + UI derivada |
+| ConselhoPanel | Remover threshold 1.1M hardcoded |
+| Restantes painéis | Sem alterações necessárias (já derivam dos dados) |
 
