@@ -23,12 +23,17 @@ const QUICK_SUGGESTIONS = [
   "Top 5 blocos por reservas estimadas",
 ];
 
-// Compact index: ~2 lines per block for portfolio-level queries
+// Verified blocks = those with real operational data
+const verifiedBlocks = oilBlocks.filter(b => !b.pendingRealData);
+const verifiedBlockIds = new Set(verifiedBlocks.map(b => b.id));
+
+// Compact index: only verified blocks for portfolio-level queries
 function buildPortfolioIndex(): string {
-  return `## PORTFÓLIO ANGOLA — ${oilBlocks.length} Concessões\n\n` +
+  return `## PORTFÓLIO ANGOLA — ${verifiedBlocks.length} Concessões com Dados Operacionais Verificados\n\n` +
+    `**NOTA**: Apenas ${verifiedBlocks.length} blocos possuem dados operacionais verificados. Os restantes ${oilBlocks.length - verifiedBlocks.length} blocos do Mapa de Concessões ANPG 2026 possuem apenas metadados estruturais (nome, operador, fase) e NÃO devem ser usados para análise operacional, financeira ou estratégica.\n\n` +
     `| Bloco | Operador | Fase | Produção (BOPD) | Reservas (MMBO) | Risco | Compliance |\n` +
     `|-------|---------|------|----------------|----------------|-------|------------|\n` +
-    oilBlocks.map(b =>
+    verifiedBlocks.map(b =>
       `| ${b.name} | ${b.operator} | ${b.phase} | ${b.dailyProduction.toLocaleString()} | ${b.estimatedReserves} | ${b.riskScore}/10 | ${b.complianceScore}% |`
     ).join("\n");
 }
@@ -338,18 +343,18 @@ function buildBlockDetail(b: typeof oilBlocks[0]): string {
   return parts.join("\n");
 }
 
-// Detect which blocks the user is asking about
+// Detect which blocks the user is asking about (only verified blocks)
 function detectMentionedBlocks(query: string): typeof oilBlocks {
   const q = query.toLowerCase();
   
   // Check for portfolio-wide queries
   const portfolioKeywords = ["todos", "portfólio", "portfolio", "angola", "ranking", "top", "maior", "menor", "total", "quantos", "quantas", "concessões", "concessoes"];
   if (portfolioKeywords.some(k => q.includes(k))) {
-    return oilBlocks; // Return all for portfolio queries but we'll use index only
+    return verifiedBlocks; // Return only verified blocks for portfolio queries
   }
   
   const matched: typeof oilBlocks = [];
-  for (const b of oilBlocks) {
+  for (const b of verifiedBlocks) {
     const blockNum = b.id.replace("block-", "").replace("kn-", "").replace("fs-", "");
     const nameLC = b.name.toLowerCase();
     // Match "bloco 0", "block 0", "bloco 14", the full name, or operator
