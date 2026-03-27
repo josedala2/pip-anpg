@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useCallback } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -52,6 +52,14 @@ export const AlertsPanel = () => {
   const toggleRule = (ruleId: string) => {
     setRules(prev => prev.map(r => r.id === ruleId ? { ...r, enabled: !r.enabled } : r));
   };
+
+  const updateThreshold = useCallback((ruleId: string, value: number) => {
+    setRules(prev => prev.map(r =>
+      r.id === ruleId && r.configurable
+        ? { ...r, configurable: { ...r.configurable, value: Math.min(r.configurable.max, Math.max(r.configurable.min, value)) } }
+        : r
+    ));
+  }, []);
 
   return (
     <div className="space-y-6">
@@ -227,6 +235,23 @@ export const AlertsPanel = () => {
                       <div className="flex-1 min-w-0">
                         <div className="text-xs font-semibold">{rule.label}</div>
                         <div className="text-[10px] text-muted-foreground">{rule.description}</div>
+                        {rule.configurable && (
+                          <div className="flex items-center gap-2 mt-1.5">
+                            <span className="text-[10px] text-muted-foreground">Limiar:</span>
+                            <input
+                              type="number"
+                              value={rule.configurable.value}
+                              min={rule.configurable.min}
+                              max={rule.configurable.max}
+                              step={rule.configurable.step}
+                              onChange={e => updateThreshold(rule.id, parseFloat(e.target.value) || rule.configurable!.min)}
+                              className="w-20 text-xs bg-muted/50 border border-border rounded-md px-2 py-0.5 tabular-nums text-center"
+                            />
+                            {rule.configurable.unit && (
+                              <span className="text-[10px] text-muted-foreground">{rule.configurable.unit}</span>
+                            )}
+                          </div>
+                        )}
                       </div>
                       <Badge variant="outline" className={`text-[8px] shrink-0 ${catStyle.color}`}>{categoryLabels[rule.category]}</Badge>
                       <Switch checked={rule.enabled} onCheckedChange={() => toggleRule(rule.id)} />
