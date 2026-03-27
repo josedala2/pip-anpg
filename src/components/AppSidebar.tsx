@@ -105,7 +105,7 @@ export function AppSidebar({ activePanel, onPanelChange, panels }: AppSidebarPro
           const groupActive = group.items.some((item) => activeLabel === item.panel);
 
           return (
-            <SidebarGroup key={group.label} defaultOpen={groupActive || true}>
+            <SidebarGroup key={group.label}>
               <SidebarGroupLabel className="text-[10px] uppercase tracking-wider text-muted-foreground/70 font-bold">
                 {!collapsed ? (
                   <span className="flex items-center gap-1.5">
