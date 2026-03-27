@@ -18,7 +18,7 @@ const CHART_COLORS = [
 
 export const FiscalImpactPanel = () => {
   const data = useMemo(() => {
-    const blockFiscal = oilBlocks.map(b => {
+    const blockFiscal = oilBlocks.filter(b => !b.pendingRealData).map(b => {
       const fc = b.contractInfo?.fiscalConditions;
       const stateRevenue = getBlockStateRevenue(b);
       const ipp = fc?.ipp || 0;

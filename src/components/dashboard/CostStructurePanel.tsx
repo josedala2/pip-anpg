@@ -33,7 +33,7 @@ export const CostStructurePanel = () => {
     const rows: CostRow[] = [];
     const operatorCosts: Record<string, { capex: number; opex: number; operator: string }> = {};
 
-    oilBlocks.forEach(b => {
+    oilBlocks.filter(b => !b.pendingRealData).forEach(b => {
       const ed = b.economicData;
       const ev = b.economicVision;
 

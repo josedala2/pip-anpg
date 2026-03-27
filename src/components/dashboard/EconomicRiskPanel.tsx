@@ -20,7 +20,7 @@ const BRENT_PRICE = 78;
 
 export const EconomicRiskPanel = () => {
   const data = useMemo(() => {
-    const scores = calculateAllEconomicScores(oilBlocks);
+    const scores = calculateAllEconomicScores(oilBlocks.filter(b => !b.pendingRealData));
     const producing = scores.filter(s => s.dailyProduction > 0);
 
     // High OPEX blocks
