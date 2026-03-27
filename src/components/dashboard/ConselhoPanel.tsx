@@ -266,6 +266,14 @@ export const ConselhoPanel = () => {
 
   return (
     <div className="space-y-5 p-4 md:p-6 2xl:p-8 max-w-[1920px] 3xl:max-w-[2400px] mx-auto">
+      {/* ── Disclaimer Banner ── */}
+      <div className="flex items-center gap-2 rounded-lg border border-warning/40 bg-warning/10 px-4 py-2.5 text-sm text-warning-foreground">
+        <AlertTriangle className="h-4 w-4 shrink-0 text-warning" />
+        <span>
+          Dados parciais — esta análise baseia-se nos <strong>Blocos 0, 2/05 e 3/05</strong>, os únicos com informação operacional verificada.
+        </span>
+      </div>
+
       {/* ── Zone A: Executive Summary Line ── */}
       <div className="flex items-center justify-between">
         <div>
