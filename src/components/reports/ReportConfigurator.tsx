@@ -53,21 +53,23 @@ export const ReportConfigurator = ({ config, onChange, onGenerate, allowedReport
   const [blockSearch, setBlockSearch] = useState("");
   const [operatorSearch, setOperatorSearch] = useState("");
 
-  const filteredBlocks = oilBlocks.filter(b =>
+  const verifiedBlocks = useMemo(() => oilBlocks.filter(b => !b.pendingRealData), []);
+
+  const filteredBlocks = verifiedBlocks.filter(b =>
     b.name.toLowerCase().includes(blockSearch.toLowerCase()) ||
     b.operator.toLowerCase().includes(blockSearch.toLowerCase())
   );
 
   const uniqueOperators = useMemo(() =>
-    [...new Set(oilBlocks.map(b => b.operator))].sort(),
-    []
+    [...new Set(verifiedBlocks.map(b => b.operator))].sort(),
+    [verifiedBlocks]
   );
 
   const filteredOperators = uniqueOperators.filter(o =>
     o.toLowerCase().includes(operatorSearch.toLowerCase())
   );
 
-  const allSelected = config.selectedBlockIds.length === oilBlocks.length;
+  const allSelected = config.selectedBlockIds.length === verifiedBlocks.length;
   const allOperatorsSelected = config.selectedOperators.length === uniqueOperators.length;
 
   const hasOperatorsType = config.reportTypes.includes("operators");
@@ -76,7 +78,7 @@ export const ReportConfigurator = ({ config, onChange, onGenerate, allowedReport
   const toggleAllBlocks = () => {
     onChange({
       ...config,
-      selectedBlockIds: allSelected ? [] : oilBlocks.map(b => b.id),
+      selectedBlockIds: allSelected ? [] : verifiedBlocks.map(b => b.id),
     });
   };
 
@@ -179,7 +181,7 @@ export const ReportConfigurator = ({ config, onChange, onGenerate, allowedReport
 
           <div className="max-h-48 overflow-y-auto space-y-1 rounded-lg border border-border p-2">
             {filteredOperators.map(op => {
-              const blockCount = oilBlocks.filter(b => b.operator === op).length;
+              const blockCount = verifiedBlocks.filter(b => b.operator === op).length;
               return (
                 <label
                   key={op}

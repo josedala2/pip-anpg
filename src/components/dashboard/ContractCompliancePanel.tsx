@@ -64,7 +64,7 @@ export const ContractCompliancePanel = () => {
   const [selectedTab, setSelectedTab] = useState("timeline");
 
   const contracts: BlockContract[] = useMemo(() => {
-    return oilBlocks.map(block => {
+    return oilBlocks.filter(b => !b.pendingRealData).map(block => {
       const endDate = parseContractEnd(block);
       const months = endDate ? monthsUntil(endDate) : null;
       return {

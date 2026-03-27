@@ -24,14 +24,15 @@ const COLORS = [
 
 type SortKey = "name" | "dailyProduction" | "pct" | "operator" | "basin";
 
-const operators = [...new Set(oilBlocks.filter(b => b.dailyProduction > 0).map(b => b.operator))].sort();
-const basins = [...new Set(oilBlocks.filter(b => b.dailyProduction > 0).map(b => b.basin))].sort();
-const producingBlockNames = oilBlocks.filter(b => b.dailyProduction > 0).sort((a, b) => a.name.localeCompare(b.name));
+const verifiedProducing = oilBlocks.filter(b => !b.pendingRealData && b.dailyProduction > 0);
+const operators = [...new Set(verifiedProducing.map(b => b.operator))].sort();
+const basins = [...new Set(verifiedProducing.map(b => b.basin))].sort();
+const producingBlockNames = verifiedProducing.sort((a, b) => a.name.localeCompare(b.name));
 
 /** Build monthly stacked bar data from real productionHistory */
 function buildHistoricalFromReal() {
-  const blocksWithHistory = oilBlocks.filter(
-    b => b.dailyProduction > 0 && b.productionHistory && b.productionHistory.length > 0
+  const blocksWithHistory = verifiedProducing.filter(
+    b => b.productionHistory && b.productionHistory.length > 0
   );
 
   if (blocksWithHistory.length === 0) return { data: [], keys: [] };
@@ -63,7 +64,7 @@ export const ProductionPanel = () => {
 
   const filteredBlocks = useMemo(() =>
     oilBlocks.filter(b => {
-      if (b.dailyProduction <= 0) return false;
+      if (b.pendingRealData || b.dailyProduction <= 0) return false;
       if (filterOperator !== "all" && b.operator !== filterOperator) return false;
       if (filterBasin !== "all" && b.basin !== filterBasin) return false;
       if (filterBlock !== "all" && b.id !== filterBlock) return false;
