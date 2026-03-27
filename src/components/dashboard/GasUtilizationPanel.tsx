@@ -61,7 +61,7 @@ export const GasUtilizationPanel = () => {
       </div>
 
       {/* Main Chart */}
-      <ChartWrapper title="Utilização do Gás Natural — Angola 2017-2025" subtitle="Distribuição por utilização (MMSCFD)">
+      <ChartWrapper title="Utilização do Gás Natural — Angola 2017-2025 (MMSCFD)">
         <ResponsiveContainer width="100%" height={380}>
           <BarChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />

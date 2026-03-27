@@ -23,7 +23,7 @@ export const CumulativeLiftingsPanel = () => {
 
       <div className="grid md:grid-cols-2 gap-6">
         {/* By Entity */}
-        <ChartWrapper title="Distribuição por Entidade" subtitle="GE, Sonangol e Concessionárias">
+        <ChartWrapper title="Distribuição por Entidade">
           <div className="flex items-center gap-6">
             <ResponsiveContainer width={200} height={200}>
               <PieChart>
@@ -64,7 +64,7 @@ export const CumulativeLiftingsPanel = () => {
         </ChartWrapper>
 
         {/* Top ANPG Contributors */}
-        <ChartWrapper title="Top Contribuintes ANPG" subtitle="98% das contribuições totais">
+        <ChartWrapper title="Top Contribuintes ANPG">
           <ResponsiveContainer width="100%" height={200}>
             <BarChart data={topANPGContributors} layout="vertical" margin={{ left: 60 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
