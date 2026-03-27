@@ -5398,16 +5398,16 @@ export const wellsHistory: WellsData[] = [
 
 export const getBlocksByPhase = (phase: BlockPhase) => oilBlocks.filter(b => b.phase === phase);
 
-export const getTotalProduction = () => oilBlocks.reduce((sum, b) => sum + b.dailyProduction, 0);
+export const getTotalProduction = () => oilBlocks.filter(b => !b.pendingRealData).reduce((sum, b) => sum + b.dailyProduction, 0);
 
-export const getTotalReserves = () => oilBlocks.reduce((sum, b) => sum + b.estimatedReserves, 0);
+export const getTotalReserves = () => oilBlocks.filter(b => !b.pendingRealData).reduce((sum, b) => sum + b.estimatedReserves, 0);
 
-export const getActiveBlocks = () => oilBlocks.filter(b => b.phase !== "Bidding").length;
+export const getActiveBlocks = () => oilBlocks.filter(b => !b.pendingRealData && b.phase !== "Bidding").length;
 
-export const getTotalCapex = () => oilBlocks.reduce((sum, b) => sum + b.accumulatedInvestment, 0);
+export const getTotalCapex = () => oilBlocks.filter(b => !b.pendingRealData).reduce((sum, b) => sum + b.accumulatedInvestment, 0);
 
 export const getAvgExecutionRate = () => {
-  const active = oilBlocks.filter(b => b.phase !== "Suspended");
+  const active = oilBlocks.filter(b => !b.pendingRealData && b.phase !== "Suspended");
   return Math.round(active.reduce((sum, b) => sum + b.executionRate, 0) / active.length);
 };
 

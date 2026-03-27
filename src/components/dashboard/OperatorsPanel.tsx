@@ -58,7 +58,7 @@ type SortKey = "production" | "blocks" | "reserves" | "investment" | "compliance
 
 export function buildOperators(): OperatorSummary[] {
   const map = new Map<string, OilBlock[]>();
-  for (const b of oilBlocks) {
+  for (const b of oilBlocks.filter(b => !b.pendingRealData)) {
     const existing = map.get(b.operator) || [];
     existing.push(b);
     map.set(b.operator, existing);

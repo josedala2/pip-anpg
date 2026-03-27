@@ -32,15 +32,16 @@ export const RiskPerformance = () => {
   const [operatorFilter, setOperatorFilter] = useState(ALL);
   const [phaseFilter, setPhaseFilter] = useState(ALL);
 
-  const operators = useMemo(() => [...new Set(oilBlocks.map(b => b.operator))].sort(), []);
-  const phases = useMemo(() => [...new Set(oilBlocks.map(b => b.phase))].sort(), []);
+  const base = useMemo(() => oilBlocks.filter(b => !b.pendingRealData), []);
+  const operators = useMemo(() => [...new Set(base.map(b => b.operator))].sort(), [base]);
+  const phases = useMemo(() => [...new Set(base.map(b => b.phase))].sort(), [base]);
 
   const filtered = useMemo(() => {
-    return oilBlocks.filter(b =>
+    return base.filter(b =>
       (operatorFilter === ALL || b.operator === operatorFilter) &&
       (phaseFilter === ALL || b.phase === phaseFilter)
     );
-  }, [operatorFilter, phaseFilter]);
+  }, [operatorFilter, phaseFilter, base]);
 
   const sorted = [...filtered].sort((a, b) => {
     const diff = (a[sortKey] as number) - (b[sortKey] as number);

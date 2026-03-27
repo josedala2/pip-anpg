@@ -53,14 +53,16 @@ export const ReportConfigurator = ({ config, onChange, onGenerate, allowedReport
   const [blockSearch, setBlockSearch] = useState("");
   const [operatorSearch, setOperatorSearch] = useState("");
 
-  const filteredBlocks = oilBlocks.filter(b =>
+  const verifiedBlocks = useMemo(() => oilBlocks.filter(b => !b.pendingRealData), []);
+
+  const filteredBlocks = verifiedBlocks.filter(b =>
     b.name.toLowerCase().includes(blockSearch.toLowerCase()) ||
     b.operator.toLowerCase().includes(blockSearch.toLowerCase())
   );
 
   const uniqueOperators = useMemo(() =>
-    [...new Set(oilBlocks.map(b => b.operator))].sort(),
-    []
+    [...new Set(verifiedBlocks.map(b => b.operator))].sort(),
+    [verifiedBlocks]
   );
 
   const filteredOperators = uniqueOperators.filter(o =>

@@ -74,11 +74,12 @@ export const AdvancedForecastPanel = () => {
   const nationalOutputs = useMemo(() => runAllScenarios(), []);
 
   // ── Strategic scores ──
-  const strategicScores = useMemo(() => calculateAllScores(oilBlocks), []);
+  const verifiedBlocks = useMemo(() => oilBlocks.filter(b => !b.pendingRealData), []);
+  const strategicScores = useMemo(() => calculateAllScores(verifiedBlocks), [verifiedBlocks]);
 
   // ── Per-block best scenario analysis ──
   const blockAnalysis = useMemo(() => {
-    const producing = oilBlocks.filter(b => b.dailyProduction > 0);
+    const producing = verifiedBlocks.filter(b => b.dailyProduction > 0);
     return producing.map(block => {
       const scenarios = runAllScenariosForBlock(block);
       const strategic = strategicScores.find(s => s.blockId === block.id);
