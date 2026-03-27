@@ -87,18 +87,19 @@ const PROJECT_STATUS_COLORS: Record<string, string> = {
 };
 
 export const ExecutiveBoardPanel = () => {
-  // ── Data aggregation from all modules ──
-  const kpis = useMemo(() => getNationalEconomicKPIs(oilBlocks), []);
+  // ── Data aggregation from verified blocks only ──
+  const verifiedBlocks = useMemo(() => oilBlocks.filter(b => !b.pendingRealData), []);
+  const kpis = useMemo(() => getNationalEconomicKPIs(verifiedBlocks), [verifiedBlocks]);
   const scenarioOutputs = useMemo(() => runAllScenarios(), []);
-  const strategicScores = useMemo(() => calculateAllScores(oilBlocks), []);
+  const strategicScores = useMemo(() => calculateAllScores(verifiedBlocks), [verifiedBlocks]);
   const forecastAlerts = useMemo(() => evaluateForecastAlerts(), []);
   const economicScores = useMemo(
     () => kpis.scores.filter((score): score is NonNullable<(typeof kpis.scores)[number]> => Boolean(score?.classification)),
     [kpis.scores],
   );
 
-  const totalProduction = oilBlocks.reduce((s, b) => s + b.dailyProduction, 0);
-  const producingBlocks = oilBlocks.filter(b => b.dailyProduction > 0).length;
+  const totalProduction = verifiedBlocks.reduce((s, b) => s + b.dailyProduction, 0);
+  const producingBlocks = verifiedBlocks.filter(b => b.dailyProduction > 0).length;
 
   // Best & worst scenarios
   const bestScenario = scenarioOutputs.reduce((a, b) => a.npv > b.npv ? a : b);
@@ -173,7 +174,7 @@ export const ExecutiveBoardPanel = () => {
     const allTiers: { tier: number; label: string; count: number }[] = [];
     const tierMap: Record<number, { label: string; fields: string[] }> = {};
 
-    oilBlocks.forEach(b => {
+    verifiedBlocks.forEach(b => {
       const fd = b.facilityData;
       if (!fd) return;
       totalWHP += fd.wellheadPlatforms || 0;
@@ -200,7 +201,7 @@ export const ExecutiveBoardPanel = () => {
   // ── Development Projects aggregation ──
   const devProjects = useMemo(() => {
     const projects: (DevelopmentProject & { blockName: string })[] = [];
-    oilBlocks.forEach(b => {
+    verifiedBlocks.forEach(b => {
       b.developmentProjects?.forEach(dp => {
         projects.push({ ...dp, blockName: b.name });
       });
@@ -210,7 +211,7 @@ export const ExecutiveBoardPanel = () => {
 
   // ── Utilization rates ──
   const utilizationData = useMemo(() => {
-    return oilBlocks
+    return verifiedBlocks
       .filter(b => b.facilityData?.utilizationRate != null && b.facilityData.utilizationRate > 0)
       .map(b => ({
         name: b.name.replace("Block ", "B").replace(" (Área A, B)", ""),
