@@ -201,7 +201,7 @@ export const StrategicForecast = () => {
     revenue: blockBreakdown.reduce((s, b) => s + b.revenue, 0),
   }), [blockBreakdown]);
 
-  const currentTotal = oilBlocks.reduce((s, b) => s + b.dailyProduction, 0);
+  const currentTotal = verifiedBlocks.reduce((s, b) => s + b.dailyProduction, 0);
   const projected2029 = (projectionData[4] as Record<string, number>)?.[activeScenario] || 0;
   const fiscalMultiplier = oilPrice[0];
 
