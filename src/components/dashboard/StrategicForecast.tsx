@@ -450,14 +450,14 @@ export const StrategicForecast = () => {
             <RechartsTooltip
               contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 11, color: "hsl(var(--foreground))" }}
               formatter={(value: number, name: string) => {
-                const block = oilBlocks.find(b => b.id === name);
+                const block = verifiedBlocks.find(b => b.id === name);
                 return [value.toLocaleString() + " BOPD", block?.name || name];
               }}
             />
-            <Legend wrapperStyle={{ fontSize: 10 }} formatter={(v: string) => oilBlocks.find(b => b.id === v)?.name || v} />
+            <Legend wrapperStyle={{ fontSize: 10 }} formatter={(v: string) => verifiedBlocks.find(b => b.id === v)?.name || v} />
             {activeBlocks.map((b) => (
               <Area key={b.id} type="monotone" dataKey={b.id} stackId="1"
-                fill={BLOCK_COLORS[oilBlocks.indexOf(b)]} stroke={BLOCK_COLORS[oilBlocks.indexOf(b)]} fillOpacity={0.6}
+                fill={BLOCK_COLORS[verifiedBlocks.indexOf(b)]} stroke={BLOCK_COLORS[verifiedBlocks.indexOf(b)]} fillOpacity={0.6}
               />
             ))}
           </AreaChart>
@@ -520,7 +520,7 @@ export const StrategicForecast = () => {
                 {blockBreakdown.map(row => (
                   <TableRow key={row.id} className="cursor-pointer hover:bg-primary/5 text-xs" onClick={() => navigate(`/block/${row.id}`)}>
                     <TableCell className="font-medium flex items-center gap-2">
-                      <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: BLOCK_COLORS[oilBlocks.findIndex(b => b.id === row.id)] }} />
+                      <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: BLOCK_COLORS[verifiedBlocks.findIndex(b => b.id === row.id)] }} />
                       {row.name}
                     </TableCell>
                     <TableCell className="text-muted-foreground">{row.operator}</TableCell>
