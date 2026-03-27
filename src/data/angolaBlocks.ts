@@ -385,6 +385,7 @@ export interface OilBlock {
   developmentProjects?: DevelopmentProject[];
   economicVision?: EconomicVision;
   revitalizationScenarios?: RevitalizationScenario[];
+  technicalRecommendations?: TechnicalRecommendation[];
   pendingRealData?: boolean;
 }
 
