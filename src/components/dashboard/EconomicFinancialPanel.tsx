@@ -85,6 +85,11 @@ export const EconomicFinancialPanel = () => {
 
   return (
     <div className="space-y-6">
+      {/* Disclaimer */}
+      <div className="flex items-center gap-2 px-3 py-2 rounded-lg border border-warning/30 bg-warning/5 text-warning text-[11px]">
+        <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
+        <span>Dados parciais — esta análise baseia-se nos <strong>Blocos 0, 2/05 e 3/05</strong>, os únicos com informação operacional verificada.</span>
+      </div>
       {/* Sub-tab navigation */}
       <div className="flex items-center gap-1 bg-muted/40 rounded-lg p-1 w-fit">
         {subTabs.map(tab => {
