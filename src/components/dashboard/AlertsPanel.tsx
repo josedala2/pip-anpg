@@ -9,6 +9,7 @@ import {
   evaluateAlerts, defaultRules, categoryLabels, severityLabels, severityStyles, categoryStyles,
   type Alert, type AlertCategory, type AlertSeverity, type AlertRule,
 } from "@/lib/alertsEngine";
+import { oilBlocks } from "@/data/angolaBlocks";
 import {
   AlertTriangle, Bell, FileText, Wrench, TrendingDown, TrendingUp, DollarSign, Shield, Leaf, Settings2, Filter,
 } from "lucide-react";
@@ -28,7 +29,8 @@ export const AlertsPanel = () => {
   const [selectedCategory, setSelectedCategory] = useState<AlertCategory | "all">("all");
   const [selectedSeverity, setSelectedSeverity] = useState<AlertSeverity | "all">("all");
 
-  const alerts = useMemo(() => evaluateAlerts(undefined, rules), [rules]);
+  const verifiedBlocks = useMemo(() => oilBlocks.filter(b => !b.pendingRealData), []);
+  const alerts = useMemo(() => evaluateAlerts(verifiedBlocks, rules), [verifiedBlocks, rules]);
 
   const filtered = useMemo(() => {
     let result = alerts;
