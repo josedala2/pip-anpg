@@ -31,7 +31,8 @@ const scenarios: { id: Scenario; label: string; color: string }[] = [
   { id: "expansion", label: "Expansão", color: "hsl(var(--success))" },
 ];
 
-const BLOCK_COLORS = oilBlocks.map((_, i) => `hsl(${i * 25}, 70%, 55%)`);
+const verifiedBlocks = oilBlocks.filter(b => !b.pendingRealData);
+const BLOCK_COLORS = verifiedBlocks.map((_, i) => `hsl(${i * 25}, 70%, 55%)`);
 
 const fmtUSD = (v: number) => v >= 1000 ? `$${(v / 1000).toFixed(1)}B` : `$${v.toFixed(0)}MM`;
 
@@ -45,22 +46,22 @@ export const StrategicForecast = () => {
   // ── Run scenario engine ──
   const scenarioOutputs = useMemo(() => runAllScenarios(), []);
   const baseOutput = useMemo(() => scenarioOutputs.find(s => s.scenario.id === "continuidade")!, [scenarioOutputs]);
-  const economicKPIs = useMemo(() => getNationalEconomicKPIs(oilBlocks), []);
-  const strategicScores = useMemo(() => calculateAllScores(oilBlocks), []);
+  const economicKPIs = useMemo(() => getNationalEconomicKPIs(verifiedBlocks), []);
+  const strategicScores = useMemo(() => calculateAllScores(verifiedBlocks), []);
 
   // ── Aggregate projections ──
   const projectionData = useMemo(() =>
     years.map((year, i) => {
       const row: Record<string, number | string> = { year: year.toString() };
       for (const s of scenarios) {
-        row[s.id] = oilBlocks.reduce((sum, b) => sum + (b.projections[s.id][i] || 0), 0);
+        row[s.id] = verifiedBlocks.reduce((sum, b) => sum + (b.projections[s.id][i] || 0), 0);
       }
       return row;
     }), []
   );
 
   const activeBlocks = useMemo(() =>
-    oilBlocks.filter(b => b.projections[activeScenario].some(v => v > 0)),
+    verifiedBlocks.filter(b => b.projections[activeScenario].some(v => v > 0)),
     [activeScenario]
   );
 
