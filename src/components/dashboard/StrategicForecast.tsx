@@ -31,7 +31,8 @@ const scenarios: { id: Scenario; label: string; color: string }[] = [
   { id: "expansion", label: "Expansão", color: "hsl(var(--success))" },
 ];
 
-const BLOCK_COLORS = oilBlocks.map((_, i) => `hsl(${i * 25}, 70%, 55%)`);
+const verifiedBlocks = oilBlocks.filter(b => !b.pendingRealData);
+const BLOCK_COLORS = verifiedBlocks.map((_, i) => `hsl(${i * 25}, 70%, 55%)`);
 
 const fmtUSD = (v: number) => v >= 1000 ? `$${(v / 1000).toFixed(1)}B` : `$${v.toFixed(0)}MM`;
 
@@ -45,22 +46,22 @@ export const StrategicForecast = () => {
   // ── Run scenario engine ──
   const scenarioOutputs = useMemo(() => runAllScenarios(), []);
   const baseOutput = useMemo(() => scenarioOutputs.find(s => s.scenario.id === "continuidade")!, [scenarioOutputs]);
-  const economicKPIs = useMemo(() => getNationalEconomicKPIs(oilBlocks), []);
-  const strategicScores = useMemo(() => calculateAllScores(oilBlocks), []);
+  const economicKPIs = useMemo(() => getNationalEconomicKPIs(verifiedBlocks), []);
+  const strategicScores = useMemo(() => calculateAllScores(verifiedBlocks), []);
 
   // ── Aggregate projections ──
   const projectionData = useMemo(() =>
     years.map((year, i) => {
       const row: Record<string, number | string> = { year: year.toString() };
       for (const s of scenarios) {
-        row[s.id] = oilBlocks.reduce((sum, b) => sum + (b.projections[s.id][i] || 0), 0);
+        row[s.id] = verifiedBlocks.reduce((sum, b) => sum + (b.projections[s.id][i] || 0), 0);
       }
       return row;
     }), []
   );
 
   const activeBlocks = useMemo(() =>
-    oilBlocks.filter(b => b.projections[activeScenario].some(v => v > 0)),
+    verifiedBlocks.filter(b => b.projections[activeScenario].some(v => v > 0)),
     [activeScenario]
   );
 
@@ -200,7 +201,7 @@ export const StrategicForecast = () => {
     revenue: blockBreakdown.reduce((s, b) => s + b.revenue, 0),
   }), [blockBreakdown]);
 
-  const currentTotal = oilBlocks.reduce((s, b) => s + b.dailyProduction, 0);
+  const currentTotal = verifiedBlocks.reduce((s, b) => s + b.dailyProduction, 0);
   const projected2029 = (projectionData[4] as Record<string, number>)?.[activeScenario] || 0;
   const fiscalMultiplier = oilPrice[0];
 
@@ -449,14 +450,14 @@ export const StrategicForecast = () => {
             <RechartsTooltip
               contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 11, color: "hsl(var(--foreground))" }}
               formatter={(value: number, name: string) => {
-                const block = oilBlocks.find(b => b.id === name);
+                const block = verifiedBlocks.find(b => b.id === name);
                 return [value.toLocaleString() + " BOPD", block?.name || name];
               }}
             />
-            <Legend wrapperStyle={{ fontSize: 10 }} formatter={(v: string) => oilBlocks.find(b => b.id === v)?.name || v} />
+            <Legend wrapperStyle={{ fontSize: 10 }} formatter={(v: string) => verifiedBlocks.find(b => b.id === v)?.name || v} />
             {activeBlocks.map((b) => (
               <Area key={b.id} type="monotone" dataKey={b.id} stackId="1"
-                fill={BLOCK_COLORS[oilBlocks.indexOf(b)]} stroke={BLOCK_COLORS[oilBlocks.indexOf(b)]} fillOpacity={0.6}
+                fill={BLOCK_COLORS[verifiedBlocks.indexOf(b)]} stroke={BLOCK_COLORS[verifiedBlocks.indexOf(b)]} fillOpacity={0.6}
               />
             ))}
           </AreaChart>
@@ -519,7 +520,7 @@ export const StrategicForecast = () => {
                 {blockBreakdown.map(row => (
                   <TableRow key={row.id} className="cursor-pointer hover:bg-primary/5 text-xs" onClick={() => navigate(`/block/${row.id}`)}>
                     <TableCell className="font-medium flex items-center gap-2">
-                      <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: BLOCK_COLORS[oilBlocks.findIndex(b => b.id === row.id)] }} />
+                      <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: BLOCK_COLORS[verifiedBlocks.findIndex(b => b.id === row.id)] }} />
                       {row.name}
                     </TableCell>
                     <TableCell className="text-muted-foreground">{row.operator}</TableCell>

@@ -20,7 +20,7 @@ const BRENT_PRICE = 78;
 
 export const EconomicRiskPanel = () => {
   const data = useMemo(() => {
-    const scores = calculateAllEconomicScores(oilBlocks);
+    const scores = calculateAllEconomicScores(oilBlocks.filter(b => !b.pendingRealData));
     const producing = scores.filter(s => s.dailyProduction > 0);
 
     // High OPEX blocks
@@ -39,7 +39,7 @@ export const EconomicRiskPanel = () => {
       .sort((a, b) => a.economicMargin - b.economicMargin);
 
     // High abandonment cost
-    const highAbandonment = oilBlocks
+    const highAbandonment = oilBlocks.filter(b => !b.pendingRealData)
       .filter(b => b.economicData?.abandonment && b.economicData.abandonment.total > 500)
       .map(b => ({
         name: b.name,

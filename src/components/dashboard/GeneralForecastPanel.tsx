@@ -24,8 +24,9 @@ import { tooltipDescriptions } from "@/lib/tooltipDescriptions";
 const fmtUSD = (v: number) => v >= 1000 ? `$${(v / 1000).toFixed(1)}B` : `$${v.toFixed(0)}MM`;
 const fmtK = (v: number) => `${(v / 1000).toFixed(0)}k`;
 
-const allOperators = [...new Set(oilBlocks.map(b => b.operator))].sort();
-const allBasins = [...new Set(oilBlocks.map(b => b.basin))].sort();
+const verifiedBlocks = oilBlocks.filter(b => !b.pendingRealData);
+const allOperators = [...new Set(verifiedBlocks.map(b => b.operator))].sort();
+const allBasins = [...new Set(verifiedBlocks.map(b => b.basin))].sort();
 
 export const GeneralForecastPanel = () => {
   const [selectedOperator, setSelectedOperator] = useState("all");
@@ -34,7 +35,7 @@ export const GeneralForecastPanel = () => {
   const isFiltered = selectedOperator !== "all" || selectedBasin !== "all";
 
   const filteredBlocks = useMemo(() => {
-    return oilBlocks.filter(b => {
+    return verifiedBlocks.filter(b => {
       if (selectedOperator !== "all" && b.operator !== selectedOperator) return false;
       if (selectedBasin !== "all" && b.basin !== selectedBasin) return false;
       return true;

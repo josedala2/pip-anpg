@@ -37,10 +37,11 @@ const tooltipStyle = {
   color: "hsl(var(--foreground))",
 };
 
-const operators = [...new Set(oilBlocks.map(b => b.operator))].sort();
-const basins = [...new Set(oilBlocks.map(b => b.basin))].sort();
-const blockNames = oilBlocks.map(b => ({ id: b.id, name: b.name })).sort((a, b) => a.name.localeCompare(b.name));
-const phases = ["Production", "Development", "Exploration", "Bidding", "Suspended"];
+const verifiedBlocks = oilBlocks.filter(b => !b.pendingRealData);
+const operators = [...new Set(verifiedBlocks.map(b => b.operator))].sort();
+const basins = [...new Set(verifiedBlocks.map(b => b.basin))].sort();
+const blockNames = verifiedBlocks.map(b => ({ id: b.id, name: b.name })).sort((a, b) => a.name.localeCompare(b.name));
+const phases = ["Production", "Development", "Exploration"];
 
 const basinLabel: Record<string, string> = {
   "Lower Congo": "Bacia do Congo",
@@ -58,7 +59,7 @@ export const ExplorationPanel = () => {
   const [barMode, setBarMode] = useState<"grouped" | "stacked">("grouped");
 
   const filteredBlocks = useMemo(() => {
-    return oilBlocks.filter(b => {
+    return verifiedBlocks.filter(b => {
       if (filterBlock !== "all" && b.id !== filterBlock) return false;
       if (filterOperator !== "all" && b.operator !== filterOperator) return false;
       if (filterBasin !== "all" && b.basin !== filterBasin) return false;

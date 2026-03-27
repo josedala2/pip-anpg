@@ -18,7 +18,7 @@ const CHART_COLORS = [
 
 export const FiscalImpactPanel = () => {
   const data = useMemo(() => {
-    const blockFiscal = oilBlocks.map(b => {
+    const blockFiscal = oilBlocks.filter(b => !b.pendingRealData).map(b => {
       const fc = b.contractInfo?.fiscalConditions;
       const stateRevenue = getBlockStateRevenue(b);
       const ipp = fc?.ipp || 0;
@@ -67,7 +67,7 @@ export const FiscalImpactPanel = () => {
       }));
 
     // Revenue share: State vs Operators (using economicVision data)
-    const stateVsOperator = oilBlocks
+    const stateVsOperator = oilBlocks.filter(b => !b.pendingRealData)
       .filter(b => b.economicVision?.revenueShare?.length)
       .map(b => {
         const latest = b.economicVision!.revenueShare![b.economicVision!.revenueShare!.length - 1];

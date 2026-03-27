@@ -56,10 +56,11 @@ export const EconomicFinancialPanel = () => {
   const [sortAsc, setSortAsc] = useState(false);
   const [expandedRow, setExpandedRow] = useState<string | null>(null);
 
-  const kpis = useMemo(() => getNationalEconomicKPIs(oilBlocks), []);
-  const revenueByBasin = useMemo(() => getRevenueByBasin(oilBlocks), []);
-  const revenueByOperator = useMemo(() => getRevenueByOperator(oilBlocks), []);
-  const cashFlow = useMemo(() => getAggregatedCashFlow(oilBlocks), []);
+  const verifiedBlocks = useMemo(() => oilBlocks.filter(b => !b.pendingRealData), []);
+  const kpis = useMemo(() => getNationalEconomicKPIs(verifiedBlocks), [verifiedBlocks]);
+  const revenueByBasin = useMemo(() => getRevenueByBasin(verifiedBlocks), [verifiedBlocks]);
+  const revenueByOperator = useMemo(() => getRevenueByOperator(verifiedBlocks), [verifiedBlocks]);
+  const cashFlow = useMemo(() => getAggregatedCashFlow(verifiedBlocks), [verifiedBlocks]);
 
   const sortedScores = useMemo(() => {
     const arr = [...kpis.scores];
