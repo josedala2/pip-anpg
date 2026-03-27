@@ -13,7 +13,7 @@ import { type OilBlock, oilBlocks } from "@/data/angolaBlocks";
 import { ChevronDown, ChevronUp, Users, Bell, Target, FileCheck, AlertTriangle, ShieldCheck } from "lucide-react";
 import { HSENationalPanel } from "./HSENationalPanel";
 
-type DrillDown = "operadores" | "alertas" | "recomendacoes" | "homologacoes" | null;
+type DrillDown = "operadores" | "alertas" | "recomendacoes" | "homologacoes" | "hse" | null;
 
 export const ExecutiveHome = ({ initialDrillDown = null }: { initialDrillDown?: DrillDown }) => {
   const [hoveredBlockId, setHoveredBlockId] = useState<string | null>(null);
