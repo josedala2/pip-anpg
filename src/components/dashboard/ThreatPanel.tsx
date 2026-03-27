@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { evaluateAlerts, severityLabels, categoryLabels, type Alert } from "@/lib/alertsEngine";
+import { oilBlocks } from "@/data/angolaBlocks";
 import { AlertTriangle, Shield, TrendingDown, DollarSign, FileText, Leaf } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
