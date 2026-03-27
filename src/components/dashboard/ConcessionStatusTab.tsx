@@ -362,6 +362,19 @@ export const ConcessionStatusTab = ({ block }: ConcessionStatusTabProps) => {
             </CardTitle>
           </CardHeader>
           <CardContent className="p-4 pt-0 space-y-2">
+            {/* Strategic Recommendation */}
+            <div className={`p-3 rounded-lg ${classConfig.bgColor} border space-y-1`}>
+              <div className="flex items-center gap-2">
+                <Zap className={`w-4 h-4 ${classConfig.color} shrink-0`} />
+                <span className={`text-sm font-semibold ${classConfig.color}`}>Recomendação Estratégica</span>
+              </div>
+              <p className="text-xs text-foreground/80 pl-6">{strategic.recommendation}</p>
+              <div className="pl-6 space-y-0.5">
+                <p className="text-[10px] text-muted-foreground"><span className="font-medium text-foreground/70">Risco de inacção:</span> {strategic.riskOfInaction}</p>
+                <p className="text-[10px] text-muted-foreground"><span className="font-medium text-foreground/70">Impacto esperado:</span> {strategic.expectedImpact}</p>
+              </div>
+            </div>
+
             {alerts.map((alert, i) => {
               const as = semaphoreStyles[alert.severity];
               return (
