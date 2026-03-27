@@ -5,7 +5,7 @@ import { useTableSort } from "@/hooks/useTableSort";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, BarChart, Bar, Legend, ResponsiveContainer } from "recharts";
 import { oilBlocks } from "@/data/angolaBlocks";
-import { ShieldCheck, Flame, Wind, Droplets, AlertTriangle, Activity, Award } from "lucide-react";
+import { ShieldCheck, Flame, Wind, Droplets, AlertTriangle, Activity, Award, Waves } from "lucide-react";
 import { useMemo } from "react";
 
 const verifiedBlocks = oilBlocks.filter(b => !b.pendingRealData && b.hseData?.length);
@@ -103,6 +103,7 @@ export const HSENationalPanel = () => {
     { label: "CO₂ Total (ton)", value: (kpis.totalCO2 / 1000).toFixed(0) + "k", icon: Wind },
     { label: "Flaring (MMSCFD)", value: kpis.totalFlaring.toFixed(1), icon: Flame },
     { label: "Derrames", value: kpis.totalSpills, icon: Droplets },
+    { label: "Oil-in-Water (PPM)", value: kpis.avgOIW.toFixed(1), icon: Waves },
   ];
 
   const blockNames = verifiedBlocks.map(b => b.name);
