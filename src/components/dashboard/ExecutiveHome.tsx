@@ -10,9 +10,10 @@ import { AlertsPanel } from "./AlertsPanel";
 import { CouncilRecommendationsPanel } from "./CouncilRecommendationsPanel";
 import { HomologacoesPanel } from "./HomologacoesPanel";
 import { type OilBlock, oilBlocks } from "@/data/angolaBlocks";
-import { ChevronDown, ChevronUp, Users, Bell, Target, FileCheck, AlertTriangle } from "lucide-react";
+import { ChevronDown, ChevronUp, Users, Bell, Target, FileCheck, AlertTriangle, ShieldCheck } from "lucide-react";
+import { HSENationalPanel } from "./HSENationalPanel";
 
-type DrillDown = "operadores" | "alertas" | "recomendacoes" | "homologacoes" | null;
+type DrillDown = "operadores" | "alertas" | "recomendacoes" | "homologacoes" | "hse" | null;
 
 export const ExecutiveHome = ({ initialDrillDown = null }: { initialDrillDown?: DrillDown }) => {
   const [hoveredBlockId, setHoveredBlockId] = useState<string | null>(null);
@@ -37,7 +38,7 @@ export const ExecutiveHome = ({ initialDrillDown = null }: { initialDrillDown?: 
           <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Painéis Detalhados</span>
         </div>
         <TooltipProvider>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-2">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-2">
             <Tooltip>
               <TooltipTrigger asChild>
                 <div>
@@ -98,6 +99,21 @@ export const ExecutiveHome = ({ initialDrillDown = null }: { initialDrillDown?: 
                 Resumo executivo dos processos de homologação, incluindo montantes aprovados, taxa de aprovação e evolução mensal.
               </TooltipContent>
             </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div>
+                  <DrillDownButton
+                    icon={ShieldCheck}
+                    label="HSE & Ambiente"
+                    isOpen={expandedSection === "hse"}
+                    onClick={() => toggle("hse")}
+                  />
+                </div>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" className="max-w-[260px] text-xs">
+                Indicadores nacionais de segurança ocupacional e ambiente, com TRIR, fatalidades, flaring, CO₂ e ranking por bloco.
+              </TooltipContent>
+            </Tooltip>
           </div>
         </TooltipProvider>
       </div>
@@ -109,6 +125,7 @@ export const ExecutiveHome = ({ initialDrillDown = null }: { initialDrillDown?: 
           {expandedSection === "alertas" && <AlertsPanel />}
           {expandedSection === "recomendacoes" && <CouncilRecommendationsPanel />}
           {expandedSection === "homologacoes" && <HomologacoesPanel />}
+          {expandedSection === "hse" && <HSENationalPanel />}
         </div>
       )}
 
