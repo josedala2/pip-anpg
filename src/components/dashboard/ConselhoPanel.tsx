@@ -150,7 +150,7 @@ export const ConselhoPanel = () => {
 
   // ── Compute all data ──
   const { concessions, macro, alerts, trends } = useMemo(() => {
-    const activeBlocks = oilBlocks.filter(b => b && b.phase !== "Bidding");
+    const activeBlocks = oilBlocks.filter(b => b && !b.pendingRealData && b.phase !== "Bidding");
 
     const concessions: ConcessionHealth[] = activeBlocks.map(block => {
       const strategic = calculateStrategicScore(block);
