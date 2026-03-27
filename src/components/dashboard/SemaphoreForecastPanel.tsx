@@ -114,7 +114,7 @@ export const SemaphoreForecastPanel = ({ block }: SemaphoreForecastPanelProps) =
           const d = new Date(now);
           d.setMonth(d.getMonth() + monthsToYellow);
           list.push({
-            criterion: "Declínio Produção",
+            criterion: "Variação Produção",
             icon: Activity,
             currentLevel: "green",
             nextLevel: "yellow",
@@ -124,7 +124,7 @@ export const SemaphoreForecastPanel = ({ block }: SemaphoreForecastPanelProps) =
           });
         } else {
           list.push({
-            criterion: "Declínio Produção",
+            criterion: "Variação Produção",
             icon: Activity,
             currentLevel: "green",
             nextLevel: null,
@@ -139,7 +139,7 @@ export const SemaphoreForecastPanel = ({ block }: SemaphoreForecastPanelProps) =
         const d = new Date(now);
         d.setMonth(d.getMonth() + monthsToRed);
         list.push({
-          criterion: "Declínio Produção",
+          criterion: "Variação Produção",
           icon: Activity,
           currentLevel: "yellow",
           nextLevel: "red",
@@ -149,7 +149,7 @@ export const SemaphoreForecastPanel = ({ block }: SemaphoreForecastPanelProps) =
         });
       } else {
         list.push({
-          criterion: "Declínio Produção",
+          criterion: "Variação Produção",
           icon: Activity,
           currentLevel,
           nextLevel: null,

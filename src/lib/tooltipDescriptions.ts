@@ -28,7 +28,7 @@ export const tooltipDescriptions: Record<string, string> = {
   "Investimento Executado": "Percentagem do investimento planeado que foi efectivamente executado",
   "Reservas Estimadas (Concessão)": "Reservas provadas e prováveis estimadas para este bloco, em milhões de barris",
   "Compliance": "Grau de cumprimento contratual e regulamentar do operador",
-  "Declínio Produção": "Variação percentual da produção entre os primeiros e últimos períodos registados",
+  "Variação Produção": "Variação percentual da produção entre os primeiros e últimos períodos registados",
   "Idade Máx. Instalação": "Idade da instalação mais antiga do bloco, indicador de risco de integridade",
 
   // ── HSE — Facility cards ──
