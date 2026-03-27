@@ -364,6 +364,61 @@ export const defaultRules: AlertRule[] = [
       return [];
     },
   },
+  // ESG: Oil-in-Water elevated (configurable)
+  {
+    id: "esg-oiw-high",
+    category: "esg",
+    label: "Oil-in-Water elevado",
+    description: "Blocos com concentração de óleo na água (PPM) acima do limiar",
+    enabled: true,
+    configurable: { key: "oiw", unit: "PPM", min: 1, max: 30, step: 1, value: 10 },
+    evaluate: function (block) {
+      const thresh = this.configurable!.value;
+      if (!block.environmentalData?.length) return [];
+      const latest = block.environmentalData[block.environmentalData.length - 1];
+      if (latest.oilInWaterPPM != null && latest.oilInWaterPPM > thresh) {
+        return [{
+          id: makeId(block.id, "esg-oiw-high"),
+          blockId: block.id, blockName: block.name, operator: block.operator,
+          category: "esg", severity: latest.oilInWaterPPM > thresh * 1.5 ? "critical" : "high",
+          title: "Oil-in-Water elevado",
+          description: `Oil-in-Water de ${latest.oilInWaterPPM.toFixed(1)} PPM em ${latest.year} no ${block.name}.`,
+          metric: `${latest.oilInWaterPPM.toFixed(1)} PPM`,
+          threshold: `> ${thresh} PPM`,
+          actionRequired: "Verificar sistemas de tratamento de água produzida e separação.",
+        }];
+      }
+      return [];
+    },
+  },
+  // ESG: CO₂ emissions elevated (configurable)
+  {
+    id: "esg-co2-high",
+    category: "esg",
+    label: "Emissões CO₂ elevadas",
+    description: "Blocos com emissões de CO₂ acima do limiar (kton CO₂eq)",
+    enabled: true,
+    configurable: { key: "co2", unit: "kton", min: 100, max: 5000, step: 100, value: 1000 },
+    evaluate: function (block) {
+      const thresh = this.configurable!.value * 1000; // kton → ton
+      if (!block.environmentalData?.length) return [];
+      const latest = block.environmentalData[block.environmentalData.length - 1];
+      if (latest.co2EmissionsTonCO2eq != null && latest.co2EmissionsTonCO2eq > thresh) {
+        const kton = latest.co2EmissionsTonCO2eq / 1000;
+        return [{
+          id: makeId(block.id, "esg-co2-high"),
+          blockId: block.id, blockName: block.name, operator: block.operator,
+          category: "esg", severity: latest.co2EmissionsTonCO2eq > thresh * 2 ? "critical" : "high",
+          title: "Emissões CO₂ elevadas",
+          description: `${kton.toFixed(0)} kton CO₂eq em ${latest.year} no ${block.name}.`,
+          metric: `${kton.toFixed(0)} kton`,
+          threshold: `> ${this.configurable!.value} kton`,
+          actionRequired: "Avaliar medidas de descarbonização e eficiência energética.",
+        }];
+      }
+      return [];
+    },
+  },
 ];
 
 // ── Forecast-specific alerts (national + per-block) ──
