@@ -20,7 +20,8 @@ export const CouncilRecommendationsPanel = () => {
   const [expandedBlock, setExpandedBlock] = useState<string | null>(null);
   const [selectedRadar, setSelectedRadar] = useState<string | null>(null);
 
-  const scores: StrategicScore[] = useMemo(() => calculateAllScores(oilBlocks), []);
+  const verifiedBlocks = useMemo(() => oilBlocks.filter(b => !b.pendingRealData), []);
+  const scores: StrategicScore[] = useMemo(() => calculateAllScores(verifiedBlocks), [verifiedBlocks]);
 
   // KPIs
   const classificationCounts = useMemo(() => {
