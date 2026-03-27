@@ -25,6 +25,8 @@ export interface AlertRule {
   description: string;
   enabled: boolean;
   evaluate: (block: OilBlock) => Alert[];
+  /** If set, this rule has a user-configurable numeric threshold */
+  configurable?: { key: string; unit: string; min: number; max: number; step: number; value: number };
 }
 
 const currentYear = 2026;
