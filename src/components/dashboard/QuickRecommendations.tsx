@@ -15,7 +15,8 @@ const classificationIcons: Record<string, React.ElementType> = {
 
 export const QuickRecommendations = ({ maxItems = 5 }: { maxItems?: number }) => {
   const top: StrategicScore[] = useMemo(() => {
-    const all = calculateAllScores(oilBlocks);
+    const verifiedBlocks = oilBlocks.filter(b => !b.pendingRealData);
+    const all = calculateAllScores(verifiedBlocks);
     return all.filter(s => s.urgency === "Imediata" || s.urgency === "Elevada").slice(0, maxItems);
   }, [maxItems]);
 
