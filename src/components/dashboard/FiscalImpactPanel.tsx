@@ -67,7 +67,7 @@ export const FiscalImpactPanel = () => {
       }));
 
     // Revenue share: State vs Operators (using economicVision data)
-    const stateVsOperator = oilBlocks
+    const stateVsOperator = oilBlocks.filter(b => !b.pendingRealData)
       .filter(b => b.economicVision?.revenueShare?.length)
       .map(b => {
         const latest = b.economicVision!.revenueShare![b.economicVision!.revenueShare!.length - 1];
