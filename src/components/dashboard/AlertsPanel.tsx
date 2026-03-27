@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useCallback } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -52,6 +52,14 @@ export const AlertsPanel = () => {
   const toggleRule = (ruleId: string) => {
     setRules(prev => prev.map(r => r.id === ruleId ? { ...r, enabled: !r.enabled } : r));
   };
+
+  const updateThreshold = useCallback((ruleId: string, value: number) => {
+    setRules(prev => prev.map(r =>
+      r.id === ruleId && r.configurable
+        ? { ...r, configurable: { ...r.configurable, value: Math.min(r.configurable.max, Math.max(r.configurable.min, value)) } }
+        : r
+    ));
+  }, []);
 
   return (
     <div className="space-y-6">
