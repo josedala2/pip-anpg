@@ -1064,6 +1064,11 @@ const BlockPage = () => {
             {/* Prospects Table */}
             <ProspectsTable blocks={[block]} scopeLabel={block.name} />
 
+            {/* Technical Recommendations */}
+            {block.technicalRecommendations && block.technicalRecommendations.length > 0 && (
+              <TechnicalRecommendationsPanel recommendations={block.technicalRecommendations} blockName={block.name} />
+            )}
+
             {/* Revitalization Scenarios */}
             {block.revitalizationScenarios && block.revitalizationScenarios.length > 0 && (
               <div className="space-y-4">
