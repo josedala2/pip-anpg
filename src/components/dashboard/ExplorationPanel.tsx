@@ -150,6 +150,11 @@ export const ExplorationPanel = () => {
 
   return (
     <div className="space-y-6 2xl:space-y-8">
+      {/* Disclaimer */}
+      <div className="flex items-center gap-2 px-3 py-2 rounded-lg border border-warning/30 bg-warning/5 text-warning text-[11px]">
+        <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
+        <span>Dados parciais — esta análise baseia-se nos <strong>Blocos 0, 2/05 e 3/05</strong>, os únicos com informação operacional verificada.</span>
+      </div>
       {/* Block Filters */}
       <Card className="glass-card">
         <CardHeader className="p-4 3xl:p-6 pb-2">
