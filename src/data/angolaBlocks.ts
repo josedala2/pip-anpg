@@ -5292,14 +5292,9 @@ export const oilBlocks: OilBlock[] = [
 ];
 
 // ── National Exploration Statistics (from ANPG reference data) ──
-
-// SeismicData and WellData interfaces defined above
-
-interface WellsData {
-  year: number;
-  pesquisa: number;
-  avaliacao: number;
-}
+// Note: SeismicData interface is defined at the top of this file.
+// WellsData uses a local type alias for backwards compatibility.
+type WellsDataNational = { year: number; pesquisa: number; avaliacao: number; };
 
 export const nationalStats = {
   seismicAcquired2D: 23816, // km
