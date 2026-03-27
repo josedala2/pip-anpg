@@ -31,7 +31,7 @@ import { tooltipDescriptions } from "@/lib/tooltipDescriptions";
 import {
   PieChart, Pie, Cell, AreaChart, Area, BarChart, Bar, LineChart, Line,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend,
-  Brush, ReferenceLine,
+  Brush, ReferenceLine, LabelList,
 } from "recharts";
 
 
@@ -925,11 +925,21 @@ const BlockPage = () => {
                           <YAxis tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} allowDecimals={false} />
                           <Tooltip contentStyle={tooltipStyle} formatter={(val: number, name: string) => [`${val} poços`, name]} />
                           <Legend wrapperStyle={legendStyle} />
-                          <Bar dataKey="pesquisa" name="Pesquisa" fill="hsl(199, 89%, 48%)" radius={[4, 4, 0, 0]} stackId={explorationBarMode === "stacked" ? "b" : undefined} animationDuration={800} animationEasing="ease-out" />
-                          <Bar dataKey="avaliacao" name="Avaliação" fill="hsl(280, 65%, 60%)" radius={[4, 4, 0, 0]} stackId={explorationBarMode === "stacked" ? "b" : undefined} animationDuration={800} animationEasing="ease-out" animationBegin={150} />
-                          <Bar dataKey="descobertaComercial" name="Desc. Comercial" fill="hsl(var(--success))" radius={[4, 4, 0, 0]} stackId={explorationBarMode === "stacked" ? "b" : undefined} animationDuration={800} animationEasing="ease-out" animationBegin={300} />
-                          <Bar dataKey="descobertaNaoComercial" name="Desc. N. Comercial" fill="hsl(var(--warning))" radius={[4, 4, 0, 0]} stackId={explorationBarMode === "stacked" ? "b" : undefined} animationDuration={800} animationEasing="ease-out" animationBegin={450} />
-                          <Bar dataKey="seco" name="Seco" fill="hsl(var(--danger))" radius={[4, 4, 0, 0]} stackId={explorationBarMode === "stacked" ? "b" : undefined} animationDuration={800} animationEasing="ease-out" animationBegin={600} />
+                          <Bar dataKey="pesquisa" name="Pesquisa" fill="hsl(199, 89%, 48%)" radius={[4, 4, 0, 0]} stackId={explorationBarMode === "stacked" ? "b" : undefined} animationDuration={800} animationEasing="ease-out">
+                            {explorationBarMode === "stacked" && <LabelList dataKey="pesquisa" position="center" fill="hsl(199, 89%, 48%)" fontSize={10} fontWeight="bold" formatter={(v: number) => v > 0 ? v : ""} />}
+                          </Bar>
+                          <Bar dataKey="avaliacao" name="Avaliação" fill="hsl(280, 65%, 60%)" radius={[4, 4, 0, 0]} stackId={explorationBarMode === "stacked" ? "b" : undefined} animationDuration={800} animationEasing="ease-out" animationBegin={150}>
+                            {explorationBarMode === "stacked" && <LabelList dataKey="avaliacao" position="center" fill="hsl(280, 65%, 60%)" fontSize={10} fontWeight="bold" formatter={(v: number) => v > 0 ? v : ""} />}
+                          </Bar>
+                          <Bar dataKey="descobertaComercial" name="Desc. Comercial" fill="hsl(var(--success))" radius={[4, 4, 0, 0]} stackId={explorationBarMode === "stacked" ? "b" : undefined} animationDuration={800} animationEasing="ease-out" animationBegin={300}>
+                            {explorationBarMode === "stacked" && <LabelList dataKey="descobertaComercial" position="center" fill="hsl(var(--success))" fontSize={10} fontWeight="bold" formatter={(v: number) => v > 0 ? v : ""} />}
+                          </Bar>
+                          <Bar dataKey="descobertaNaoComercial" name="Desc. N. Comercial" fill="hsl(var(--warning))" radius={[4, 4, 0, 0]} stackId={explorationBarMode === "stacked" ? "b" : undefined} animationDuration={800} animationEasing="ease-out" animationBegin={450}>
+                            {explorationBarMode === "stacked" && <LabelList dataKey="descobertaNaoComercial" position="center" fill="hsl(var(--warning))" fontSize={10} fontWeight="bold" formatter={(v: number) => v > 0 ? v : ""} />}
+                          </Bar>
+                          <Bar dataKey="seco" name="Seco" fill="hsl(var(--danger))" radius={[4, 4, 0, 0]} stackId={explorationBarMode === "stacked" ? "b" : undefined} animationDuration={800} animationEasing="ease-out" animationBegin={600}>
+                            {explorationBarMode === "stacked" && <LabelList dataKey="seco" position="center" fill="hsl(var(--danger))" fontSize={10} fontWeight="bold" formatter={(v: number) => v > 0 ? v : ""} />}
+                          </Bar>
                           {block.wellsData.length > 20 && <Brush dataKey="year" height={25} stroke="hsl(var(--primary))" fill="hsl(var(--muted))" travellerWidth={8} />}
                         </BarChart>
                       </ResponsiveContainer>
