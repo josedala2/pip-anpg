@@ -926,19 +926,19 @@ const BlockPage = () => {
                           <Tooltip contentStyle={tooltipStyle} formatter={(val: number, name: string) => [`${val} poços`, name]} />
                           <Legend wrapperStyle={legendStyle} />
                           <Bar dataKey="pesquisa" name="Pesquisa" fill="hsl(199, 89%, 48%)" radius={[4, 4, 0, 0]} stackId={explorationBarMode === "stacked" ? "b" : undefined} animationDuration={800} animationEasing="ease-out">
-                            {explorationBarMode === "stacked" && <LabelList dataKey="pesquisa" position="center" fill="hsl(199, 89%, 48%)" fontSize={10} fontWeight="bold" formatter={(v: number) => v > 0 ? v : ""} />}
+                            {explorationBarMode === "stacked" && <LabelList dataKey="pesquisa" position="center" fill="#fff" fontSize={9} fontWeight="bold" formatter={(v: number) => v > 0 ? v : ""} style={{ textShadow: "0 0 3px rgba(0,0,0,0.7)" }} />}
                           </Bar>
                           <Bar dataKey="avaliacao" name="Avaliação" fill="hsl(280, 65%, 60%)" radius={[4, 4, 0, 0]} stackId={explorationBarMode === "stacked" ? "b" : undefined} animationDuration={800} animationEasing="ease-out" animationBegin={150}>
-                            {explorationBarMode === "stacked" && <LabelList dataKey="avaliacao" position="center" fill="hsl(280, 65%, 60%)" fontSize={10} fontWeight="bold" formatter={(v: number) => v > 0 ? v : ""} />}
+                            {explorationBarMode === "stacked" && <LabelList dataKey="avaliacao" position="center" fill="#fff" fontSize={9} fontWeight="bold" formatter={(v: number) => v > 0 ? v : ""} style={{ textShadow: "0 0 3px rgba(0,0,0,0.7)" }} />}
                           </Bar>
                           <Bar dataKey="descobertaComercial" name="Desc. Comercial" fill="hsl(var(--success))" radius={[4, 4, 0, 0]} stackId={explorationBarMode === "stacked" ? "b" : undefined} animationDuration={800} animationEasing="ease-out" animationBegin={300}>
-                            {explorationBarMode === "stacked" && <LabelList dataKey="descobertaComercial" position="center" fill="hsl(var(--success))" fontSize={10} fontWeight="bold" formatter={(v: number) => v > 0 ? v : ""} />}
+                            {explorationBarMode === "stacked" && <LabelList dataKey="descobertaComercial" position="center" fill="#fff" fontSize={9} fontWeight="bold" formatter={(v: number) => v > 0 ? v : ""} style={{ textShadow: "0 0 3px rgba(0,0,0,0.7)" }} />}
                           </Bar>
                           <Bar dataKey="descobertaNaoComercial" name="Desc. N. Comercial" fill="hsl(var(--warning))" radius={[4, 4, 0, 0]} stackId={explorationBarMode === "stacked" ? "b" : undefined} animationDuration={800} animationEasing="ease-out" animationBegin={450}>
-                            {explorationBarMode === "stacked" && <LabelList dataKey="descobertaNaoComercial" position="center" fill="hsl(var(--warning))" fontSize={10} fontWeight="bold" formatter={(v: number) => v > 0 ? v : ""} />}
+                            {explorationBarMode === "stacked" && <LabelList dataKey="descobertaNaoComercial" position="center" fill="#fff" fontSize={9} fontWeight="bold" formatter={(v: number) => v > 0 ? v : ""} style={{ textShadow: "0 0 3px rgba(0,0,0,0.7)" }} />}
                           </Bar>
                           <Bar dataKey="seco" name="Seco" fill="hsl(var(--danger))" radius={[4, 4, 0, 0]} stackId={explorationBarMode === "stacked" ? "b" : undefined} animationDuration={800} animationEasing="ease-out" animationBegin={600}>
-                            {explorationBarMode === "stacked" && <LabelList dataKey="seco" position="center" fill="hsl(var(--danger))" fontSize={10} fontWeight="bold" formatter={(v: number) => v > 0 ? v : ""} />}
+                            {explorationBarMode === "stacked" && <LabelList dataKey="seco" position="center" fill="#fff" fontSize={9} fontWeight="bold" formatter={(v: number) => v > 0 ? v : ""} style={{ textShadow: "0 0 3px rgba(0,0,0,0.7)" }} />}
                           </Bar>
                           {block.wellsData.length > 20 && <Brush dataKey="year" height={25} stroke="hsl(var(--primary))" fill="hsl(var(--muted))" travellerWidth={8} />}
                         </BarChart>
