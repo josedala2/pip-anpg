@@ -181,7 +181,7 @@ export const ReportConfigurator = ({ config, onChange, onGenerate, allowedReport
 
           <div className="max-h-48 overflow-y-auto space-y-1 rounded-lg border border-border p-2">
             {filteredOperators.map(op => {
-              const blockCount = oilBlocks.filter(b => b.operator === op).length;
+              const blockCount = verifiedBlocks.filter(b => b.operator === op).length;
               return (
                 <label
                   key={op}
