@@ -127,7 +127,7 @@ export const HSENationalPanel = () => {
       </CardHeader>
       <CardContent className="space-y-4">
         {/* KPI Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2">
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-2">
           {kpiCards.map(k => (
             <div key={k.label} className="rounded-lg border border-border/40 bg-muted/30 p-3 text-center">
               <k.icon className="w-4 h-4 mx-auto mb-1 text-muted-foreground" />
