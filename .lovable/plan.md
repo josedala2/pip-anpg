@@ -1,42 +1,39 @@
 
 
-## Adicionar Coluna de Ranking por Produção Diária na Matriz de Decisão
+## Alinhar Estado da Concessão com Critérios Estratégicos Actualizados
+
+### Contexto
+O painel "Estado da Concessão" usa 6 critérios com pesos iguais (qualquer vermelho = Crítico, qualquer amarelo = Atenção). No entanto, o Score Estratégico foi actualizado para dar peso de **35% à Produção** como prioridade principal da ANPG. Esta página precisa reflectir essa hierarquia.
 
 ### O que muda
-Uma nova coluna **"Rank Prod."** será adicionada à tabela da Matriz de Decisão, mostrando a posição de cada bloco ordenado por produção diária (1.º = maior produtor). A coluna é independente do score composto e permite ordenação por clique.
+
+**1. Adicionar card de Score Estratégico** (novo, entre o semáforo e os KPIs)
+- Mostrar o score total (0-100), a classificação (ex: "Manter & Optimizar") e a urgência
+- Incluir o breakdown das 6 dimensões com barras de progresso coloridas (igual ao que já existe na Matriz de Decisão do CA)
+- Importar `calculateStrategicScore` e `classificationConfig` de `strategicScoring.ts`
+
+**2. Tornar o semáforo sensível aos pesos**
+- O semáforo actual trata todos os critérios de forma igual. Vou adicionar ao lado do semáforo o score estratégico como indicador complementar, mas **manter o semáforo operacional existente** (que funciona como alerta de limiares) separado
+- Adicionar uma nota explicativa: "Score Estratégico ponderado (Produção 35%)"
+
+**3. Adicionar Recomendação Estratégica**
+- Mostrar o campo `recommendation` do score estratégico no card de Alertas, como item destacado no topo
+- Incluir `riskOfInaction` e `expectedImpact` como sub-itens
 
 ### Detalhes técnicos
 
-**Ficheiro**: `src/components/dashboard/ConselhoPanel.tsx`
+**Ficheiro**: `src/components/dashboard/ConcessionStatusTab.tsx`
 
-1. **Calcular ranking** — No `useMemo` que gera `concessions` (ou no `sorted`), atribuir a cada concessão um `productionRank` baseado na ordenação decrescente de `dailyProduction`.
-
-2. **Adicionar tipo de sort** — Expandir o tipo de `sortBy` para incluir `"production"`:
-   ```typescript
-   useState<"health" | "score" | "contract" | "action" | "production">("health")
-   ```
-
-3. **Adicionar case no sort** — No `switch(sortBy)`:
-   ```typescript
-   case "production": cmp = a.block.dailyProduction - b.block.dailyProduction; break;
-   ```
-
-4. **Nova coluna no header** — Entre "Operador" e "Produção" (ou logo após "Produção"), adicionar:
-   ```tsx
-   <TableHead className="text-[10px] text-center cursor-pointer" onClick={() => toggleSort("production")}>
-     Rank <SortIcon col="production" />
-   </TableHead>
-   ```
-
-5. **Nova célula no body** — Mostrar o rank com destaque visual (medalha para top 3):
-   ```tsx
-   <TableCell className="py-2 text-xs text-center font-mono font-semibold">
-     {rank}º
-   </TableCell>
-   ```
-
-6. **Ajustar colSpan** da linha expandida de `9` para `10`.
+- Importar `calculateStrategicScore`, `classificationConfig`, `urgencyConfig` de `@/lib/strategicScoring`
+- Calcular `strategic = useMemo(() => calculateStrategicScore(block), [block])`
+- Inserir novo card após o semáforo (Row 1) com:
+  - Score circular grande + classificação colorida
+  - Grid 2x3 ou 3x2 com as 6 dimensões (label, score, peso, barra)
+- No card de Alertas, adicionar no topo a recomendação estratégica com ícone e cor da classificação
 
 ### Resultado
-A Matriz terá uma coluna visual clara de ranking por produção, clicável para ordenar, separada dos scores compostos.
+O utilizador vê imediatamente o impacto do peso de 35% da Produção no score, com transparência total dos critérios. O semáforo operacional mantém-se como sistema de alertas complementar.
+
+### Ficheiros a modificar
+1. `src/components/dashboard/ConcessionStatusTab.tsx`
 
