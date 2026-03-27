@@ -5,12 +5,15 @@ import { Progress } from "@/components/ui/progress";
 import {
   AlertTriangle, CheckCircle2, Clock, DollarSign, TrendingDown,
   ShieldCheck, Landmark, Scale, Calendar, Droplets, Activity, Factory, Gauge,
+  Target, Zap,
 } from "lucide-react";
 import { InfoTooltip } from "@/components/ui/info-tooltip";
 import { tooltipDescriptions } from "@/lib/tooltipDescriptions";
 import { SemaphoreForecastPanel } from "./SemaphoreForecastPanel";
 import { SemaphoreHistoryPanel } from "./SemaphoreHistoryPanel";
 import { SemaphoreTimelineChart } from "./SemaphoreTimelineChart";
+import { calculateStrategicScore, classificationConfig, urgencyConfig } from "@/lib/strategicScoring";
+import { Badge } from "@/components/ui/badge";
 
 interface ConcessionStatusTabProps {
   block: OilBlock;
@@ -42,6 +45,11 @@ const semaphoreLabel: Record<SemaphoreLevel, string> = {
 export const ConcessionStatusTab = ({ block }: ConcessionStatusTabProps) => {
   const ci = block.contractInfo;
   const now = new Date();
+
+  // Strategic score
+  const strategic = useMemo(() => calculateStrategicScore(block), [block]);
+  const classConfig = classificationConfig[strategic.classification];
+  const urgConfig = urgencyConfig[strategic.urgency];
 
   const contractEnd = ci?.productionPeriodEnd ? new Date(ci.productionPeriodEnd) : null;
   const contractStart = ci?.signingDate ? new Date(ci.signingDate) : new Date(block.contractDate);
@@ -249,6 +257,54 @@ export const ConcessionStatusTab = ({ block }: ConcessionStatusTabProps) => {
         ))}
       </div>
 
+      {/* Row 1b: Strategic Score Card */}
+      <Card className="glass-card">
+        <CardHeader className="p-4 pb-2">
+          <CardTitle className="text-sm 2xl:text-base flex items-center gap-2">
+            <Target className="w-4 h-4 text-primary" />
+            Score Estratégico Ponderado
+            <span className="text-[10px] text-muted-foreground font-normal">(Produção 35%)</span>
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-4 pt-2">
+          <div className="flex flex-col lg:flex-row gap-4">
+            {/* Score + Classification */}
+            <div className="flex items-center gap-4 lg:min-w-[220px]">
+              <div className={`w-20 h-20 rounded-full border-4 flex items-center justify-center ${strategic.totalScore >= 60 ? "border-success" : strategic.totalScore >= 40 ? "border-warning" : "border-danger"}`}>
+                <span className="text-2xl font-bold font-mono">{strategic.totalScore}</span>
+              </div>
+              <div className="space-y-1.5">
+                <Badge className={`${classConfig.bgColor} ${classConfig.color} border text-xs`}>
+                  {strategic.classification}
+                </Badge>
+                <div className={`text-xs font-medium ${urgConfig.color}`}>
+                  Urgência: {strategic.urgency}
+                </div>
+              </div>
+            </div>
+
+            {/* 6 Dimensions Breakdown */}
+            <div className="flex-1 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+              {strategic.dimensions.map(dim => (
+                <div key={dim.label} className="space-y-1">
+                  <div className="flex justify-between items-baseline">
+                    <span className="text-[10px] text-muted-foreground truncate">{dim.label}</span>
+                    <span className="text-[10px] font-bold font-mono ml-1">{dim.score}</span>
+                  </div>
+                  <div className="h-1.5 rounded-full bg-muted overflow-hidden">
+                    <div
+                      className={`h-full rounded-full transition-all ${dim.score >= 70 ? "bg-success" : dim.score >= 40 ? "bg-warning" : "bg-danger"}`}
+                      style={{ width: `${dim.score}%` }}
+                    />
+                  </div>
+                  <span className="text-[9px] text-muted-foreground">Peso: {dim.weight}% · Contrib: {dim.weighted}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Row 2: Timeline */}
       {contractEnd && (
         <Card className="glass-card">
@@ -306,6 +362,19 @@ export const ConcessionStatusTab = ({ block }: ConcessionStatusTabProps) => {
             </CardTitle>
           </CardHeader>
           <CardContent className="p-4 pt-0 space-y-2">
+            {/* Strategic Recommendation */}
+            <div className={`p-3 rounded-lg ${classConfig.bgColor} border space-y-1`}>
+              <div className="flex items-center gap-2">
+                <Zap className={`w-4 h-4 ${classConfig.color} shrink-0`} />
+                <span className={`text-sm font-semibold ${classConfig.color}`}>Recomendação Estratégica</span>
+              </div>
+              <p className="text-xs text-foreground/80 pl-6">{strategic.recommendation}</p>
+              <div className="pl-6 space-y-0.5">
+                <p className="text-[10px] text-muted-foreground"><span className="font-medium text-foreground/70">Risco de inacção:</span> {strategic.riskOfInaction}</p>
+                <p className="text-[10px] text-muted-foreground"><span className="font-medium text-foreground/70">Impacto esperado:</span> {strategic.expectedImpact}</p>
+              </div>
+            </div>
+
             {alerts.map((alert, i) => {
               const as = semaphoreStyles[alert.severity];
               return (
