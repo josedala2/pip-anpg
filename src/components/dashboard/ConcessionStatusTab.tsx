@@ -5,12 +5,15 @@ import { Progress } from "@/components/ui/progress";
 import {
   AlertTriangle, CheckCircle2, Clock, DollarSign, TrendingDown,
   ShieldCheck, Landmark, Scale, Calendar, Droplets, Activity, Factory, Gauge,
+  Target, Zap,
 } from "lucide-react";
 import { InfoTooltip } from "@/components/ui/info-tooltip";
 import { tooltipDescriptions } from "@/lib/tooltipDescriptions";
 import { SemaphoreForecastPanel } from "./SemaphoreForecastPanel";
 import { SemaphoreHistoryPanel } from "./SemaphoreHistoryPanel";
 import { SemaphoreTimelineChart } from "./SemaphoreTimelineChart";
+import { calculateStrategicScore, classificationConfig, urgencyConfig } from "@/lib/strategicScoring";
+import { Badge } from "@/components/ui/badge";
 
 interface ConcessionStatusTabProps {
   block: OilBlock;
