@@ -1046,6 +1046,18 @@ export const oilBlocks: OilBlock[] = [
         "Carece de redução de custos e abandono definitivo das infraestruturas obsoletas (em 2025 o Opex por barril fixou-se em USD 26,3)",
       ],
     },
+    // Technical recommendations from "Estado das Concessões 2026"
+    technicalRecommendations: [
+      { opportunity: "Simplificação do modelo operacional", measures: ["Simplificar estrutura operacional", "Reduzir número de instalações tripuladas"], impact: "Redução estrutural do OPEX", urgency: "Muito Alta" },
+      { opportunity: "Racionalização de plataformas", measures: ["Converter plataformas em unmanned facilities", "Consolidar processamento em hubs (tie-back de campos pequenos para hubs, ex: Mafumeira)"], impact: "Redução significativa de custos operacionais", urgency: "Alta" },
+      { opportunity: "Serviços de suporte às operações", measures: ["Contratos baseados em desempenho", "Consolidação de fornecedores — maior uso de empresas locais competitivas"], impact: "Redução significativa de custos de serviços", urgency: "Alta" },
+      { opportunity: "Optimização logística offshore", measures: ["Racionalizar frota de navios de apoio (PSV/AHTS/PAX Vessel)", "Optimizar voos de helicóptero"], impact: "Redução de 10–20% do custo logístico", urgency: "Alta" },
+      { opportunity: "Maximizar recuperação e gestão de poços", measures: ["Optimizar injecção de água/gás", "Recompletação de poços, gestão de water cut e optimização de gas lift"], impact: "Aumentar produção sem aumentar significativamente o OPEX", urgency: "Alta" },
+      { opportunity: "Revisão dos planos de manutenção", measures: ["Redução de manutenção preventiva excessiva", "Reavaliação das prioridades para reduzir eventos não programados (TGPP, GS-Mike, GS-Lima, Sanha PCP)"], impact: "Proteger integridade e confiabilidade (Tier 1 e 2). Aumento de produção com CAPEX limitado", urgency: "Alta" },
+      { opportunity: "Digitalização das operações", measures: ["Centros de operação remotos", "Sensores de monitorização de activos e Digital twins de instalações"], impact: "Redução de pessoal offshore. Maior eficiência operacional", urgency: "Média" },
+      { opportunity: "Desenvolvimento de campos satélite", measures: ["Projectos de CAPEX reduzido", "Tie-backs para hubs existentes com menos de 20 anos (Tier 1)"], impact: "Aumento da produção com baixo investimento", urgency: "Média" },
+      { opportunity: "Optimização energética", measures: ["Melhoria da eficiência de turbinas"], impact: "Redução do consumo de combustível. Impacto ambiental reduzido", urgency: "Média" },
+    ],
     // Revitalization scenarios
     revitalizationScenarios: [
       {
@@ -3152,6 +3164,25 @@ export const oilBlocks: OilBlock[] = [
         "Data Prevista para Abandono: 2037",
       ],
     },
+    revitalizationScenarios: [
+      {
+        id: 1,
+        title: "Continuidade do GE",
+        description: "Manutenção do grupo empreiteiro actual com reprocessamento sísmico avançado e redução de incerteza nos plays Terciário, Albiano e Pré-sal.",
+        proposals: [
+          "Reprocessamento sísmico avançado 3D com PSDM e FWI",
+          "Aquisição selectiva de sísmica broadband/OBN em áreas críticas",
+          "Caracterização deposicional detalhada e estudo diagénetico",
+        ],
+    technicalRecommendations: [
+      { opportunity: "Optimização energética", measures: ["Recuperação dos sistemas críticos de geração de energia (turbinas)", "Redução do consumo de combustível"], impact: "Impacto ambiental reduzido e redução do OPEX", urgency: "Muito Alta" },
+      { opportunity: "Melhoria dos sistemas de segurança", measures: ["Concluir a recuperação dos sistemas de segurança (combate a incêndio e balsas salva-vidas)"], impact: "Redução dos riscos de acidentes e melhoria do ambiente de trabalho", urgency: "Muito Alta" },
+      { opportunity: "Racionalização de plataformas", measures: ["Priorização das instalações que requerem actualizações críticas"], impact: "Redução significativa de custos de CAPEX", urgency: "Muito Alta" },
+      { opportunity: "Optimização logística das acomodações offshore", measures: ["Aprimorar estratégias para potencializar a expansão das acomodações offshore"], impact: "Redução de 10–20% do custo logístico e redução de viagens offshore", urgency: "Alta" },
+      { opportunity: "Maximizar recuperação e optimização de poços", measures: ["Recuperar a capacidade de injecção de água/gás", "Recompletação de poços, gestão de water cut e optimização de gas lift"], impact: "Aumentar produção sem aumentar significativamente o OPEX", urgency: "Alta" },
+      { opportunity: "Revisão dos planos de manutenção", measures: ["Introdução de políticas de monitorização de actividades de manutenção", "Digitalização da gestão de integridade"], impact: "Aumento de produção com CAPEX limitado e melhoria da eficiência operacional", urgency: "Muito Alta" },
+      { opportunity: "Redesenvolvimento de campos satélite", measures: ["Reabilitar os campos satélite com tie-backs para hubs existentes"], impact: "Aumento da produção com baixo investimento", urgency: "Média" },
+    ],
     revitalizationScenarios: [
       {
         id: 1,
