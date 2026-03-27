@@ -39,7 +39,7 @@ export const EconomicRiskPanel = () => {
       .sort((a, b) => a.economicMargin - b.economicMargin);
 
     // High abandonment cost
-    const highAbandonment = oilBlocks
+    const highAbandonment = oilBlocks.filter(b => !b.pendingRealData)
       .filter(b => b.economicData?.abandonment && b.economicData.abandonment.total > 500)
       .map(b => ({
         name: b.name,
