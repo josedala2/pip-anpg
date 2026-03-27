@@ -445,9 +445,20 @@ export const ConselhoPanel = () => {
                               .sort((a, b) => b.block.dailyProduction - a.block.dailyProduction)
                               .findIndex(x => x.block.id === c.block.id) + 1;
                             return (
-                              <span className={rank <= 3 ? "text-primary" : "text-muted-foreground"}>
-                                {rank}º
-                              </span>
+                              <TooltipProvider>
+                                <Tooltip>
+                                  <TooltipTrigger>
+                                    <span className={rank <= 3 ? "text-primary" : "text-muted-foreground"}>
+                                      {rank}º
+                                    </span>
+                                  </TooltipTrigger>
+                                  <TooltipContent className="text-xs">
+                                    {c.block.dailyProduction > 0
+                                      ? `${c.block.dailyProduction.toLocaleString()} BOPD`
+                                      : "Sem produção"}
+                                  </TooltipContent>
+                                </Tooltip>
+                              </TooltipProvider>
                             );
                           })()}
                         </TableCell>
