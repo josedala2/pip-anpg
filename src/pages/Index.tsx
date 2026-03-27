@@ -21,8 +21,6 @@ import { SobaChat } from "@/components/dashboard/SobaChat";
 import { NationalForecastPanel } from "@/components/dashboard/NationalForecastPanel";
 import { GasUtilizationPanel } from "@/components/dashboard/GasUtilizationPanel";
 import { CumulativeLiftingsPanel } from "@/components/dashboard/CumulativeLiftingsPanel";
-import { RiskPerformance } from "@/components/dashboard/RiskPerformance";
-import { SobaChat } from "@/components/dashboard/SobaChat";
 import { type OilBlock, oilBlocks } from "@/data/angolaBlocks";
 import { Maximize2, Minimize2, ChevronLeft, ChevronRight, Sun, Moon, FileText, LogOut, User, Users, Database, Bell, Clock, Signal, Sparkles } from "lucide-react";
 import { evaluateAlerts, evaluateForecastAlerts } from "@/lib/alertsEngine";
