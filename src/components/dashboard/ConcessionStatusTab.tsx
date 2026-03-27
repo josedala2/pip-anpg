@@ -46,6 +46,11 @@ export const ConcessionStatusTab = ({ block }: ConcessionStatusTabProps) => {
   const ci = block.contractInfo;
   const now = new Date();
 
+  // Strategic score
+  const strategic = useMemo(() => calculateStrategicScore(block), [block]);
+  const classConfig = classificationConfig[strategic.classification];
+  const urgConfig = urgencyConfig[strategic.urgency];
+
   const contractEnd = ci?.productionPeriodEnd ? new Date(ci.productionPeriodEnd) : null;
   const contractStart = ci?.signingDate ? new Date(ci.signingDate) : new Date(block.contractDate);
   const prodStart = ci?.productionPeriodStart ? new Date(ci.productionPeriodStart) : null;
