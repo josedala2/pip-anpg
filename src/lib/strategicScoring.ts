@@ -90,7 +90,7 @@ function productionScore(block: OilBlock): DimensionScore {
     drivers.push(`Reservas reduzidas: ${block.estimatedReserves} Mb`);
   }
 
-  return { label: "Desempenho Produtivo", score: clamp(score), weight: 25, weighted: 0, drivers };
+  return { label: "Desempenho Produtivo", score: clamp(score), weight: 35, weighted: 0, drivers };
 }
 
 function facilitiesScore(block: OilBlock): DimensionScore {
@@ -99,7 +99,7 @@ function facilitiesScore(block: OilBlock): DimensionScore {
 
   const fd = block.facilityData;
   if (!fd) {
-    return { label: "Integridade Instalações", score: 50, weight: 20, weighted: 0, drivers: ["Sem dados de instalações"] };
+    return { label: "Integridade Instalações", score: 50, weight: 17, weighted: 0, drivers: ["Sem dados de instalações"] };
   }
 
   // Overall efficiency
@@ -153,7 +153,7 @@ function facilitiesScore(block: OilBlock): DimensionScore {
     drivers.push(`${totalIssues} problemas identificados`);
   }
 
-  return { label: "Integridade Instalações", score: clamp(score), weight: 20, weighted: 0, drivers };
+  return { label: "Integridade Instalações", score: clamp(score), weight: 17, weighted: 0, drivers };
 }
 
 function economicScore(block: OilBlock): DimensionScore {
@@ -198,7 +198,7 @@ function economicScore(block: OilBlock): DimensionScore {
     }
   }
 
-  return { label: "Viabilidade Económica", score: clamp(score), weight: 15, weighted: 0, drivers };
+  return { label: "Viabilidade Económica", score: clamp(score), weight: 13, weighted: 0, drivers };
 }
 
 function contractualScore(block: OilBlock): DimensionScore {
@@ -236,7 +236,7 @@ function contractualScore(block: OilBlock): DimensionScore {
     }
   }
 
-  return { label: "Estado Contratual", score: clamp(score), weight: 15, weighted: 0, drivers };
+  return { label: "Estado Contratual", score: clamp(score), weight: 13, weighted: 0, drivers };
 }
 
 function explorationScore(block: OilBlock): DimensionScore {
@@ -285,7 +285,7 @@ function explorationScore(block: OilBlock): DimensionScore {
     drivers.push(`${producingFields} campos em produção`);
   }
 
-  return { label: "Potencial Exploratório", score: clamp(score), weight: 15, weighted: 0, drivers };
+  return { label: "Potencial Exploratório", score: clamp(score), weight: 13, weighted: 0, drivers };
 }
 
 function esgScore(block: OilBlock): DimensionScore {
@@ -332,7 +332,7 @@ function esgScore(block: OilBlock): DimensionScore {
     }
   }
 
-  return { label: "Risco ESG", score: clamp(score), weight: 10, weighted: 0, drivers };
+  return { label: "Risco ESG", score: clamp(score), weight: 9, weighted: 0, drivers };
 }
 
 // ── Classification logic ──
