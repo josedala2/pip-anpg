@@ -69,7 +69,7 @@ export const ReportConfigurator = ({ config, onChange, onGenerate, allowedReport
     o.toLowerCase().includes(operatorSearch.toLowerCase())
   );
 
-  const allSelected = config.selectedBlockIds.length === oilBlocks.length;
+  const allSelected = config.selectedBlockIds.length === verifiedBlocks.length;
   const allOperatorsSelected = config.selectedOperators.length === uniqueOperators.length;
 
   const hasOperatorsType = config.reportTypes.includes("operators");
@@ -78,7 +78,7 @@ export const ReportConfigurator = ({ config, onChange, onGenerate, allowedReport
   const toggleAllBlocks = () => {
     onChange({
       ...config,
-      selectedBlockIds: allSelected ? [] : oilBlocks.map(b => b.id),
+      selectedBlockIds: allSelected ? [] : verifiedBlocks.map(b => b.id),
     });
   };
 
