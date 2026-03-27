@@ -308,6 +308,56 @@ export const defaultRules: AlertRule[] = [
       return [];
     },
   },
+  // ESG: TRIR elevated
+  {
+    id: "esg-trir-high",
+    category: "esg",
+    label: "TRIR > 0.5",
+    description: "Blocos com taxa de incidentes registáveis (TRIR) acima de 0.5",
+    enabled: true,
+    evaluate: (block) => {
+      if (!block.hseData?.length) return [];
+      const latest = block.hseData[block.hseData.length - 1];
+      if (latest.trir > 0.5) {
+        return [{
+          id: makeId(block.id, "esg-trir-high"),
+          blockId: block.id, blockName: block.name, operator: block.operator,
+          category: "esg", severity: latest.trir > 1.0 ? "critical" : "high",
+          title: "TRIR elevado",
+          description: `TRIR de ${latest.trir.toFixed(2)} em ${latest.year} no ${block.name}.`,
+          metric: `${latest.trir.toFixed(2)}`,
+          threshold: "> 0.50",
+          actionRequired: "Rever plano de segurança ocupacional e reforçar medidas preventivas.",
+        }];
+      }
+      return [];
+    },
+  },
+  // ESG: Flaring elevated
+  {
+    id: "esg-flaring-high",
+    category: "esg",
+    label: "Flaring > 10 MMSCFD",
+    description: "Blocos com queima de gás (flaring) acima de 10 MMSCFD",
+    enabled: true,
+    evaluate: (block) => {
+      if (!block.environmentalData?.length) return [];
+      const latest = block.environmentalData[block.environmentalData.length - 1];
+      if (latest.gasFlaredMMSCFD != null && latest.gasFlaredMMSCFD > 10) {
+        return [{
+          id: makeId(block.id, "esg-flaring-high"),
+          blockId: block.id, blockName: block.name, operator: block.operator,
+          category: "esg", severity: latest.gasFlaredMMSCFD > 20 ? "critical" : "high",
+          title: "Flaring elevado",
+          description: `Flaring de ${latest.gasFlaredMMSCFD.toFixed(1)} MMSCFD em ${latest.year} no ${block.name}.`,
+          metric: `${latest.gasFlaredMMSCFD.toFixed(1)} MMSCFD`,
+          threshold: "> 10 MMSCFD",
+          actionRequired: "Avaliar soluções de aproveitamento de gás e plano de redução de flaring.",
+        }];
+      }
+      return [];
+    },
+  },
 ];
 
 // ── Forecast-specific alerts (national + per-block) ──
