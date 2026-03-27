@@ -3164,16 +3164,6 @@ export const oilBlocks: OilBlock[] = [
         "Data Prevista para Abandono: 2037",
       ],
     },
-    revitalizationScenarios: [
-      {
-        id: 1,
-        title: "Continuidade do GE",
-        description: "Manutenção do grupo empreiteiro actual com reprocessamento sísmico avançado e redução de incerteza nos plays Terciário, Albiano e Pré-sal.",
-        proposals: [
-          "Reprocessamento sísmico avançado 3D com PSDM e FWI",
-          "Aquisição selectiva de sísmica broadband/OBN em áreas críticas",
-          "Caracterização deposicional detalhada e estudo diagénetico",
-        ],
     technicalRecommendations: [
       { opportunity: "Optimização energética", measures: ["Recuperação dos sistemas críticos de geração de energia (turbinas)", "Redução do consumo de combustível"], impact: "Impacto ambiental reduzido e redução do OPEX", urgency: "Muito Alta" },
       { opportunity: "Melhoria dos sistemas de segurança", measures: ["Concluir a recuperação dos sistemas de segurança (combate a incêndio e balsas salva-vidas)"], impact: "Redução dos riscos de acidentes e melhoria do ambiente de trabalho", urgency: "Muito Alta" },
