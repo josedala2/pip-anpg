@@ -5374,7 +5374,7 @@ export const seismicHistory: SeismicData[] = [
   { year: 2012, seismic2D: 0, seismic3D: 1050, seismic4D: 0 }
 ];
 
-export const wellsHistory: WellsData[] = [
+export const wellsHistory: WellsDataNational[] = [
   { year: 1966, pesquisa: 5, avaliacao: 0 },
   { year: 1967, pesquisa: 9, avaliacao: 1 },
   { year: 1968, pesquisa: 7, avaliacao: 3 },
