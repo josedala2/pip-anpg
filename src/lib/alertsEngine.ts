@@ -310,50 +310,54 @@ export const defaultRules: AlertRule[] = [
       return [];
     },
   },
-  // ESG: TRIR elevated
+  // ESG: TRIR elevated (configurable)
   {
     id: "esg-trir-high",
     category: "esg",
-    label: "TRIR > 0.5",
-    description: "Blocos com taxa de incidentes registáveis (TRIR) acima de 0.5",
+    label: "TRIR elevado",
+    description: "Blocos com taxa de incidentes registáveis (TRIR) acima do limiar",
     enabled: true,
-    evaluate: (block) => {
+    configurable: { key: "trir", unit: "", min: 0.1, max: 3.0, step: 0.1, value: 0.5 },
+    evaluate: function (block) {
+      const thresh = this.configurable!.value;
       if (!block.hseData?.length) return [];
       const latest = block.hseData[block.hseData.length - 1];
-      if (latest.trir > 0.5) {
+      if (latest.trir > thresh) {
         return [{
           id: makeId(block.id, "esg-trir-high"),
           blockId: block.id, blockName: block.name, operator: block.operator,
-          category: "esg", severity: latest.trir > 1.0 ? "critical" : "high",
+          category: "esg", severity: latest.trir > thresh * 2 ? "critical" : "high",
           title: "TRIR elevado",
           description: `TRIR de ${latest.trir.toFixed(2)} em ${latest.year} no ${block.name}.`,
           metric: `${latest.trir.toFixed(2)}`,
-          threshold: "> 0.50",
+          threshold: `> ${thresh.toFixed(2)}`,
           actionRequired: "Rever plano de segurança ocupacional e reforçar medidas preventivas.",
         }];
       }
       return [];
     },
   },
-  // ESG: Flaring elevated
+  // ESG: Flaring elevated (configurable)
   {
     id: "esg-flaring-high",
     category: "esg",
-    label: "Flaring > 10 MMSCFD",
-    description: "Blocos com queima de gás (flaring) acima de 10 MMSCFD",
+    label: "Flaring elevado",
+    description: "Blocos com queima de gás (flaring) acima do limiar",
     enabled: true,
-    evaluate: (block) => {
+    configurable: { key: "flaring", unit: "MMSCFD", min: 1, max: 50, step: 1, value: 10 },
+    evaluate: function (block) {
+      const thresh = this.configurable!.value;
       if (!block.environmentalData?.length) return [];
       const latest = block.environmentalData[block.environmentalData.length - 1];
-      if (latest.gasFlaredMMSCFD != null && latest.gasFlaredMMSCFD > 10) {
+      if (latest.gasFlaredMMSCFD != null && latest.gasFlaredMMSCFD > thresh) {
         return [{
           id: makeId(block.id, "esg-flaring-high"),
           blockId: block.id, blockName: block.name, operator: block.operator,
-          category: "esg", severity: latest.gasFlaredMMSCFD > 20 ? "critical" : "high",
+          category: "esg", severity: latest.gasFlaredMMSCFD > thresh * 2 ? "critical" : "high",
           title: "Flaring elevado",
           description: `Flaring de ${latest.gasFlaredMMSCFD.toFixed(1)} MMSCFD em ${latest.year} no ${block.name}.`,
           metric: `${latest.gasFlaredMMSCFD.toFixed(1)} MMSCFD`,
-          threshold: "> 10 MMSCFD",
+          threshold: `> ${thresh} MMSCFD`,
           actionRequired: "Avaliar soluções de aproveitamento de gás e plano de redução de flaring.",
         }];
       }
