@@ -1,35 +1,42 @@
 
 
-## Aumentar Peso da Produção no Score Estratégico para 35%
+## Adicionar Coluna de Ranking por Produção Diária na Matriz de Decisão
 
-### Redistribuição de pesos
+### O que muda
+Uma nova coluna **"Rank Prod."** será adicionada à tabela da Matriz de Decisão, mostrando a posição de cada bloco ordenado por produção diária (1.º = maior produtor). A coluna é independente do score composto e permite ordenação por clique.
 
-| Dimensão | Actual | Novo |
-|---|---|---|
-| **Desempenho Produtivo** | 25% | **35%** |
-| Integridade Instalações | 20% | 17% |
-| Viabilidade Económica | 15% | 13% |
-| Estado Contratual | 15% | 13% |
-| Potencial Exploratório | 15% | 13% |
-| Risco ESG | 10% | 9% |
-| **Total** | 100% | **100%** |
+### Detalhes técnicos
 
-Cálculo: as 5 dimensões restantes são reduzidas proporcionalmente (×65/75).
+**Ficheiro**: `src/components/dashboard/ConselhoPanel.tsx`
 
-### Alteração
+1. **Calcular ranking** — No `useMemo` que gera `concessions` (ou no `sorted`), atribuir a cada concessão um `productionRank` baseado na ordenação decrescente de `dailyProduction`.
 
-**Ficheiro**: `src/lib/strategicScoring.ts`
+2. **Adicionar tipo de sort** — Expandir o tipo de `sortBy` para incluir `"production"`:
+   ```typescript
+   useState<"health" | "score" | "contract" | "action" | "production">("health")
+   ```
 
-Alterar o campo `weight` em cada uma das 6 funções de dimensão (linhas de return):
-- `productionScore`: `weight: 25` → `weight: 35`
-- `facilitiesScore`: `weight: 20` → `weight: 17`
-- `economicScore`: `weight: 15` → `weight: 13`
-- `contractualScore`: `weight: 15` → `weight: 13`
-- `explorationScore`: `weight: 15` → `weight: 13`
-- `esgScore`: `weight: 10` → `weight: 9`
+3. **Adicionar case no sort** — No `switch(sortBy)`:
+   ```typescript
+   case "production": cmp = a.block.dailyProduction - b.block.dailyProduction; break;
+   ```
 
-### Impacto
-- Todos os scores estratégicos (Matriz de Decisão CA, Recomendações, Semáforos, Previsão) recalculam automaticamente
-- Blocos com boa produção sobem no ranking; blocos em declínio descem mais
-- As classificações (Revitalizar, Renegociar, etc.) podem mudar conforme o novo score total
+4. **Nova coluna no header** — Entre "Operador" e "Produção" (ou logo após "Produção"), adicionar:
+   ```tsx
+   <TableHead className="text-[10px] text-center cursor-pointer" onClick={() => toggleSort("production")}>
+     Rank <SortIcon col="production" />
+   </TableHead>
+   ```
+
+5. **Nova célula no body** — Mostrar o rank com destaque visual (medalha para top 3):
+   ```tsx
+   <TableCell className="py-2 text-xs text-center font-mono font-semibold">
+     {rank}º
+   </TableCell>
+   ```
+
+6. **Ajustar colSpan** da linha expandida de `9` para `10`.
+
+### Resultado
+A Matriz terá uma coluna visual clara de ranking por produção, clicável para ordenar, separada dos scores compostos.
 
