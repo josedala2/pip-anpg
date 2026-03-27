@@ -206,7 +206,7 @@ export const ConcessionStatusTab = ({ block }: ConcessionStatusTabProps) => {
       color: block.complianceScore >= 90 ? "text-success" : block.complianceScore >= 70 ? "text-warning" : "text-danger",
     },
     {
-      label: "Variação Produção",
+      label: "Variação Produção (Bloco)",
       value: prodDecline !== null ? `${prodDecline.toFixed(1)}%` : "N/D",
       icon: Gauge,
       color: prodDecline === null ? "text-muted-foreground"
