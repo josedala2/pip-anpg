@@ -309,6 +309,13 @@ export interface EconomicVision {
   strategicObservations?: string[];
 }
 
+export interface TechnicalRecommendation {
+  opportunity: string;
+  measures: string[];
+  impact: string;
+  urgency: "Muito Alta" | "Alta" | "Média" | "Baixa";
+}
+
 export interface RevitalizationScenario {
   id: number;
   title: string;
