@@ -14,6 +14,7 @@ const verifiedBlocks = oilBlocks.filter(b => !b.pendingRealData && b.hseData?.le
 function getLastYearAggregates() {
   let totalFat = 0, totalLti = 0, totalSpills = 0;
   let totalCO2 = 0, totalFlaring = 0;
+  let oiwSum = 0, oiwCount = 0;
   let trirNum = 0, trirDen = 0;
 
   for (const block of verifiedBlocks) {
@@ -31,11 +32,12 @@ function getLastYearAggregates() {
       totalCO2 += lastEnv.co2EmissionsTonCO2eq ?? 0;
       totalFlaring += lastEnv.gasFlaredMMSCFD ?? 0;
       totalSpills += lastEnv.oilSpillCount ?? 0;
+      if (lastEnv.oilInWaterPPM != null) { oiwSum += lastEnv.oilInWaterPPM; oiwCount++; }
     }
   }
 
   const trirNational = trirDen > 0 ? (trirNum * 200_000) / trirDen : 0;
-  return { totalFat, totalLti, trirNational, totalCO2, totalFlaring, totalSpills };
+  return { totalFat, totalLti, trirNational, totalCO2, totalFlaring, totalSpills, avgOIW: oiwCount > 0 ? oiwSum / oiwCount : 0 };
 }
 
 // TRIR trend data per block per year
