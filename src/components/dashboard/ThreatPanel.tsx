@@ -21,7 +21,8 @@ const severityBadgeClasses: Record<string, string> = {
 };
 
 export const ThreatPanel = ({ maxItems = 8 }: { maxItems?: number }) => {
-  const alerts: Alert[] = useMemo(() => evaluateAlerts().slice(0, maxItems), [maxItems]);
+  const verifiedBlockIds = useMemo(() => new Set(oilBlocks.filter(b => !b.pendingRealData).map(b => b.id)), []);
+  const alerts: Alert[] = useMemo(() => evaluateAlerts().filter(a => verifiedBlockIds.has(a.blockId)).slice(0, maxItems), [maxItems, verifiedBlockIds]);
   const criticalCount = alerts.filter(a => a.severity === "critical").length;
 
   return (
