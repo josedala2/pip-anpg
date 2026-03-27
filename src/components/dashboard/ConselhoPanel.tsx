@@ -541,6 +541,29 @@ export const ConselhoPanel = () => {
                                   </div>
                                 )}
                               </div>
+                              {/* ── Breakdown Score Estratégico ── */}
+                              <div className="col-span-full mt-3 pt-3 border-t border-border/40">
+                                <p className="font-semibold text-foreground mb-2 text-xs">Breakdown Score Estratégico — {c.strategic.totalScore}/100</p>
+                                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+                                  {c.strategic.dimensions.map(dim => (
+                                    <div key={dim.label} className="space-y-1">
+                                      <div className="flex items-center justify-between">
+                                        <span className="text-[10px] text-muted-foreground truncate">{dim.label}</span>
+                                        <span className="text-[10px] font-mono font-semibold ml-1">{dim.score}</span>
+                                      </div>
+                                      <div className="h-1.5 rounded-full bg-muted overflow-hidden">
+                                        <div
+                                          className={`h-full rounded-full transition-all ${
+                                            dim.score >= 70 ? "bg-success" : dim.score >= 40 ? "bg-warning" : "bg-danger"
+                                          }`}
+                                          style={{ width: `${dim.score}%` }}
+                                        />
+                                      </div>
+                                      <span className="text-[9px] text-muted-foreground">Peso: {dim.weight}% · Contrib: {dim.weighted.toFixed(1)}</span>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
                             </div>
                           </TableCell>
                         </TableRow>
