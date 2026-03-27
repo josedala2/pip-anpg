@@ -5293,17 +5293,12 @@ export const oilBlocks: OilBlock[] = [
 
 // ── National Exploration Statistics (from ANPG reference data) ──
 
-export interface SeismicData {
-  year: number;
-  seismic2D: number; // km
-  seismic3D: number; // km²
-  seismic4D: number; // km²
-}
+// SeismicData and WellData interfaces defined above
 
-export interface WellsData {
+interface WellsData {
   year: number;
-  pesquisa: number; // exploration/research wells
-  avaliacao: number; // appraisal wells
+  pesquisa: number;
+  avaliacao: number;
 }
 
 export const nationalStats = {
