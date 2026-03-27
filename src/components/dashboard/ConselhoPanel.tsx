@@ -187,13 +187,16 @@ export const ConselhoPanel = () => {
       totalActive: activeBlocks.length,
     };
 
-    // Alerts summary
+    // Alerts summary — filtered to verified blocks only
+    const activeBlockIds = new Set(activeBlocks.map(b => b.id));
     let critAlerts: any[] = [];
     try {
       const opAlerts = evaluateAlerts();
       const fAlerts = evaluateForecastAlerts();
       const allAlerts = [...opAlerts, ...fAlerts];
-      critAlerts = allAlerts.filter(a => a.severity === "critical").slice(0, 5);
+      critAlerts = allAlerts
+        .filter(a => activeBlockIds.has(a.blockId) && a.severity === "critical")
+        .slice(0, 5);
     } catch { /* safe fallback */ }
 
     // Trends - use capexHistory years as proxy for annual production
