@@ -93,8 +93,9 @@ export const GeneralForecastPanel = () => {
 
   const economicKPIs = useMemo(() => getNationalEconomicKPIs(filteredBlocks), [filteredBlocks]);
   const strategicScores = useMemo(() => calculateAllScores(filteredBlocks), [filteredBlocks]);
-  const operationalAlerts = useMemo(() => evaluateAlerts(), []);
-  const forecastAlerts = useMemo(() => evaluateForecastAlerts(), []);
+  const verifiedBlockIds = useMemo(() => new Set(verifiedBlocks.map(b => b.id)), []);
+  const operationalAlerts = useMemo(() => evaluateAlerts().filter(a => verifiedBlockIds.has(a.blockId)), [verifiedBlockIds]);
+  const forecastAlerts = useMemo(() => evaluateForecastAlerts().filter(a => !a.blockId || verifiedBlockIds.has(a.blockId)), [verifiedBlockIds]);
 
   const filteredBlockIds = useMemo(() => new Set(filteredBlocks.map(b => b.id)), [filteredBlocks]);
 

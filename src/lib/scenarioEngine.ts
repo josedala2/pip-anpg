@@ -134,18 +134,19 @@ export const PREDEFINED_SCENARIOS: ScenarioDefinition[] = [
 const PROJECTION_YEARS = 15; // 2026-2040
 const DISCOUNT_RATE = 0.10;
 
-function getNationalBaseline() {
-  const totalProduction = oilBlocks.reduce((s, b) => s + b.dailyProduction, 0);
+function getNationalBaseline(blocks?: OilBlock[]) {
+  const source = blocks || oilBlocks.filter(b => !b.pendingRealData);
+  const totalProduction = source.reduce((s, b) => s + b.dailyProduction, 0);
 
   // Weighted avg OPEX/bbl
-  const producing = oilBlocks.filter(b => b.dailyProduction > 0);
+  const producing = source.filter(b => b.dailyProduction > 0);
   const totalProd = producing.reduce((s, b) => s + b.dailyProduction, 0);
   const avgOpex = totalProd > 0
     ? producing.reduce((s, b) => s + (b.economicData?.opexPerBarrel || 20) * b.dailyProduction, 0) / totalProd
     : 20;
 
   // Total abandonment costs
-  const totalAbandonment = oilBlocks.reduce((s, b) => s + (b.economicData?.abandonment?.total || 0), 0);
+  const totalAbandonment = source.reduce((s, b) => s + (b.economicData?.abandonment?.total || 0), 0);
 
   return { totalProduction, avgOpex, totalAbandonment };
 }
