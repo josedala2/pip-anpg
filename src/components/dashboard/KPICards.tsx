@@ -3,19 +3,20 @@ import { getTotalProduction, getTotalReserves, getActiveBlocks, getTotalCapex, g
 import { homologacoesData } from "@/data/homologacoesData";
 import { Activity, BarChart3, Boxes, DollarSign, Landmark, Pickaxe, Search, Wrench, FileText, CheckCircle } from "lucide-react";
 
-const blocksInProduction = () => getBlocksByPhase("Production").length;
-const blocksInExploration = () => getBlocksByPhase("Exploration").length;
-const blocksInBidding = () => getBlocksByPhase("Bidding").length;
-const blocksNoProduction = () => oilBlocks.filter(b => b.phase !== "Bidding" && b.dailyProduction === 0).length;
-const blocksCriticalRisk = () => oilBlocks.filter(b => b.riskScore >= 7).length;
-const criticalFacilities = () => oilBlocks.filter(b => b.facilityData && b.facilityData.overallEfficiency < 70).length;
+const verified = oilBlocks.filter(b => !b.pendingRealData);
+const blocksInProduction = () => verified.filter(b => b.phase === "Production").length;
+const blocksInExploration = () => verified.filter(b => b.phase === "Exploration").length;
+const blocksInBidding = () => getBlocksByPhase("Bidding").length; // informational metadata — OK
+const blocksNoProduction = () => verified.filter(b => b.phase !== "Bidding" && b.dailyProduction === 0).length;
+const blocksCriticalRisk = () => verified.filter(b => b.riskScore >= 7).length;
+const criticalFacilities = () => verified.filter(b => b.facilityData && b.facilityData.overallEfficiency < 70).length;
 const estimatedStateRevenue = () => {
-  const totalBOPD = getTotalProduction();
+  const totalBOPD = verified.reduce((s, b) => s + b.dailyProduction, 0);
   return Math.round((totalBOPD * 365 * 75 * 0.6) / 1e6);
 };
 const contractsExpiring = () => {
   const now = Date.now();
-  return oilBlocks.filter(b => {
+  return verified.filter(b => {
     if (!b.contractInfo?.productionPeriodEnd) return false;
     const months = Math.round((new Date(b.contractInfo.productionPeriodEnd).getTime() - now) / (1000 * 60 * 60 * 24 * 30));
     return months > 0 && months <= 24;
@@ -67,9 +68,9 @@ const getStatus = (label: string, value: number): SemaphoreStatus => {
 };
 
 const kpis = [
-  { label: "Produção Nacional", value: getTotalProduction(), suffix: " BOPD", icon: Activity, status: "neutral" as SemaphoreStatus, drill: "Produção agregada de todos os blocos activos" },
-  { label: "Reservas Estimadas", value: getTotalReserves(), suffix: " Mb", icon: BarChart3, status: "neutral" as SemaphoreStatus, drill: "Soma de reservas P1+P2 de todas as concessões" },
-  { label: "Concessões Activas", value: getActiveBlocks(), suffix: ` / ${oilBlocks.length}`, icon: Boxes, status: "neutral" as SemaphoreStatus, drill: "Concessões activas vs total adjudicado" },
+  { label: "Produção Nacional", value: verified.reduce((s, b) => s + b.dailyProduction, 0), suffix: " BOPD", icon: Activity, status: "neutral" as SemaphoreStatus, drill: "Produção agregada dos blocos com dados verificados" },
+  { label: "Reservas Estimadas", value: verified.reduce((s, b) => s + b.estimatedReserves, 0), suffix: " Mb", icon: BarChart3, status: "neutral" as SemaphoreStatus, drill: "Soma de reservas P1+P2 das concessões verificadas" },
+  { label: "Concessões Activas", value: verified.filter(b => b.phase !== "Bidding").length, suffix: ` / ${verified.length}`, icon: Boxes, status: "neutral" as SemaphoreStatus, drill: "Concessões activas com dados verificados" },
   { label: "Blocos em Produção", value: blocksInProduction(), suffix: "", icon: Pickaxe, status: "healthy" as SemaphoreStatus, drill: "Blocos com produção de hidrocarbonetos activa" },
   { label: "Em Exploração", value: blocksInExploration(), suffix: "", icon: Search, status: "neutral" as SemaphoreStatus, drill: "Blocos em fase de exploração pura" },
   { label: "Em Aprovação", value: blocksInBidding(), suffix: "", icon: Boxes, status: "neutral" as SemaphoreStatus, drill: "Blocos em fase de aprovação / licitação" },
