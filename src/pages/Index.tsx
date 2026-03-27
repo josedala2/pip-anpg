@@ -61,9 +61,12 @@ const Index = () => {
   const [homeDrillDown, setHomeDrillDown] = useState<"operadores" | "alertas" | "recomendacoes" | null>(null);
 
   const alertsSummary = useMemo(() => {
-    const operational = evaluateAlerts();
+    const verifiedBlocks = oilBlocks.filter(b => !b.pendingRealData);
+    const operational = evaluateAlerts(verifiedBlocks);
     const forecast = evaluateForecastAlerts();
-    const all = [...operational, ...forecast];
+    const verifiedBlockIds = new Set(verifiedBlocks.map(b => b.id));
+    const filteredForecast = forecast.filter(a => !a.blockId || verifiedBlockIds.has(a.blockId));
+    const all = [...operational, ...filteredForecast];
     return {
       total: all.length,
       critical: all.filter(a => a.severity === "critical").length,
