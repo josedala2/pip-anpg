@@ -3,7 +3,7 @@ import { ChartWrapper } from "./ChartWrapper";
 import { totalLiftingsMMBO, liftingsByEntity, liftingsByBlock, topANPGContributors } from "@/data/liftingsData";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Barrel, TrendingUp } from "lucide-react";
+import { TrendingUp } from "lucide-react";
 
 export const CumulativeLiftingsPanel = () => {
   return (
