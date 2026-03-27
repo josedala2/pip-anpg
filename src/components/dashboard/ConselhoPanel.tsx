@@ -143,7 +143,7 @@ const UrgencyBadge = ({ urgency }: { urgency: string }) => {
 };
 
 export const ConselhoPanel = () => {
-  const [sortBy, setSortBy] = useState<"health" | "score" | "contract" | "action">("health");
+  const [sortBy, setSortBy] = useState<"health" | "score" | "contract" | "action" | "production">("health");
   const [sortAsc, setSortAsc] = useState(false);
   const [expandedRow, setExpandedRow] = useState<string | null>(null);
   const [classFilter, setClassFilter] = useState<string>("all");
@@ -231,6 +231,7 @@ export const ConselhoPanel = () => {
         case "score": cmp = a.strategic.totalScore - b.strategic.totalScore; break;
         case "contract": cmp = (a.remainingYears ?? 99) - (b.remainingYears ?? 99); break;
         case "action": cmp = urgencyOrder[a.actionUrgency] - urgencyOrder[b.actionUrgency]; break;
+        case "production": cmp = a.block.dailyProduction - b.block.dailyProduction; break;
       }
       return sortAsc ? cmp : -cmp;
     });
@@ -383,7 +384,10 @@ export const ConselhoPanel = () => {
                     </TableHead>
                     <TableHead className="text-[10px]">Concessão</TableHead>
                     <TableHead className="text-[10px]">Operador</TableHead>
-                    <TableHead className="text-[10px] text-right">Produção</TableHead>
+                    <TableHead className="text-[10px] text-right cursor-pointer" onClick={() => toggleSort("production")}>
+                      Produção <SortIcon col="production" />
+                    </TableHead>
+                    <TableHead className="text-[10px] text-center">Rank</TableHead>
                     <TableHead className="text-[10px] text-right cursor-pointer" onClick={() => toggleSort("score")}>
                       Score Est. <SortIcon col="score" />
                     </TableHead>
@@ -435,6 +439,18 @@ export const ConselhoPanel = () => {
                             : <span className="text-muted-foreground">—</span>
                           }
                         </TableCell>
+                        <TableCell className="py-2 text-xs text-center font-mono font-semibold">
+                          {(() => {
+                            const rank = [...concessions]
+                              .sort((a, b) => b.block.dailyProduction - a.block.dailyProduction)
+                              .findIndex(x => x.block.id === c.block.id) + 1;
+                            return (
+                              <span className={rank <= 3 ? "text-primary" : "text-muted-foreground"}>
+                                {rank}º
+                              </span>
+                            );
+                          })()}
+                        </TableCell>
                         <TableCell className="py-2 text-xs text-right font-mono font-semibold">
                           {c.strategic.totalScore}
                         </TableCell>
@@ -469,7 +485,7 @@ export const ConselhoPanel = () => {
                       </TableRow>
                       {expandedRow === c.block.id && (
                         <TableRow key={`${c.block.id}-detail`} className="bg-accent/20">
-                          <TableCell colSpan={9} className="py-3 px-4">
+                          <TableCell colSpan={10} className="py-3 px-4">
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
                               <div>
                                 <p className="font-semibold text-foreground mb-1">Recomendação</p>
