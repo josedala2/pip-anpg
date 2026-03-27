@@ -70,8 +70,8 @@ const Index = () => {
     return {
       total: all.length,
       critical: all.filter(a => a.severity === "critical").length,
-      forecast: forecast.length,
-      forecastCritical: forecast.filter(a => a.severity === "critical").length,
+      forecast: filteredForecast.length,
+      forecastCritical: filteredForecast.filter(a => a.severity === "critical").length,
     };
   }, []);
 
