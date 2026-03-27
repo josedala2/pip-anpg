@@ -1,72 +1,83 @@
 
 
-## Actualização dos Dados dos 3 Blocos Verificados — Relatório Estado das Concessões 2026
+## Dados do Documento Ainda Não Incluídos na Plataforma
 
-Analisei detalhadamente o documento PDF e comparei com os dados actuais em `angolaBlocks.ts`. Resumo das diferenças encontradas:
+Após análise detalhada do PDF vs. dados em `angolaBlocks.ts`, identifiquei **6 categorias** de dados novos que existem no documento mas não estão na plataforma:
 
-### Dados Nacionais (sem alterações necessárias)
-- Produção média 2025: **1,036,000 BOPD** — já alinhado no código
-- Quota ANPG: **441,609 BOPD** — já alinhado
-- Reservas: 2.6 Gbbls óleo, 4.4 TCF gás — já alinhado
+---
 
-### Bloco 0 — Sem alterações significativas
-Os dados no código já correspondem ao documento:
-- Produção: 119,285 BOPD ✓
-- Reservas: 421 MMBO ✓
-- OPEX: $26.3/bbl ✓
-- Consórcio: Cabgoc 39.2%, SNL 41%, TotalEnergies 10%, Azule 9.8% ✓
-- Abandono: 3,665 MMUSD, depositado 102, dívida Sonangol 48 ✓
-- Eficiência: 88% ✓
+### 1. Dados Nacionais — Previsão de Produção 2025-2050 por Bacia
+**Página 3 do documento** — Gráfico "Produção de Petróleo, Angola 2025-2050" com projecções até 1.682k BOPD, discriminado por:
+- Produção de Base (blocos actuais)
+- Oportunidades descobertas com data FID (IP 2026-2030+)
+- Oportunidades descobertas sem data FID
+- Breakdown por bacia (Baixo Congo, Kwanza, Benguela, Namibe, Bacias Interiores)
 
-### Bloco 2/05 — Actualização menor
-- Produção: 14,907 BOPD ✓ (doc também menciona 15,171 como "produção actual" na secção de infraestrutura — vou actualizar para **15,171** pois é o valor mais recente)
-- Reservas: 79.4 MMBO ✓
-- OPEX: $10.07/bbl ✓
-- **Novo dado**: Capacidade total: 165,000 BOPD; Taxa de utilização: 35.7%
+**Dados específicos**: Lista completa de projectos com datas de IP esperadas (ex: B0 Banzala Pilot IP 2026, B17 Dalia Deep EPS IP 2027, etc.)
 
-### Bloco 3/05 — Alterações CRÍTICAS
-| Campo | Valor Actual | Valor Documento | Acção |
+**Actualmente na plataforma**: Não existe nenhuma estrutura de dados nacional de previsão de produção.
+
+### 2. Dados Nacionais — Utilização do Gás Natural (2017-2025)
+**Página 6** — Tabela completa com 9 anos de dados:
+- Gás Injectado, Combustível, Queimado, Exportado ALNG, Gas Lift (MMSCFD)
+- Previsão de fornecimento de gás à ALNG com défice estrutural de 1.5 TCF a partir de 2035
+- Médias de fornecimento: 2025-2030 (1.165 MMSCFD), 2031-2040 (3.284), 2041-2050 (2.168)
+
+**Actualmente na plataforma**: Não existe.
+
+### 3. Dados Nacionais — Levantamentos Acumulados (1988-2025)
+**Página 5** — Distribuição de levantamentos acumulados por entidade:
+- Total: 13.189 MMBO
+- GE: 7.888 (60%), SNL: 2.123 (16%), Conc.: 3.214 (24%)
+- Top contribuintes ANPG: B17 1.371 (43%), B15 1.211 (38%), B3/05 298 (9%), B14 272 (8%)
+
+**Actualmente na plataforma**: Não existe.
+
+### 4. Bloco 0 — Tabela de Recomendações Técnicas (Medidas Possíveis)
+**Página 15** — Tabela detalhada com 8 linhas:
+
+| Oportunidade | Medidas | Impacto | Urgência |
 |---|---|---|---|
-| `dailyProduction` | 19,680 | **20,578** | Actualizar |
-| `estimatedReserves` | 889 | **33.35** | Corrigir (889 era STOOIP) |
-| `executionRate` | 92 | **87** | Actualizar (eficiência) |
-| `productionHistory` | 49-50k/mês | ~20k/mês | Corrigir (valores eram absurdos) |
-| Profit Oil table | Antigo | Actualizado | Actualizar fiscal terms |
+| Simplificação modelo operacional | Simplificar estrutura, reduzir plataformas tripuladas | Redução estrutural OPEX | Muito Alta |
+| Racionalização plataformas | Converter em unmanned, consolidar hubs | Redução significativa custos | Alta |
+| Optimização logística | Racionalizar frota PSV/AHTS, optimizar helicópteros | -10-20% custo logístico | Alta |
+| Maximizar recuperação | Optimizar injecção água/gás, recompletação poços | Aumentar produção | Alta |
+| Digitalização operações | Centros de operação, digital twins | Redução pessoal offshore | Média |
+| etc. | ... | ... | ... |
 
-### Detalhes técnicos
+**Actualmente**: Existe SWOT mas não existe esta tabela de medidas/recomendações técnicas.
 
-**Ficheiro**: `src/data/angolaBlocks.ts`
+### 5. Bloco 2/05 — Tabela de Recomendações Técnicas
+**Página 34/44** — Similar ao Bloco 0, com 7 medidas específicas (optimização energética, sistemas de segurança, racionalização plataformas, etc.)
 
-**1. Bloco 2/05** (linha ~2816):
-- `dailyProduction`: 14907 → **15171** (produção actual mais recente)
-- Actualizar `productionHistory` para reflectir valores consistentes com ~15k BOPD
+**Actualmente**: Não existe.
 
-**2. Bloco 3/05** (linhas ~1395-1435):
-- `dailyProduction`: 19680 → **20578**
-- `estimatedReserves`: 889 → **33.35** (reservas provadas, não STOOIP)
-- `executionRate`: 92 → **87** (eficiência 2025)
-- Corrigir `productionHistory`: valores de 49-50k são impossíveis para um bloco de 20k BOPD. Recalcular com variação realista em torno de 20k
-- Actualizar `projections` para serem coerentes com a produção real
-- Actualizar fiscal terms (Profit Oil):
-  - `<10%: ANPG 20%, GE 80%`
-  - `10-20%: ANPG 40%, GE 60%`
-  - `20-30%: ANPG 60%, GE 40%`
-  - `>30%: ANPG 75%, GE 25%`
+### 6. Bloco 0 — Escala de Equipamentos por Área (Anexo)
+**Página 25** — Tabela detalhada com capacidades por área (GTA, GMA, Area B/Mafumeira, FPSO):
+- Design capacity, reservas originais, peso total topside, nº plataformas
+- Nº geradores, turbinas, poços activos, compressores
+- Potência instalada, capacidade LPG, etc.
 
-**3. SWOT Updates** — O documento traz SWOT actualizados para os 3 blocos. Vou actualizar os existentes no código com o conteúdo mais recente.
+**Actualmente**: Existe `platformSpecs` genérico mas não este nível de detalhe por área operacional.
 
-**4. Dados de infraestrutura Bloco 3/05**:
-- 11 plataformas de produção, 3 de processamento
-- Vida útil: 2040
-- Capacidade: 46,278 BOPD
-- Injecção de água: 100,000 BWPD
-- Produção acumulada: 1,369,300 MMBO
+---
 
-### Impacto
-- Os KPIs nacionais, Matriz de Decisão CA e Scores Estratégicos recalculam automaticamente
-- O Bloco 3/05 passará de ~19.7k para ~20.6k BOPD (+4.6%)
-- As reservas do Bloco 3/05 baixam drasticamente (889→33.35 MMBO) o que afectará o score económico significativamente
+### Resumo de Prioridade
 
-### Ficheiros a modificar
-1. `src/data/angolaBlocks.ts` — dados dos Blocos 2/05 e 3/05
+| # | Dados | Impacto Visual | Complexidade |
+|---|---|---|---|
+| 1 | Previsão Produção Nacional 2025-2050 | Alto (novo painel executivo) | Alta |
+| 2 | Utilização Gás Natural | Alto (novo painel estratégico) | Média |
+| 3 | Levantamentos Acumulados | Médio (complementa dados existentes) | Baixa |
+| 4 | Recomendações Técnicas B0 | Alto (complementa SWOT) | Média |
+| 5 | Recomendações Técnicas B2/05 | Alto (complementa SWOT) | Média |
+| 6 | Escala Equipamentos B0 | Baixo (detalhe técnico) | Média |
+
+### O que recomendo
+
+Os itens **4 e 5** (tabelas de Recomendações Técnicas/Medidas Possíveis) são os mais úteis para o CA — mostram acções concretas com urgência e impacto. Podem ser integrados como novo campo no tipo `OilBlock` e apresentados como painel adicional na página do bloco.
+
+Os itens **1 e 2** (Previsão Nacional e Gás) seriam painéis novos no dashboard executivo com alto valor estratégico.
+
+Que itens gostaria de priorizar para inclusão?
 
