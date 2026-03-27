@@ -18,6 +18,9 @@ import { HomologacoesPanel } from "@/components/dashboard/HomologacoesPanel";
 import { ConselhoPanel } from "@/components/dashboard/ConselhoPanel";
 import { RiskPerformance } from "@/components/dashboard/RiskPerformance";
 import { SobaChat } from "@/components/dashboard/SobaChat";
+import { NationalForecastPanel } from "@/components/dashboard/NationalForecastPanel";
+import { GasUtilizationPanel } from "@/components/dashboard/GasUtilizationPanel";
+import { CumulativeLiftingsPanel } from "@/components/dashboard/CumulativeLiftingsPanel";
 import { type OilBlock, oilBlocks } from "@/data/angolaBlocks";
 import { Maximize2, Minimize2, ChevronLeft, ChevronRight, Sun, Moon, FileText, LogOut, User, Users, Database, Bell, Clock, Signal, Sparkles } from "lucide-react";
 import { evaluateAlerts, evaluateForecastAlerts } from "@/lib/alertsEngine";
@@ -43,6 +46,9 @@ const allPanels = [
   "Económico",
   "Cenários",
   "Previsão Geral",
+  "Previsão Nacional",
+  "Gás Natural",
+  "Levantamentos",
   "Soba",
 ];
 
@@ -285,6 +291,9 @@ const Index = () => {
             {panels[activePanel] === "Económico" && <EconomicFinancialPanel />}
             {panels[activePanel] === "Cenários" && <StrategicForecast />}
             {panels[activePanel] === "Previsão Geral" && <GeneralForecastPanel />}
+            {panels[activePanel] === "Previsão Nacional" && <NationalForecastPanel />}
+            {panels[activePanel] === "Gás Natural" && <GasUtilizationPanel />}
+            {panels[activePanel] === "Levantamentos" && <CumulativeLiftingsPanel />}
             {panels[activePanel] === "Soba" && <SobaChat />}
           </div>
         </div>
