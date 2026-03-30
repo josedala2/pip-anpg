@@ -152,6 +152,7 @@ export const nationalHistoricalProduction = [
 export const nationalCertifiedMetrics = {
   productionBOPD: 1036000,
   anpgQuotaBOPD: 441609,
+  snlQuotaBOPD: 165760,
   reservesOilMb: 2600,
   reservesGasTCF: 4.4,
   totalAdjudicated: 67,
