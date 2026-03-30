@@ -67,19 +67,24 @@ const getStatus = (label: string, value: number): SemaphoreStatus => {
 const n = nationalCertifiedMetrics;
 
 const kpis = [
+  // — Produção —
   { label: "Produção Nacional", value: n.productionBOPD, suffix: " BOPD", icon: Activity, status: "neutral" as SemaphoreStatus, drill: "Produção média nacional certificada — Relatório Estado das Concessões 2026" },
   { label: "Quota ANPG", value: n.anpgQuotaBOPD, suffix: " BOPD", icon: Droplets, status: "neutral" as SemaphoreStatus, drill: "Quota de produção atribuída à ANPG" },
+  // — Reservas & Recursos —
   { label: "Reservas Certificadas", value: n.reservesOilMb, suffix: ` Mb  ·  Gás: ${n.reservesGasTCF} TCF`, icon: BarChart3, status: "neutral" as SemaphoreStatus, drill: "Reservas provadas de óleo e gás — dados certificados" },
+  { label: "Recursos Prospectivos", value: n.prospectiveResourcesOilMb, suffix: ` Mb  ·  Gás: ${n.prospectiveResourcesGasTCF} TCF`, icon: Mountain, status: "neutral" as SemaphoreStatus, drill: "Recursos prospectivos nacionais estimados de óleo e gás — Relatório 2026" },
+  // — Concessões —
   { label: "Concessões Activas", value: n.activeConcessions, suffix: ` / ${n.totalAdjudicated}`, icon: Boxes, status: "neutral" as SemaphoreStatus, drill: "Concessões activas de um total de 67 adjudicadas" },
   { label: "Blocos em Produção", value: n.inProduction, suffix: "", icon: Pickaxe, status: "healthy" as SemaphoreStatus, drill: "Blocos com produção de hidrocarbonetos activa" },
   { label: "Em Exploração", value: n.inExploration, suffix: "", icon: Search, status: "neutral" as SemaphoreStatus, drill: "Blocos em fase de exploração" },
   { label: "Em Aprovação", value: n.pendingApproval, suffix: "", icon: Boxes, status: "neutral" as SemaphoreStatus, drill: "Blocos em fase de aprovação / licitação" },
+  // — Operacionais —
   { label: "Instalações Críticas", value: criticalFacilities(), suffix: "", icon: Wrench, status: getStatus("Instalações Críticas", criticalFacilities()), drill: "Instalações com eficiência < 70% (blocos verificados)" },
-  { label: "Receita Estado", value: estimatedStateRevenue(), prefix: "$", suffix: "M", icon: Landmark, status: "neutral" as SemaphoreStatus, drill: "Estimativa anual de receita fiscal petrolífera (base: produção nacional)" },
   { label: "Contratos a Expirar", value: contractsExpiring(), suffix: "", icon: DollarSign, status: getStatus("Contratos a Expirar", contractsExpiring()), drill: "Contratos com vencimento em < 24 meses (blocos verificados)" },
+  // — Financeiros —
+  { label: "Receita Estado", value: estimatedStateRevenue(), prefix: "$", suffix: "M", icon: Landmark, status: "neutral" as SemaphoreStatus, drill: "Estimativa anual de receita fiscal petrolífera (base: produção nacional)" },
   { label: "Total Homologado", value: totalHomologado(), prefix: "$", suffix: "M", icon: FileText, sparkline: homologSpark, status: "neutral" as SemaphoreStatus, drill: "Soma dos montantes aprovados em processos de homologação" },
   { label: "Taxa Aprovação", value: taxaAprovacao(), suffix: "%", icon: CheckCircle, sparkline: aprovacaoSpark, status: getStatus("Taxa Aprovação", taxaAprovacao()), drill: "Percentagem de processos de homologação aprovados" },
-  { label: "Recursos Prospectivos", value: n.prospectiveResourcesOilMb, suffix: ` Mb  ·  Gás: ${n.prospectiveResourcesGasTCF} TCF`, icon: Mountain, status: "neutral" as SemaphoreStatus, drill: "Recursos prospectivos nacionais estimados de óleo e gás — Relatório 2026" },
 ];
 
 export const KPICards = ({ compact = false }: { compact?: boolean }) => (
