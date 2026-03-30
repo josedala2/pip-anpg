@@ -3,6 +3,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { oilBlocks, type OilBlock } from "@/data/angolaBlocks";
+import { nationalCertifiedMetrics, nationalForecast } from "@/data/nationalForecast";
 import { calculateStrategicScore, type StrategicScore, type StrategicClassification, classificationConfig, urgencyConfig } from "@/lib/strategicScoring";
 import { calculateEconomicScore, type EconomicScoreResult, getNationalEconomicKPIs, classificationColors } from "@/lib/economicScoring";
 import { evaluateAlerts, evaluateForecastAlerts } from "@/lib/alertsEngine";
