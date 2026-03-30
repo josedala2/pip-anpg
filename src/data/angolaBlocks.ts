@@ -304,6 +304,37 @@ export interface TechnicalCost {
   opex2025: number;
 }
 
+export interface LiftingsAccumulated {
+  geMMBO: number;
+  snlMMBO: number;
+  totalMMBO: number;
+  totalReservesMMBO: number;
+  percentLifted: number;
+}
+
+export interface LiftingsForecastYear {
+  year: number;
+  geMMBO: number;
+  snlEPMMBO: number;
+  receitaGE?: number;
+  receitaSNL?: number;
+}
+
+export interface GasBalanceHistoryYear {
+  year: number;
+  injected: number;
+  fuel: number;
+  flared: number;
+  exportALNG: number;
+  unaccounted?: number;
+}
+
+export interface GasSupplyForecastYear {
+  year: number;
+  b014Exported: number;
+  opportunities?: number;
+}
+
 export interface EconomicVision {
   npvFullcycle?: NPVBreakdown[];
   npvPointForward?: NPVBreakdown[];
@@ -314,6 +345,9 @@ export interface EconomicVision {
   technicalCost?: TechnicalCost;
   cashFlowNotes?: string[];
   strategicObservations?: string[];
+  liftingsAccumulated?: LiftingsAccumulated;
+  liftingsForecast?: LiftingsForecastYear[];
+  liftingsObservations?: string[];
 }
 
 export interface TechnicalRecommendation {
