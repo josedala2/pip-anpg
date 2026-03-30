@@ -54,7 +54,7 @@ const NpvPeriodChart = ({ data }: { data: { period: string; ge: number; impostos
   if (data.conc != null) bars.splice(1, 0, { label: "Conc.", value: data.conc });
 
   return (
-    <ChartWrapper title={`NPV ${data.period}`} subtitle="MMUSD" icon={<DollarSign className="w-4 h-4 text-primary" />} height={220}>
+    <ChartWrapper title={`NPV ${data.period} (MMUSD)`} icon={<DollarSign className="w-4 h-4 text-primary" />} height={220}>
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={bars} barGap={4}>
           <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
