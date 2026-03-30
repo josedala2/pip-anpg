@@ -1,36 +1,41 @@
 
 
-## Revisão do Painel CA — Alinhar com Dados Nacionais Certificados
+## Actualizar Dados de Gás Natural com Documento Oficial
 
-### Problemas identificados
+### Diferenças identificadas entre dados actuais e imagem oficial
 
-O painel CA calcula os 4 Macro KPIs e a tendência a partir dos 3 blocos verificados, produzindo valores parciais inconsistentes com os dados certificados já disponíveis em `nationalCertifiedMetrics`.
+**1. Dados históricos (gasUtilization) — correcções:**
 
-| KPI | Valor actual (parcial) | Valor correcto |
-|-----|----------------------|----------------|
-| Produção Nacional | ~soma 3 blocos (~380K) | **1.036.000 BOPD** (1.036K) |
-| Receita Estado | getNationalEconomicKPIs(3 blocos) | Manter cálculo parcial, mas **rotular** como "Receita Estado (blocos verificados)" |
-| Concessões activas (subtítulo) | 3 | **54** |
-| Tendência (Zone E) | capexHistory como proxy (errado) | Usar `nationalForecast` real |
+| Ano | Campo | Actual | Correcto (imagem) |
+|-----|-------|--------|-------------------|
+| 2017 | exportedALNG | 1387 | **727** |
+| 2017 | deviations | 340 | **638** |
+| 2018 | exportedALNG | 727 | **1198** |
+| 2018 | deviations | 321 | **784** |
+| 2019 | exportedALNG | 1198 | **1089** |
+| 2020 | gasLift | 139 | **340** |
+| 2020 | deviations | 329 | **321** |
+| 2021 | deviations | 166 | **152** |
+| 2022 | deviations | 317 | **137** |
+| 2025 | injected | null | **1267** |
+| 2025 | fuel | null | **109** |
+| 2025 | gasLift | null | **313** |
+| 2025 | deviations | null | **176** |
 
-### Plano de implementação
+Os valores ALNG de 2017 e 2018 estavam trocados. O ano 2025 passa a ter dados completos.
 
-**1. Macro KPIs (linhas 176-188, 308-339)**
-- **Produção Nacional**: usar `nationalCertifiedMetrics.productionBOPD` (1.036.000) — valor certificado
-- **Receita Estado**: manter cálculo existente mas adicionar sub-label "(blocos verificados)" para transparência
-- **Concessões em Risco**: manter contagem actual (verificados) — é correcto mostrar os que temos dados
-- **Renovações Próximas**: idem, manter
+**2. Observações — texto actualizado do documento:**
+- Obs 1: Adicionar referência ao Bloco 0 e SLGC
+- Obs 2: Adicionar referência ao "sistema de medição efectivo (desvios)"
+- Obs 3: Reforçar "abastecimento doméstico"
+- Remover obs 5 (défice) — já está coberta no painel de forecast
 
-**2. Subtítulo do painel (linha 289)**
-- Mudar de `{macro.totalActive} concessões activas` para usar `nationalCertifiedMetrics.activeConcessions` (54), com nota que a matriz detalha apenas blocos verificados
+**3. Recomendações — texto actualizado:**
+- Rec 1: Adicionar "com base na medição e regulamentação efectiva"
+- Rec 3: Adicionar "mantendo a segurança dos reservatórios e benefício económico do Bloco"
 
-**3. Tendência de Produção — Zone E (linhas 202-213, 673-701)**
-- Substituir a lógica errada (capexHistory como proxy) por dados de `nationalForecast` (2025-2050), mostrando `total` em kBOPD
-- Limitar a janela visível (e.g. 2025-2035) para foco no médio prazo
-
-**4. Adicionar KPI "Quota ANPG"**
-- Substituir um dos 4 KPIs ou expandir para 5, adicionando `nationalCertifiedMetrics.anpgQuotaBOPD` (441.609 BOPD) — alinhado com a Home Executiva
+**4. Dados de forecast (imagem 2):** Já estão correctos — sem alterações necessárias.
 
 ### Ficheiro a alterar
-`src/components/dashboard/ConselhoPanel.tsx` — importar `nationalCertifiedMetrics` e `nationalForecast`, actualizar macro KPIs, subtítulo e gráfico de tendência
+`src/data/gasUtilization.ts` — linhas 13-23 (dados históricos), 47-53 (observações), 56-60 (recomendações)
 
