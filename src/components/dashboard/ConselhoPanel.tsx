@@ -306,6 +306,7 @@ export const ConselhoPanel = () => {
           value={`${(macro.totalProduction / 1000).toFixed(0)}K`}
           unit="BOPD (certificado)"
           trend="neutral"
+          tooltip="Produção média nacional certificada — Relatório Estado das Concessões 2026"
         />
         <MacroKPI
           icon={Landmark}
@@ -313,6 +314,7 @@ export const ConselhoPanel = () => {
           value={`${(macro.anpgQuota / 1000).toFixed(0)}K`}
           unit="BOPD"
           trend="neutral"
+          tooltip="Quota de produção de petróleo atribuída à ANPG como concessionária nacional"
         />
         <MacroKPI
           icon={CircleDollarSign}
@@ -320,6 +322,7 @@ export const ConselhoPanel = () => {
           value={`$${(macro.stateRevenue / 1000).toFixed(1)}B`}
           unit="USD/ano (blocos verif.)"
           trend="up"
+          tooltip="Estimativa de receita fiscal petrolífera calculada a partir dos blocos com dados operacionais verificados (Blocos 0, 2/05 e 3/05)"
         />
         <MacroKPI
           icon={AlertTriangle}
@@ -328,6 +331,7 @@ export const ConselhoPanel = () => {
           unit={`de ${macro.verifiedCount} verificadas`}
           trend="alert"
           alert={macro.criticalConcessions > 3}
+          tooltip="Concessões com status 'Crítico' baseado em 6 critérios: idade das instalações, utilização da capacidade, declínio de produção, volume, prazo contratual e scores combinados"
         />
         <MacroKPI
           icon={Scale}
@@ -335,6 +339,7 @@ export const ConselhoPanel = () => {
           value={`${macro.renewSoon}`}
           unit="nos próximos 3 anos"
           trend={macro.renewSoon > 5 ? "alert" : "neutral"}
+          tooltip="Concessões verificadas cujo contrato de produção expira nos próximos 3 anos, requerendo decisão de renovação ou relicitação"
         />
       </div>
 
