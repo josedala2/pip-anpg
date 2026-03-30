@@ -6,8 +6,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
 import { AnimatedCounter } from "./AnimatedCounter";
 import {
-  evaluateAlerts, defaultRules, categoryLabels, severityLabels, severityStyles, categoryStyles,
-  type Alert, type AlertCategory, type AlertSeverity, type AlertRule,
+  evaluateAlerts, evaluateForecastAlerts, defaultRules, categoryLabels, severityLabels, severityStyles, categoryStyles,
+  forecastThresholds,
+  type Alert, type AlertCategory, type AlertSeverity, type AlertRule, type ForecastAlert,
 } from "@/lib/alertsEngine";
 import { oilBlocks } from "@/data/angolaBlocks";
 import {
