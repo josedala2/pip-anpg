@@ -716,7 +716,7 @@ export const oilBlocks: OilBlock[] = [
       observations: [
         "Receitas do Estado reduzidas de 57% (até 2021) para apenas 16% (2026-2050), limitadas ao royalty de 15%.",
         "Opex por barril projectado para 2025: USD 26,3/bbl.",
-        "Total de custos de abandono estimado em MMUSD 3.420, com apenas MMUSD 102 depositados no fundo.",
+        "Total de custos de abandono estimado em MMUSD 3.665, com apenas MMUSD 102 depositados no fundo.",
         "Dívida da Sonangol ao GE: MMUSD 48.",
         "Plano quinquenal 2026-2030 totaliza MMUSD 8.726 em investimentos (Exploração + Desenvolvimento + Operação).",
       ],
