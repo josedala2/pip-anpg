@@ -79,6 +79,7 @@ const kpis = [
   { label: "Contratos a Expirar", value: contractsExpiring(), suffix: "", icon: DollarSign, status: getStatus("Contratos a Expirar", contractsExpiring()), drill: "Contratos com vencimento em < 24 meses (blocos verificados)" },
   { label: "Total Homologado", value: totalHomologado(), prefix: "$", suffix: "M", icon: FileText, sparkline: homologSpark, status: "neutral" as SemaphoreStatus, drill: "Soma dos montantes aprovados em processos de homologação" },
   { label: "Taxa Aprovação", value: taxaAprovacao(), suffix: "%", icon: CheckCircle, sparkline: aprovacaoSpark, status: getStatus("Taxa Aprovação", taxaAprovacao()), drill: "Percentagem de processos de homologação aprovados" },
+  { label: "Recursos Prospectivos", value: n.prospectiveResourcesOilMb, suffix: ` Mb  ·  Gás: ${n.prospectiveResourcesGasTCF} TCF`, icon: Mountain, status: "neutral" as SemaphoreStatus, drill: "Recursos prospectivos nacionais estimados de óleo e gás — Relatório 2026" },
 ];
 
 export const KPICards = ({ compact = false }: { compact?: boolean }) => (
