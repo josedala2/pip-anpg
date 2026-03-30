@@ -349,6 +349,44 @@ export interface EconomicData {
   observations?: string[];
 }
 
+export interface BlockSwotData {
+  strengths: string[];
+  weaknesses: string[];
+  opportunities: string[];
+  threats: string[];
+}
+
+export interface GasBalance {
+  reservesBSCF: number;
+  infrastructureCapacityMMSCFD: number;
+  opportunitiesTCF?: number;
+  productionAvgMMSCFD: number;
+  gorSCFperSTB: number;
+  utilizationIndex: {
+    injection: number; // %
+    fuel: number;
+    flaring: number;
+    export: number;
+  };
+}
+
+export interface EquipmentScale {
+  area: string;
+  designCapacityBOPD?: number;
+  originalReservesMMBO?: number;
+  topsideWeightTons?: number;
+  platforms?: number;
+  generators?: number;
+  turbines?: number;
+  activeWells?: number;
+  installedPowerMW?: number;
+  compressors?: number;
+  lifeEndYear?: number;
+  capacityBOPD?: number;
+  waterInjectionBWPD?: number;
+  cumulativeProductionMMBO?: number;
+}
+
 export interface OilBlock {
   id: string;
   name: string;
@@ -394,6 +432,10 @@ export interface OilBlock {
   revitalizationScenarios?: RevitalizationScenario[];
   technicalRecommendations?: TechnicalRecommendation[];
   pendingRealData?: boolean;
+  // New fields from document analysis
+  swotData?: BlockSwotData;
+  gasBalance?: GasBalance;
+  equipmentScale?: EquipmentScale[];
 }
 
 export const oilBlocks: OilBlock[] = [
@@ -674,21 +716,21 @@ export const oilBlocks: OilBlock[] = [
       observations: [
         "Receitas do Estado reduzidas de 57% (até 2021) para apenas 16% (2026-2050), limitadas ao royalty de 15%.",
         "Opex por barril projectado para 2025: USD 26,3/bbl.",
-        "Total de custos de abandono estimado em MMUSD 3.420, com apenas MMUSD 102 depositados no fundo.",
+        "Total de custos de abandono estimado em MMUSD 3.665, com apenas MMUSD 102 depositados no fundo.",
         "Dívida da Sonangol ao GE: MMUSD 48.",
         "Plano quinquenal 2026-2030 totaliza MMUSD 8.726 em investimentos (Exploração + Desenvolvimento + Operação).",
       ],
     },
-    // HSE Safety Indicators (2018–2025) — Dados oficiais ANPG
+    // HSE Safety Indicators (2018–2025) — Dados oficiais documento "Estado das Concessões — Bloco 0"
     hseData: [
-      { year: 2018, fat: 0, lti: 0, rwc: 3, mtc: 0, fac: 0, nmi: 0, hhr: 20.33, trir: 0.10, ltir: 0.00 },
-      { year: 2019, fat: 0, lti: 0, rwc: 7, mtc: 0, fac: 0, nmi: 0, hhr: 22.21, trir: 0.13, ltir: 0.00 },
-      { year: 2020, fat: 0, lti: 0, rwc: 2, mtc: 0, fac: 0, nmi: 0, hhr: 13.82, trir: 0.13, ltir: 0.00 },
-      { year: 2021, fat: 0, lti: 0, rwc: 3, mtc: 0, fac: 16, nmi: 0, hhr: 11.80, trir: 0.12, ltir: 0.00 },
-      { year: 2022, fat: 0, lti: 0, rwc: 9, mtc: 1, fac: 20, nmi: 0, hhr: 19.65, trir: 0.10, ltir: 0.00 },
-      { year: 2023, fat: 0, lti: 0, rwc: 3, mtc: 11, fac: 24, nmi: 0, hhr: 15.44, trir: 0.18, ltir: 0.00 },
-      { year: 2024, fat: 0, lti: 0, rwc: 5, mtc: 16, fac: 28, nmi: 35, hhr: 17.16, trir: 0.24, ltir: 0.00 },
-      { year: 2025, fat: 0, lti: 0, rwc: 2, mtc: 7, fac: 34, nmi: 0, hhr: 16.04, trir: 0.11, ltir: 0.00 },
+      { year: 2018, fat: 0, lti: 0, rwc: 0, mtc: 0, fac: 0, nmi: 0, hhr: 20.33, trir: 0.10, ltir: 0.00 },
+      { year: 2019, fat: 0, lti: 0, rwc: 0, mtc: 0, fac: 0, nmi: 0, hhr: 22.21, trir: 0.13, ltir: 0.00 },
+      { year: 2020, fat: 0, lti: 0, rwc: 0, mtc: 0, fac: 0, nmi: 0, hhr: 13.82, trir: 0.13, ltir: 0.00 },
+      { year: 2021, fat: 0, lti: 0, rwc: 0, mtc: 0, fac: 16, nmi: 0, hhr: 11.80, trir: 0.12, ltir: 0.00 },
+      { year: 2022, fat: 0, lti: 0, rwc: 0, mtc: 1, fac: 20, nmi: 0, hhr: 19.65, trir: 0.10, ltir: 0.00 },
+      { year: 2023, fat: 0, lti: 0, rwc: 0, mtc: 12, fac: 24, nmi: 0, hhr: 15.44, trir: 0.18, ltir: 0.00 },
+      { year: 2024, fat: 0, lti: 0, rwc: 0, mtc: 16, fac: 28, nmi: 35, hhr: 17.16, trir: 0.24, ltir: 0.00 },
+      { year: 2025, fat: 0, lti: 0, rwc: 0, mtc: 7, fac: 34, nmi: 0, hhr: 16.04, trir: 0.11, ltir: 0.00 },
     ],
     // Environmental data (2019–2025) — Dados oficiais ANPG
     environmentalData: [
@@ -852,7 +894,7 @@ export const oilBlocks: OilBlock[] = [
         actualRecoveryMMBO: 38,
         percentOfPlan: 84,
         status: "Below Plan",
-        observations: "Reservatório com pressão abaixo do esperado; workovers de poços de injecção de água em curso para melhorar varrimento",
+        observations: "Desempenho impactado por falhas de Bombas PSP. Recuperação em 2025, substituição das bombas em curso",
         startYear: 2015,
         recoveryHistory: [
           { year: 2015, planCumulative: 3, actualCumulative: 3, annualPlan: 3, annualActual: 3 },
@@ -873,8 +915,8 @@ export const oilBlocks: OilBlock[] = [
         planRecoveryMMBO: 120,
         actualRecoveryMMBO: 105,
         percentOfPlan: 87,
-        status: "Below Plan",
-        observations: "Falhas recorrentes nas bombas submersíveis (ESP); programa de substituição em andamento; declínio natural acelerado",
+        status: "Above Plan",
+        observations: "Produção superou as expectativas. Projecto de Nemba Infills com desempenho acima do plano",
         startYear: 2005,
         recoveryHistory: [
           { year: 2005, planCumulative: 5, actualCumulative: 5.2, annualPlan: 5, annualActual: 5.2 },
@@ -895,8 +937,8 @@ export const oilBlocks: OilBlock[] = [
         planRecoveryMMBO: 30,
         actualRecoveryMMBO: 28,
         percentOfPlan: 93,
-        status: "On Track",
-        observations: "Desempenho próximo do plano; campanha de workovers concluída com sucesso em 2024",
+        status: "Below Plan",
+        observations: "Baixo índice de produção, poços fechados devido à emulsão. Necessária intervenção para resolver problemas de emulsão",
         startYear: 2012,
         recoveryHistory: [
           { year: 2012, planCumulative: 2, actualCumulative: 2.1, annualPlan: 2, annualActual: 2.1 },
@@ -914,8 +956,8 @@ export const oilBlocks: OilBlock[] = [
         planRecoveryMMBO: 85,
         actualRecoveryMMBO: 70,
         percentOfPlan: 82,
-        status: "Below Plan",
-        observations: "Reservatórios Pinda com alta razão água-óleo (WOR); eficiência de varrimento reduzida; estudos de infill drilling em curso",
+        status: "Critical",
+        observations: "Falhas mecânicas em ESP. Poços do Lote 1 não entraram em produção. Lote 2 reservatório esgotado. Lote 3 removido do plano",
         startYear: 2000,
         recoveryHistory: [
           { year: 2000, planCumulative: 4, actualCumulative: 4.2, annualPlan: 4, annualActual: 4.2 },
@@ -935,8 +977,8 @@ export const oilBlocks: OilBlock[] = [
         planRecoveryMMBO: 200,
         actualRecoveryMMBO: 195,
         percentOfPlan: 97,
-        status: "On Track",
-        observations: "Projecto âncora do Bloco 0; excelente desempenho; expansão de capacidade de injecção de água planeada para 2026",
+        status: "Below Plan",
+        observations: "Falta de pressão do reservatório, mais gás e menos óleo. Expansão de capacidade de injecção de água planeada para 2026",
         startYear: 2009,
         recoveryHistory: [
           { year: 2009, planCumulative: 8, actualCumulative: 8.5, annualPlan: 8, annualActual: 8.5 },
@@ -1021,7 +1063,7 @@ export const oilBlocks: OilBlock[] = [
         { period: "2026-2050", gePercent: 84, impostosPercent: 16, geMMBO: 470, impostosMMBO: 87, geMMUSD: 25845, impostosMMUSD: 4773 },
       ],
       abandonmentDetail: {
-        total: 3420,
+        total: 3665,
         pontual: 2365,
         fundeamento: 1300,
         fundeado: 102,
@@ -1083,6 +1125,128 @@ export const oilBlocks: OilBlock[] = [
         proposals: ["Licitação internacional para áreas devolvidas", "Modelo CPP com termos competitivos", "Integração com infraestrutura existente"],
         incentives: ["Termos fiscais adaptados ao risco exploratório", "Acesso à infraestrutura do Malongo Terminal"],
         commitments: ["Programa de trabalho mínimo definido na licitação", "Conteúdo local obrigatório de 70%"],
+      },
+      {
+        id: 4,
+        title: "Divisão por Tiers — Tier 1 vs Tier 2&3",
+        description: "Proposta de divisão do Bloco 0 em novas concessões separadas por Tier, com medidas diferenciadas para maximizar valor.",
+        proposals: [
+          "Redemarcação das áreas por Tier com contratos separados",
+          "Tier 1 (N'Dola Sul, Sanha Sul, Nemba, Mafumeira): manter operação com GE actual, perfuração entre poços existentes",
+          "Tier 2&3 (Takula, Lifua, Banzala, Malongo): cedência de IP a novos investidores com incentivos fiscais",
+          "Monetização de DROs de gás nas áreas Tier 2&3",
+        ],
+        incentives: ["Incentivos fiscais diferenciados por Tier", "Cedência de infraestrutura aos novos operadores"],
+        commitments: ["Programa de abandono para activos Tier 3", "Transição operacional faseada"],
+      },
+    ],
+    // SWOT Analysis from official document "Estado das Concessões — Bloco 0"
+    swotData: {
+      strengths: [
+        "Vasta experiência operacional com mais de 55 anos de actividade",
+        "Infraestrutura robusta: 166 plataformas de poços, 38 de processamento, Terminal Malongo",
+        "Recursos humanos qualificados e elevado conteúdo local",
+        "Operador (Chevron) com capacidade técnica e financeira comprovada",
+        "Múltiplas descobertas com 57 comerciais e taxa de sucesso geológico de 62%",
+      ],
+      weaknesses: [
+        "Bloco maduro com infraestruturas envelhecidas e custos operacionais elevados (OPEX USD 26,3/bbl)",
+        "Declínio natural da produção — de picos históricos acima de 400k para ~119k BOPD",
+        "Fundo de abandono severamente subfinanciado (MMUSD 102 de MMUSD 3.665 necessários)",
+        "Redução drástica das receitas do Estado de 57% para 16%",
+        "Problemas recorrentes de emulsão (Banzala) e falhas de ESP (Malongo West)",
+      ],
+      opportunities: [
+        "Potencial exploratório de 470 MMBOE no play Cretáceo próximo às áreas de produção",
+        "Revitalização via divisão em Tiers com novos investidores para áreas maduras",
+        "Monetização de gás: reservas de 2,891 BSCF com infraestrutura CRX de 600 MMSCFD",
+        "Optimização energética e digitalização das operações para reduzir custos",
+        "Campanhas de infill drilling e tie-backs para campos satélite com CAPEX reduzido",
+      ],
+      threats: [
+        "Risco de descomissionamento prematuro de activos Tier 3 sem financiamento adequado",
+        "Défice estrutural de fornecimento de gás à ALNG a partir de 2035",
+        "Volatilidade dos preços do petróleo afectando viabilidade económica dos investimentos",
+        "Envelhecimento da força de trabalho e dificuldade de retenção de talento",
+        "Cash flows negativos recorrentes para o GE a partir de 2025",
+      ],
+    },
+    // Gas Natural Balance — Block 0 specific data
+    gasBalance: {
+      reservesBSCF: 2891,
+      infrastructureCapacityMMSCFD: 600,
+      opportunitiesTCF: 3,
+      productionAvgMMSCFD: 1191,
+      gorSCFperSTB: 3631,
+      utilizationIndex: {
+        injection: 38,
+        fuel: 12,
+        flaring: 1,
+        export: 49,
+      },
+    },
+    // Equipment Scale by Area — from document page 28
+    equipmentScale: [
+      {
+        area: "GTA (Greater Takula Area)",
+        designCapacityBOPD: 200000,
+        originalReservesMMBO: 1200,
+        topsideWeightTons: 45000,
+        platforms: 85,
+        generators: 12,
+        turbines: 8,
+        activeWells: 120,
+        installedPowerMW: 180,
+        compressors: 6,
+        lifeEndYear: 2035,
+        capacityBOPD: 80000,
+        waterInjectionBWPD: 200000,
+        cumulativeProductionMMBO: 1050,
+      },
+      {
+        area: "GMA (Greater Mafumeira Area)",
+        designCapacityBOPD: 150000,
+        originalReservesMMBO: 800,
+        topsideWeightTons: 35000,
+        platforms: 40,
+        generators: 8,
+        turbines: 6,
+        activeWells: 95,
+        installedPowerMW: 120,
+        compressors: 4,
+        lifeEndYear: 2045,
+        capacityBOPD: 100000,
+        waterInjectionBWPD: 200000,
+        cumulativeProductionMMBO: 450,
+      },
+      {
+        area: "Área B (Sanha/Nembas/Kwanza)",
+        designCapacityBOPD: 180000,
+        originalReservesMMBO: 950,
+        topsideWeightTons: 40000,
+        platforms: 35,
+        generators: 10,
+        turbines: 7,
+        activeWells: 110,
+        installedPowerMW: 150,
+        compressors: 5,
+        lifeEndYear: 2040,
+        capacityBOPD: 100000,
+        waterInjectionBWPD: 170000,
+        cumulativeProductionMMBO: 680,
+      },
+      {
+        area: "Mafumeira FPSO",
+        platforms: 6,
+        generators: 4,
+        turbines: 3,
+        activeWells: 33,
+        installedPowerMW: 45,
+        compressors: 2,
+        lifeEndYear: 2040,
+        capacityBOPD: 46278,
+        waterInjectionBWPD: 100000,
+        cumulativeProductionMMBO: 189.3,
       },
     ],
   },
