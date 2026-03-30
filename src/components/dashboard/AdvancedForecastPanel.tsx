@@ -23,8 +23,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
-  AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid,
-  ResponsiveContainer, Tooltip as RechartsTooltip, Legend,
+  AreaChart, Area, BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid,
+  ResponsiveContainer, Tooltip as RechartsTooltip, Legend, Brush,
   ScatterChart, Scatter, ZAxis, Cell, ReferenceLine,
   RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis,
 } from "recharts";
