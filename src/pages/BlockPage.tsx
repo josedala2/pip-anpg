@@ -1580,7 +1580,7 @@ const BlockPage = () => {
                       {block.economicVision ? (() => {
                         const ev = block.economicVision;
                         const ed = block.economicData;
-                        const invTotal = ed?.investmentPlan?.reduce((s, y) => s + y.total, 0) || 0;
+                        const invTotal = ed?.investmentPlan?.reduce((s, y) => s + y.exploracao + y.desenvolvimento + (y.operacao || 0), 0) || 0;
                         const invExpl = ed?.investmentPlan?.reduce((s, y) => s + y.exploracao, 0) || 0;
                         const invDev = ed?.investmentPlan?.reduce((s, y) => s + y.desenvolvimento, 0) || 0;
                         const invOps = ed?.investmentPlan?.reduce((s, y) => s + (y.operacao || 0), 0) || 0;
