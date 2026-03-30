@@ -1,11 +1,16 @@
 /** Dicionário centralizado de descrições para tooltips informativos */
 export const tooltipDescriptions: Record<string, string> = {
   // ── Home Executiva — KPI Cards ──
-  "Produção Nacional": "Soma da produção diária de todos os blocos activos, em barris de óleo por dia (BOPD)",
+  "Produção Nacional": "Produção média nacional certificada — Relatório Estado das Concessões 2026 (1.036.000 BOPD)",
+  "Quota ANPG": "Quota de produção atribuída à ANPG como concessionária nacional — Relatório Estado das Concessões 2026",
   "Reservas Estimadas": "Soma das reservas provadas e prováveis (P1+P2) de todas as concessões, em milhões de barris",
+  "Reservas Certificadas": "Reservas provadas de óleo e gás natural certificadas no Relatório Estado das Concessões 2026",
+  "Recursos Prospectivos": "Recursos prospectivos nacionais estimados de óleo e gás — volumes ainda não descobertos com potencial exploratório",
   "Variação Produção": "Variação percentual anual da produção nacional em relação ao período anterior",
-  "Concessões Activas": "Total de blocos petrolíferos com actividade operacional em curso",
+  "Concessões Activas": "Total de blocos petrolíferos com actividade operacional em curso — dados certificados do relatório oficial",
   "Blocos em Produção": "Número de blocos com produção activa de hidrocarbonetos",
+  "Em Exploração": "Blocos em fase de exploração — pesquisa sísmica, perfuração de poços de pesquisa e avaliação",
+  "Em Aprovação": "Blocos em fase de aprovação, licitação ou aguardando decisão final de investimento (FID)",
   "Sem Produção": "Blocos sem produção activa — inclui fases de exploração, desenvolvimento ou suspensão",
   "Risco Crítico": "Blocos com pontuação de risco agregado igual ou superior a 7 (escala 0-10)",
   "Instalações Críticas": "Instalações com eficiência operacional inferior a 70%",
