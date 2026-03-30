@@ -1579,10 +1579,11 @@ const BlockPage = () => {
                     <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 2xl:gap-5">
                       {block.economicVision ? (() => {
                         const ev = block.economicVision;
-                        const invTotal = ev.investmentPlan?.reduce((s, y) => s + y.total, 0) || 0;
-                        const invExpl = ev.investmentPlan?.reduce((s, y) => s + y.exploracao, 0) || 0;
-                        const invDev = ev.investmentPlan?.reduce((s, y) => s + y.desenvolvimento, 0) || 0;
-                        const invOps = ev.investmentPlan?.reduce((s, y) => s + (y.operacao || 0), 0) || 0;
+                        const ed = block.economicData;
+                        const invTotal = ed?.investmentPlan?.reduce((s, y) => s + y.total, 0) || 0;
+                        const invExpl = ed?.investmentPlan?.reduce((s, y) => s + y.exploracao, 0) || 0;
+                        const invDev = ed?.investmentPlan?.reduce((s, y) => s + y.desenvolvimento, 0) || 0;
+                        const invOps = ed?.investmentPlan?.reduce((s, y) => s + (y.operacao || 0), 0) || 0;
                         const explPct = invTotal ? Math.round((invExpl / invTotal) * 100) : 0;
                         const devPct = invTotal ? Math.round((invDev / invTotal) * 100) : 0;
                         const opsPct = invTotal ? Math.round((invOps / invTotal) * 100) : 0;
@@ -1601,7 +1602,7 @@ const BlockPage = () => {
                                   <InfoTooltip text="Soma do plano de investimentos 2026-2030 (exploração + desenvolvimento + operação)" />
                                 </div>
                                 <div className="text-2xl 2xl:text-3xl font-bold font-mono">${invTotal >= 1000 ? (invTotal / 1000).toFixed(1) + "B" : invTotal.toLocaleString() + "M"}</div>
-                                <div className="text-[10px] text-muted-foreground mb-2">MMUSD — {ev.investmentPlan?.length || 0} anos</div>
+                                <div className="text-[10px] text-muted-foreground mb-2">MMUSD — {ed?.investmentPlan?.length || 0} anos</div>
                                 <div className="flex gap-0.5 h-2 w-full rounded-full overflow-hidden">
                                   <div className="bg-primary rounded-l-full" style={{ width: `${explPct}%` }} title={`Exploração ${explPct}%`} />
                                   <div className="bg-chart-2" style={{ width: `${devPct}%` }} title={`Desenvolvimento ${devPct}%`} />
