@@ -131,11 +131,11 @@ export const ConcessionStatusTab = ({ block }: ConcessionStatusTabProps) => {
         icon: Clock,
       });
     }
-    // 2. Execution rate
-    if (block.executionRate < 70) {
+    // 2. Execution rate (derived from capexHistory when available)
+    if (effectiveExecutionRate < 70) {
       list.push({
-        severity: block.executionRate < 50 ? "red" : "yellow",
-        message: `Taxa de execução baixa: ${block.executionRate}%`,
+        severity: effectiveExecutionRate < 50 ? "red" : "yellow",
+        message: `Taxa de execução baixa: ${effectiveExecutionRate}%`,
         icon: TrendingDown,
       });
     }
