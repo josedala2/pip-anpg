@@ -27,6 +27,8 @@ import {
 } from "lucide-react";
 import { InfoTooltip } from "@/components/ui/info-tooltip";
 import { tooltipDescriptions } from "@/lib/tooltipDescriptions";
+import { NationalReferenceStrip } from "./NationalReferenceStrip";
+import { nationalCertifiedMetrics } from "@/data/nationalForecast";
 
 const producingBlocks = oilBlocks.filter(b => b.dailyProduction > 0).sort((a, b) => b.dailyProduction - a.dailyProduction);
 const operators = [...new Set(oilBlocks.filter(b => b.dailyProduction > 0).map(b => b.operator))].sort();
