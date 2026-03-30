@@ -82,6 +82,7 @@ export interface ExplorationSummary {
   giipBCF?: number;
   explorationCostsUSD?: number;
   prospectivitySTOOIPMMBOE?: number;
+  prospectivityGIIPBCF?: number;
   prospectivityNote?: string;
   complexity?: string[];
   geologicalTargets?: string; // e.g. "Cretáceo (Pinda/Pós-sal, Toca e Lucula/Pré-sal)"
@@ -653,8 +654,9 @@ export const oilBlocks: OilBlock[] = [
       stooipMMBO: 21000,
       giipBCF: 7926,
       explorationCostsUSD: 1700000000,
-      prospectivitySTOOIPMMBOE: 470,
-      prospectivityNote: "Potencial de Exploração do play Cretáceo estimado em 470 MMBOE (STOOIP) próximo às Áreas de produção dos campos Mafumeira, Sanha, Vuco e Kungulo",
+      prospectivitySTOOIPMMBOE: 3292.1,
+      prospectivityGIIPBCF: 61797,
+      prospectivityNote: "Potencial de Exploração estimado nos plays Terciário, Albiano e Pré-sal, próximo das Áreas de produção dos campos Mafumeira, Sanha, Vuco e Kungulo",
       complexity: [
         "Vugs a nível dos carbonatos no pré-sal (Área A)",
         "Compactação dos reservatórios carbonáticos (Área B)",
