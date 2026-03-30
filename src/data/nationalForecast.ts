@@ -136,3 +136,19 @@ export const baseProductionBlocks = [
   "Cabinda Sul", "FS", "FST", "B0", "B2/05", "B3/05", "B3", "B4/05",
   "B14", "B15", "B15/06", "B17", "B17/06", "B18", "B20/11", "B31", "B32"
 ];
+
+// National Certified Metrics — from "Estado das Concessões 2026"
+export const nationalCertifiedMetrics = {
+  productionBOPD: 1036000,
+  anpgQuotaBOPD: 441609,
+  reservesOilMb: 2600,
+  reservesGasTCF: 4.4,
+  totalAdjudicated: 67,
+  activeConcessions: 54,
+  inProduction: 17,
+  inExploration: 37,
+  pendingApproval: 13,
+  ptosApproved: 41,
+  prospectiveResourcesOilMb: 152611,
+  prospectiveResourcesGasTCF: 45.328,
+};
