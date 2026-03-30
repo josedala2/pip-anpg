@@ -29,9 +29,18 @@ export const AlertsPanel = () => {
   const [rules, setRules] = useState<AlertRule[]>(() => defaultRules.map(r => ({ ...r })));
   const [selectedCategory, setSelectedCategory] = useState<AlertCategory | "all">("all");
   const [selectedSeverity, setSelectedSeverity] = useState<AlertSeverity | "all">("all");
+  const [tier23Threshold, setTier23Threshold] = useState(forecastThresholds.tier23MinBOPD);
 
   const verifiedBlocks = useMemo(() => oilBlocks.filter(b => !b.pendingRealData), []);
-  const alerts = useMemo(() => evaluateAlerts(verifiedBlocks, rules), [verifiedBlocks, rules]);
+  const alerts = useMemo(() => {
+    // Sync configurable forecast threshold
+    forecastThresholds.tier23MinBOPD = tier23Threshold;
+    const operational = evaluateAlerts(verifiedBlocks, rules);
+    const forecast = evaluateForecastAlerts();
+    const verifiedBlockIds = new Set(verifiedBlocks.map(b => b.id));
+    const filteredForecast = forecast.filter(a => !a.blockId || a.blockId === "national" || verifiedBlockIds.has(a.blockId));
+    return [...operational, ...filteredForecast];
+  }, [verifiedBlocks, rules, tier23Threshold]);
 
   const filtered = useMemo(() => {
     let result = alerts;
