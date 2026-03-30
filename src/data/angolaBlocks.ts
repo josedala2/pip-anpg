@@ -487,6 +487,10 @@ export interface OilBlock {
   equipmentScale?: EquipmentScale[];
   tierProductionProfiles?: TierProductionProfile[];
   explorationChallenges?: ExplorationChallenge[];
+  currentReservesMMBO?: number;
+  recoveryFactorPercent?: number;
+  keyActivities?: string[];
+  workProgram?: string[];
 }
 
 export interface ExplorationChallenge {
