@@ -1,19 +1,11 @@
 import { ExecutiveKPICard, type SemaphoreStatus } from "./ExecutiveKPICard";
-import { getTotalProduction, getTotalReserves, getActiveBlocks, getTotalCapex, getAvgExecutionRate, oilBlocks, getBlocksByPhase } from "@/data/angolaBlocks";
+import { oilBlocks } from "@/data/angolaBlocks";
 import { homologacoesData } from "@/data/homologacoesData";
-import { Activity, BarChart3, Boxes, DollarSign, Landmark, Pickaxe, Search, Wrench, FileText, CheckCircle } from "lucide-react";
+import { nationalCertifiedMetrics } from "@/data/nationalForecast";
+import { Activity, BarChart3, Boxes, DollarSign, Landmark, Pickaxe, Search, Wrench, FileText, CheckCircle, Droplets } from "lucide-react";
 
 const verified = oilBlocks.filter(b => !b.pendingRealData);
-const blocksInProduction = () => verified.filter(b => b.phase === "Production").length;
-const blocksInExploration = () => verified.filter(b => b.phase === "Exploration").length;
-const blocksInBidding = () => getBlocksByPhase("Bidding").length; // informational metadata — OK
-const blocksNoProduction = () => verified.filter(b => b.phase !== "Bidding" && b.dailyProduction === 0).length;
-const blocksCriticalRisk = () => verified.filter(b => b.riskScore >= 7).length;
 const criticalFacilities = () => verified.filter(b => b.facilityData && b.facilityData.overallEfficiency < 70).length;
-const estimatedStateRevenue = () => {
-  const totalBOPD = verified.reduce((s, b) => s + b.dailyProduction, 0);
-  return Math.round((totalBOPD * 365 * 75 * 0.6) / 1e6);
-};
 const contractsExpiring = () => {
   const now = Date.now();
   return verified.filter(b => {
@@ -21,6 +13,11 @@ const contractsExpiring = () => {
     const months = Math.round((new Date(b.contractInfo.productionPeriodEnd).getTime() - now) / (1000 * 60 * 60 * 24 * 30));
     return months > 0 && months <= 24;
   }).length;
+};
+
+// Receita Estado estimada com produção nacional certificada
+const estimatedStateRevenue = () => {
+  return Math.round((nationalCertifiedMetrics.productionBOPD * 365 * 75 * 0.6) / 1e6);
 };
 
 // Homologações KPIs
@@ -67,16 +64,19 @@ const getStatus = (label: string, value: number): SemaphoreStatus => {
   return "neutral";
 };
 
+const n = nationalCertifiedMetrics;
+
 const kpis = [
-  { label: "Produção Nacional", value: verified.reduce((s, b) => s + b.dailyProduction, 0), suffix: " BOPD", icon: Activity, status: "neutral" as SemaphoreStatus, drill: "Produção agregada dos blocos com dados verificados" },
-  { label: "Reservas Estimadas", value: verified.reduce((s, b) => s + b.estimatedReserves, 0), suffix: " Mb", icon: BarChart3, status: "neutral" as SemaphoreStatus, drill: "Soma de reservas P1+P2 das concessões verificadas" },
-  { label: "Concessões Activas", value: verified.filter(b => b.phase !== "Bidding").length, suffix: ` / ${verified.length}`, icon: Boxes, status: "neutral" as SemaphoreStatus, drill: "Concessões activas com dados verificados" },
-  { label: "Blocos em Produção", value: blocksInProduction(), suffix: "", icon: Pickaxe, status: "healthy" as SemaphoreStatus, drill: "Blocos com produção de hidrocarbonetos activa" },
-  { label: "Em Exploração", value: blocksInExploration(), suffix: "", icon: Search, status: "neutral" as SemaphoreStatus, drill: "Blocos em fase de exploração pura" },
-  { label: "Em Aprovação", value: blocksInBidding(), suffix: "", icon: Boxes, status: "neutral" as SemaphoreStatus, drill: "Blocos em fase de aprovação / licitação" },
-  { label: "Instalações Críticas", value: criticalFacilities(), suffix: "", icon: Wrench, status: getStatus("Instalações Críticas", criticalFacilities()), drill: "Instalações com eficiência < 70%" },
-  { label: "Receita Estado", value: estimatedStateRevenue(), prefix: "$", suffix: "M", icon: Landmark, status: "neutral" as SemaphoreStatus, drill: "Estimativa anual de receita fiscal petrolífera" },
-  { label: "Contratos a Expirar", value: contractsExpiring(), suffix: "", icon: DollarSign, status: getStatus("Contratos a Expirar", contractsExpiring()), drill: "Contratos com vencimento em < 24 meses" },
+  { label: "Produção Nacional", value: n.productionBOPD, suffix: " BOPD", icon: Activity, status: "neutral" as SemaphoreStatus, drill: "Produção média nacional certificada — Relatório Estado das Concessões 2026" },
+  { label: "Quota ANPG", value: n.anpgQuotaBOPD, suffix: " BOPD", icon: Droplets, status: "neutral" as SemaphoreStatus, drill: "Quota de produção atribuída à ANPG" },
+  { label: "Reservas Certificadas", value: n.reservesOilMb, suffix: ` Mb  ·  Gás: ${n.reservesGasTCF} TCF`, icon: BarChart3, status: "neutral" as SemaphoreStatus, drill: "Reservas provadas de óleo e gás — dados certificados" },
+  { label: "Concessões Activas", value: n.activeConcessions, suffix: ` / ${n.totalAdjudicated}`, icon: Boxes, status: "neutral" as SemaphoreStatus, drill: "Concessões activas de um total de 67 adjudicadas" },
+  { label: "Blocos em Produção", value: n.inProduction, suffix: "", icon: Pickaxe, status: "healthy" as SemaphoreStatus, drill: "Blocos com produção de hidrocarbonetos activa" },
+  { label: "Em Exploração", value: n.inExploration, suffix: "", icon: Search, status: "neutral" as SemaphoreStatus, drill: "Blocos em fase de exploração" },
+  { label: "Em Aprovação", value: n.pendingApproval, suffix: "", icon: Boxes, status: "neutral" as SemaphoreStatus, drill: "Blocos em fase de aprovação / licitação" },
+  { label: "Instalações Críticas", value: criticalFacilities(), suffix: "", icon: Wrench, status: getStatus("Instalações Críticas", criticalFacilities()), drill: "Instalações com eficiência < 70% (blocos verificados)" },
+  { label: "Receita Estado", value: estimatedStateRevenue(), prefix: "$", suffix: "M", icon: Landmark, status: "neutral" as SemaphoreStatus, drill: "Estimativa anual de receita fiscal petrolífera (base: produção nacional)" },
+  { label: "Contratos a Expirar", value: contractsExpiring(), suffix: "", icon: DollarSign, status: getStatus("Contratos a Expirar", contractsExpiring()), drill: "Contratos com vencimento em < 24 meses (blocos verificados)" },
   { label: "Total Homologado", value: totalHomologado(), prefix: "$", suffix: "M", icon: FileText, sparkline: homologSpark, status: "neutral" as SemaphoreStatus, drill: "Soma dos montantes aprovados em processos de homologação" },
   { label: "Taxa Aprovação", value: taxaAprovacao(), suffix: "%", icon: CheckCircle, sparkline: aprovacaoSpark, status: getStatus("Taxa Aprovação", taxaAprovacao()), drill: "Percentagem de processos de homologação aprovados" },
 ];

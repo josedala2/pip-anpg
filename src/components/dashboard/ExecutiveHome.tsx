@@ -27,7 +27,7 @@ export const ExecutiveHome = ({ initialDrillDown = null }: { initialDrillDown?: 
       {/* Data disclaimer */}
       <div className="flex items-center gap-2 px-3 py-2 rounded-lg border border-warning/30 bg-warning/5 text-warning text-[11px]">
         <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
-        <span>Dados parciais — <span>Dados parciais — os Blocos 0, 2/05 e 3/05 possuem informação operacional verificada. Os restantes blocos mantêm dados estruturais do Mapa de Concessões ANPG 2026.</span></span>
+        <span>KPIs nacionais baseados no relatório certificado "Estado das Concessões 2026". Painéis detalhados (Operadores, Alertas, Recomendações) reflectem apenas os Blocos 0, 2/05 e 3/05 com dados operacionais verificados.</span>
       </div>
       {/* Zone B — Executive KPIs */}
       <KPICards />
