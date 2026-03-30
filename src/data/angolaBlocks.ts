@@ -788,7 +788,7 @@ export const oilBlocks: OilBlock[] = [
         { year: 2050, mmbo: 5.902 },
       ],
       abandonment: {
-        total: 3420,
+        total: 3665,
         fundingRequired: 1300,
         fundingDeposited: 102,
       },
