@@ -176,7 +176,7 @@ export const ConcessionStatusTab = ({ block }: ConcessionStatusTabProps) => {
       list.push({ severity: "green", message: "Sem alertas — concessão em bom estado", icon: CheckCircle2 });
     }
     return list;
-  }, [monthsRemaining, block.executionRate, block.complianceScore, prodDecline, capexDeviation, oldestFacility]);
+  }, [monthsRemaining, effectiveExecutionRate, block.complianceScore, prodDecline, capexDeviation, oldestFacility]);
 
   // Overall semaphore
   const overallStatus = useMemo<SemaphoreLevel>(() => {
