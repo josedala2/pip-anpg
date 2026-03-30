@@ -409,6 +409,11 @@ export interface GasBalance {
     flaring: number;
     export: number;
   };
+  gasBalanceHistory?: GasBalanceHistoryYear[];
+  gasSupplyForecast?: GasSupplyForecastYear[];
+  gasRecommendation?: string;
+  gasBreakevenRange?: string;
+  gasDRONote?: string;
 }
 
 export interface EquipmentScale {
