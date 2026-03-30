@@ -688,9 +688,17 @@ export const oilBlocks: OilBlock[] = [
       { title: "Consolidação Áreas B e C", type: "nota", date: "2002-06-01", description: "Com efeito a partir de 1 de Junho de 2002, as Áreas B e C são consolidadas numa só Área designada B" },
     ],
     prospects: [
-      { discoveryArea: "Bloco 0", name: "Play Terciário", reservoir: "Terciário", resourcesMMBO: 1097.4, resourcesBCF: 20599, pos: 0 },
-      { discoveryArea: "Bloco 0", name: "Play Albiano", reservoir: "Albiano", resourcesMMBO: 1097.4, resourcesBCF: 20599, pos: 0 },
-      { discoveryArea: "Bloco 0", name: "Play Pré-sal", reservoir: "Pré-sal", resourcesMMBO: 1097.3, resourcesBCF: 20599, pos: 0 },
+      { discoveryArea: "Bloco 0", name: "131-A", reservoir: "Oligocénico", resourcesMMBO: 115.6, resourcesBCF: 0, pos: 10.2 },
+      { discoveryArea: "Bloco 0", name: "95-G", reservoir: "Pinda inferior", resourcesMMBO: 111.1, resourcesBCF: 0, pos: 25 },
+      { discoveryArea: "Bloco 0", name: "107-C", reservoir: "Vermelha/Toca/Lucula", resourcesMMBO: 290, resourcesBCF: 182, pos: 21 },
+      { discoveryArea: "Bloco 0", name: "83-N", reservoir: "Lucula/Toca", resourcesMMBO: 330.17, resourcesBCF: 202, pos: 32 },
+      { discoveryArea: "Bloco 0", name: "71-T", reservoir: "Lukula", resourcesMMBO: 163.49, resourcesBCF: 0, pos: 21 },
+      { discoveryArea: "Bloco 0", name: "70-G", reservoir: "Mesa", resourcesMMBO: 51, resourcesBCF: 0, pos: 100 },
+      { discoveryArea: "Bloco 0", name: "95-I", reservoir: "Toca", resourcesMMBO: 65, resourcesBCF: 0, pos: 26 },
+      { discoveryArea: "Bloco 0", name: "105-B", reservoir: "Pinda", resourcesMMBO: 170, resourcesBCF: 278, pos: 25 },
+      { discoveryArea: "Bloco 0", name: "79-F", reservoir: "Toca", resourcesMMBO: 29, resourcesBCF: 199, pos: 22 },
+      { discoveryArea: "Bloco 0", name: "68-D", reservoir: "Lucula", resourcesMMBO: 94, resourcesBCF: 122, pos: 22 },
+      { discoveryArea: "Bloco 0", name: "80-J", reservoir: "Lucula", resourcesMMBO: 22, resourcesBCF: 116, pos: 22 },
     ],
     economicData: {
       costHistory: [
