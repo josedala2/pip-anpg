@@ -455,7 +455,7 @@ export function OperatorDetailView({ operator, onBack }: { operator: OperatorSum
                     <SortableHead label="Bacia" colKey="basin" sortKey={blocksSort.sortKey} sortDir={blocksSort.sortDir} onSort={blocksSort.handleSort} />
                     <SortableHead label="Águas" colKey="waterDepth" sortKey={blocksSort.sortKey} sortDir={blocksSort.sortDir} onSort={blocksSort.handleSort} />
                     <SortableHead label="Produção (BOPD)" colKey="dailyProduction" sortKey={blocksSort.sortKey} sortDir={blocksSort.sortDir} onSort={blocksSort.handleSort} align="text-right" />
-                    <SortableHead label="Reservas (MMbbl)" colKey="estimatedReserves" sortKey={blocksSort.sortKey} sortDir={blocksSort.sortDir} onSort={blocksSort.handleSort} align="text-right" />
+                    <SortableHead label="Recurso (MMBO)" colKey="estimatedReserves" sortKey={blocksSort.sortKey} sortDir={blocksSort.sortDir} onSort={blocksSort.handleSort} align="text-right" />
                     <SortableHead label="Compliance" colKey="complianceScore" sortKey={blocksSort.sortKey} sortDir={blocksSort.sortDir} onSort={blocksSort.handleSort} align="text-right" />
                     <SortableHead label="Contrato" colKey="contractDate" sortKey={blocksSort.sortKey} sortDir={blocksSort.sortDir} onSort={blocksSort.handleSort} />
                   </TableRow>

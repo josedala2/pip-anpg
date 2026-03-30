@@ -396,7 +396,7 @@ const BlockPage = () => {
                 const opex2025 = ev?.technicalCost?.opex2025;
                 const kpis = [
                   { label: "Produção Diária", value: block.dailyProduction > 0 ? `${(block.dailyProduction / 1000).toFixed(0)}k BOPD` : "—", icon: Droplets, color: "text-primary" },
-                  { label: "Reservas Estimadas", value: `${block.estimatedReserves}M bbl`, icon: Layers, color: "text-success" },
+                  { label: block.explorationData?.stooipMMBO ? "Recurso Descoberto" : "Reservas Estimadas", value: block.explorationData?.stooipMMBO ? `${block.explorationData.stooipMMBO.toLocaleString()} MMBO` : `${block.estimatedReserves}M bbl`, icon: Layers, color: "text-success" },
                   ed && invTotal
                     ? { label: "Investimento Quinquenal", value: `$${invTotal.toLocaleString()}M`, icon: DollarSign, color: "text-warning", sub: "MMUSD (Expl+Dev+Op)" }
                     : { label: "Investimento Acum.", value: `$${(block.accumulatedInvestment / 1000).toFixed(1)}B`, icon: DollarSign, color: "text-warning" },
