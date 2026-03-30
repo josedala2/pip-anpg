@@ -1250,6 +1250,8 @@ export const oilBlocks: OilBlock[] = [
       },
     ],
   },
+  {
+    id: "block-14",
     name: "Block 14",
     operator: "CABGOC",
     partners: ["Sonangol E.P", "Galp", "Sonahydroc", "SNPC", "Azule Energy", "TotalEnergies"],
