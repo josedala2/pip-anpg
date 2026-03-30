@@ -575,8 +575,8 @@ export const oilBlocks: OilBlock[] = [
       productionPeriodStart: "1977-01-01",
       productionPeriodEnd: "2050-12-31",
       researchPeriod: {
-        initialPhaseYears: 7,
-        initialPhaseWells: 7,
+        initialPhaseYears: 9,
+        initialPhaseWells: 6,
         seismic3dKm2: 250,
         seismic3dReprocKm2: 1000,
         subsequentPhaseYears: 10,
