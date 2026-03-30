@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
 import { ConcessionMap } from "./ConcessionMap";
 import { KPICards } from "./KPICards";
+import { NationalProductionTrend } from "./NationalProductionTrend";
 import { ThreatPanel } from "./ThreatPanel";
 import { TrendProjection } from "./TrendProjection";
 import { QuickRecommendations } from "./QuickRecommendations";
@@ -31,6 +32,9 @@ export const ExecutiveHome = ({ initialDrillDown = null }: { initialDrillDown?: 
       </div>
       {/* Zone B — Executive KPIs */}
       <KPICards />
+
+      {/* Historical Production Trend */}
+      <NationalProductionTrend />
 
       {/* Drill-down sections */}
       <div className="space-y-2 pt-2 border-t border-border/40">
