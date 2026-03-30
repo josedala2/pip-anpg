@@ -116,7 +116,7 @@ export const ProspectsSummary = ({ blocks, scopeLabel }: ProspectsSummaryProps) 
         <Tabs value={groupBy} onValueChange={v => setGroupBy(v as any)} className="w-fit">
           <TabsList className="h-7 p-0.5">
             <TabsTrigger value="reservoir" className="text-[10px] h-6 px-3 gap-1">
-              <Layers className="w-3 h-3" />Reservatório
+              <Layers className="w-3 h-3" />Objectivo
             </TabsTrigger>
             <TabsTrigger value="basin" className="text-[10px] h-6 px-3 gap-1">
               <Layers className="w-3 h-3" />Bacia
@@ -167,7 +167,7 @@ export const ProspectsSummary = ({ blocks, scopeLabel }: ProspectsSummaryProps) 
                  <Tooltip contentStyle={tooltipStyle} formatter={(val: number) => [`${val.toLocaleString()} MMBO`]} />
               </PieChart>
             </ResponsiveContainer>
-            <div className="text-center text-[10px] text-muted-foreground -mt-2">Distribuição MMBO por {groupBy === "reservoir" ? "Reservatório" : "Bacia"}</div>
+            <div className="text-center text-[10px] text-muted-foreground -mt-2">Distribuição MMBO por {groupBy === "reservoir" ? "Objectivo" : "Bacia"}</div>
           </div>
         </div>
 
@@ -176,7 +176,7 @@ export const ProspectsSummary = ({ blocks, scopeLabel }: ProspectsSummaryProps) 
           <Table>
             <TableHeader>
               <TableRow className="border-border/50">
-                 <TableHead className="text-[10px] 2xl:text-xs uppercase tracking-wider">{groupBy === "reservoir" ? "Reservatório" : "Bacia"}</TableHead>
+                 <TableHead className="text-[10px] 2xl:text-xs uppercase tracking-wider">{groupBy === "reservoir" ? "Objectivo" : "Bacia"}</TableHead>
                  <TableHead className="text-[10px] 2xl:text-xs uppercase tracking-wider text-right">Prospectos</TableHead>
                  <TableHead className="text-[10px] 2xl:text-xs uppercase tracking-wider text-right">MMBO Total</TableHead>
                  <TableHead className="text-[10px] 2xl:text-xs uppercase tracking-wider text-right">BCF Total</TableHead>
