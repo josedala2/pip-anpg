@@ -675,7 +675,7 @@ export const ConselhoPanel = () => {
         <CardHeader className="pb-1 pt-3 px-4">
           <CardTitle className="text-xs font-bold flex items-center gap-1.5">
             <TrendingUp className="w-3.5 h-3.5 text-primary" />
-            Tendência de Produção Nacional (bbl/dia)
+            Tendência de Produção Nacional — Previsão 2025-2035 (BOPD)
           </CardTitle>
         </CardHeader>
         <CardContent className="px-2 pb-2">
