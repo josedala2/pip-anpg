@@ -29,6 +29,8 @@ import { EconomicRiskPanel } from "./EconomicRiskPanel";
 import { EconomicScenariosPanel } from "./EconomicScenariosPanel";
 import { AdvancedForecastPanel } from "./AdvancedForecastPanel";
 import { ExecutiveBoardPanel } from "./ExecutiveBoardPanel";
+import { NationalReferenceStrip } from "./NationalReferenceStrip";
+import { nationalCertifiedMetrics } from "@/data/nationalForecast";
 
 const CHART_COLORS = [
   "hsl(200, 45%, 28%)", "hsl(152, 50%, 38%)", "hsl(38, 75%, 48%)",
