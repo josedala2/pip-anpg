@@ -1580,7 +1580,7 @@ const BlockPage = () => {
                       {block.economicVision ? (() => {
                         const ev = block.economicVision;
                         const ed = block.economicData;
-                        const invTotal = ed?.investmentPlan?.reduce((s, y) => s + y.total, 0) || 0;
+                        const invTotal = ed?.investmentPlan?.reduce((s, y) => s + y.exploracao + y.desenvolvimento + (y.operacao || 0), 0) || 0;
                         const invExpl = ed?.investmentPlan?.reduce((s, y) => s + y.exploracao, 0) || 0;
                         const invDev = ed?.investmentPlan?.reduce((s, y) => s + y.desenvolvimento, 0) || 0;
                         const invOps = ed?.investmentPlan?.reduce((s, y) => s + (y.operacao || 0), 0) || 0;
@@ -1807,7 +1807,7 @@ const BlockPage = () => {
                                   <TrendingUp className="w-4 h-4 text-success" />Plano de Investimentos Quinquenal (MMUSD)
                                 </CardTitle>
                                 <span className="text-xs text-muted-foreground font-mono">
-                                  Total: <span className="font-semibold text-foreground">${eco.investmentPlan.reduce((s, y) => s + y.total, 0).toLocaleString()}M</span>
+                                  Total: <span className="font-semibold text-foreground">${eco.investmentPlan.reduce((s, y) => s + y.exploracao + y.desenvolvimento + (y.operacao || 0), 0).toLocaleString()}M</span>
                                 </span>
                               </div>
                             </CardHeader>
@@ -1839,7 +1839,7 @@ const BlockPage = () => {
                                     <Droplets className="w-4 h-4 text-primary" />Partilha de Produção GE (MMBO)
                                   </CardTitle>
                                   <span className="text-xs text-muted-foreground font-mono">
-                                    Total: <span className="font-semibold text-foreground">{eco.productionShareGE.reduce((s, y) => s + y.mmbo, 0)} MMBO</span>
+                                    Total: <span className="font-semibold text-foreground">{parseFloat(eco.productionShareGE.reduce((s, y) => s + y.mmbo, 0).toFixed(3))} MMBO</span>
                                   </span>
                                 </div>
                               </CardHeader>

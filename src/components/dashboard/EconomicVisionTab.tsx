@@ -189,7 +189,7 @@ export const EconomicVisionTab = ({ block }: Props) => {
   ];
   const uniqueObs = [...new Set(observations)];
 
-  const totalShareMMBO = productionShare.reduce((s, p) => s + p.mmbo, 0);
+  const totalShareMMBO = parseFloat(productionShare.reduce((s, p) => s + p.mmbo, 0).toFixed(3));
 
   const abandonBars = abandonDetail
     ? [
