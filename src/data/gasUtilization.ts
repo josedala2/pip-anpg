@@ -11,15 +11,15 @@ export interface GasUtilizationYear {
 }
 
 export const gasUtilization: GasUtilizationYear[] = [
-  { year: 2017, injected: 1501, fuel: 388, flared: 377, exportedALNG: 1387, deviations: 340, gasLift: 308 },
-  { year: 2018, injected: 1522, fuel: 157, flared: 260, exportedALNG: 727,  deviations: 321, gasLift: 344 },
-  { year: 2019, injected: 1376, fuel: 293, flared: 726, exportedALNG: 1198, deviations: 310, gasLift: 210 },
-  { year: 2020, injected: 1454, fuel: 255, flared: 838, exportedALNG: 1089, deviations: 329, gasLift: 139 },
-  { year: 2021, injected: 1428, fuel: 167, flared: 694, exportedALNG: 1275, deviations: 166, gasLift: 137 },
-  { year: 2022, injected: 1455, fuel: 134, flared: 631, exportedALNG: 1378, deviations: 317, gasLift: 181 },
+  { year: 2017, injected: 1501, fuel: 388, flared: 377, exportedALNG: 727,  deviations: 638, gasLift: 308 },
+  { year: 2018, injected: 1522, fuel: 157, flared: 260, exportedALNG: 1198, deviations: 784, gasLift: 344 },
+  { year: 2019, injected: 1376, fuel: 293, flared: 726, exportedALNG: 1089, deviations: 310, gasLift: 210 },
+  { year: 2020, injected: 1454, fuel: 255, flared: 838, exportedALNG: 1089, deviations: 321, gasLift: 340 },
+  { year: 2021, injected: 1428, fuel: 167, flared: 694, exportedALNG: 1275, deviations: 152, gasLift: 137 },
+  { year: 2022, injected: 1455, fuel: 134, flared: 631, exportedALNG: 1378, deviations: 137, gasLift: 181 },
   { year: 2023, injected: 1385, fuel: 130, flared: 637, exportedALNG: 1355, deviations: 322, gasLift: 313 },
   { year: 2024, injected: 1432, fuel: 109, flared: 676, exportedALNG: 1270, deviations: 176, gasLift: null },
-  { year: 2025, injected: null, fuel: null, flared: 886, exportedALNG: 1147, deviations: null, gasLift: null },
+  { year: 2025, injected: 1267, fuel: 109, flared: 886, exportedALNG: 1147, deviations: 176, gasLift: 313 },
 ];
 
 // Gas supply forecast to ALNG
