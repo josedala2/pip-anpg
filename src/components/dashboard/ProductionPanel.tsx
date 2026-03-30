@@ -13,6 +13,8 @@ import { Badge } from "@/components/ui/badge";
 import { FieldProductionBreakdown } from "./FieldProductionBreakdown";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { PendingDataBadge } from "@/components/ui/PendingDataBadge";
+import { NationalReferenceStrip } from "./NationalReferenceStrip";
+import { nationalCertifiedMetrics } from "@/data/nationalForecast";
 
 const COLORS = [
   "hsl(var(--primary))", "hsl(var(--success))", "hsl(var(--warning))",
