@@ -436,6 +436,14 @@ export interface OilBlock {
   swotData?: BlockSwotData;
   gasBalance?: GasBalance;
   equipmentScale?: EquipmentScale[];
+  tierProductionProfiles?: TierProductionProfile[];
+}
+
+export interface TierProductionProfile {
+  year: number;
+  tier1: number; // BOPD — N'Dola Sul, Sanha Sul, Nemba, Mafumeira
+  tier2_3: number; // BOPD — Takula, Lifua, Banzala, Malongo
+  total: number;
 }
 
 export const oilBlocks: OilBlock[] = [
