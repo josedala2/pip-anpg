@@ -389,23 +389,35 @@ const BlockPage = () => {
           {/* Tab 1: Visão Geral */}
           <TabsContent value="overview" className="space-y-4 2xl:space-y-6">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 2xl:gap-5">
-              {[
-                { label: "Produção Diária", value: block.dailyProduction > 0 ? `${(block.dailyProduction / 1000).toFixed(0)}k BOPD` : "—", icon: Droplets, color: "text-primary" },
-                { label: "Reservas Estimadas", value: `${block.estimatedReserves}M bbl`, icon: Layers, color: "text-success" },
-                { label: "Investimento Acum.", value: `$${(block.accumulatedInvestment / 1000).toFixed(1)}B`, icon: DollarSign, color: "text-warning" },
-                { label: "Taxa Execução", value: `${block.executionRate}%`, icon: TrendingUp, color: "text-primary" },
-              ].map(kpi => (
-                <Card key={kpi.label} className="glass-card">
-                   <CardContent className="p-4 2xl:p-6">
-                     <div className="flex items-center gap-2 mb-2">
-                       <kpi.icon className={`w-4 h-4 2xl:w-5 2xl:h-5 ${kpi.color}`} />
-                       <span className="text-xs 2xl:text-sm text-muted-foreground">{kpi.label}</span>
-                       {tooltipDescriptions[kpi.label] && <InfoTooltip text={tooltipDescriptions[kpi.label]} />}
-                     </div>
-                     <div className="text-2xl 2xl:text-3xl font-bold font-mono">{kpi.value}</div>
-                  </CardContent>
-                </Card>
-              ))}
+              {(() => {
+                const ev = block.economicVision;
+                const ed = block.economicData;
+                const invTotal = ed?.investmentPlan?.reduce((s, y) => s + y.exploracao + y.desenvolvimento + (y.operacao || 0), 0);
+                const opex2025 = ev?.technicalCost?.opex2025;
+                const kpis = [
+                  { label: "Produção Diária", value: block.dailyProduction > 0 ? `${(block.dailyProduction / 1000).toFixed(0)}k BOPD` : "—", icon: Droplets, color: "text-primary" },
+                  { label: "Reservas Estimadas", value: `${block.estimatedReserves}M bbl`, icon: Layers, color: "text-success" },
+                  ed && invTotal
+                    ? { label: "Investimento Quinquenal", value: `$${invTotal.toLocaleString()}M`, icon: DollarSign, color: "text-warning", sub: "MMUSD (Expl+Dev+Op)" }
+                    : { label: "Investimento Acum.", value: `$${(block.accumulatedInvestment / 1000).toFixed(1)}B`, icon: DollarSign, color: "text-warning" },
+                  ev && opex2025
+                    ? { label: "Custo Técnico", value: `$${opex2025}/bbl`, icon: TrendingUp, color: "text-primary", sub: "OPEX unitário 2025" }
+                    : { label: "Taxa Execução", value: `${block.executionRate}%`, icon: TrendingUp, color: "text-primary" },
+                ];
+                return kpis.map(kpi => (
+                  <Card key={kpi.label} className="glass-card">
+                    <CardContent className="p-4 2xl:p-6">
+                      <div className="flex items-center gap-2 mb-2">
+                        <kpi.icon className={`w-4 h-4 2xl:w-5 2xl:h-5 ${kpi.color}`} />
+                        <span className="text-xs 2xl:text-sm text-muted-foreground">{kpi.label}</span>
+                        {tooltipDescriptions[kpi.label] && <InfoTooltip text={tooltipDescriptions[kpi.label]} />}
+                      </div>
+                      <div className="text-2xl 2xl:text-3xl font-bold font-mono">{kpi.value}</div>
+                      {"sub" in kpi && kpi.sub && <div className="text-[10px] text-muted-foreground mt-1">{kpi.sub}</div>}
+                    </CardContent>
+                  </Card>
+                ));
+              })()}
             </div>
 
              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 2xl:gap-6">

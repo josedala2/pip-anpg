@@ -46,6 +46,18 @@ export const ConcessionStatusTab = ({ block }: ConcessionStatusTabProps) => {
   const ci = block.contractInfo;
   const now = new Date();
 
+  // Derive execution rate from capexHistory when economicVision is available
+  const derivedExecution = useMemo(() => {
+    const ch = block.capexHistory;
+    if (!ch || ch.length === 0) return null;
+    const totalPlanned = ch.reduce((s, v) => s + v.planned, 0);
+    const totalActual = ch.reduce((s, v) => s + v.actual, 0);
+    if (totalPlanned === 0) return null;
+    return { rate: Math.round((totalActual / totalPlanned) * 100), actual: totalActual, planned: totalPlanned };
+  }, [block.capexHistory]);
+
+  const effectiveExecutionRate = derivedExecution?.rate ?? block.executionRate;
+
   // Strategic score
   const strategic = useMemo(() => calculateStrategicScore(block), [block]);
   const classConfig = classificationConfig[strategic.classification];
@@ -119,11 +131,11 @@ export const ConcessionStatusTab = ({ block }: ConcessionStatusTabProps) => {
         icon: Clock,
       });
     }
-    // 2. Execution rate
-    if (block.executionRate < 70) {
+    // 2. Execution rate (derived from capexHistory when available)
+    if (effectiveExecutionRate < 70) {
       list.push({
-        severity: block.executionRate < 50 ? "red" : "yellow",
-        message: `Taxa de execução baixa: ${block.executionRate}%`,
+        severity: effectiveExecutionRate < 50 ? "red" : "yellow",
+        message: `Taxa de execução baixa: ${effectiveExecutionRate}%`,
         icon: TrendingDown,
       });
     }
@@ -164,7 +176,7 @@ export const ConcessionStatusTab = ({ block }: ConcessionStatusTabProps) => {
       list.push({ severity: "green", message: "Sem alertas — concessão em bom estado", icon: CheckCircle2 });
     }
     return list;
-  }, [monthsRemaining, block.executionRate, block.complianceScore, prodDecline, capexDeviation, oldestFacility]);
+  }, [monthsRemaining, effectiveExecutionRate, block.complianceScore, prodDecline, capexDeviation, oldestFacility]);
 
   // Overall semaphore
   const overallStatus = useMemo<SemaphoreLevel>(() => {
@@ -188,10 +200,12 @@ export const ConcessionStatusTab = ({ block }: ConcessionStatusTabProps) => {
     },
     {
       label: "Investimento Executado",
-      value: `${block.executionRate}%`,
-      sub: `$${block.accumulatedInvestment.toLocaleString()}M / $${block.plannedInvestment.toLocaleString()}M`,
+      value: `${effectiveExecutionRate}%`,
+      sub: derivedExecution
+        ? `$${derivedExecution.actual.toLocaleString()}M / $${derivedExecution.planned.toLocaleString()}M`
+        : `$${block.accumulatedInvestment.toLocaleString()}M / $${block.plannedInvestment.toLocaleString()}M`,
       icon: DollarSign,
-      color: block.executionRate >= 80 ? "text-success" : block.executionRate >= 60 ? "text-warning" : "text-danger",
+      color: effectiveExecutionRate >= 80 ? "text-success" : effectiveExecutionRate >= 60 ? "text-warning" : "text-danger",
     },
     {
       label: "Reservas Estimadas",
