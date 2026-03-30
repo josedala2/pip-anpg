@@ -179,6 +179,9 @@ export const EconomicVisionTab = ({ block }: Props) => {
   const productionShare = ed?.productionShareGE ?? [];
   const abandonDetail = ev?.abandonmentDetail;
   const techCost = ev?.technicalCost;
+  const liftingsAcc = ev?.liftingsAccumulated;
+  const liftingsForecast = ev?.liftingsForecast ?? [];
+  const liftingsObs = ev?.liftingsObservations ?? [];
 
   const observations = [
     ...(ev?.strategicObservations ?? []),
