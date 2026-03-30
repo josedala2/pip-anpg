@@ -374,6 +374,53 @@ export const EconomicVisionTab = ({ block }: Props) => {
         )}
       </div>
 
+      {/* Row 4b: Abandonment Notes Panel */}
+      {abandonDetail?.notes && abandonDetail.notes.length > 0 && (
+        <Card className="glass-card border-destructive/20">
+          <CardHeader className="p-4 pb-2">
+            <CardTitle className="text-sm 2xl:text-base flex items-center gap-2">
+              <Anchor className="w-4 h-4 text-destructive" />
+              Detalhe de Abandono — Notas e Obrigações
+              {abandonDetail.nextPAPRSubmission && (
+                <Badge variant="outline" className="ml-auto text-[10px] border-warning/40 text-warning">
+                  Próximo PAPR: {abandonDetail.nextPAPRSubmission}
+                </Badge>
+              )}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-4 pt-0">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                {abandonDetail.notes.map((note, i) => (
+                  <div key={i} className="flex items-start gap-2 text-xs text-muted-foreground">
+                    <ArrowRight className="w-3.5 h-3.5 text-destructive shrink-0 mt-0.5" />
+                    <span>{note}</span>
+                  </div>
+                ))}
+              </div>
+              <div className="space-y-2">
+                <div className="flex justify-between items-center p-3 rounded-lg bg-muted/50">
+                  <span className="text-xs text-muted-foreground">Conta de Garantia</span>
+                  <span className="font-mono font-bold text-sm">{abandonDetail.fundeamento.toLocaleString()} MMUSD</span>
+                </div>
+                <div className="flex justify-between items-center p-3 rounded-lg bg-muted/50">
+                  <span className="text-xs text-muted-foreground">Abandonos Pontuais</span>
+                  <span className="font-mono font-bold text-sm">{abandonDetail.pontual.toLocaleString()} MMUSD</span>
+                </div>
+                <div className="flex justify-between items-center p-3 rounded-lg bg-muted/50">
+                  <span className="text-xs text-muted-foreground">Valor Fundeado</span>
+                  <span className="font-mono font-bold text-sm text-warning">{abandonDetail.fundeado.toLocaleString()} MMUSD</span>
+                </div>
+                <div className="flex justify-between items-center p-3 rounded-lg bg-destructive/10 border border-destructive/20">
+                  <span className="text-xs font-medium">Dívida Sonangol {abandonDetail.dividaSonangolSince && `(desde ${abandonDetail.dividaSonangolSince})`}</span>
+                  <span className="font-mono font-bold text-sm text-destructive">{abandonDetail.dividaSonangol.toLocaleString()} MMUSD</span>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Row 5: Investment Plan + Production Share */}
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 2xl:gap-6">
         {investmentPlan.length > 0 && (
