@@ -1,41 +1,31 @@
 
 
-## Actualizar Dados de Gás Natural com Documento Oficial
+## Adicionar Gráfico de Previsão de Fornecimento de Gás (2025–2050)
 
-### Diferenças identificadas entre dados actuais e imagem oficial
+### O que será construído
+Um gráfico de barras empilhadas (stacked bar chart) replicando a imagem oficial, mostrando a previsão de fornecimento de gás à ALNG de 2025 a 2050, com três categorias de fonte e uma linha de capacidade máxima.
 
-**1. Dados históricos (gasUtilization) — correcções:**
+### Dados a adicionar
+Extraídos da imagem oficial (valores aproximados em MMSCFD por ano, 2025-2050):
 
-| Ano | Campo | Actual | Correcto (imagem) |
-|-----|-------|--------|-------------------|
-| 2017 | exportedALNG | 1387 | **727** |
-| 2017 | deviations | 340 | **638** |
-| 2018 | exportedALNG | 727 | **1198** |
-| 2018 | deviations | 321 | **784** |
-| 2019 | exportedALNG | 1198 | **1089** |
-| 2020 | gasLift | 139 | **340** |
-| 2020 | deviations | 329 | **321** |
-| 2021 | deviations | 166 | **152** |
-| 2022 | deviations | 317 | **137** |
-| 2025 | injected | null | **1267** |
-| 2025 | fuel | null | **109** |
-| 2025 | gasLift | null | **313** |
-| 2025 | deviations | null | **176** |
+| Categoria | Descrição |
+|-----------|-----------|
+| ALNG | Blocos 0, 14, 15, 17, 18, 31, 32, Quiluma e Maboqueiro (5.1 TCF reservas comerciais) |
+| Oportunidade de Desenvolvimento | B0 Kambala/Vanza/Longui, 80I, 121C, Minzu, Livuite, etc. |
+| Blocos em Exploração & Avaliação | B1/14, B20/11, B24, NGC Fase 2-4 |
 
-Os valores ALNG de 2017 e 2018 estavam trocados. O ano 2025 passa a ter dados completos.
+Linha de referência: **Capacidade Máxima ALNG = 3.900 MMSCFD**
 
-**2. Observações — texto actualizado do documento:**
-- Obs 1: Adicionar referência ao Bloco 0 e SLGC
-- Obs 2: Adicionar referência ao "sistema de medição efectivo (desvios)"
-- Obs 3: Reforçar "abastecimento doméstico"
-- Remover obs 5 (défice) — já está coberta no painel de forecast
+### Alterações
 
-**3. Recomendações — texto actualizado:**
-- Rec 1: Adicionar "com base na medição e regulamentação efectiva"
-- Rec 3: Adicionar "mantendo a segurança dos reservatórios e benefício económico do Bloco"
+**1. `src/data/gasUtilization.ts`** — Adicionar array `gasSupplyForecastYearly` com dados anuais (2025-2050) para as 3 categorias (ALNG, desenvolvimento, exploração), extraídos da imagem.
 
-**4. Dados de forecast (imagem 2):** Já estão correctos — sem alterações necessárias.
+**2. `src/components/dashboard/GasUtilizationPanel.tsx`** — Substituir o card estático de "Previsão de Fornecimento" por um novo `ComposedChart` com:
+- Barras empilhadas para as 3 categorias (cores: laranja ALNG, roxo desenvolvimento, cinza exploração)
+- `ReferenceLine` horizontal a 3.900 MMSCFD (capacidade máxima ALNG)
+- Linha tracejada a ~1.100 MMSCFD (nível actual de fornecimento)
+- KPIs laterais (Produção @2025, Utilidades, Fornecimento ALNG) mantidos
+- Pressupostos e notas de demanda como texto abaixo do gráfico
 
-### Ficheiro a alterar
-`src/data/gasUtilization.ts` — linhas 13-23 (dados históricos), 47-53 (observações), 56-60 (recomendações)
+O card de médias por período (2025-2030, 2031-2040, 2041-2050) será convertido num resumo compacto abaixo do gráfico.
 
