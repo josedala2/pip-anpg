@@ -296,6 +296,9 @@ export interface AbandonmentDetail {
   fundeamento: number;
   fundeado: number;
   dividaSonangol: number;
+  dividaSonangolSince?: number;
+  nextPAPRSubmission?: number;
+  notes?: string[];
 }
 
 export interface TechnicalCost {
