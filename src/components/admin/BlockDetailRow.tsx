@@ -57,7 +57,9 @@ export function BlockDetailRow({ block, colSpan }: BlockDetailRowProps) {
             {/* Production & Investment */}
             <DetailSection icon={Droplets} title="Produção & Investimento">
               <DetailItem label="Produção Diária" value={`${block.dailyProduction.toLocaleString()} BOPD`} />
-              <DetailItem label="Reservas" value={`${block.estimatedReserves.toLocaleString()} MMbbl`} />
+              <DetailItem label="Reservas (STOOIP)" value={`${block.estimatedReserves.toLocaleString()} MMbbl`} />
+              <DetailItem label="Reservas Actuais" value={block.currentReservesMMBO ? `${block.currentReservesMMBO} MMBO` : undefined} />
+              <DetailItem label="Factor Recuperação" value={block.recoveryFactorPercent ? `${block.recoveryFactorPercent}%` : undefined} />
               <DetailItem label="Invest. Acumulado" value={`${block.accumulatedInvestment.toLocaleString()} MMUSD`} />
               <DetailItem label="Invest. Planeado" value={`${block.plannedInvestment.toLocaleString()} MMUSD`} />
               <DetailItem label="Taxa Execução" value={`${block.executionRate}%`} />
