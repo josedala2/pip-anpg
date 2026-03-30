@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { oilBlocks } from "@/data/angolaBlocks";
 import { ProspectsTable } from "@/components/dashboard/ProspectsTable";
 import { ChartWrapper } from "@/components/dashboard/ChartWrapper";
+import { TierProductionSection } from "@/components/dashboard/TierProductionSection";
 import { ProspectsSummary } from "@/components/dashboard/ProspectsSummary";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
