@@ -537,6 +537,7 @@ export const oilBlocks: OilBlock[] = [
       { year: "2020", planned: 800, actual: 780 }, { year: "2021", planned: 850, actual: 830 },
       { year: "2022", planned: 900, actual: 870 }, { year: "2023", planned: 950, actual: 920 },
       { year: "2024", planned: 1000, actual: 980 },
+      { year: "2025", planned: 1050, actual: 1020 },
       { year: "2026", planned: 993, actual: 0 }, { year: "2027", planned: 934, actual: 0 },
       { year: "2028", planned: 823, actual: 0 }, { year: "2029", planned: 912, actual: 0 },
       { year: "2030", planned: 884, actual: 0 },
