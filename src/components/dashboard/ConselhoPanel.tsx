@@ -173,19 +173,19 @@ export const ConselhoPanel = () => {
       };
     });
 
-    // Macro KPIs
-    const producing = activeBlocks.filter(b => b.phase === "Production");
-    const totalProduction = producing.reduce((s, b) => s + b.dailyProduction, 0);
-    const overview = getNationalEconomicKPIs(activeBlocks);
+    // Macro KPIs — use certified national metrics
     const criticalCount = concessions.filter(c => c.health === "red").length;
     const renewSoon = concessions.filter(c => c.remainingYears !== null && c.remainingYears <= 3).length;
+    const overview = getNationalEconomicKPIs(activeBlocks);
 
     const macro = {
-      totalProduction,
+      totalProduction: nationalCertifiedMetrics.productionBOPD,
+      anpgQuota: nationalCertifiedMetrics.anpgQuotaBOPD,
       stateRevenue: overview.totalStateRevenue,
       criticalConcessions: criticalCount,
       renewSoon,
-      totalActive: activeBlocks.length,
+      totalActive: nationalCertifiedMetrics.activeConcessions,
+      verifiedCount: activeBlocks.length,
     };
 
     // Alerts summary — filtered to verified blocks only
