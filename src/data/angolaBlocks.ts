@@ -730,6 +730,21 @@ export const oilBlocks: OilBlock[] = [
       { title: "Descobertas Não Desenvolvidas", description: "Existem 32 descobertas não-comerciais que poderão ser reavaliadas à luz de novas tecnologias e condições de mercado mais favoráveis.", severity: "Média", category: "Estratégico" },
       { title: "Competitividade Global", description: "O Bloco 0 compete por capital de investimento com outras oportunidades globais do operador, exigindo prospectos de alta qualidade para atrair alocação de CAPEX exploratório.", severity: "Alta", category: "Estratégico" },
     ],
+    currentReservesMMBO: 421,
+    recoveryFactorPercent: 20,
+    keyActivities: [
+      "Revitalização da produção com foco em infill drilling e workovers",
+      "Desenvolvimento de N'Dola Sul (primeiro óleo Dezembro 2025)",
+      "Projecto piloto Banzala para avaliação de reservatórios carbonáticos",
+      "Extensão da vida útil das instalações até 2050",
+      "Optimização do balanço de gás e aumento da exportação para ALNG",
+    ],
+    workProgram: [
+      "Longui — Continuação do desenvolvimento com novos poços e optimização de produção",
+      "N'Dola Sul — Primeiro óleo previsto para Dezembro 2025, capacidade de 30.000 BOPD",
+      "Banzala — Projecto piloto para avaliação de potencial de reservatórios carbonáticos profundos",
+      "Revisão dos DROs — Actualização dos Planos de Desenvolvimento e Recuperação dos campos maduros",
+    ],
     legislationDocs: [
       { title: "Decreto n.º 47380", type: "decreto-lei", reference: "Decreto n.º 47380, de 14 de Novembro de 1957", date: "1957-11-14", description: "Concessão original do Bloco 0 à CABGOC (Cabinda Gulf Oil Company)" },
       { title: "Decreto Lei n.° 2/04", type: "decreto-lei", reference: "Decreto Lei n.° 2/04, de 7 de Maio", date: "2004-05-07", description: "Aprovação do Contrato de Associação do Bloco 0 (Áreas A e B)" },
