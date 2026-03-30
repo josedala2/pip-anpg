@@ -141,6 +141,32 @@ export function BlockDetailRow({ block, colSpan }: BlockDetailRowProps) {
               </DetailSection>
             </div>
           )}
+
+          {/* Key Activities */}
+          {block.keyActivities && block.keyActivities.length > 0 && (
+            <div className="mt-4 pt-4 border-t border-border/50">
+              <DetailSection icon={Zap} title="Actividades-Chave">
+                <ul className="list-disc list-inside space-y-1">
+                  {block.keyActivities.map((a, i) => (
+                    <li key={i} className="text-xs">{a}</li>
+                  ))}
+                </ul>
+              </DetailSection>
+            </div>
+          )}
+
+          {/* Work Program */}
+          {block.workProgram && block.workProgram.length > 0 && (
+            <div className="mt-4 pt-4 border-t border-border/50">
+              <DetailSection icon={ClipboardList} title="Programa de Trabalho">
+                <ul className="list-disc list-inside space-y-1">
+                  {block.workProgram.map((w, i) => (
+                    <li key={i} className="text-xs">{w}</li>
+                  ))}
+                </ul>
+              </DetailSection>
+            </div>
+          )}
         </div>
       </TableCell>
     </TableRow>
