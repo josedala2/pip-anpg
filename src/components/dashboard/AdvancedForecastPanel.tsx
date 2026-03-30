@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { oilBlocks } from "@/data/angolaBlocks";
+import { oilBlocks, type TierProductionProfile } from "@/data/angolaBlocks";
 import {
   runAllScenarios,
   runAllScenariosForBlock,
