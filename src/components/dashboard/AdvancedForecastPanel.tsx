@@ -540,6 +540,9 @@ export const AdvancedForecastPanel = () => {
         </CardContent>
       </Card>
 
+      {/* ── Tier Production Profiles — National Aggregation ── */}
+      <TierNationalSection />
+
       {/* ── Strategic Classification Radar ── */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <Card className="border-border/40">
