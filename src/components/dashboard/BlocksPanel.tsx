@@ -112,7 +112,7 @@ const CompactBlockCard = ({
         <div className="mt-2 pt-2 border-t border-border/50 animate-fade-in space-y-1.5">
           <div className="grid grid-cols-2 gap-1">
             {[
-              { label: "Reservas", value: `${block.estimatedReserves}M bbl` },
+              { label: "Recurso", value: block.estimatedReserves >= 1000 ? `${(block.estimatedReserves / 1000).toFixed(1)}k MMBO` : `${block.estimatedReserves}M bbl` },
               { label: "Risco", value: `${block.riskScore}/10` },
             ].map(m => (
               <div key={m.label} className="text-[8px]">
