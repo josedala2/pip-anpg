@@ -137,6 +137,17 @@ export const baseProductionBlocks = [
   "B14", "B15", "B15/06", "B17", "B17/06", "B18", "B20/11", "B31", "B32"
 ];
 
+// Historical national production (kBOPD) — from official reports
+export const nationalHistoricalProduction = [
+  { year: 2020, production: 1255, label: "Impacto COVID-19" },
+  { year: 2021, production: 1124, label: "Declínio campos maduros" },
+  { year: 2022, production: 1157, label: "Recuperação parcial" },
+  { year: 2023, production: 1106, label: "Declínio natural" },
+  { year: 2024, production: 1060, label: "Novos projectos limitados" },
+  { year: 2025, production: 1036, label: "Relatório Concessões 2026" },
+  { year: 2026, production: 1010, label: "Previsão (com FID)" },
+];
+
 // National Certified Metrics — from "Estado das Concessões 2026"
 export const nationalCertifiedMetrics = {
   productionBOPD: 1036000,

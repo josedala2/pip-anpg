@@ -33,6 +33,9 @@ export const ExecutiveHome = ({ initialDrillDown = null }: { initialDrillDown?: 
       {/* Zone B — Executive KPIs */}
       <KPICards />
 
+      {/* Historical Production Trend */}
+      <NationalProductionTrend />
+
       {/* Drill-down sections */}
       <div className="space-y-2 pt-2 border-t border-border/40">
         <div className="flex items-center gap-1.5 mb-1">
