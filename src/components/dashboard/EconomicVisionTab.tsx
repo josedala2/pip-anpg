@@ -11,7 +11,7 @@ import {
 } from "recharts";
 import {
   DollarSign, TrendingDown, AlertTriangle, Lightbulb, Anchor,
-  BarChart3, PieChart as PieChartIcon, Wrench, ArrowRight,
+  BarChart3, PieChart as PieChartIcon, Wrench, ArrowRight, Ship,
 } from "lucide-react";
 
 const GE_COLOR = "hsl(199, 89%, 48%)";
