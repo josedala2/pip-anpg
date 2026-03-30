@@ -425,6 +425,94 @@ export const EconomicVisionTab = ({ block }: Props) => {
           </Badge>
         </div>
       )}
+
+      {/* Row 6: Liftings */}
+      {(liftingsAcc || liftingsForecast.length > 0) && (
+        <div className="space-y-4">
+          <h3 className="text-sm 2xl:text-base font-semibold flex items-center gap-2">
+            <Ship className="w-4 h-4 text-primary" />
+            Realização e Previsão de Levantamentos
+          </h3>
+
+          <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 2xl:gap-6">
+            {/* Accumulated liftings bar chart */}
+            {liftingsAcc && (
+              <ChartWrapper title="Levantamentos Acumulados (1988-2025)" icon={<BarChart3 className="w-4 h-4 text-primary" />} height={280}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={[
+                    { label: "GE (59%)", value: liftingsAcc.geMMBO },
+                    { label: "SNL E.P. (41%)", value: liftingsAcc.snlMMBO },
+                  ]} barGap={8}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
+                    <XAxis dataKey="label" tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} />
+                    <YAxis tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} />
+                    <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => `${v.toLocaleString()} MMBO`} />
+                    <Bar dataKey="value" radius={[4, 4, 0, 0]}>
+                      <Cell fill={GE_COLOR} />
+                      <Cell fill={SNL_COLOR} />
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </ChartWrapper>
+            )}
+
+            {/* Forecast chart */}
+            {liftingsForecast.length > 0 && (
+              <ChartWrapper title="Previsão de Levantamentos (2026-2050)" icon={<BarChart3 className="w-4 h-4 text-primary" />} height={280}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <ComposedChart data={liftingsForecast}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
+                    <XAxis dataKey="year" tick={{ fontSize: 9, fill: "hsl(var(--muted-foreground))" }} interval={4} />
+                    <YAxis yAxisId="left" tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} />
+                    <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} />
+                    <Tooltip contentStyle={tooltipStyle} />
+                    <Legend wrapperStyle={{ fontSize: 10 }} />
+                    <Bar yAxisId="left" dataKey="snlEPMMBO" name="SNL E.P. (MMBO)" stackId="a" fill={SNL_COLOR} />
+                    <Bar yAxisId="left" dataKey="geMMBO" name="GE (MMBO)" stackId="a" fill={GE_COLOR} radius={[2, 2, 0, 0]} />
+                    <Line yAxisId="right" type="monotone" dataKey="receitaGE" name="Receita GE (MMUSD)" stroke={GE_COLOR} strokeWidth={2} dot={false} strokeDasharray="4 2" />
+                  </ComposedChart>
+                </ResponsiveContainer>
+              </ChartWrapper>
+            )}
+
+            {/* Observations */}
+            {(liftingsObs.length > 0 || liftingsAcc) && (
+              <Card className="glass-card">
+                <CardHeader className="p-4 pb-2">
+                  <CardTitle className="text-sm 2xl:text-base flex items-center gap-2">
+                    <Lightbulb className="w-4 h-4 text-warning" />
+                    Indicadores de Levantamento
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-4 pt-0 space-y-3">
+                  {liftingsAcc && (
+                    <div className="space-y-2">
+                      <div className="flex justify-between items-center p-2 rounded bg-muted/50">
+                        <span className="text-xs text-muted-foreground">Total Levantado</span>
+                        <span className="font-mono font-bold text-sm">{liftingsAcc.totalMMBO.toLocaleString()} MMBO</span>
+                      </div>
+                      <div className="flex justify-between items-center p-2 rounded bg-muted/50">
+                        <span className="text-xs text-muted-foreground">Reservas Totais</span>
+                        <span className="font-mono font-bold text-sm">{liftingsAcc.totalReservesMMBO.toLocaleString()} MMBO</span>
+                      </div>
+                      <div className="flex justify-between items-center p-2 rounded bg-primary/10 border border-primary/20">
+                        <span className="text-xs font-medium">% Levantado</span>
+                        <span className="font-mono font-bold text-lg text-primary">{liftingsAcc.percentLifted}%</span>
+                      </div>
+                    </div>
+                  )}
+                  {liftingsObs.map((obs, i) => (
+                    <div key={i} className="flex items-start gap-2 text-xs text-muted-foreground">
+                      <ArrowRight className="w-3.5 h-3.5 text-primary shrink-0 mt-0.5" />
+                      <span>{obs}</span>
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
