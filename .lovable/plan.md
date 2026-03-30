@@ -1,29 +1,31 @@
 
 
-## Reestruturar Cards do Resumo Financeiro
+## Correcções na Visão Económica do Bloco 0
 
-### Situação actual
-Os 4 cards actuais usam dados genéricos (`accumulatedInvestment`, `executionRate`, bónus, contribuições) que são placeholders pouco relevantes face aos dados detalhados já inseridos na `economicVision`.
+### Problemas identificados
 
-### Novos cards propostos (4 cards, usando dados reais da `economicVision`)
+**1. Floating point no total da Partilha de Produção GE**
+- Mostra "328.44800000000004 MMBO" em vez de "328.448 MMBO"
+- **Causa**: `.reduce()` sem arredondamento (linhas 1842 no BlockPage, 192 no EconomicVisionTab)
+- **Correcção**: Aplicar `.toFixed(2)` ou `parseFloat(total.toFixed(3))` em ambos os ficheiros
 
-| Card | Fonte de dados | Valor Bloco 0 |
-|------|---------------|---------------|
-| **Investimento Quinquenal** | `economicData.investmentPlan` (soma total) | MMUSD 8.726 |
-| **Custo Técnico (OPEX/bbl)** | `economicVision.technicalCost.opex2025` | $26,3/bbl |
-| **Receita Estado (Acum.)** | `economicVision.revenueShare` — soma `impostosMMUSD` de todos os períodos | ~$87.249M |
-| **Custo de Abandono** | `economicVision.abandonmentDetail.total` vs `fundeado` | MMUSD 3.665 (2,8% fundeado) |
+**2. Total do Plano de Investimentos usa `y.total` que inclui `cashCallSonangol`**
+- Mostra "$12,304M" mas o valor correcto (exploração+desenvolvimento+operação) é **MMUSD 8,726**
+- O campo `total` nos dados inclui `adminServicos` + `cashCallSonangol` (ex: 2026: 87+596+1160+168+825=2836)
+- O gráfico de barras empilhado só mostra exploração/desenvolvimento/operação, mas o total no header soma tudo
+- **Correcção**: Calcular total como `exploracao + desenvolvimento + operacao` nos headers (BlockPage linha 1810, 1583; EconomicVisionTab usa `investmentPlan` com total)
 
-### Detalhes de cada card
+### Ficheiros a alterar
 
-1. **Investimento Quinquenal** — valor total + barra de progresso mostrando % exploração/desenvolvimento/operação
-2. **Custo Técnico** — OPEX/bbl 2025 em destaque, com CAPEX/bbl e OPEX/bbl discriminados por baixo
-3. **Receita Estado** — total acumulado + percentagem do período mais recente (16% para 2026-2050)
-4. **Custo de Abandono** — total + mini barra de fundeamento com alerta visual quando < 10%
+**`src/pages/BlockPage.tsx`**
+- Linha 1583: `invTotal` → somar `exploracao + desenvolvimento + operacao` em vez de `total`
+- Linha 1810: idem no header do gráfico
+- Linha 1842: arredondar total de productionShareGE
 
-### Fallbacks
-Se `economicVision` não existir (outros blocos), manter os cards antigos como fallback.
+**`src/components/dashboard/EconomicVisionTab.tsx`**  
+- Linha 192: arredondar `totalShareMMBO`
+- Verificar se o ChartWrapper do investmentPlan mostra total (via `headerExtra`) — se sim, corrigir igualmente
 
-### Ficheiro a alterar
-`src/pages/BlockPage.tsx` — linhas 1577-1631 (substituir os 4 cards actuais)
+### Sem impacto nos dados
+Nenhuma alteração ao `angolaBlocks.ts` — os dados estão correctos, o problema é apenas na forma como os totais são calculados na apresentação.
 
