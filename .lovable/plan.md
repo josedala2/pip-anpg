@@ -1,31 +1,48 @@
 
 
-## Adicionar Gráfico de Previsão de Fornecimento de Gás (2025–2050)
+## Actualizar Painéis com Dados Certificados Nacionais
 
-### O que será construído
-Um gráfico de barras empilhadas (stacked bar chart) replicando a imagem oficial, mostrando a previsão de fornecimento de gás à ALNG de 2025 a 2050, com três categorias de fonte e uma linha de capacidade máxima.
+### Problema
+Os painéis de Produção, Exploração, Económico, Cenários, Previsão Geral e Previsão Avançada calculam KPIs nacionais a partir de apenas 3 blocos verificados (0, 2/05, 3/05), mostrando valores parciais. Já existem `nationalCertifiedMetrics` com os totais oficiais, mas estes painéis não os utilizam.
 
-### Dados a adicionar
-Extraídos da imagem oficial (valores aproximados em MMSCFD por ano, 2025-2050):
+Os painéis de **Previsão Nacional** e **Levantamentos** já estão actualizados (usam `nationalForecast` e `liftingsData` directamente).
 
-| Categoria | Descrição |
-|-----------|-----------|
-| ALNG | Blocos 0, 14, 15, 17, 18, 31, 32, Quiluma e Maboqueiro (5.1 TCF reservas comerciais) |
-| Oportunidade de Desenvolvimento | B0 Kambala/Vanza/Longui, 80I, 121C, Minzu, Livuite, etc. |
-| Blocos em Exploração & Avaliação | B1/14, B20/11, B24, NGC Fase 2-4 |
+### Alterações por painel
 
-Linha de referência: **Capacidade Máxima ALNG = 3.900 MMSCFD**
+**1. ProductionPanel** — Adicionar barra de referência nacional
+- Acima dos KPIs parciais, adicionar strip com 3 métricas nacionais certificadas: **Produção Nacional** (1.036.000 BOPD), **Produção Gás** (2.756 MMSCFD), **Blocos Produtores** (17)
+- Manter KPIs parciais abaixo como "Detalhe dos Blocos Verificados"
+- Actualizar disclaimer para referenciar que totais nacionais vêm do Relatório 2026
 
-### Alterações
+**2. ExplorationPanel** — Adicionar contexto nacional de recursos
+- Adicionar strip com **Recursos Prospectivos** (152.611 Mb Óleo / 45.328 TCF Gás), **Concessões em Exploração** (37), **Reservas Certificadas** (2.600 Mb / 4.4 TCF)
+- Actualizar disclaimer para incluir referência ao Relatório 2026
 
-**1. `src/data/gasUtilization.ts`** — Adicionar array `gasSupplyForecastYearly` com dados anuais (2025-2050) para as 3 categorias (ALNG, desenvolvimento, exploração), extraídos da imagem.
+**3. EconomicFinancialPanel (Dashboard sub-tab)** — Adicionar referência nacional
+- Adicionar card "Produção Nacional" (1.036.000 BOPD) no strip de KPIs para contextualizar que os valores económicos derivam de 3 blocos
+- Actualizar sub-título do disclaimer
 
-**2. `src/components/dashboard/GasUtilizationPanel.tsx`** — Substituir o card estático de "Previsão de Fornecimento" por um novo `ComposedChart` com:
-- Barras empilhadas para as 3 categorias (cores: laranja ALNG, roxo desenvolvimento, cinza exploração)
-- `ReferenceLine` horizontal a 3.900 MMSCFD (capacidade máxima ALNG)
-- Linha tracejada a ~1.100 MMSCFD (nível actual de fornecimento)
-- KPIs laterais (Produção @2025, Utilidades, Fornecimento ALNG) mantidos
-- Pressupostos e notas de demanda como texto abaixo do gráfico
+**4. EconomicScenariosPanel** — Adicionar contexto de cobertura
+- No header, mostrar "Cobertura: X% da produção nacional" calculado como `soma(3 blocos) / 1.036.000`
+- Isto contextualiza imediatamente os cenários simulados
 
-O card de médias por período (2025-2030, 2031-2040, 2041-2050) será convertido num resumo compacto abaixo do gráfico.
+**5. GeneralForecastPanel** — Adicionar referência de cobertura
+- No strip de KPIs macro, adicionar "Produção Nacional" (1.036 kBOPD) como referência, e mostrar "Cobertura" como percentagem
+- Manter cálculos actuais como drill-down dos blocos verificados
+
+**6. AdvancedForecastPanel** — Adicionar referência de cobertura
+- Mesmo padrão: adicionar "% Cobertura Nacional" calculado vs `nationalCertifiedMetrics.productionBOPD`
+
+### Detalhes técnicos
+- Todos os painéis importam `nationalCertifiedMetrics` de `@/data/nationalForecast`
+- Os strips nacionais usam um fundo diferente (`bg-primary/5 border-primary/20`) para se distinguirem dos KPIs parciais
+- Os cálculos block-level existentes não são alterados — apenas se adiciona contexto nacional
+
+### Ficheiros a alterar
+1. `src/components/dashboard/ProductionPanel.tsx`
+2. `src/components/dashboard/ExplorationPanel.tsx`
+3. `src/components/dashboard/EconomicFinancialPanel.tsx`
+4. `src/components/dashboard/EconomicScenariosPanel.tsx`
+5. `src/components/dashboard/GeneralForecastPanel.tsx`
+6. `src/components/dashboard/AdvancedForecastPanel.tsx`
 
