@@ -1088,33 +1088,6 @@ const BlockPage = () => {
             {/* Prospects Table */}
             <ProspectsTable blocks={[block]} scopeLabel={block.name} />
 
-            {/* Revitalization Scenarios */}
-            {block.revitalizationScenarios && block.revitalizationScenarios.length > 0 && (
-              <div className="space-y-4">
-                <h3 className="text-sm 2xl:text-base font-semibold flex items-center gap-2">
-                  <Lightbulb className="w-4 h-4 text-warning" />
-                  Cenários de Revitalização
-                </h3>
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 2xl:gap-6">
-                  {block.revitalizationScenarios.map((scenario, idx) => {
-                    const accentColors = [
-                      { border: "border-primary/40", icon: "text-primary", bg: "bg-primary/5", tag: "bg-primary/10 text-primary" },
-                      { border: "border-warning/40", icon: "text-warning", bg: "bg-warning/5", tag: "bg-warning/10 text-warning" },
-                      { border: "border-success/40", icon: "text-success", bg: "bg-success/5", tag: "bg-success/10 text-success" },
-                    ];
-                    const accent = accentColors[idx % 3];
-                    return (
-                      <RevitalizationCard key={scenario.id} scenario={scenario} accent={accent} index={idx} />
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-
-            {/* Development Projects */}
-            {block.developmentProjects && block.developmentProjects.length > 0 && (
-              <DevelopmentProjectsPanel projects={block.developmentProjects} />
-            )}
           </TabsContent>
 
           {/* Tab 4: Produção */}
@@ -1485,6 +1458,34 @@ const BlockPage = () => {
               {/* Technical Recommendations */}
               {block.technicalRecommendations && block.technicalRecommendations.length > 0 && (
                 <TechnicalRecommendationsPanel recommendations={block.technicalRecommendations} blockName={block.name} />
+              )}
+
+              {/* Revitalization Scenarios */}
+              {block.revitalizationScenarios && block.revitalizationScenarios.length > 0 && (
+                <div className="space-y-4">
+                  <h3 className="text-sm 2xl:text-base font-semibold flex items-center gap-2">
+                    <Lightbulb className="w-4 h-4 text-warning" />
+                    Cenários de Revitalização
+                  </h3>
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 2xl:gap-6">
+                    {block.revitalizationScenarios.map((scenario, idx) => {
+                      const accentColors = [
+                        { border: "border-primary/40", icon: "text-primary", bg: "bg-primary/5", tag: "bg-primary/10 text-primary" },
+                        { border: "border-warning/40", icon: "text-warning", bg: "bg-warning/5", tag: "bg-warning/10 text-warning" },
+                        { border: "border-success/40", icon: "text-success", bg: "bg-success/5", tag: "bg-success/10 text-success" },
+                      ];
+                      const accent = accentColors[idx % 3];
+                      return (
+                        <RevitalizationCard key={scenario.id} scenario={scenario} accent={accent} index={idx} />
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* Development Projects */}
+              {block.developmentProjects && block.developmentProjects.length > 0 && (
+                <DevelopmentProjectsPanel projects={block.developmentProjects} />
               )}
            </TabsContent>
 
