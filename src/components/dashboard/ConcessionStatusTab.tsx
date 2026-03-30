@@ -209,7 +209,8 @@ export const ConcessionStatusTab = ({ block }: ConcessionStatusTabProps) => {
     },
     {
       label: "Reservas Estimadas",
-      value: `${block.estimatedReserves} Mb`,
+      value: block.currentReservesMMBO ? `${block.currentReservesMMBO} MMBO` : `${block.estimatedReserves} Mb`,
+      sub: block.currentReservesMMBO ? `STOOIP: ${block.estimatedReserves.toLocaleString()} Mb · FR: ${block.recoveryFactorPercent ?? "N/D"}%` : undefined,
       icon: Droplets,
       color: "text-primary",
     },
@@ -442,6 +443,52 @@ export const ConcessionStatusTab = ({ block }: ConcessionStatusTabProps) => {
           </CardContent>
         </Card>
       </div>
+
+      {/* Key Activities & Work Program */}
+      {(block.keyActivities?.length || block.workProgram?.length) && (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 2xl:gap-6">
+          {block.keyActivities && block.keyActivities.length > 0 && (
+            <Card className="glass-card">
+              <CardHeader className="p-4 pb-2">
+                <CardTitle className="text-sm 2xl:text-base flex items-center gap-2">
+                  <Zap className="w-4 h-4 text-primary" />
+                  Actividades-Chave
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-4 pt-0">
+                <ul className="space-y-2">
+                  {block.keyActivities.map((a, i) => (
+                    <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
+                      <div className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 shrink-0" />
+                      {a}
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+          )}
+          {block.workProgram && block.workProgram.length > 0 && (
+            <Card className="glass-card">
+              <CardHeader className="p-4 pb-2">
+                <CardTitle className="text-sm 2xl:text-base flex items-center gap-2">
+                  <Activity className="w-4 h-4 text-warning" />
+                  Programa de Trabalho
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-4 pt-0">
+                <ul className="space-y-2">
+                  {block.workProgram.map((w, i) => (
+                    <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
+                      <div className="w-1.5 h-1.5 rounded-full bg-warning mt-1.5 shrink-0" />
+                      {w}
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+          )}
+        </div>
+      )}
 
       {/* Row 3b: Semaphore Forecast */}
       <SemaphoreForecastPanel block={block} />

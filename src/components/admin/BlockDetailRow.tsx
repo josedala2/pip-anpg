@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { TableRow, TableCell } from "@/components/ui/table";
 import {
   MapPin, Droplets, Calendar, DollarSign, Activity,
-  Layers, Target, Users2, Factory, ShieldCheck,
+  Layers, Target, Users2, Factory, ShieldCheck, Zap, ClipboardList,
 } from "lucide-react";
 
 interface BlockDetailRowProps {
@@ -57,7 +57,9 @@ export function BlockDetailRow({ block, colSpan }: BlockDetailRowProps) {
             {/* Production & Investment */}
             <DetailSection icon={Droplets} title="Produção & Investimento">
               <DetailItem label="Produção Diária" value={`${block.dailyProduction.toLocaleString()} BOPD`} />
-              <DetailItem label="Reservas" value={`${block.estimatedReserves.toLocaleString()} MMbbl`} />
+              <DetailItem label="Reservas (STOOIP)" value={`${block.estimatedReserves.toLocaleString()} MMbbl`} />
+              <DetailItem label="Reservas Actuais" value={block.currentReservesMMBO ? `${block.currentReservesMMBO} MMBO` : undefined} />
+              <DetailItem label="Factor Recuperação" value={block.recoveryFactorPercent ? `${block.recoveryFactorPercent}%` : undefined} />
               <DetailItem label="Invest. Acumulado" value={`${block.accumulatedInvestment.toLocaleString()} MMUSD`} />
               <DetailItem label="Invest. Planeado" value={`${block.plannedInvestment.toLocaleString()} MMUSD`} />
               <DetailItem label="Taxa Execução" value={`${block.executionRate}%`} />
@@ -136,6 +138,32 @@ export function BlockDetailRow({ block, colSpan }: BlockDetailRowProps) {
                     </Badge>
                   ))}
                 </div>
+              </DetailSection>
+            </div>
+          )}
+
+          {/* Key Activities */}
+          {block.keyActivities && block.keyActivities.length > 0 && (
+            <div className="mt-4 pt-4 border-t border-border/50">
+              <DetailSection icon={Zap} title="Actividades-Chave">
+                <ul className="list-disc list-inside space-y-1">
+                  {block.keyActivities.map((a, i) => (
+                    <li key={i} className="text-xs">{a}</li>
+                  ))}
+                </ul>
+              </DetailSection>
+            </div>
+          )}
+
+          {/* Work Program */}
+          {block.workProgram && block.workProgram.length > 0 && (
+            <div className="mt-4 pt-4 border-t border-border/50">
+              <DetailSection icon={ClipboardList} title="Programa de Trabalho">
+                <ul className="list-disc list-inside space-y-1">
+                  {block.workProgram.map((w, i) => (
+                    <li key={i} className="text-xs">{w}</li>
+                  ))}
+                </ul>
               </DetailSection>
             </div>
           )}

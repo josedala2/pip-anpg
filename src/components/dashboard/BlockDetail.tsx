@@ -63,7 +63,9 @@ export const BlockDetail = ({ block, onClose }: BlockDetailProps) => {
               ["Basin", block.basin],
               ["Contract", new Date(block.contractDate).toLocaleDateString()],
               ["Daily Production", `${block.dailyProduction.toLocaleString()} BOPD`],
-              ["Reserves", `${block.estimatedReserves} Mb`],
+              ["Reserves (STOOIP)", `${block.estimatedReserves} Mb`],
+              ...(block.currentReservesMMBO ? [["Current Reserves", `${block.currentReservesMMBO} MMBO`]] : []),
+              ...(block.recoveryFactorPercent ? [["Recovery Factor", `${block.recoveryFactorPercent}%`]] : []),
               ["Investment", `$${block.accumulatedInvestment}M / $${block.plannedInvestment}M`],
               ["Execution Rate", `${block.executionRate}%`],
             ].map(([label, value]) => (
