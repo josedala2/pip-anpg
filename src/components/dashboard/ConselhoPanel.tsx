@@ -298,27 +298,34 @@ export const ConselhoPanel = () => {
         </div>
       </div>
 
-      {/* ── Zone B: 4 Macro KPIs ── */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      {/* ── Zone B: 5 Macro KPIs ── */}
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
         <MacroKPI
           icon={Droplets}
           label="Produção Nacional"
           value={`${(macro.totalProduction / 1000).toFixed(0)}K`}
-          unit="bbl/dia"
+          unit="BOPD (certificado)"
+          trend="neutral"
+        />
+        <MacroKPI
+          icon={Landmark}
+          label="Quota ANPG"
+          value={`${(macro.anpgQuota / 1000).toFixed(0)}K`}
+          unit="BOPD"
           trend="neutral"
         />
         <MacroKPI
           icon={CircleDollarSign}
           label="Receita Estado"
           value={`$${(macro.stateRevenue / 1000).toFixed(1)}B`}
-          unit="USD/ano estimado"
+          unit="USD/ano (blocos verif.)"
           trend="up"
         />
         <MacroKPI
           icon={AlertTriangle}
           label="Concessões em Risco"
           value={`${macro.criticalConcessions}`}
-          unit={`de ${macro.totalActive} activas`}
+          unit={`de ${macro.verifiedCount} verificadas`}
           trend="alert"
           alert={macro.criticalConcessions > 3}
         />
