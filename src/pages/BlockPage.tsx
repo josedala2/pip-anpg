@@ -1577,57 +1577,160 @@ const BlockPage = () => {
                   {/* Section 1: Resumo Financeiro */}
                   <div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 2xl:gap-5">
-                      <Card className="glass-card">
-                        <CardContent className="p-4 2xl:p-6">
-                          <div className="text-xs 2xl:text-sm text-muted-foreground mb-2 flex items-center gap-1">Investimento Acum. vs Planeado {tooltipDescriptions["Investimento Acum."] && <InfoTooltip text={tooltipDescriptions["Investimento Acum."]} />}</div>
-                          <div className="text-2xl 2xl:text-3xl font-bold font-mono">${(block.accumulatedInvestment / 1000).toFixed(1)}B</div>
-                          <div className="text-xs text-muted-foreground mb-2">de ${(block.plannedInvestment / 1000).toFixed(1)}B planeado</div>
-                          <div className="relative h-2 w-full overflow-hidden rounded-full bg-secondary">
-                            <div className="h-full bg-primary rounded-full transition-all" style={{ width: `${investProgress}%` }} />
-                          </div>
-                          <div className="text-[10px] text-muted-foreground mt-1 text-right font-mono">{investProgress.toFixed(0)}%</div>
-                        </CardContent>
-                      </Card>
-                      <Card className="glass-card">
-                        <CardContent className="p-4 2xl:p-6">
-                          <div className="text-xs 2xl:text-sm text-muted-foreground mb-2 flex items-center gap-1">Taxa de Execução {tooltipDescriptions["Taxa Execução"] && <InfoTooltip text={tooltipDescriptions["Taxa Execução"]} />}</div>
-                          <div className="text-2xl 2xl:text-3xl font-bold font-mono">{block.executionRate}%</div>
-                          <div className={`text-xs mt-1 ${block.executionRate >= 85 ? "text-success" : block.executionRate >= 70 ? "text-warning" : "text-danger"}`}>
-                            {block.executionRate >= 85 ? "Excelente" : block.executionRate >= 70 ? "Moderado" : "Baixo"}
-                          </div>
-                        </CardContent>
-                      </Card>
-                      <Card className="glass-card">
-                        <CardContent className="p-4 2xl:p-6">
-                          <div className="text-xs 2xl:text-sm text-muted-foreground mb-2 flex items-center gap-1">Bónus Total {tooltipDescriptions["Bónus de Assinatura"] && <InfoTooltip text="Soma dos bónus de assinatura, social e produção pagos ao Estado" />}</div>
-                          <div className="text-2xl 2xl:text-3xl font-bold font-mono text-warning">
-                            {totalBonus > 0 ? `$${(totalBonus / 1e6).toFixed(0)}M` : "—"}
-                          </div>
-                          <div className="text-[10px] text-muted-foreground mt-1">Assinatura + Social + Produção</div>
-                        </CardContent>
-                      </Card>
-                      <Card className="glass-card">
-                        <CardContent className="p-4 2xl:p-6">
-                          <div className="text-xs 2xl:text-sm text-muted-foreground mb-2">Contribuições & P. Sociais</div>
-                          <div className="space-y-1">
-                            {ci?.socialProjects ? (
-                              <div className="flex justify-between text-xs">
-                                <span className="text-muted-foreground">P. Sociais</span>
-                                <span className="font-mono font-semibold">${(ci.socialProjects / 1e6).toFixed(2)}M</span>
+                      {block.economicVision ? (() => {
+                        const ev = block.economicVision;
+                        const invTotal = ev.investmentPlan?.reduce((s, y) => s + y.total, 0) || 0;
+                        const invExpl = ev.investmentPlan?.reduce((s, y) => s + y.exploracao, 0) || 0;
+                        const invDev = ev.investmentPlan?.reduce((s, y) => s + y.desenvolvimento, 0) || 0;
+                        const invOps = ev.investmentPlan?.reduce((s, y) => s + (y.operacao || 0), 0) || 0;
+                        const explPct = invTotal ? Math.round((invExpl / invTotal) * 100) : 0;
+                        const devPct = invTotal ? Math.round((invDev / invTotal) * 100) : 0;
+                        const opsPct = invTotal ? Math.round((invOps / invTotal) * 100) : 0;
+                        const tc = ev.technicalCost;
+                        const stateRevenue = ev.revenueShare?.reduce((s, r) => s + (r.impostosMMUSD || 0), 0) || 0;
+                        const latestPeriod = ev.revenueShare?.[ev.revenueShare.length - 1];
+                        const abd = ev.abandonmentDetail;
+                        const fundedPct = abd ? Math.round((abd.fundeado / abd.total) * 100) : 0;
+                        return (
+                          <>
+                            {/* Card 1: Investimento Quinquenal */}
+                            <Card className="glass-card">
+                              <CardContent className="p-4 2xl:p-6">
+                                <div className="text-xs 2xl:text-sm text-muted-foreground mb-2 flex items-center gap-1">
+                                  Investimento Quinquenal
+                                  <InfoTooltip text="Soma do plano de investimentos 2026-2030 (exploração + desenvolvimento + operação)" />
+                                </div>
+                                <div className="text-2xl 2xl:text-3xl font-bold font-mono">${invTotal >= 1000 ? (invTotal / 1000).toFixed(1) + "B" : invTotal.toLocaleString() + "M"}</div>
+                                <div className="text-[10px] text-muted-foreground mb-2">MMUSD — {ev.investmentPlan?.length || 0} anos</div>
+                                <div className="flex gap-0.5 h-2 w-full rounded-full overflow-hidden">
+                                  <div className="bg-primary rounded-l-full" style={{ width: `${explPct}%` }} title={`Exploração ${explPct}%`} />
+                                  <div className="bg-chart-2" style={{ width: `${devPct}%` }} title={`Desenvolvimento ${devPct}%`} />
+                                  <div className="bg-chart-3 rounded-r-full" style={{ width: `${opsPct}%` }} title={`Operação ${opsPct}%`} />
+                                </div>
+                                <div className="flex justify-between text-[9px] text-muted-foreground mt-1">
+                                  <span>Expl. {explPct}%</span>
+                                  <span>Dev. {devPct}%</span>
+                                  <span>Ops. {opsPct}%</span>
+                                </div>
+                              </CardContent>
+                            </Card>
+                            {/* Card 2: Custo Técnico */}
+                            <Card className="glass-card">
+                              <CardContent className="p-4 2xl:p-6">
+                                <div className="text-xs 2xl:text-sm text-muted-foreground mb-2 flex items-center gap-1">
+                                  Custo Técnico ($/bbl)
+                                  <InfoTooltip text="OPEX e CAPEX por barril — valores de referência do ano corrente" />
+                                </div>
+                                <div className="text-2xl 2xl:text-3xl font-bold font-mono">${tc?.opex2025 ?? tc?.opexPerBarrel ?? "—"}<span className="text-sm font-normal text-muted-foreground">/bbl</span></div>
+                                <div className="text-[10px] text-muted-foreground mb-1">OPEX {tc?.opexPerBarrelYear || 2025}</div>
+                                <div className="space-y-1 mt-2">
+                                  <div className="flex justify-between text-[10px]">
+                                    <span className="text-muted-foreground">CAPEX/bbl</span>
+                                    <span className="font-mono font-semibold">${tc?.capexPerBarrel ?? "—"}</span>
+                                  </div>
+                                  <div className="flex justify-between text-[10px]">
+                                    <span className="text-muted-foreground">OPEX/bbl</span>
+                                    <span className="font-mono font-semibold">${tc?.opexPerBarrel ?? "—"}</span>
+                                  </div>
+                                </div>
+                              </CardContent>
+                            </Card>
+                            {/* Card 3: Receita Estado */}
+                            <Card className="glass-card">
+                              <CardContent className="p-4 2xl:p-6">
+                                <div className="text-xs 2xl:text-sm text-muted-foreground mb-2 flex items-center gap-1">
+                                  Receita Estado (Acum.)
+                                  <InfoTooltip text="Total acumulado de impostos e participações do Estado em todos os períodos" />
+                                </div>
+                                <div className="text-2xl 2xl:text-3xl font-bold font-mono text-warning">${stateRevenue >= 1000 ? (stateRevenue / 1000).toFixed(1) + "B" : stateRevenue.toLocaleString() + "M"}</div>
+                                <div className="text-[10px] text-muted-foreground">MMUSD — {ev.revenueShare?.length || 0} períodos</div>
+                                {latestPeriod && (
+                                  <div className="flex justify-between text-[10px] mt-2">
+                                    <span className="text-muted-foreground">{latestPeriod.period}</span>
+                                    <span className="font-mono font-semibold">{latestPeriod.impostosPercent}% Estado</span>
+                                  </div>
+                                )}
+                              </CardContent>
+                            </Card>
+                            {/* Card 4: Custo de Abandono */}
+                            <Card className="glass-card">
+                              <CardContent className="p-4 2xl:p-6">
+                                <div className="text-xs 2xl:text-sm text-muted-foreground mb-2 flex items-center gap-1">
+                                  Custo de Abandono
+                                  <InfoTooltip text="Obrigação total de descomissionamento vs montante já fundeado" />
+                                </div>
+                                <div className="text-2xl 2xl:text-3xl font-bold font-mono">${abd ? (abd.total >= 1000 ? (abd.total / 1000).toFixed(1) + "B" : abd.total.toLocaleString()) : "—"}<span className="text-sm font-normal text-muted-foreground">M</span></div>
+                                <div className="text-[10px] text-muted-foreground mb-2">MMUSD</div>
+                                {abd && (
+                                  <>
+                                    <div className="relative h-2 w-full overflow-hidden rounded-full bg-secondary">
+                                      <div className={`h-full rounded-full transition-all ${fundedPct < 10 ? "bg-danger" : fundedPct < 30 ? "bg-warning" : "bg-success"}`} style={{ width: `${Math.max(fundedPct, 2)}%` }} />
+                                    </div>
+                                    <div className="flex justify-between text-[9px] mt-1">
+                                      <span className={fundedPct < 10 ? "text-danger font-semibold" : "text-muted-foreground"}>{fundedPct}% fundeado</span>
+                                      <span className="text-muted-foreground font-mono">${abd.fundeado}M</span>
+                                    </div>
+                                  </>
+                                )}
+                              </CardContent>
+                            </Card>
+                          </>
+                        );
+                      })() : (
+                        <>
+                          <Card className="glass-card">
+                            <CardContent className="p-4 2xl:p-6">
+                              <div className="text-xs 2xl:text-sm text-muted-foreground mb-2 flex items-center gap-1">Investimento Acum. vs Planeado {tooltipDescriptions["Investimento Acum."] && <InfoTooltip text={tooltipDescriptions["Investimento Acum."]} />}</div>
+                              <div className="text-2xl 2xl:text-3xl font-bold font-mono">${(block.accumulatedInvestment / 1000).toFixed(1)}B</div>
+                              <div className="text-xs text-muted-foreground mb-2">de ${(block.plannedInvestment / 1000).toFixed(1)}B planeado</div>
+                              <div className="relative h-2 w-full overflow-hidden rounded-full bg-secondary">
+                                <div className="h-full bg-primary rounded-full transition-all" style={{ width: `${investProgress}%` }} />
                               </div>
-                            ) : null}
-                            {ci?.regulatoryContribution ? (
-                              <div className="flex justify-between text-xs">
-                                <span className="text-muted-foreground">C. Regulatória</span>
-                                <span className="font-mono font-semibold">${(ci.regulatoryContribution / 1e6).toFixed(2)}M</span>
+                              <div className="text-[10px] text-muted-foreground mt-1 text-right font-mono">{investProgress.toFixed(0)}%</div>
+                            </CardContent>
+                          </Card>
+                          <Card className="glass-card">
+                            <CardContent className="p-4 2xl:p-6">
+                              <div className="text-xs 2xl:text-sm text-muted-foreground mb-2 flex items-center gap-1">Taxa de Execução</div>
+                              <div className="text-2xl 2xl:text-3xl font-bold font-mono">{block.executionRate}%</div>
+                              <div className={`text-xs mt-1 ${block.executionRate >= 85 ? "text-success" : block.executionRate >= 70 ? "text-warning" : "text-danger"}`}>
+                                {block.executionRate >= 85 ? "Excelente" : block.executionRate >= 70 ? "Moderado" : "Baixo"}
                               </div>
-                            ) : null}
-                            {!ci?.socialProjects && !ci?.regulatoryContribution && (
-                              <div className="text-xs text-muted-foreground">Sem dados</div>
-                            )}
-                          </div>
-                        </CardContent>
-                      </Card>
+                            </CardContent>
+                          </Card>
+                          <Card className="glass-card">
+                            <CardContent className="p-4 2xl:p-6">
+                              <div className="text-xs 2xl:text-sm text-muted-foreground mb-2">Bónus Total</div>
+                              <div className="text-2xl 2xl:text-3xl font-bold font-mono text-warning">
+                                {totalBonus > 0 ? `$${(totalBonus / 1e6).toFixed(0)}M` : "—"}
+                              </div>
+                              <div className="text-[10px] text-muted-foreground mt-1">Assinatura + Social + Produção</div>
+                            </CardContent>
+                          </Card>
+                          <Card className="glass-card">
+                            <CardContent className="p-4 2xl:p-6">
+                              <div className="text-xs 2xl:text-sm text-muted-foreground mb-2">Contribuições & P. Sociais</div>
+                              <div className="space-y-1">
+                                {ci?.socialProjects ? (
+                                  <div className="flex justify-between text-xs">
+                                    <span className="text-muted-foreground">P. Sociais</span>
+                                    <span className="font-mono font-semibold">${(ci.socialProjects / 1e6).toFixed(2)}M</span>
+                                  </div>
+                                ) : null}
+                                {ci?.regulatoryContribution ? (
+                                  <div className="flex justify-between text-xs">
+                                    <span className="text-muted-foreground">C. Regulatória</span>
+                                    <span className="font-mono font-semibold">${(ci.regulatoryContribution / 1e6).toFixed(2)}M</span>
+                                  </div>
+                                ) : null}
+                                {!ci?.socialProjects && !ci?.regulatoryContribution && (
+                                  <div className="text-xs text-muted-foreground">Sem dados</div>
+                                )}
+                              </div>
+                            </CardContent>
+                          </Card>
+                        </>
+                      )}
                     </div>
                   </div>
 
