@@ -105,6 +105,9 @@ export const SwotAnalysis = ({ block }: { block: OilBlock }) => {
   const [loading, setLoading] = useState(false);
   const [hasGenerated, setHasGenerated] = useState(false);
 
+  // Check if block has static SWOT data from document
+  const hasStaticSwot = !!block.swotData;
+
   const generate = async () => {
     setLoading(true);
     try {
@@ -122,6 +125,66 @@ export const SwotAnalysis = ({ block }: { block: OilBlock }) => {
       setLoading(false);
     }
   };
+
+  // Render static SWOT from document if available and no AI-generated SWOT
+  if (hasStaticSwot && !hasGenerated && !loading) {
+    const sd = block.swotData!;
+    const staticSections = [
+      { title: "Forças", icon: Shield, items: sd.strengths, color: "border-l-success", bgColor: "bg-success/10 text-success" },
+      { title: "Fraquezas", icon: TrendingDown, items: sd.weaknesses, color: "border-l-danger", bgColor: "bg-danger/10 text-danger" },
+      { title: "Oportunidades", icon: Lightbulb, items: sd.opportunities, color: "border-l-primary", bgColor: "bg-primary/10 text-primary" },
+      { title: "Ameaças", icon: AlertTriangle, items: sd.threats, color: "border-l-warning", bgColor: "bg-warning/10 text-warning" },
+    ];
+
+    return (
+      <div className="space-y-4 2xl:space-y-6 3xl:space-y-8">
+        <Card className="glass-card bg-muted/30 border-muted-foreground/20">
+          <CardContent className="p-4 2xl:p-6 3xl:p-8">
+            <div className="flex items-start gap-3 2xl:gap-4">
+              <div className="p-2 2xl:p-3 rounded-lg bg-primary/10 shrink-0">
+                <Brain className="w-5 h-5 2xl:w-7 2xl:h-7 text-primary" />
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-semibold text-sm 2xl:text-lg">Análise SWOT — Documento Oficial</h3>
+                  <Button onClick={generate} variant="ghost" size="sm" className="gap-1.5 text-xs 2xl:text-sm h-7 2xl:h-9">
+                    <Sparkles className="w-3 h-3 2xl:w-4 2xl:h-4" />
+                    Gerar com IA
+                  </Button>
+                </div>
+                <p className="text-xs 2xl:text-base text-muted-foreground mt-1">
+                  Análise SWOT extraída do relatório "Estado das Concessões". Pode gerar uma versão preditiva com IA.
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 2xl:gap-6 3xl:gap-8">
+          {staticSections.map(sec => (
+            <Card key={sec.title} className={`glass-card border-l-4 ${sec.color}`}>
+              <CardHeader className="p-4 2xl:p-6 pb-2">
+                <CardTitle className="text-sm 2xl:text-lg flex items-center gap-2">
+                  <div className={`p-1.5 2xl:p-2.5 rounded-md ${sec.bgColor}`}>
+                    <sec.icon className="w-4 h-4 2xl:w-6 2xl:h-6" />
+                  </div>
+                  {sec.title}
+                  <Badge variant="outline" className="ml-auto text-[10px] 2xl:text-sm">{sec.items.length}</Badge>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-4 2xl:p-6 pt-0 space-y-2 2xl:space-y-4">
+                {sec.items.map((item, i) => (
+                  <p key={i} className="text-xs 2xl:text-base text-muted-foreground leading-relaxed flex gap-2">
+                    <span className="text-primary mt-0.5 shrink-0">•</span>
+                    <span>{item}</span>
+                  </p>
+                ))}
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   if (!hasGenerated && !loading) {
     return (
