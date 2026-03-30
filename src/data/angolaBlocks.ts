@@ -79,6 +79,7 @@ export interface ExplorationSummary {
   dryWells?: number;
   geologicalSuccessRate?: number; // percentage
   stooipMMBO?: number;
+  giipBCF?: number;
   explorationCostsUSD?: number;
   prospectivitySTOOIPMMBOE?: number;
   prospectivityNote?: string;
