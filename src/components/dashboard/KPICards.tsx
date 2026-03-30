@@ -103,7 +103,7 @@ const kpiGroups: { title: string; items: KPIItem[] }[] = [
     title: "Financeiros",
     items: [
       { label: "Receita Estado", value: estimatedStateRevenue(), prefix: "$", suffix: "M", icon: Landmark, status: "neutral", drill: "Estimativa anual de receita fiscal petrolífera (base: produção nacional)" },
-      { label: "Total Homologado", value: totalHomologado(), prefix: "$", suffix: "M", icon: FileText, sparkline: homologSpark, status: "neutral", drill: "Soma dos montantes aprovados em processos de homologação" },
+      { label: "Total Homologado", value: totalHomologado(), prefix: "$", suffix: "M", icon: FileText, status: "neutral", drill: "Soma dos montantes aprovados em processos de homologação" },
       { label: "Taxa Aprovação", value: taxaAprovacao(), suffix: "%", icon: CheckCircle, sparkline: aprovacaoSpark, status: getStatus("Taxa Aprovação", taxaAprovacao()), drill: "Percentagem de processos de homologação aprovados" },
     ],
   },
