@@ -1005,9 +1005,15 @@ const BlockPage = () => {
                     )}
                     {block.explorationSummary.stooipMMBO != null && (
                       <div className="glass-card rounded-lg p-3 text-center">
-                        <div className="text-[9px] uppercase text-muted-foreground flex items-center justify-center gap-1">STOOIP <InfoTooltip text={tooltipDescriptions["STOOIP"]} /></div>
+                        <div className="text-[9px] uppercase text-muted-foreground flex items-center justify-center gap-1">Recurso Descoberto <InfoTooltip text="Volume total de recursos descobertos — STOOIP (óleo) e GIIP (gás) — estimado in-situ" /></div>
                         <div className="text-lg font-bold font-mono text-warning">{block.explorationSummary.stooipMMBO.toLocaleString()}</div>
-                        <div className="text-[10px] text-muted-foreground">MMBO</div>
+                        <div className="text-[10px] text-muted-foreground">MMBO (STOOIP)</div>
+                        {block.explorationSummary.giipBCF != null && block.explorationSummary.giipBCF > 0 && (
+                          <>
+                            <div className="text-base font-bold font-mono text-success mt-1">{block.explorationSummary.giipBCF.toLocaleString()}</div>
+                            <div className="text-[10px] text-muted-foreground">BCF (GIIP)</div>
+                          </>
+                        )}
                       </div>
                     )}
                   </div>
