@@ -177,7 +177,7 @@ export const ProspectsSummary = ({ blocks, scopeLabel }: ProspectsSummaryProps) 
             <TableHeader>
               <TableRow className="border-border/50">
                  <TableHead className="text-[10px] 2xl:text-xs uppercase tracking-wider">{groupBy === "reservoir" ? "Objectivo" : "Bacia"}</TableHead>
-                 <TableHead className="text-[10px] 2xl:text-xs uppercase tracking-wider text-right">Prospectos</TableHead>
+                 <TableHead className="text-[10px] 2xl:text-xs uppercase tracking-wider text-right">Prospectos Relevantes</TableHead>
                  <TableHead className="text-[10px] 2xl:text-xs uppercase tracking-wider text-right">MMBO Total</TableHead>
                  <TableHead className="text-[10px] 2xl:text-xs uppercase tracking-wider text-right">BCF Total</TableHead>
                  <TableHead className="text-[10px] 2xl:text-xs uppercase tracking-wider text-right">POS Médio</TableHead>
