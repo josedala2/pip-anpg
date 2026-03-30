@@ -79,6 +79,7 @@ export interface ExplorationSummary {
   dryWells?: number;
   geologicalSuccessRate?: number; // percentage
   stooipMMBO?: number;
+  giipBCF?: number;
   explorationCostsUSD?: number;
   prospectivitySTOOIPMMBOE?: number;
   prospectivityNote?: string;
@@ -650,6 +651,7 @@ export const oilBlocks: OilBlock[] = [
       dryWells: 55,
       geologicalSuccessRate: 62,
       stooipMMBO: 21000,
+      giipBCF: 7926,
       explorationCostsUSD: 1700000000,
       prospectivitySTOOIPMMBOE: 470,
       prospectivityNote: "Potencial de Exploração do play Cretáceo estimado em 470 MMBOE (STOOIP) próximo às Áreas de produção dos campos Mafumeira, Sanha, Vuco e Kungulo",
