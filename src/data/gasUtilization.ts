@@ -45,11 +45,10 @@ export const gasProductionCurrent = {
 
 // Key observations
 export const gasObservations = [
-  "A reinjecção é essencial para manter a pressão dos reservatórios — ~40% do volume produzido.",
-  "A queima de gás permanece elevada devido a limitações técnicas e de infraestrutura.",
-  "A ALNG é o principal destino comercial do gás, com papel estratégico na exportação e abastecimento doméstico.",
+  "A reinjecção é essencial para manter a pressão dos reservatórios — ~40% do volume produzido. O Bloco 0 e a SLGC são os principais contribuintes.",
+  "A queima de gás permanece elevada devido a limitações técnicas e de infraestrutura. O sistema de medição efectivo revela desvios significativos em alguns anos.",
+  "A ALNG é o principal destino comercial do gás, com papel estratégico na exportação e no abastecimento doméstico do país.",
   "Cabinda destaca-se como região crítica na produção e gestão de gás do País.",
-  "Défice estrutural de 1,5 TCF estimado a partir de 2035, colocando em risco a operação plena da ALNG.",
 ];
 
 // Key recommendations
