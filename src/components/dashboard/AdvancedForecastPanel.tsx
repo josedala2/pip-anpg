@@ -682,3 +682,152 @@ function RiskBand({ label, description, count, production, total, color, bgColor
     </div>
   );
 }
+
+function TierNationalSection() {
+  const blocksWithTiers = oilBlocks.filter(b => b.tierProductionProfiles && b.tierProductionProfiles.length > 0);
+  const [vis, setVis] = useState({ total: true, tier1: true, tier2_3: true });
+
+  const aggregated = useMemo(() => {
+    if (blocksWithTiers.length === 0) return [];
+    // Merge all blocks' tier profiles by year
+    const yearMap = new Map<number, { tier1: number; tier2_3: number; total: number }>();
+    blocksWithTiers.forEach(b => {
+      b.tierProductionProfiles!.forEach(p => {
+        const existing = yearMap.get(p.year) || { tier1: 0, tier2_3: 0, total: 0 };
+        existing.tier1 += p.tier1;
+        existing.tier2_3 += p.tier2_3;
+        existing.total += p.total;
+        yearMap.set(p.year, existing);
+      });
+    });
+    return Array.from(yearMap.entries())
+      .sort(([a], [b]) => a - b)
+      .map(([year, data]) => ({ year, ...data }));
+  }, [blocksWithTiers]);
+
+  if (aggregated.length === 0) return null;
+
+  const toggle = (key: keyof typeof vis) => setVis(prev => ({ ...prev, [key]: !prev[key] }));
+  const first = aggregated[0];
+  const last = aggregated[aggregated.length - 1];
+  const decline = (((first.total - last.total) / first.total) * 100).toFixed(0);
+  const tier1Share = ((first.tier1 / first.total) * 100).toFixed(0);
+  const crossYear = aggregated.find(p => p.tier2_3 <= 5000)?.year || "—";
+
+  const TIERS = [
+    { key: "total" as const, label: "Total Nacional", color: "hsl(var(--foreground))" },
+    { key: "tier1" as const, label: "Tier 1", color: "hsl(var(--primary))" },
+    { key: "tier2_3" as const, label: "Tier 2&3", color: "hsl(var(--warning))" },
+  ];
+
+  const ttStyle = { fontSize: 11, borderRadius: 8, border: "1px solid hsl(var(--border))", background: "hsl(var(--card))" };
+
+  return (
+    <Card className="border-border/40">
+      <CardHeader className="pb-2">
+        <div className="flex items-center justify-between flex-wrap gap-2">
+          <CardTitle className="text-sm font-semibold flex items-center gap-2">
+            <Layers className="w-4 h-4 text-warning" />
+            Perfil de Produção por Tier — Visão Nacional (2026–2050)
+          </CardTitle>
+          <div className="flex gap-1.5">
+            {TIERS.map(t => (
+              <button
+                key={t.key}
+                onClick={() => toggle(t.key)}
+                className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-medium border transition-all ${
+                  vis[t.key] ? "border-border bg-secondary/80 shadow-sm" : "border-border/40 bg-muted/30 opacity-50"
+                }`}
+              >
+                <span className="w-2 h-2 rounded-full" style={{ backgroundColor: vis[t.key] ? t.color : "hsl(var(--muted))" }} />
+                {t.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      </CardHeader>
+      <CardContent>
+        {/* KPI strip */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+          <div className="rounded-lg border border-border/40 p-2.5 text-center">
+            <div className="text-[10px] text-muted-foreground">Produção 2026</div>
+            <div className="text-lg font-bold">{(first.total / 1000).toFixed(0)}k</div>
+            <div className="text-[10px] text-muted-foreground">BOPD</div>
+          </div>
+          <div className="rounded-lg border border-border/40 p-2.5 text-center">
+            <div className="text-[10px] text-muted-foreground">Produção 2050</div>
+            <div className="text-lg font-bold">{(last.total / 1000).toFixed(0)}k</div>
+            <div className="text-[10px] text-muted-foreground">BOPD</div>
+          </div>
+          <div className="rounded-lg border border-border/40 p-2.5 text-center">
+            <div className="text-[10px] text-muted-foreground">Declínio Total</div>
+            <div className="text-lg font-bold text-danger">{decline}%</div>
+            <div className="text-[10px] text-muted-foreground">2026→2050</div>
+          </div>
+          <div className="rounded-lg border border-border/40 p-2.5 text-center">
+            <div className="text-[10px] text-muted-foreground">Tier 1 Share</div>
+            <div className="text-lg font-bold text-primary">{tier1Share}%</div>
+            <div className="text-[10px] text-muted-foreground">da produção 2026</div>
+          </div>
+        </div>
+
+        {/* Charts row */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="h-72">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={aggregated} margin={{ top: 10, right: 10, left: 0, bottom: 30 }}>
+                <defs>
+                  <linearGradient id="natTierGrad1" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.4} />
+                    <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0.05} />
+                  </linearGradient>
+                  <linearGradient id="natTierGrad23" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="hsl(var(--warning))" stopOpacity={0.4} />
+                    <stop offset="95%" stopColor="hsl(var(--warning))" stopOpacity={0.05} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" strokeOpacity={0.3} />
+                <XAxis dataKey="year" tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} />
+                <YAxis tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} tickFormatter={v => `${(v / 1000).toFixed(0)}k`} />
+                <RechartsTooltip contentStyle={ttStyle} formatter={(v: number, name: string) => [`${v.toLocaleString()} BOPD`, name]} />
+                <Legend wrapperStyle={{ fontSize: 10 }} />
+                {vis.tier1 && <Area type="monotone" dataKey="tier1" name="Tier 1" stackId="1" stroke="hsl(var(--primary))" fill="url(#natTierGrad1)" strokeWidth={2} />}
+                {vis.tier2_3 && <Area type="monotone" dataKey="tier2_3" name="Tier 2&3" stackId="1" stroke="hsl(var(--warning))" fill="url(#natTierGrad23)" strokeWidth={2} />}
+                <Brush dataKey="year" height={20} stroke="hsl(var(--primary))" fill="hsl(var(--muted))" travellerWidth={8} />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+
+          <div className="h-72">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={aggregated} margin={{ top: 10, right: 10, left: 0, bottom: 30 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" strokeOpacity={0.3} />
+                <XAxis dataKey="year" tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} />
+                <YAxis tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} tickFormatter={v => `${(v / 1000).toFixed(0)}k`} />
+                <RechartsTooltip contentStyle={ttStyle} formatter={(v: number, name: string) => [`${v.toLocaleString()} BOPD`, name]} />
+                <Legend wrapperStyle={{ fontSize: 10 }} />
+                {vis.total && <Line type="monotone" dataKey="total" name="Total Nacional" stroke="hsl(var(--foreground))" strokeWidth={2.5} dot={false} />}
+                {vis.tier1 && <Line type="monotone" dataKey="tier1" name="Tier 1" stroke="hsl(var(--primary))" strokeWidth={2} dot={false} strokeDasharray="5 5" />}
+                {vis.tier2_3 && <Line type="monotone" dataKey="tier2_3" name="Tier 2&3" stroke="hsl(var(--warning))" strokeWidth={2} dot={false} strokeDasharray="5 5" />}
+                <ReferenceLine y={50000} stroke="hsl(var(--danger))" strokeDasharray="8 4" strokeWidth={1}
+                  label={{ value: "Limiar 50k", position: "insideTopRight", fill: "hsl(var(--danger))", fontSize: 10 }} />
+                <Brush dataKey="year" height={20} stroke="hsl(var(--primary))" fill="hsl(var(--muted))" travellerWidth={8} />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        {/* Source blocks */}
+        <div className="mt-3 flex items-center gap-2 flex-wrap">
+          <span className="text-[10px] text-muted-foreground">Blocos com perfil Tier:</span>
+          {blocksWithTiers.map(b => (
+            <Badge key={b.id} variant="outline" className="text-[10px]">{b.name}</Badge>
+          ))}
+          {String(crossYear) !== "—" && (
+            <span className="text-[10px] text-warning font-medium ml-2">⚠ Tier 2&3 abaixo de 5k BOPD em {crossYear}</span>
+          )}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
