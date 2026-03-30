@@ -502,6 +502,34 @@ export function evaluateForecastAlerts(): ForecastAlert[] {
     }
   });
 
+  // 4. Produção agregada Tier 2&3 cai abaixo de 5k BOPD
+  const TIER23_THRESHOLD = 5000;
+  const blocksWithTiers = oilBlocks.filter(b => !b.pendingRealData && b.tierProductionProfiles?.length);
+  if (blocksWithTiers.length > 0) {
+    const yearMap = new Map<number, number>();
+    blocksWithTiers.forEach(b => {
+      b.tierProductionProfiles!.forEach(p => {
+        yearMap.set(p.year, (yearMap.get(p.year) || 0) + p.tier2_3);
+      });
+    });
+    const sorted = Array.from(yearMap.entries()).sort(([a], [b]) => a - b);
+    const belowEntry = sorted.find(([, v]) => v < TIER23_THRESHOLD);
+    if (belowEntry) {
+      const [crossYear, crossVal] = belowEntry;
+      alerts.push({
+        id: `forecast-nat-tier23-low`,
+        blockId: "national", blockName: "Nacional", operator: "—",
+        category: "forecast",
+        severity: crossYear <= 2035 ? "critical" : crossYear <= 2040 ? "high" : "medium",
+        title: `Tier 2&3 < 5k BOPD em ${crossYear}`,
+        description: `A produção agregada de activos Tier 2&3 cai para ${crossVal.toLocaleString()} BOPD em ${crossYear}, sinalizando esgotamento dos activos marginais.`,
+        metric: `${crossVal.toLocaleString()} BOPD`,
+        threshold: `< ${TIER23_THRESHOLD.toLocaleString()} BOPD`,
+        actionRequired: "Planear descomissionamento de activos marginais e realocar recursos para activos Tier 1.",
+      });
+    }
+  }
+
   // ── Per-block alerts ──
   const producing = oilBlocks.filter(b => b.dailyProduction > 0);
   producing.forEach(block => {
