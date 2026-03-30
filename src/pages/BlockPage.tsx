@@ -400,7 +400,7 @@ const BlockPage = () => {
                   ed && invTotal
                     ? { label: "Investimento Quinquenal", value: `$${invTotal.toLocaleString()}M`, icon: DollarSign, color: "text-warning", sub: "MMUSD (Expl+Dev+Op)" }
                     : { label: "Investimento Acum.", value: `$${(block.accumulatedInvestment / 1000).toFixed(1)}B`, icon: DollarSign, color: "text-warning" },
-                  ed && opex2025
+                  ev && opex2025
                     ? { label: "Custo Técnico", value: `$${opex2025}/bbl`, icon: TrendingUp, color: "text-primary", sub: "OPEX unitário 2025" }
                     : { label: "Taxa Execução", value: `${block.executionRate}%`, icon: TrendingUp, color: "text-primary" },
                 ];
