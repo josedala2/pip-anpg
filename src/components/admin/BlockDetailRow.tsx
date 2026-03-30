@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { TableRow, TableCell } from "@/components/ui/table";
 import {
   MapPin, Droplets, Calendar, DollarSign, Activity,
-  Layers, Target, Users2, Factory, ShieldCheck,
+  Layers, Target, Users2, Factory, ShieldCheck, Zap, ClipboardList,
 } from "lucide-react";
 
 interface BlockDetailRowProps {
