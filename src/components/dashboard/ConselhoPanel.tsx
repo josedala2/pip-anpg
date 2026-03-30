@@ -279,7 +279,7 @@ export const ConselhoPanel = () => {
             Painel do Conselho de Administração
           </h2>
           <p className="text-xs text-muted-foreground mt-0.5">
-            Visão decisória sobre {macro.totalActive} concessões activas · Dados actualizados a Janeiro 2026
+            Visão decisória sobre {macro.totalActive} concessões activas · Matriz detalha {macro.verifiedCount} blocos verificados · Janeiro 2026
           </p>
         </div>
         <div className="hidden md:flex items-center gap-2">
