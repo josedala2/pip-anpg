@@ -74,6 +74,7 @@ const kpiGroups: { title: string; items: KPIItem[] }[] = [
     items: [
       { label: "Produção Nacional", value: n.productionBOPD, suffix: " BOPD", icon: Activity, status: "neutral", drill: "Produção média nacional certificada — Relatório Estado das Concessões 2026" },
       { label: "Quota ANPG", value: n.anpgQuotaBOPD, suffix: " BOPD", icon: Droplets, status: "neutral", drill: "Quota de produção atribuída à ANPG" },
+      { label: "Quota SNL E.P.", value: n.snlQuotaBOPD, suffix: " BOPD", icon: Droplets, status: "neutral", drill: "Quota de produção atribuída à Sonangol E.P. (~16% da produção nacional)" },
       { label: "Produção Gás", value: n.gasProductionMMSCFD, suffix: " MMSCFD", icon: Flame, status: "neutral", drill: "Produção nacional de gás natural — Relatório Estado das Concessões 2026 (2.756 MMSCFD)" },
     ],
   },
