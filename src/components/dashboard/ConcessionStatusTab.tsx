@@ -336,11 +336,55 @@ export const ConcessionStatusTab = ({ block }: ConcessionStatusTabProps) => {
                   className="h-full bg-gradient-to-r from-primary to-primary/70 rounded-full transition-all duration-700"
                   style={{ width: `${timelineProgress ?? 0}%` }}
                 />
+                {/* Research Period / Contrato Alterado overlay */}
+                {(() => {
+                  const rp = ci?.researchPeriod;
+                  if (!rp || !rp.initialPhaseYears || !contractEnd) return null;
+                  const totalSpan = contractEnd.getTime() - contractStart.getTime();
+                  if (totalSpan <= 0) return null;
+                  // Research period: use extension decree or estimate from recent alteration (2022-2031)
+                  const rpStartYear = ci?.extensionDecree ? 2022 : now.getFullYear() - 4;
+                  const rpEndYear = rpStartYear + rp.initialPhaseYears;
+                  const rpStartDate = new Date(`${rpStartYear}-01-01`).getTime();
+                  const rpEndDate = new Date(`${rpEndYear}-12-31`).getTime();
+                  const leftPct = Math.max(0, ((rpStartDate - contractStart.getTime()) / totalSpan) * 100);
+                  const widthPct = Math.min(100 - leftPct, ((rpEndDate - rpStartDate) / totalSpan) * 100);
+                  return (
+                    <div
+                      className="absolute top-0 h-full bg-warning/25 border-x-2 border-warning/60"
+                      style={{ left: `${leftPct}%`, width: `${widthPct}%` }}
+                      title={`Contrato Alterado: ${rpStartYear}–${rpEndYear} (${rp.initialPhaseWells ?? "?"} poços)`}
+                    />
+                  );
+                })()}
                 <div
                   className="absolute top-0 h-full w-0.5 bg-foreground"
                   style={{ left: `${timelineProgress ?? 0}%` }}
                 />
               </div>
+
+              {/* Research period label */}
+              {(() => {
+                const rp = ci?.researchPeriod;
+                if (!rp || !rp.initialPhaseYears || !contractEnd) return null;
+                const totalSpan = contractEnd.getTime() - contractStart.getTime();
+                if (totalSpan <= 0) return null;
+                const rpStartYear = ci?.extensionDecree ? 2022 : now.getFullYear() - 4;
+                const rpEndYear = rpStartYear + rp.initialPhaseYears;
+                const rpStartDate = new Date(`${rpStartYear}-01-01`).getTime();
+                const rpEndDate = new Date(`${rpEndYear}-12-31`).getTime();
+                const leftPct = Math.max(0, ((rpStartDate - contractStart.getTime()) / totalSpan) * 100);
+                const widthPct = Math.min(100 - leftPct, ((rpEndDate - rpStartDate) / totalSpan) * 100);
+                return (
+                  <div
+                    className="absolute text-[9px] 2xl:text-[10px] text-warning font-semibold whitespace-nowrap"
+                    style={{ left: `${leftPct + widthPct / 2}%`, transform: "translateX(-50%)", top: "-18px" }}
+                  >
+                    Contrato Alterado ({rpStartYear}–{rpEndYear})
+                  </div>
+                );
+              })()}
+
               <div className="flex justify-between mt-2 text-[10px] 2xl:text-xs text-muted-foreground">
                 <div className="text-left">
                   <div className="font-semibold text-foreground">Assinatura</div>
