@@ -209,7 +209,8 @@ export const ConcessionStatusTab = ({ block }: ConcessionStatusTabProps) => {
     },
     {
       label: "Reservas Estimadas",
-      value: `${block.estimatedReserves} Mb`,
+      value: block.currentReservesMMBO ? `${block.currentReservesMMBO} MMBO` : `${block.estimatedReserves} Mb`,
+      sub: block.currentReservesMMBO ? `STOOIP: ${block.estimatedReserves.toLocaleString()} Mb · FR: ${block.recoveryFactorPercent ?? "N/D"}%` : undefined,
       icon: Droplets,
       color: "text-primary",
     },
