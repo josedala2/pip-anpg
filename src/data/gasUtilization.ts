@@ -53,9 +53,9 @@ export const gasObservations = [
 
 // Key recommendations
 export const gasRecommendations = [
-  "Reduzir a queima através de captura e aproveitamento do gás e melhoria da eficiência energética.",
+  "Reduzir a queima através de captura e aproveitamento do gás, com base na medição e regulamentação efectiva.",
   "Expandir a infraestrutura para melhorar transporte, processamento e exportação.",
-  "Avaliar o redirecionamento de parte do gás reinjectado para consumo ou exportação.",
+  "Avaliar o redirecionamento de parte do gás reinjectado para consumo ou exportação, mantendo a segurança dos reservatórios e benefício económico do Bloco.",
 ];
 
 // Short-term demand breakdown (MMSCFD)
