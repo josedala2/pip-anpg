@@ -3,6 +3,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { oilBlocks, type OilBlock } from "@/data/angolaBlocks";
+import { nationalCertifiedMetrics, nationalForecast } from "@/data/nationalForecast";
 import { calculateStrategicScore, type StrategicScore, type StrategicClassification, classificationConfig, urgencyConfig } from "@/lib/strategicScoring";
 import { calculateEconomicScore, type EconomicScoreResult, getNationalEconomicKPIs, classificationColors } from "@/lib/economicScoring";
 import { evaluateAlerts, evaluateForecastAlerts } from "@/lib/alertsEngine";
@@ -172,19 +173,19 @@ export const ConselhoPanel = () => {
       };
     });
 
-    // Macro KPIs
-    const producing = activeBlocks.filter(b => b.phase === "Production");
-    const totalProduction = producing.reduce((s, b) => s + b.dailyProduction, 0);
-    const overview = getNationalEconomicKPIs(activeBlocks);
+    // Macro KPIs — use certified national metrics
     const criticalCount = concessions.filter(c => c.health === "red").length;
     const renewSoon = concessions.filter(c => c.remainingYears !== null && c.remainingYears <= 3).length;
+    const overview = getNationalEconomicKPIs(activeBlocks);
 
     const macro = {
-      totalProduction,
+      totalProduction: nationalCertifiedMetrics.productionBOPD,
+      anpgQuota: nationalCertifiedMetrics.anpgQuotaBOPD,
       stateRevenue: overview.totalStateRevenue,
       criticalConcessions: criticalCount,
       renewSoon,
-      totalActive: activeBlocks.length,
+      totalActive: nationalCertifiedMetrics.activeConcessions,
+      verifiedCount: activeBlocks.length,
     };
 
     // Alerts summary — filtered to verified blocks only
@@ -199,18 +200,10 @@ export const ConselhoPanel = () => {
         .slice(0, 5);
     } catch { /* safe fallback */ }
 
-    // Trends - use capexHistory years as proxy for annual production
-    const yearMap: Record<number, number> = {};
-    activeBlocks.forEach(b => {
-      b.capexHistory.forEach(h => {
-        const yr = parseInt(h.year);
-        if (!isNaN(yr)) yearMap[yr] = (yearMap[yr] || 0) + b.dailyProduction;
-      });
-    });
-    const trends = Object.entries(yearMap)
-      .map(([year, value]) => ({ year: parseInt(year), value: Math.round(value) }))
-      .filter(t => t.year >= 2018)
-      .sort((a, b) => a.year - b.year);
+    // Trends — use nationalForecast real data (2025-2035 window)
+    const trends = nationalForecast
+      .filter(f => f.year >= 2025 && f.year <= 2035)
+      .map(f => ({ year: f.year, value: f.total * 1000 }));
 
     return { concessions, macro, alerts: critAlerts, trends };
   }, []);
@@ -286,7 +279,7 @@ export const ConselhoPanel = () => {
             Painel do Conselho de Administração
           </h2>
           <p className="text-xs text-muted-foreground mt-0.5">
-            Visão decisória sobre {macro.totalActive} concessões activas · Dados actualizados a Janeiro 2026
+            Visão decisória sobre {macro.totalActive} concessões activas · Matriz detalha {macro.verifiedCount} blocos verificados · Janeiro 2026
           </p>
         </div>
         <div className="hidden md:flex items-center gap-2">
@@ -305,27 +298,34 @@ export const ConselhoPanel = () => {
         </div>
       </div>
 
-      {/* ── Zone B: 4 Macro KPIs ── */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      {/* ── Zone B: 5 Macro KPIs ── */}
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
         <MacroKPI
           icon={Droplets}
           label="Produção Nacional"
           value={`${(macro.totalProduction / 1000).toFixed(0)}K`}
-          unit="bbl/dia"
+          unit="BOPD (certificado)"
+          trend="neutral"
+        />
+        <MacroKPI
+          icon={Landmark}
+          label="Quota ANPG"
+          value={`${(macro.anpgQuota / 1000).toFixed(0)}K`}
+          unit="BOPD"
           trend="neutral"
         />
         <MacroKPI
           icon={CircleDollarSign}
           label="Receita Estado"
           value={`$${(macro.stateRevenue / 1000).toFixed(1)}B`}
-          unit="USD/ano estimado"
+          unit="USD/ano (blocos verif.)"
           trend="up"
         />
         <MacroKPI
           icon={AlertTriangle}
           label="Concessões em Risco"
           value={`${macro.criticalConcessions}`}
-          unit={`de ${macro.totalActive} activas`}
+          unit={`de ${macro.verifiedCount} verificadas`}
           trend="alert"
           alert={macro.criticalConcessions > 3}
         />
@@ -675,7 +675,7 @@ export const ConselhoPanel = () => {
         <CardHeader className="pb-1 pt-3 px-4">
           <CardTitle className="text-xs font-bold flex items-center gap-1.5">
             <TrendingUp className="w-3.5 h-3.5 text-primary" />
-            Tendência de Produção Nacional (bbl/dia)
+            Tendência de Produção Nacional — Previsão 2025-2035 (BOPD)
           </CardTitle>
         </CardHeader>
         <CardContent className="px-2 pb-2">
