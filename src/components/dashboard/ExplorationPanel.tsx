@@ -12,6 +12,8 @@ import { ChartWrapper } from "./ChartWrapper";
 import { ProspectsTable } from "./ProspectsTable";
 import { ProspectsSummary } from "./ProspectsSummary";
 import { Badge } from "@/components/ui/badge";
+import { NationalReferenceStrip } from "./NationalReferenceStrip";
+import { nationalCertifiedMetrics } from "@/data/nationalForecast";
 import {
   Collapsible,
   CollapsibleContent,
