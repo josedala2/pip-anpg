@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft, Droplets, DollarSign, ShieldCheck, TrendingUp, Users, Activity, Target, Layers, BarChart3, MapPin, Brain, FileText, Landmark, Building2, Clock, Scale, ArrowRight, History, BookOpen, ExternalLink, AlertTriangle, Crosshair, Search, Filter, AlignVerticalJustifyStart, AlignHorizontalJustifyStart, Download, FileSpreadsheet, FileDown, Leaf, Lightbulb, CheckCircle2, ChevronRight, Gauge, BarChart2, Flame, Fuel, Zap } from "lucide-react";
+import { ArrowLeft, Droplets, DollarSign, ShieldCheck, TrendingUp, Users, Activity, Target, Layers, BarChart3, MapPin, Brain, FileText, Landmark, Building2, Clock, Scale, ArrowRight, History, BookOpen, ExternalLink, AlertTriangle, Crosshair, Search, Filter, AlignVerticalJustifyStart, AlignHorizontalJustifyStart, Download, FileSpreadsheet, FileDown, Leaf, Lightbulb, CheckCircle2, ChevronRight, Gauge, BarChart2, Flame, Fuel, Zap, Wrench } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import type { RevitalizationScenario } from "@/data/angolaBlocks";
 import { TechnicalRecommendationsPanel } from "@/components/dashboard/TechnicalRecommendationsPanel";
@@ -1472,6 +1472,88 @@ const BlockPage = () => {
                 <FacilitiesTab facilityData={block.facilityData} />
               </>
             )}
+
+            {/* Equipment Scale Table */}
+            {block.equipmentScale && block.equipmentScale.length > 0 && (
+              <>
+                <h3 className="text-sm 2xl:text-base font-semibold flex items-center gap-2">
+                  <Wrench className="w-4 h-4 text-warning" />Escala de Equipamentos por Área
+                </h3>
+                <Card className="glass-card overflow-hidden">
+                  <CardContent className="p-0">
+                    <div className="overflow-x-auto">
+                      <Table>
+                        <TableHeader>
+                          <TableRow className="bg-muted/30">
+                            <TableHead className="font-semibold text-xs whitespace-nowrap">Área</TableHead>
+                            <TableHead className="text-right text-xs whitespace-nowrap">Capacidade (BOPD)</TableHead>
+                            <TableHead className="text-right text-xs whitespace-nowrap">Reservas Orig. (MMBO)</TableHead>
+                            <TableHead className="text-right text-xs whitespace-nowrap">Prod. Acum. (MMBO)</TableHead>
+                            <TableHead className="text-right text-xs whitespace-nowrap">Plataformas</TableHead>
+                            <TableHead className="text-right text-xs whitespace-nowrap">Poços Activos</TableHead>
+                            <TableHead className="text-right text-xs whitespace-nowrap">Potência (MW)</TableHead>
+                            <TableHead className="text-right text-xs whitespace-nowrap">Topsides (t)</TableHead>
+                            <TableHead className="text-right text-xs whitespace-nowrap">Compressores</TableHead>
+                            <TableHead className="text-right text-xs whitespace-nowrap">Inj. Água (BWPD)</TableHead>
+                            <TableHead className="text-right text-xs whitespace-nowrap">Vida Útil</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {block.equipmentScale.map((eq) => (
+                            <TableRow key={eq.area} className="hover:bg-muted/30">
+                              <TableCell className="font-semibold text-xs whitespace-nowrap">{eq.area}</TableCell>
+                              <TableCell className="text-right font-mono text-xs">{eq.designCapacityBOPD?.toLocaleString() ?? eq.capacityBOPD?.toLocaleString() ?? "—"}</TableCell>
+                              <TableCell className="text-right font-mono text-xs">{eq.originalReservesMMBO?.toLocaleString() ?? "—"}</TableCell>
+                              <TableCell className="text-right font-mono text-xs">{eq.cumulativeProductionMMBO?.toLocaleString() ?? "—"}</TableCell>
+                              <TableCell className="text-right font-mono text-xs">{eq.platforms ?? "—"}</TableCell>
+                              <TableCell className="text-right font-mono text-xs">{eq.activeWells ?? "—"}</TableCell>
+                              <TableCell className="text-right font-mono text-xs">{eq.installedPowerMW ?? "—"}</TableCell>
+                              <TableCell className="text-right font-mono text-xs">{eq.topsideWeightTons?.toLocaleString() ?? "—"}</TableCell>
+                              <TableCell className="text-right font-mono text-xs">{eq.compressors ?? "—"}</TableCell>
+                              <TableCell className="text-right font-mono text-xs">{eq.waterInjectionBWPD?.toLocaleString() ?? "—"}</TableCell>
+                              <TableCell className="text-right font-mono text-xs">{eq.lifeEndYear ?? "—"}</TableCell>
+                            </TableRow>
+                          ))}
+                          {/* Totals row */}
+                          <TableRow className="bg-muted/50 font-semibold border-t-2 border-border">
+                            <TableCell className="text-xs">Total</TableCell>
+                            <TableCell className="text-right font-mono text-xs">
+                              {block.equipmentScale.reduce((s, e) => s + (e.designCapacityBOPD || e.capacityBOPD || 0), 0).toLocaleString()}
+                            </TableCell>
+                            <TableCell className="text-right font-mono text-xs">
+                              {block.equipmentScale.reduce((s, e) => s + (e.originalReservesMMBO || 0), 0).toLocaleString()}
+                            </TableCell>
+                            <TableCell className="text-right font-mono text-xs">
+                              {block.equipmentScale.reduce((s, e) => s + (e.cumulativeProductionMMBO || 0), 0).toLocaleString()}
+                            </TableCell>
+                            <TableCell className="text-right font-mono text-xs">
+                              {block.equipmentScale.reduce((s, e) => s + (e.platforms || 0), 0)}
+                            </TableCell>
+                            <TableCell className="text-right font-mono text-xs">
+                              {block.equipmentScale.reduce((s, e) => s + (e.activeWells || 0), 0)}
+                            </TableCell>
+                            <TableCell className="text-right font-mono text-xs">
+                              {block.equipmentScale.reduce((s, e) => s + (e.installedPowerMW || 0), 0)}
+                            </TableCell>
+                            <TableCell className="text-right font-mono text-xs">
+                              {block.equipmentScale.reduce((s, e) => s + (e.topsideWeightTons || 0), 0).toLocaleString()}
+                            </TableCell>
+                            <TableCell className="text-right font-mono text-xs">
+                              {block.equipmentScale.reduce((s, e) => s + (e.compressors || 0), 0)}
+                            </TableCell>
+                            <TableCell className="text-right font-mono text-xs">
+                              {block.equipmentScale.reduce((s, e) => s + (e.waterInjectionBWPD || 0), 0).toLocaleString()}
+                            </TableCell>
+                            <TableCell className="text-right text-xs">—</TableCell>
+                          </TableRow>
+                        </TableBody>
+                      </Table>
+                    </div>
+                  </CardContent>
+                </Card>
+              </>
+            )}
+
             <h3 className="text-sm 2xl:text-base font-semibold flex items-center gap-2">
               <Leaf className="w-4 h-4 text-success" />HSE & Ambiente
             </h3>
