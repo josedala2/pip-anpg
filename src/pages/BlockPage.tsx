@@ -1839,7 +1839,7 @@ const BlockPage = () => {
                                     <Droplets className="w-4 h-4 text-primary" />Partilha de Produção GE (MMBO)
                                   </CardTitle>
                                   <span className="text-xs text-muted-foreground font-mono">
-                                    Total: <span className="font-semibold text-foreground">{eco.productionShareGE.reduce((s, y) => s + y.mmbo, 0)} MMBO</span>
+                                    Total: <span className="font-semibold text-foreground">{parseFloat(eco.productionShareGE.reduce((s, y) => s + y.mmbo, 0).toFixed(3))} MMBO</span>
                                   </span>
                                 </div>
                               </CardHeader>
