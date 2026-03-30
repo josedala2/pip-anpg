@@ -125,9 +125,9 @@ export const EconomicFinancialPanel = () => {
       {/* National Reference */}
       <NationalReferenceStrip
         metrics={[
-          { label: "Produção Nacional", value: `${(nationalCertifiedMetrics.productionBOPD / 1000).toFixed(0)}k BOPD` },
-          { label: "Concessões Activas", value: `${nationalCertifiedMetrics.activeConcessions}` },
-          { label: "Reservas Certificadas", value: `${nationalCertifiedMetrics.reservesOilMb.toLocaleString()} Mb` },
+          { label: "Produção Nacional", value: `${(nationalCertifiedMetrics.productionBOPD / 1000).toFixed(0)}k BOPD`, icon: Gauge },
+          { label: "Concessões Activas", value: `${nationalCertifiedMetrics.activeConcessions}`, icon: Layers },
+          { label: "Reservas Certificadas", value: `${nationalCertifiedMetrics.reservesOilMb.toLocaleString()} Mb`, icon: Target },
         ]}
         coverageBOPD={verifiedBlocks.reduce((s, b) => s + b.dailyProduction, 0)}
       />

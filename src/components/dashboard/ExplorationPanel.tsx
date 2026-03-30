@@ -155,11 +155,11 @@ export const ExplorationPanel = () => {
       {/* National Reference Strip */}
       <NationalReferenceStrip
         metrics={[
-          { label: "Recursos Prospectivos (Óleo)", value: `${nationalCertifiedMetrics.prospectiveResourcesOilMb.toLocaleString()} Mb` },
-          { label: "Recursos Prospectivos (Gás)", value: `${nationalCertifiedMetrics.prospectiveResourcesGasTCF} TCF` },
-          { label: "Concessões em Exploração", value: `${nationalCertifiedMetrics.inExploration}` },
-          { label: "Reservas Certificadas (Óleo)", value: `${nationalCertifiedMetrics.reservesOilMb.toLocaleString()} Mb` },
-          { label: "Reservas Certificadas (Gás)", value: `${nationalCertifiedMetrics.reservesGasTCF} TCF` },
+          { label: "Recursos Prospectivos (Óleo)", value: `${nationalCertifiedMetrics.prospectiveResourcesOilMb.toLocaleString()} Mb`, icon: Target },
+          { label: "Recursos Prospectivos (Gás)", value: `${nationalCertifiedMetrics.prospectiveResourcesGasTCF} TCF`, icon: Flame },
+          { label: "Concessões em Exploração", value: `${nationalCertifiedMetrics.inExploration}`, icon: Search },
+          { label: "Reservas Certificadas (Óleo)", value: `${nationalCertifiedMetrics.reservesOilMb.toLocaleString()} Mb`, icon: Database },
+          { label: "Reservas Certificadas (Gás)", value: `${nationalCertifiedMetrics.reservesGasTCF} TCF`, icon: Database },
         ]}
       />
 

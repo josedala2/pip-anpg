@@ -204,8 +204,8 @@ export const AdvancedForecastPanel = () => {
       {/* National Reference */}
       <NationalReferenceStrip
         metrics={[
-          { label: "Produção Nacional", value: `${(nationalCertifiedMetrics.productionBOPD / 1000).toFixed(0)}k BOPD` },
-          { label: "Blocos Produtores", value: `${nationalCertifiedMetrics.inProduction}` },
+          { label: "Produção Nacional", value: `${(nationalCertifiedMetrics.productionBOPD / 1000).toFixed(0)}k BOPD`, icon: Gauge },
+          { label: "Blocos Produtores", value: `${nationalCertifiedMetrics.inProduction}`, icon: Layers },
         ]}
         coverageBOPD={verifiedBlocks.filter(b => b.dailyProduction > 0).reduce((s, b) => s + b.dailyProduction, 0)}
       />

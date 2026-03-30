@@ -121,9 +121,9 @@ export const ProductionPanel = () => {
       {/* National Reference Strip */}
       <NationalReferenceStrip
         metrics={[
-          { label: "Produção Nacional", value: `${(nationalCertifiedMetrics.productionBOPD / 1000).toFixed(0)}k BOPD`, sub: "Óleo" },
-          { label: "Produção Gás", value: `${nationalCertifiedMetrics.gasProductionMMSCFD.toLocaleString()} MMSCFD` },
-          { label: "Blocos Produtores", value: `${nationalCertifiedMetrics.inProduction}` },
+          { label: "Produção Nacional", value: `${(nationalCertifiedMetrics.productionBOPD / 1000).toFixed(0)}k BOPD`, sub: "Óleo", icon: Gauge },
+          { label: "Produção Gás", value: `${nationalCertifiedMetrics.gasProductionMMSCFD.toLocaleString()} MMSCFD`, icon: Flame },
+          { label: "Blocos Produtores", value: `${nationalCertifiedMetrics.inProduction}`, icon: Layers },
         ]}
         coverageBOPD={totalProduction}
       />
