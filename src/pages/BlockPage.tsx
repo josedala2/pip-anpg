@@ -1623,7 +1623,7 @@ const BlockPage = () => {
                                   <InfoTooltip text="OPEX e CAPEX por barril — valores de referência do ano corrente" />
                                 </div>
                                 <div className="text-2xl 2xl:text-3xl font-bold font-mono">${tc?.opex2025 ?? tc?.opexPerBarrel ?? "—"}<span className="text-sm font-normal text-muted-foreground">/bbl</span></div>
-                                <div className="text-[10px] text-muted-foreground mb-1">OPEX {tc?.opexPerBarrelYear || 2025}</div>
+                                <div className="text-[10px] text-muted-foreground mb-1">OPEX 2025</div>
                                 <div className="space-y-1 mt-2">
                                   <div className="flex justify-between text-[10px]">
                                     <span className="text-muted-foreground">CAPEX/bbl</span>
