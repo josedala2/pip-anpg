@@ -20,6 +20,8 @@ import {
 } from "lucide-react";
 import { InfoTooltip } from "@/components/ui/info-tooltip";
 import { tooltipDescriptions } from "@/lib/tooltipDescriptions";
+import { NationalReferenceStrip } from "./NationalReferenceStrip";
+import { nationalCertifiedMetrics } from "@/data/nationalForecast";
 
 const fmtUSD = (v: number) => v >= 1000 ? `$${(v / 1000).toFixed(1)}B` : `$${v.toFixed(0)}MM`;
 const fmtK = (v: number) => `${(v / 1000).toFixed(0)}k`;
