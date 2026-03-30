@@ -32,6 +32,8 @@ import {
   TrendingUp, TrendingDown, Target, Activity, Gauge,
   AlertTriangle, ShieldCheck, Calendar, Layers, Info, Bell,
 } from "lucide-react";
+import { NationalReferenceStrip } from "./NationalReferenceStrip";
+import { nationalCertifiedMetrics } from "@/data/nationalForecast";
 
 // ── Helpers ──
 
