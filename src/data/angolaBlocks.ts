@@ -82,6 +82,7 @@ export interface ExplorationSummary {
   giipBCF?: number;
   explorationCostsUSD?: number;
   prospectivitySTOOIPMMBOE?: number;
+  prospectivityGIIPBCF?: number;
   prospectivityNote?: string;
   complexity?: string[];
   geologicalTargets?: string; // e.g. "Cretáceo (Pinda/Pós-sal, Toca e Lucula/Pré-sal)"

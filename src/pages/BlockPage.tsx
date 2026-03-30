@@ -1055,7 +1055,23 @@ const BlockPage = () => {
                   )}
                   {block.explorationSummary.prospectivityNote && (
                     <div className="glass-card rounded-lg p-3 border-l-2 border-primary">
-                      <div className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1 font-medium">Prospectividade Futura</div>
+                      <div className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1 font-medium">Recurso Prospectivo</div>
+                      {(block.explorationSummary.prospectivitySTOOIPMMBOE != null || block.explorationSummary.prospectivityGIIPBCF != null) && (
+                        <div className="flex items-center gap-4 mb-2">
+                          {block.explorationSummary.prospectivitySTOOIPMMBOE != null && (
+                            <div>
+                              <span className="text-lg font-bold font-mono text-warning">{block.explorationSummary.prospectivitySTOOIPMMBOE.toLocaleString()}</span>
+                              <span className="text-[10px] text-muted-foreground ml-1">MMBO (STOOIP)</span>
+                            </div>
+                          )}
+                          {block.explorationSummary.prospectivityGIIPBCF != null && block.explorationSummary.prospectivityGIIPBCF > 0 && (
+                            <div>
+                              <span className="text-lg font-bold font-mono text-success">{block.explorationSummary.prospectivityGIIPBCF.toLocaleString()}</span>
+                              <span className="text-[10px] text-muted-foreground ml-1">BCF (GIIP)</span>
+                            </div>
+                          )}
+                        </div>
+                      )}
                       <p className="text-xs text-muted-foreground leading-relaxed">{block.explorationSummary.prospectivityNote}</p>
                       {block.explorationSummary.explorationCostsUSD != null && (
                         <div className="mt-2 text-xs">Custos de Exploração: <span className="font-bold font-mono text-foreground">US$ {(block.explorationSummary.explorationCostsUSD / 1e9).toFixed(1)} mil milhões</span></div>
