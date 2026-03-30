@@ -268,6 +268,31 @@ export const AlertsPanel = () => {
                     </div>
                   );
                 })}
+                {/* Forecast configurable thresholds */}
+                <div className="mt-4 pt-4 border-t border-border/50">
+                  <div className="text-[10px] uppercase tracking-wider font-semibold text-muted-foreground mb-2">Limiares de Previsão</div>
+                  <div className="flex items-center gap-3 p-3 rounded-lg border border-border/50 hover:bg-muted/30 transition-colors">
+                    <TrendingDown className="w-4 h-4 shrink-0 text-primary" />
+                    <div className="flex-1 min-w-0">
+                      <div className="text-xs font-semibold">Tier 2&3 produção mínima</div>
+                      <div className="text-[10px] text-muted-foreground">Alerta quando produção agregada de activos marginais cair abaixo do limiar</div>
+                      <div className="flex items-center gap-2 mt-1.5">
+                        <span className="text-[10px] text-muted-foreground">Limiar:</span>
+                        <input
+                          type="number"
+                          value={tier23Threshold}
+                          min={1000}
+                          max={20000}
+                          step={1000}
+                          onChange={e => setTier23Threshold(Math.min(20000, Math.max(1000, parseFloat(e.target.value) || 1000)))}
+                          className="w-24 text-xs bg-muted/50 border border-border rounded-md px-2 py-0.5 tabular-nums text-center"
+                        />
+                        <span className="text-[10px] text-muted-foreground">BOPD</span>
+                      </div>
+                    </div>
+                    <Badge variant="outline" className="text-[8px] shrink-0 text-primary">Previsão</Badge>
+                  </div>
+                </div>
               </div>
             </CardContent>
           </Card>
