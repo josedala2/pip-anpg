@@ -1,10 +1,11 @@
 import { nationalCertifiedMetrics } from "@/data/nationalForecast";
-import { Verified } from "lucide-react";
+import { Verified, type LucideIcon } from "lucide-react";
 
 interface Metric {
   label: string;
   value: string;
   sub?: string;
+  icon?: LucideIcon;
 }
 
 interface NationalReferenceStripProps {
@@ -31,13 +32,17 @@ export const NationalReferenceStrip = ({ metrics, coverageBOPD }: NationalRefere
         )}
       </div>
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-auto gap-3" style={{ gridTemplateColumns: `repeat(${Math.min(metrics.length, 6)}, minmax(0, 1fr))` }}>
-        {metrics.map((m) => (
-          <div key={m.label} className="text-center">
-            <div className="text-[10px] text-muted-foreground uppercase tracking-wider">{m.label}</div>
-            <div className="text-sm font-bold font-mono text-foreground">{m.value}</div>
-            {m.sub && <div className="text-[9px] text-muted-foreground">{m.sub}</div>}
-          </div>
-        ))}
+        {metrics.map((m) => {
+          const Icon = m.icon;
+          return (
+            <div key={m.label} className="text-center flex flex-col items-center gap-0.5">
+              {Icon && <Icon className="w-3.5 h-3.5 text-primary/60" />}
+              <div className="text-[10px] text-muted-foreground uppercase tracking-wider">{m.label}</div>
+              <div className="text-sm font-bold font-mono text-foreground">{m.value}</div>
+              {m.sub && <div className="text-[9px] text-muted-foreground">{m.sub}</div>}
+            </div>
+          );
+        })}
       </div>
     </div>
   );

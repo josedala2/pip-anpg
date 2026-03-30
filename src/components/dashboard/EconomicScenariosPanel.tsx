@@ -23,7 +23,7 @@ import {
 } from "recharts";
 import {
   Play, Settings2, TrendingUp, DollarSign, Percent, BarChart3,
-  ChevronDown, ChevronUp, MapPin, Building2, AlertTriangle,
+  ChevronDown, ChevronUp, MapPin, Building2, AlertTriangle, Gauge, Layers,
 } from "lucide-react";
 import { InfoTooltip } from "@/components/ui/info-tooltip";
 import { tooltipDescriptions } from "@/lib/tooltipDescriptions";
@@ -119,8 +119,8 @@ export const EconomicScenariosPanel = () => {
       {/* National coverage context */}
       <NationalReferenceStrip
         metrics={[
-          { label: "Produção Nacional", value: `${(nationalCertifiedMetrics.productionBOPD / 1000).toFixed(0)}k BOPD` },
-          { label: "Blocos Produtores", value: `${nationalCertifiedMetrics.inProduction}` },
+          { label: "Produção Nacional", value: `${(nationalCertifiedMetrics.productionBOPD / 1000).toFixed(0)}k BOPD`, icon: Gauge },
+          { label: "Blocos Produtores", value: `${nationalCertifiedMetrics.inProduction}`, icon: Layers },
         ]}
         coverageBOPD={producingBlocks.reduce((s, b) => s + b.dailyProduction, 0)}
       />

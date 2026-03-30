@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { oilBlocks, getTotalProduction } from "@/data/angolaBlocks";
 import { AnimatedCounter } from "./AnimatedCounter";
 import { ChartWrapper } from "./ChartWrapper";
-import { Activity, TrendingUp, Filter, AlertTriangle } from "lucide-react";
+import { Activity, TrendingUp, Filter, AlertTriangle, Gauge, Flame, Layers } from "lucide-react";
 import { SortableHead } from "@/components/ui/sortable-head";
 import {
   PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend,
@@ -121,9 +121,9 @@ export const ProductionPanel = () => {
       {/* National Reference Strip */}
       <NationalReferenceStrip
         metrics={[
-          { label: "Produção Nacional", value: `${(nationalCertifiedMetrics.productionBOPD / 1000).toFixed(0)}k BOPD`, sub: "Óleo" },
-          { label: "Produção Gás", value: `${nationalCertifiedMetrics.gasProductionMMSCFD.toLocaleString()} MMSCFD` },
-          { label: "Blocos Produtores", value: `${nationalCertifiedMetrics.inProduction}` },
+          { label: "Produção Nacional", value: `${(nationalCertifiedMetrics.productionBOPD / 1000).toFixed(0)}k BOPD`, sub: "Óleo", icon: Gauge },
+          { label: "Produção Gás", value: `${nationalCertifiedMetrics.gasProductionMMSCFD.toLocaleString()} MMSCFD`, icon: Flame },
+          { label: "Blocos Produtores", value: `${nationalCertifiedMetrics.inProduction}`, icon: Layers },
         ]}
         coverageBOPD={totalProduction}
       />

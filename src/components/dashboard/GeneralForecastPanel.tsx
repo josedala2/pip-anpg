@@ -16,7 +16,7 @@ import {
 } from "recharts";
 import {
   Activity, DollarSign, TrendingUp, TrendingDown, ShieldAlert,
-  Target, Gauge, Layers, AlertTriangle, Lightbulb, BarChart3, Clock, Filter,
+  Target, Gauge, Layers, AlertTriangle, Lightbulb, BarChart3, Clock, Filter, Database,
 } from "lucide-react";
 import { InfoTooltip } from "@/components/ui/info-tooltip";
 import { tooltipDescriptions } from "@/lib/tooltipDescriptions";
@@ -205,9 +205,9 @@ export const GeneralForecastPanel = () => {
       {/* National Reference */}
       <NationalReferenceStrip
         metrics={[
-          { label: "Produção Nacional", value: `${(nationalCertifiedMetrics.productionBOPD / 1000).toFixed(0)}k BOPD` },
-          { label: "Reservas Certificadas", value: `${nationalCertifiedMetrics.reservesOilMb.toLocaleString()} Mb` },
-          { label: "Concessões Activas", value: `${nationalCertifiedMetrics.activeConcessions}` },
+          { label: "Produção Nacional", value: `${(nationalCertifiedMetrics.productionBOPD / 1000).toFixed(0)}k BOPD`, icon: Gauge },
+          { label: "Reservas Certificadas", value: `${nationalCertifiedMetrics.reservesOilMb.toLocaleString()} Mb`, icon: Database },
+          { label: "Concessões Activas", value: `${nationalCertifiedMetrics.activeConcessions}`, icon: Layers },
         ]}
         coverageBOPD={filteredProduction}
       />
