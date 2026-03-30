@@ -28,6 +28,7 @@ import { HSEEnvironmentTab } from "@/components/dashboard/HSEEnvironmentTab";
 import { FacilitiesTab } from "@/components/dashboard/FacilitiesTab";
 import { HomologacoesPanel } from "@/components/dashboard/HomologacoesPanel";
 import { DevelopmentProjectsPanel } from "@/components/dashboard/DevelopmentProjectsPanel";
+import { BlockGasPanel } from "@/components/dashboard/BlockGasPanel";
 import type { LegislationDocument, ContractInfo } from "@/data/angolaBlocks";
 import { InfoTooltip } from "@/components/ui/info-tooltip";
 import { tooltipDescriptions } from "@/lib/tooltipDescriptions";
@@ -1338,127 +1339,7 @@ const BlockPage = () => {
                 <TierProductionSection profiles={block.tierProductionProfiles} tooltipStyle={tooltipStyle} legendStyle={legendStyle} />
               )}
               {block.gasBalance && (
-                <div className="space-y-4">
-                  <h3 className="text-sm 2xl:text-base font-semibold flex items-center gap-2">
-                    <Flame className="w-4 h-4 text-warning" />Balanço de Gás Natural
-                  </h3>
-
-                  {/* Gas KPIs */}
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                    <Card className="glass-card">
-                      <CardContent className="p-4 flex flex-col items-center text-center">
-                        <Zap className="w-5 h-5 text-primary mb-1" />
-                        <span className="text-xs text-muted-foreground">Reservas de Gás</span>
-                        <span className="text-lg font-bold">{block.gasBalance.reservesBSCF.toLocaleString()}</span>
-                        <span className="text-[10px] text-muted-foreground">BSCF</span>
-                      </CardContent>
-                    </Card>
-                    <Card className="glass-card">
-                      <CardContent className="p-4 flex flex-col items-center text-center">
-                        <Activity className="w-5 h-5 text-success mb-1" />
-                        <span className="text-xs text-muted-foreground">Produção Média</span>
-                        <span className="text-lg font-bold">{block.gasBalance.productionAvgMMSCFD.toLocaleString()}</span>
-                        <span className="text-[10px] text-muted-foreground">MMSCFD</span>
-                      </CardContent>
-                    </Card>
-                    <Card className="glass-card">
-                      <CardContent className="p-4 flex flex-col items-center text-center">
-                        <Gauge className="w-5 h-5 text-warning mb-1" />
-                        <span className="text-xs text-muted-foreground">GOR</span>
-                        <span className="text-lg font-bold">{block.gasBalance.gorSCFperSTB.toLocaleString()}</span>
-                        <span className="text-[10px] text-muted-foreground">SCF/STB</span>
-                      </CardContent>
-                    </Card>
-                    <Card className="glass-card">
-                      <CardContent className="p-4 flex flex-col items-center text-center">
-                        <Building2 className="w-5 h-5 text-chart-2 mb-1" />
-                        <span className="text-xs text-muted-foreground">Capacidade Infra.</span>
-                        <span className="text-lg font-bold">{block.gasBalance.infrastructureCapacityMMSCFD.toLocaleString()}</span>
-                        <span className="text-[10px] text-muted-foreground">MMSCFD</span>
-                      </CardContent>
-                    </Card>
-                  </div>
-
-                  {/* Utilization Index Donut + Details */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <ChartWrapper title="Índice de Utilização do Gás" height={300} fullscreenHeight={500}>
-                      <ResponsiveContainer width="100%" height="100%">
-                        <PieChart>
-                          <Pie
-                            data={[
-                              { name: "Injecção", value: block.gasBalance.utilizationIndex.injection },
-                              { name: "Exportação", value: block.gasBalance.utilizationIndex.export },
-                              { name: "Combustível", value: block.gasBalance.utilizationIndex.fuel },
-                              { name: "Queima", value: block.gasBalance.utilizationIndex.flaring },
-                            ]}
-                            cx="50%"
-                            cy="50%"
-                            innerRadius={60}
-                            outerRadius={100}
-                            paddingAngle={3}
-                            dataKey="value"
-                            animationDuration={800}
-                          >
-                            <Cell fill="hsl(var(--primary))" />
-                            <Cell fill="hsl(var(--chart-2))" />
-                            <Cell fill="hsl(var(--chart-4))" />
-                            <Cell fill="hsl(var(--warning))" />
-                            <LabelList dataKey="name" position="outside" style={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} />
-                          </Pie>
-                          <Tooltip
-                            contentStyle={tooltipStyle}
-                            formatter={(val: number) => [`${val}%`, "Utilização"]}
-                          />
-                        </PieChart>
-                      </ResponsiveContainer>
-                    </ChartWrapper>
-
-                    <Card className="glass-card">
-                      <CardHeader className="pb-2">
-                        <CardTitle className="text-sm">Detalhe de Utilização</CardTitle>
-                      </CardHeader>
-                      <CardContent className="space-y-3">
-                        {[
-                          { label: "Injecção", value: block.gasBalance.utilizationIndex.injection, icon: <Droplets className="w-4 h-4" />, color: "text-primary" },
-                          { label: "Exportação (ALNG)", value: block.gasBalance.utilizationIndex.export, icon: <ArrowRight className="w-4 h-4" />, color: "text-chart-2" },
-                          { label: "Combustível", value: block.gasBalance.utilizationIndex.fuel, icon: <Fuel className="w-4 h-4" />, color: "text-chart-4" },
-                          { label: "Queima (Flaring)", value: block.gasBalance.utilizationIndex.flaring, icon: <Flame className="w-4 h-4" />, color: "text-warning" },
-                        ].map((item) => (
-                          <div key={item.label} className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
-                            <div className="flex items-center gap-2">
-                              <span className={item.color}>{item.icon}</span>
-                              <span className="text-xs font-medium">{item.label}</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <div className="w-24 h-2 rounded-full bg-muted overflow-hidden">
-                                <div
-                                  className="h-full rounded-full transition-all duration-700"
-                                  style={{
-                                    width: `${item.value}%`,
-                                    backgroundColor: item.color === "text-primary" ? "hsl(var(--primary))"
-                                      : item.color === "text-chart-2" ? "hsl(var(--chart-2))"
-                                      : item.color === "text-chart-4" ? "hsl(var(--chart-4))"
-                                      : "hsl(var(--warning))",
-                                  }}
-                                />
-                              </div>
-                              <span className="text-sm font-bold font-mono w-10 text-right">{item.value}%</span>
-                            </div>
-                          </div>
-                        ))}
-
-                        {block.gasBalance.opportunitiesTCF && (
-                          <div className="mt-2 p-3 rounded-lg bg-success/10 border border-success/20">
-                            <div className="flex items-center gap-2 text-xs font-semibold text-success">
-                              <Lightbulb className="w-3.5 h-3.5" />
-                              Oportunidades identificadas: ~{block.gasBalance.opportunitiesTCF} TCF
-                            </div>
-                          </div>
-                        )}
-                      </CardContent>
-                    </Card>
-                  </div>
-                </div>
+                <BlockGasPanel block={block} />
               )}
 
               {/* Technical Recommendations */}

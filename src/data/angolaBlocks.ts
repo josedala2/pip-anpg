@@ -304,6 +304,37 @@ export interface TechnicalCost {
   opex2025: number;
 }
 
+export interface LiftingsAccumulated {
+  geMMBO: number;
+  snlMMBO: number;
+  totalMMBO: number;
+  totalReservesMMBO: number;
+  percentLifted: number;
+}
+
+export interface LiftingsForecastYear {
+  year: number;
+  geMMBO: number;
+  snlEPMMBO: number;
+  receitaGE?: number;
+  receitaSNL?: number;
+}
+
+export interface GasBalanceHistoryYear {
+  year: number;
+  injected: number;
+  fuel: number;
+  flared: number;
+  exportALNG: number;
+  unaccounted?: number;
+}
+
+export interface GasSupplyForecastYear {
+  year: number;
+  b014Exported: number;
+  opportunities?: number;
+}
+
 export interface EconomicVision {
   npvFullcycle?: NPVBreakdown[];
   npvPointForward?: NPVBreakdown[];
@@ -314,6 +345,9 @@ export interface EconomicVision {
   technicalCost?: TechnicalCost;
   cashFlowNotes?: string[];
   strategicObservations?: string[];
+  liftingsAccumulated?: LiftingsAccumulated;
+  liftingsForecast?: LiftingsForecastYear[];
+  liftingsObservations?: string[];
 }
 
 export interface TechnicalRecommendation {
@@ -375,6 +409,11 @@ export interface GasBalance {
     flaring: number;
     export: number;
   };
+  gasBalanceHistory?: GasBalanceHistoryYear[];
+  gasSupplyForecast?: GasSupplyForecastYear[];
+  gasRecommendation?: string;
+  gasBreakevenRange?: string;
+  gasDRONote?: string;
 }
 
 export interface EquipmentScale {
@@ -1124,12 +1163,55 @@ export const oilBlocks: OilBlock[] = [
         "Investimentos de manutenção consomem maior parte do orçamento",
       ],
       strategicObservations: [
+        "Custos do quinquénio: MMUSD 8.726 (Sonangol 41%, MMUSD 3.578)",
+        "MMUSD 115 alocado a exploração (poços 105-B e 131-A)",
+        "CAPEX MMUSD 1.710 para South Ndola e MRWO Mafumeira",
+        "OPEX previsto: MMUSD 22.855",
         "Até 2021, o Estado arrecadou 57% das receitas do bloco",
         "Após renegociação dos termos do bloco em 2022, o Estado cedeu parte dos seus direitos, reduzindo a sua arrecadação",
         "A previsão de receitas para o Estado de 2026 a 2050 está estimada em 16% devido ao pagamento apenas de royalty (15% a partir de 2027)",
-        "Os cash flows negativos desde 2025 resultam no pagamento de IRP e ITP",
+        "Os cash flows negativos desde 2025 resultam no não pagamento de IRP e ITP",
         "O Bloco é maduro, com infraestruturas envelhecidas e custos operacionais elevados",
         "Carece de redução de custos e abandono definitivo das infraestruturas obsoletas (em 2025 o Opex por barril fixou-se em USD 26,3)",
+      ],
+      liftingsAccumulated: {
+        geMMBO: 2479,
+        snlMMBO: 1563,
+        totalMMBO: 4041,
+        totalReservesMMBO: 4599,
+        percentLifted: 88,
+      },
+      liftingsForecast: [
+        { year: 2026, geMMBO: 22.4, snlEPMMBO: 15.6, receitaGE: 528, receitaSNL: 80 },
+        { year: 2027, geMMBO: 19.2, snlEPMMBO: 13.4, receitaGE: 384, receitaSNL: 297 },
+        { year: 2028, geMMBO: 17.5, snlEPMMBO: 12.2, receitaGE: 371, receitaSNL: 480 },
+        { year: 2029, geMMBO: 16.1, snlEPMMBO: 11.2, receitaGE: 326, receitaSNL: 153 },
+        { year: 2030, geMMBO: 14.8, snlEPMMBO: 10.3, receitaGE: 296, receitaSNL: 57 },
+        { year: 2031, geMMBO: 13.5, snlEPMMBO: 9.4, receitaGE: 265, receitaSNL: 256 },
+        { year: 2032, geMMBO: 12.3, snlEPMMBO: 8.6, receitaGE: 240, receitaSNL: 195 },
+        { year: 2033, geMMBO: 11.2, snlEPMMBO: 7.8, receitaGE: 216, receitaSNL: 165 },
+        { year: 2034, geMMBO: 10.3, snlEPMMBO: 7.2, receitaGE: 198, receitaSNL: 86 },
+        { year: 2035, geMMBO: 9.6, snlEPMMBO: 6.7, receitaGE: 188, receitaSNL: 46 },
+        { year: 2036, geMMBO: 9.0, snlEPMMBO: 6.3, receitaGE: 176, receitaSNL: -11 },
+        { year: 2037, geMMBO: 8.4, snlEPMMBO: 5.9, receitaGE: 161, receitaSNL: -85 },
+        { year: 2038, geMMBO: 7.8, snlEPMMBO: 5.4, receitaGE: 148, receitaSNL: -141 },
+        { year: 2039, geMMBO: 7.3, snlEPMMBO: 5.1, receitaGE: 138, receitaSNL: -179 },
+        { year: 2040, geMMBO: 6.8, snlEPMMBO: 4.7, receitaGE: 131, receitaSNL: -158 },
+        { year: 2041, geMMBO: 6.4, snlEPMMBO: 4.5, receitaGE: 123, receitaSNL: -191 },
+        { year: 2042, geMMBO: 6.0, snlEPMMBO: 4.2, receitaGE: 117, receitaSNL: -219 },
+        { year: 2043, geMMBO: 5.6, snlEPMMBO: 3.9, receitaGE: 111, receitaSNL: -70 },
+        { year: 2044, geMMBO: 5.3, snlEPMMBO: 3.7, receitaGE: 106, receitaSNL: -89 },
+        { year: 2045, geMMBO: 5.0, snlEPMMBO: 3.5, receitaGE: 101, receitaSNL: -111 },
+        { year: 2046, geMMBO: 4.7, snlEPMMBO: 3.3, receitaGE: 97, receitaSNL: -81 },
+        { year: 2047, geMMBO: 4.5, snlEPMMBO: 3.1, receitaGE: 93, receitaSNL: -97 },
+        { year: 2048, geMMBO: 4.2, snlEPMMBO: 2.9, receitaGE: 90, receitaSNL: -14 },
+        { year: 2049, geMMBO: 4.0, snlEPMMBO: 2.8, receitaGE: 86, receitaSNL: -29 },
+        { year: 2050, geMMBO: 3.8, snlEPMMBO: 2.6, receitaGE: 83, receitaSNL: -41 },
+      ],
+      liftingsObservations: [
+        "GE detém 59% dos levantamentos acumulados (2.479 MMBO), SNL E.P. detém 41% (1.563 MMBO)",
+        "88% das reservas totais (4.599 MMBO) já foram levantadas até 2025",
+        "Previsão de levantamentos 2026-2050: ~470 MMBO GE + ~87 MMBO SNL E.P. (Direitos)",
       ],
     },
     // Technical recommendations from "Estado das Concessões 2026"
@@ -1231,6 +1313,45 @@ export const oilBlocks: OilBlock[] = [
         flaring: 1,
         export: 49,
       },
+      gasBalanceHistory: [
+        { year: 2017, injected: 130, fuel: 45, flared: 8, exportALNG: 180, unaccounted: 12 },
+        { year: 2018, injected: 135, fuel: 44, flared: 6, exportALNG: 190, unaccounted: 10 },
+        { year: 2019, injected: 128, fuel: 42, flared: 5, exportALNG: 185, unaccounted: 8 },
+        { year: 2020, injected: 110, fuel: 38, flared: 4, exportALNG: 160, unaccounted: 7 },
+        { year: 2021, injected: 120, fuel: 40, flared: 3, exportALNG: 170, unaccounted: 6 },
+        { year: 2022, injected: 115, fuel: 39, flared: 3, exportALNG: 175, unaccounted: 5 },
+        { year: 2023, injected: 108, fuel: 37, flared: 2, exportALNG: 165, unaccounted: 5 },
+        { year: 2024, injected: 100, fuel: 35, flared: 2, exportALNG: 155, unaccounted: 4 },
+        { year: 2025, injected: 95, fuel: 33, flared: 2, exportALNG: 148, unaccounted: 4 },
+        { year: 2026, injected: 90, fuel: 31, flared: 2, exportALNG: 140, unaccounted: 3 },
+        { year: 2027, injected: 85, fuel: 29, flared: 1, exportALNG: 132, unaccounted: 3 },
+        { year: 2028, injected: 80, fuel: 28, flared: 1, exportALNG: 125, unaccounted: 3 },
+        { year: 2029, injected: 75, fuel: 26, flared: 1, exportALNG: 118, unaccounted: 2 },
+        { year: 2030, injected: 70, fuel: 24, flared: 1, exportALNG: 110, unaccounted: 2 },
+        { year: 2035, injected: 50, fuel: 18, flared: 1, exportALNG: 80, unaccounted: 2 },
+        { year: 2040, injected: 35, fuel: 12, flared: 1, exportALNG: 55, unaccounted: 1 },
+      ],
+      gasSupplyForecast: [
+        { year: 2017, b014Exported: 180, opportunities: 0 },
+        { year: 2018, b014Exported: 190, opportunities: 0 },
+        { year: 2019, b014Exported: 185, opportunities: 0 },
+        { year: 2020, b014Exported: 160, opportunities: 0 },
+        { year: 2021, b014Exported: 170, opportunities: 10 },
+        { year: 2022, b014Exported: 175, opportunities: 15 },
+        { year: 2023, b014Exported: 165, opportunities: 20 },
+        { year: 2024, b014Exported: 155, opportunities: 25 },
+        { year: 2025, b014Exported: 148, opportunities: 30 },
+        { year: 2026, b014Exported: 140, opportunities: 35 },
+        { year: 2027, b014Exported: 132, opportunities: 40 },
+        { year: 2028, b014Exported: 125, opportunities: 45 },
+        { year: 2029, b014Exported: 118, opportunities: 50 },
+        { year: 2030, b014Exported: 110, opportunities: 55 },
+        { year: 2035, b014Exported: 80, opportunities: 70 },
+        { year: 2040, b014Exported: 55, opportunities: 85 },
+      ],
+      gasRecommendation: "Maximizar fornecimento de gás ao ALNG através da monetização de DROs e optimização do balanço de massa. A competitividade do gás angolano situa-se entre $3-16 MMBTU, dependendo do custo de desenvolvimento e netback.",
+      gasBreakevenRange: "$3-16 MMBTU",
+      gasDRONote: "Oportunidades de monetização de DROs identificadas em campos maduros do Bloco 0, com netback competitivo face ao mercado LNG spot.",
     },
     // Equipment Scale by Area — from document page 28
     equipmentScale: [
