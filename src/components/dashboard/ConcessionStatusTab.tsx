@@ -46,6 +46,18 @@ export const ConcessionStatusTab = ({ block }: ConcessionStatusTabProps) => {
   const ci = block.contractInfo;
   const now = new Date();
 
+  // Derive execution rate from capexHistory when economicVision is available
+  const derivedExecution = useMemo(() => {
+    const ch = block.capexHistory;
+    if (!ch || ch.length === 0) return null;
+    const totalPlanned = ch.reduce((s, v) => s + v.planned, 0);
+    const totalActual = ch.reduce((s, v) => s + v.actual, 0);
+    if (totalPlanned === 0) return null;
+    return { rate: Math.round((totalActual / totalPlanned) * 100), actual: totalActual, planned: totalPlanned };
+  }, [block.capexHistory]);
+
+  const effectiveExecutionRate = derivedExecution?.rate ?? block.executionRate;
+
   // Strategic score
   const strategic = useMemo(() => calculateStrategicScore(block), [block]);
   const classConfig = classificationConfig[strategic.classification];
