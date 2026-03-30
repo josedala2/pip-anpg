@@ -122,6 +122,15 @@ export const EconomicFinancialPanel = () => {
 
       {activeSubTab === "dashboard" && (
         <>
+      {/* National Reference */}
+      <NationalReferenceStrip
+        metrics={[
+          { label: "Produção Nacional", value: `${(nationalCertifiedMetrics.productionBOPD / 1000).toFixed(0)}k BOPD` },
+          { label: "Concessões Activas", value: `${nationalCertifiedMetrics.activeConcessions}` },
+          { label: "Reservas Certificadas", value: `${nationalCertifiedMetrics.reservesOilMb.toLocaleString()} Mb` },
+        ]}
+        coverageBOPD={verifiedBlocks.reduce((s, b) => s + b.dailyProduction, 0)}
+      />
 
       {/* ── National KPI Strip ── */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">

@@ -201,6 +201,15 @@ export const AdvancedForecastPanel = () => {
         </div>
       </div>
 
+      {/* National Reference */}
+      <NationalReferenceStrip
+        metrics={[
+          { label: "Produção Nacional", value: `${(nationalCertifiedMetrics.productionBOPD / 1000).toFixed(0)}k BOPD` },
+          { label: "Blocos Produtores", value: `${nationalCertifiedMetrics.inProduction}` },
+        ]}
+        coverageBOPD={verifiedBlocks.filter(b => b.dailyProduction > 0).reduce((s, b) => s + b.dailyProduction, 0)}
+      />
+
       {/* ── National Outlook KPIs ── */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
         <OutlookKPI

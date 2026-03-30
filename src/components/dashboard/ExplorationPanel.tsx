@@ -152,10 +152,21 @@ export const ExplorationPanel = () => {
 
   return (
     <div className="space-y-6 2xl:space-y-8">
+      {/* National Reference Strip */}
+      <NationalReferenceStrip
+        metrics={[
+          { label: "Recursos Prospectivos (Óleo)", value: `${nationalCertifiedMetrics.prospectiveResourcesOilMb.toLocaleString()} Mb` },
+          { label: "Recursos Prospectivos (Gás)", value: `${nationalCertifiedMetrics.prospectiveResourcesGasTCF} TCF` },
+          { label: "Concessões em Exploração", value: `${nationalCertifiedMetrics.inExploration}` },
+          { label: "Reservas Certificadas (Óleo)", value: `${nationalCertifiedMetrics.reservesOilMb.toLocaleString()} Mb` },
+          { label: "Reservas Certificadas (Gás)", value: `${nationalCertifiedMetrics.reservesGasTCF} TCF` },
+        ]}
+      />
+
       {/* Disclaimer */}
       <div className="flex items-center gap-2 px-3 py-2 rounded-lg border border-warning/30 bg-warning/5 text-warning text-[11px]">
         <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
-        <span>Dados parciais — esta análise baseia-se nos <strong>Blocos 0, 2/05 e 3/05</strong>, os únicos com informação operacional verificada.</span>
+        <span>Dados de detalhe baseados nos <strong>Blocos 0, 2/05 e 3/05</strong>. Totais nacionais do Relatório 2026.</span>
       </div>
       {/* Block Filters */}
       <Card className="glass-card">

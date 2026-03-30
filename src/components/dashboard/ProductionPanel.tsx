@@ -118,12 +118,22 @@ export const ProductionPanel = () => {
 
   return (
     <div className="space-y-6">
+      {/* National Reference Strip */}
+      <NationalReferenceStrip
+        metrics={[
+          { label: "Produção Nacional", value: `${(nationalCertifiedMetrics.productionBOPD / 1000).toFixed(0)}k BOPD`, sub: "Óleo" },
+          { label: "Produção Gás", value: `${nationalCertifiedMetrics.gasProductionMMSCFD.toLocaleString()} MMSCFD` },
+          { label: "Blocos Produtores", value: `${nationalCertifiedMetrics.inProduction}` },
+        ]}
+        coverageBOPD={totalProduction}
+      />
+
       {/* Data coverage notice */}
       <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-warning/5 border border-warning/20">
         <AlertTriangle className="w-4 h-4 text-warning shrink-0" />
         <p className="text-[11px] text-muted-foreground">
-          <span className="font-semibold text-foreground">{blocksWithHistory.length} de {producingBlocks.length} blocos produtores</span> possuem dados de histórico de produção verificados.
-          Os volumes nacionais são parciais até à integração completa dos dados.
+          <span className="font-semibold text-foreground">{blocksWithHistory.length} de {producingBlocks.length} blocos produtores</span> possuem dados de histórico verificados.
+          Totais nacionais certificados pelo Relatório Estado das Concessões 2026.
         </p>
       </div>
 

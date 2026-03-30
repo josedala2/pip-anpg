@@ -116,11 +116,20 @@ export const EconomicScenariosPanel = () => {
 
   return (
     <div className="space-y-5">
+      {/* National coverage context */}
+      <NationalReferenceStrip
+        metrics={[
+          { label: "Produção Nacional", value: `${(nationalCertifiedMetrics.productionBOPD / 1000).toFixed(0)}k BOPD` },
+          { label: "Blocos Produtores", value: `${nationalCertifiedMetrics.inProduction}` },
+        ]}
+        coverageBOPD={producingBlocks.reduce((s, b) => s + b.dailyProduction, 0)}
+      />
+
       {/* Data coverage notice */}
       <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-warning/5 border border-warning/20">
         <AlertTriangle className="w-4 h-4 text-warning shrink-0" />
         <p className="text-[11px] text-muted-foreground">
-          Os cenários utilizam <span className="font-semibold text-foreground">valores estimados de OPEX ($20/bbl)</span> para concessões sem dados económicos verificados. Os resultados são indicativos até à integração completa dos dados reais.
+          Os cenários utilizam <span className="font-semibold text-foreground">valores estimados de OPEX ($20/bbl)</span>. Cobertura parcial — resultados indicativos.
         </p>
       </div>
       {/* ── Scenario Selector ── */}
