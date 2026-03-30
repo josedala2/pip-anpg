@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { oilBlocks } from "@/data/angolaBlocks";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend, Brush } from "recharts";
-import { AlertTriangle, Target, Layers, Droplets, Filter, ChevronDown, AlignVerticalJustifyStart, AlignHorizontalJustifyStart } from "lucide-react";
+import { AlertTriangle, Target, Layers, Droplets, Filter, ChevronDown, AlignVerticalJustifyStart, AlignHorizontalJustifyStart, Flame, Search, Database } from "lucide-react";
 import { InfoTooltip } from "@/components/ui/info-tooltip";
 import { tooltipDescriptions } from "@/lib/tooltipDescriptions";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";

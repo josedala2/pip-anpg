@@ -16,7 +16,7 @@ import {
 } from "recharts";
 import {
   Activity, DollarSign, TrendingUp, TrendingDown, ShieldAlert,
-  Target, Gauge, Layers, AlertTriangle, Lightbulb, BarChart3, Clock, Filter,
+  Target, Gauge, Layers, AlertTriangle, Lightbulb, BarChart3, Clock, Filter, Database,
 } from "lucide-react";
 import { InfoTooltip } from "@/components/ui/info-tooltip";
 import { tooltipDescriptions } from "@/lib/tooltipDescriptions";
