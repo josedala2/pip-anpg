@@ -1,35 +1,27 @@
 
 
-## Actualizar Dados do Bloco 0 com Documento Oficial
+## Adicionar Card "Quota SNL E.P." aos KPIs da Home Executiva
 
-### Análise: o que já está correcto vs o que falta
+### Contexto
+Já existe o KPI "Quota ANPG" (441.609 BOPD) no grupo "Produção". A Sonangol E.P. (SNL) detém uma participação na produção nacional que deve ser apresentada de forma equivalente.
 
-A maioria dos dados do Bloco 0 já está alinhada com o documento. Foram identificadas as seguintes diferenças:
-
-| Campo | Valor actual | Valor do documento |
-|-------|-------------|-------------------|
-| `estimatedReserves` | 21,000 (STOOIP) | Deve manter-se; falta campo separado para **Reservas Actuais: 421 MMBO** |
-| Recovery Factor | Não existe | **20%** |
-| Research Period (alterado) | Fase inicial 7 anos/7 poços | **Contrato Alterado: 2022-2031**, 3+3 poços (1.º poço 119-D perfurado 2025) |
-| N'Dola Sul primeiro óleo | Não registado | **Dezembro 2025** |
-| Actividades-chave | Não existem | 5 prioridades estratégicas do documento |
-| Programa de trabalho adicional | Não existe | Longui, N'Dola Sul, Banzala piloto, revisão DROs |
+### Dados
+O Relatório 2026 não fornece directamente um valor agregado de "Quota SNL E.P." em BOPD no `nationalCertifiedMetrics`. Será necessário definir este valor. Com base nos dados existentes (SNL detém ~16% dos liftings cumulativos = 2.123 MMBO), uma estimativa proporcional à produção actual seria ~165.760 BOPD (16% de 1.036.000). **Preciso confirmar se o utilizador tem o valor exacto ou se devemos usar a proporção dos liftings.**
 
 ### Alterações
 
-**1. `src/data/angolaBlocks.ts` — Interface `OilBlock`**
-- Adicionar campos opcionais: `currentReservesMMBO?: number`, `recoveryFactorPercent?: number`, `keyActivities?: string[]`, `workProgram?: string[]`
+**1. `src/data/nationalForecast.ts`**
+- Adicionar campo `snlQuotaBOPD` ao objecto `nationalCertifiedMetrics` (valor a confirmar — estimativa: ~165.760 BOPD baseada na % de liftings)
 
-**2. `src/data/angolaBlocks.ts` — Dados do Block 0**
-- Adicionar `currentReservesMMBO: 421`
-- Adicionar `recoveryFactorPercent: 20`
-- Actualizar `contractInfo.researchPeriod` com detalhes do contrato alterado (2022-2031, 3+3 poços)
-- Adicionar `keyActivities` com as 5 prioridades estratégicas extraídas do documento
-- Adicionar `workProgram` com os 4 itens (Longui, N'Dola Sul, Banzala, DROs)
+**2. `src/components/dashboard/KPICards.tsx`**
+- Adicionar novo item no grupo "Produção", após "Quota ANPG":
+  - Label: "Quota SNL E.P."
+  - Value: `n.snlQuotaBOPD`
+  - Suffix: " BOPD"
+  - Icon: `Droplets` (mesmo ícone da Quota ANPG, ou `Building2` para distinguir)
+  - Status: "neutral"
+  - Drill: "Quota de produção atribuída à Sonangol E.P."
 
-**3. Páginas de detalhe do bloco** — Verificar se os novos campos são exibidos nos separadores relevantes (Visão Geral, Estado da Concessão). Se não forem renderizados automaticamente, adicionar exibição nos componentes correspondentes.
-
-### Ficheiros a alterar
-1. `src/data/angolaBlocks.ts` — interface + dados Block 0
-2. Componentes de detalhe do bloco (se necessário para renderizar novos campos)
+### Questão pendente
+Qual o valor exacto da Quota SNL E.P. em BOPD? Se não houver valor oficial, usaremos a proporção de 16% dos liftings cumulativos (~165.760 BOPD).
 
