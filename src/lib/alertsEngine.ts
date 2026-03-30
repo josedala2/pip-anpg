@@ -429,6 +429,15 @@ export interface ForecastAlert extends Alert {
   yearHorizon?: number;
 }
 
+/** Configurable forecast thresholds (mutable at runtime by UI) */
+export interface ForecastThresholds {
+  tier23MinBOPD: number;
+}
+
+export const forecastThresholds: ForecastThresholds = {
+  tier23MinBOPD: 5000,
+};
+
 export function evaluateForecastAlerts(): ForecastAlert[] {
   const alerts: ForecastAlert[] = [];
   const nationalOutputs = runAllScenarios();
