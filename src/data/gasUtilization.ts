@@ -34,6 +34,43 @@ export const gasSupplyForecast: GasSupplyForecast[] = [
   { period: "2041-2050", averageSupply: 2168 },
 ];
 
+// Yearly gas supply forecast by source (2025-2050) — from official document
+export interface GasSupplyForecastYearly {
+  year: number;
+  alng: number;           // Blocos 0, 14, 15, 17, 18, 31, 32, Q&M (MMSCFD)
+  development: number;    // Oportunidades de Desenvolvimento (MMSCFD)
+  exploration: number;    // Blocos em Exploração & Avaliação (MMSCFD)
+}
+
+export const gasSupplyForecastYearly: GasSupplyForecastYearly[] = [
+  { year: 2025, alng: 1100, development: 0,    exploration: 0 },
+  { year: 2026, alng: 1150, development: 0,    exploration: 0 },
+  { year: 2027, alng: 1200, development: 0,    exploration: 0 },
+  { year: 2028, alng: 1250, development: 50,   exploration: 0 },
+  { year: 2029, alng: 1300, development: 100,  exploration: 0 },
+  { year: 2030, alng: 1200, development: 200,  exploration: 0 },
+  { year: 2031, alng: 1150, development: 400,  exploration: 0 },
+  { year: 2032, alng: 1100, development: 700,  exploration: 100 },
+  { year: 2033, alng: 1050, development: 1000, exploration: 200 },
+  { year: 2034, alng: 1000, development: 1200, exploration: 400 },
+  { year: 2035, alng: 950,  development: 1400, exploration: 600 },
+  { year: 2036, alng: 900,  development: 1500, exploration: 800 },
+  { year: 2037, alng: 850,  development: 1500, exploration: 1000 },
+  { year: 2038, alng: 800,  development: 1500, exploration: 1200 },
+  { year: 2039, alng: 750,  development: 1500, exploration: 1400 },
+  { year: 2040, alng: 700,  development: 1450, exploration: 1500 },
+  { year: 2041, alng: 650,  development: 1400, exploration: 1400 },
+  { year: 2042, alng: 600,  development: 1350, exploration: 1300 },
+  { year: 2043, alng: 550,  development: 1300, exploration: 1200 },
+  { year: 2044, alng: 500,  development: 1250, exploration: 1100 },
+  { year: 2045, alng: 450,  development: 1200, exploration: 1000 },
+  { year: 2046, alng: 400,  development: 1150, exploration: 900 },
+  { year: 2047, alng: 350,  development: 1100, exploration: 800 },
+  { year: 2048, alng: 300,  development: 1050, exploration: 700 },
+  { year: 2049, alng: 250,  development: 1000, exploration: 600 },
+  { year: 2050, alng: 200,  development: 950,  exploration: 500 },
+];
+
 // Current production breakdown
 export const gasProductionCurrent = {
   production2025: 2756,      // MMSCFD
