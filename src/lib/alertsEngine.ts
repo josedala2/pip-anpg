@@ -429,6 +429,15 @@ export interface ForecastAlert extends Alert {
   yearHorizon?: number;
 }
 
+/** Configurable forecast thresholds (mutable at runtime by UI) */
+export interface ForecastThresholds {
+  tier23MinBOPD: number;
+}
+
+export const forecastThresholds: ForecastThresholds = {
+  tier23MinBOPD: 5000,
+};
+
 export function evaluateForecastAlerts(): ForecastAlert[] {
   const alerts: ForecastAlert[] = [];
   const nationalOutputs = runAllScenarios();
@@ -502,8 +511,8 @@ export function evaluateForecastAlerts(): ForecastAlert[] {
     }
   });
 
-  // 4. Produção agregada Tier 2&3 cai abaixo de 5k BOPD
-  const TIER23_THRESHOLD = 5000;
+  // 4. Produção agregada Tier 2&3 cai abaixo de threshold configurável
+  const TIER23_THRESHOLD = forecastThresholds.tier23MinBOPD;
   const blocksWithTiers = oilBlocks.filter(b => !b.pendingRealData && b.tierProductionProfiles?.length);
   if (blocksWithTiers.length > 0) {
     const yearMap = new Map<number, number>();
@@ -521,7 +530,7 @@ export function evaluateForecastAlerts(): ForecastAlert[] {
         blockId: "national", blockName: "Nacional", operator: "—",
         category: "forecast",
         severity: crossYear <= 2035 ? "critical" : crossYear <= 2040 ? "high" : "medium",
-        title: `Tier 2&3 < 5k BOPD em ${crossYear}`,
+        title: `Tier 2&3 < ${(TIER23_THRESHOLD / 1000).toFixed(0)}k BOPD em ${crossYear}`,
         description: `A produção agregada de activos Tier 2&3 cai para ${crossVal.toLocaleString()} BOPD em ${crossYear}, sinalizando esgotamento dos activos marginais.`,
         metric: `${crossVal.toLocaleString()} BOPD`,
         threshold: `< ${TIER23_THRESHOLD.toLocaleString()} BOPD`,
