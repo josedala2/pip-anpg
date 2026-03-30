@@ -66,42 +66,82 @@ const getStatus = (label: string, value: number): SemaphoreStatus => {
 
 const n = nationalCertifiedMetrics;
 
-const kpis = [
-  // — Produção —
-  { label: "Produção Nacional", value: n.productionBOPD, suffix: " BOPD", icon: Activity, status: "neutral" as SemaphoreStatus, drill: "Produção média nacional certificada — Relatório Estado das Concessões 2026" },
-  { label: "Quota ANPG", value: n.anpgQuotaBOPD, suffix: " BOPD", icon: Droplets, status: "neutral" as SemaphoreStatus, drill: "Quota de produção atribuída à ANPG" },
-  // — Reservas & Recursos —
-  { label: "Reservas Certificadas", value: n.reservesOilMb, suffix: ` Mb  ·  Gás: ${n.reservesGasTCF} TCF`, icon: BarChart3, status: "neutral" as SemaphoreStatus, drill: "Reservas provadas de óleo e gás — dados certificados" },
-  { label: "Recursos Prospectivos", value: n.prospectiveResourcesOilMb, suffix: ` Mb  ·  Gás: ${n.prospectiveResourcesGasTCF} TCF`, icon: Mountain, status: "neutral" as SemaphoreStatus, drill: "Recursos prospectivos nacionais estimados de óleo e gás — Relatório 2026" },
-  // — Concessões —
-  { label: "Concessões Activas", value: n.activeConcessions, suffix: ` / ${n.totalAdjudicated}`, icon: Boxes, status: "neutral" as SemaphoreStatus, drill: "Concessões activas de um total de 67 adjudicadas" },
-  { label: "Blocos em Produção", value: n.inProduction, suffix: "", icon: Pickaxe, status: "healthy" as SemaphoreStatus, drill: "Blocos com produção de hidrocarbonetos activa" },
-  { label: "Em Exploração", value: n.inExploration, suffix: "", icon: Search, status: "neutral" as SemaphoreStatus, drill: "Blocos em fase de exploração" },
-  { label: "Em Aprovação", value: n.pendingApproval, suffix: "", icon: Boxes, status: "neutral" as SemaphoreStatus, drill: "Blocos em fase de aprovação / licitação" },
-  // — Operacionais —
-  { label: "Instalações Críticas", value: criticalFacilities(), suffix: "", icon: Wrench, status: getStatus("Instalações Críticas", criticalFacilities()), drill: "Instalações com eficiência < 70% (blocos verificados)" },
-  { label: "Contratos a Expirar", value: contractsExpiring(), suffix: "", icon: DollarSign, status: getStatus("Contratos a Expirar", contractsExpiring()), drill: "Contratos com vencimento em < 24 meses (blocos verificados)" },
-  // — Financeiros —
-  { label: "Receita Estado", value: estimatedStateRevenue(), prefix: "$", suffix: "M", icon: Landmark, status: "neutral" as SemaphoreStatus, drill: "Estimativa anual de receita fiscal petrolífera (base: produção nacional)" },
-  { label: "Total Homologado", value: totalHomologado(), prefix: "$", suffix: "M", icon: FileText, sparkline: homologSpark, status: "neutral" as SemaphoreStatus, drill: "Soma dos montantes aprovados em processos de homologação" },
-  { label: "Taxa Aprovação", value: taxaAprovacao(), suffix: "%", icon: CheckCircle, sparkline: aprovacaoSpark, status: getStatus("Taxa Aprovação", taxaAprovacao()), drill: "Percentagem de processos de homologação aprovados" },
+type KPIItem = { label: string; value: number; prefix?: string; suffix?: string; icon: any; status: SemaphoreStatus; sparkline?: number[]; drill: string };
+
+const kpiGroups: { title: string; items: KPIItem[] }[] = [
+  {
+    title: "Produção",
+    items: [
+      { label: "Produção Nacional", value: n.productionBOPD, suffix: " BOPD", icon: Activity, status: "neutral", drill: "Produção média nacional certificada — Relatório Estado das Concessões 2026" },
+      { label: "Quota ANPG", value: n.anpgQuotaBOPD, suffix: " BOPD", icon: Droplets, status: "neutral", drill: "Quota de produção atribuída à ANPG" },
+    ],
+  },
+  {
+    title: "Reservas & Recursos",
+    items: [
+      { label: "Reservas Certificadas", value: n.reservesOilMb, suffix: ` Mb  ·  Gás: ${n.reservesGasTCF} TCF`, icon: BarChart3, status: "neutral", drill: "Reservas provadas de óleo e gás — dados certificados" },
+      { label: "Recursos Prospectivos", value: n.prospectiveResourcesOilMb, suffix: ` Mb  ·  Gás: ${n.prospectiveResourcesGasTCF} TCF`, icon: Mountain, status: "neutral", drill: "Recursos prospectivos nacionais estimados de óleo e gás — Relatório 2026" },
+    ],
+  },
+  {
+    title: "Concessões",
+    items: [
+      { label: "Concessões Activas", value: n.activeConcessions, suffix: ` / ${n.totalAdjudicated}`, icon: Boxes, status: "neutral", drill: "Concessões activas de um total de 67 adjudicadas" },
+      { label: "Blocos em Produção", value: n.inProduction, suffix: "", icon: Pickaxe, status: "healthy", drill: "Blocos com produção de hidrocarbonetos activa" },
+      { label: "Em Exploração", value: n.inExploration, suffix: "", icon: Search, status: "neutral", drill: "Blocos em fase de exploração" },
+      { label: "Em Aprovação", value: n.pendingApproval, suffix: "", icon: Boxes, status: "neutral", drill: "Blocos em fase de aprovação / licitação" },
+    ],
+  },
+  {
+    title: "Operacionais",
+    items: [
+      { label: "Instalações Críticas", value: criticalFacilities(), suffix: "", icon: Wrench, status: getStatus("Instalações Críticas", criticalFacilities()), drill: "Instalações com eficiência < 70% (blocos verificados)" },
+      { label: "Contratos a Expirar", value: contractsExpiring(), suffix: "", icon: DollarSign, status: getStatus("Contratos a Expirar", contractsExpiring()), drill: "Contratos com vencimento em < 24 meses (blocos verificados)" },
+    ],
+  },
+  {
+    title: "Financeiros",
+    items: [
+      { label: "Receita Estado", value: estimatedStateRevenue(), prefix: "$", suffix: "M", icon: Landmark, status: "neutral", drill: "Estimativa anual de receita fiscal petrolífera (base: produção nacional)" },
+      { label: "Total Homologado", value: totalHomologado(), prefix: "$", suffix: "M", icon: FileText, sparkline: homologSpark, status: "neutral", drill: "Soma dos montantes aprovados em processos de homologação" },
+      { label: "Taxa Aprovação", value: taxaAprovacao(), suffix: "%", icon: CheckCircle, sparkline: aprovacaoSpark, status: getStatus("Taxa Aprovação", taxaAprovacao()), drill: "Percentagem de processos de homologação aprovados" },
+    ],
+  },
 ];
 
-export const KPICards = ({ compact = false }: { compact?: boolean }) => (
-  <div className={compact ? "grid grid-cols-2 gap-2" : "grid grid-cols-2 md:grid-cols-6 gap-2.5 md:gap-3"}>
-    {kpis.map((kpi, i) => (
-      <ExecutiveKPICard
-        key={kpi.label}
-        label={kpi.label}
-        value={kpi.value}
-        prefix={kpi.prefix}
-        suffix={kpi.suffix}
-        icon={kpi.icon}
-        status={kpi.status}
-        sparklineData={kpi.sparkline}
-        drillDownInfo={kpi.drill}
-        delay={i * 60}
-      />
-    ))}
-  </div>
-);
+export const KPICards = ({ compact = false }: { compact?: boolean }) => {
+  let globalIndex = 0;
+
+  if (compact) {
+    const allKpis = kpiGroups.flatMap(g => g.items);
+    return (
+      <div className="grid grid-cols-2 gap-2">
+        {allKpis.map((kpi, i) => (
+          <ExecutiveKPICard key={kpi.label} label={kpi.label} value={kpi.value} prefix={kpi.prefix} suffix={kpi.suffix} icon={kpi.icon} status={kpi.status} sparklineData={kpi.sparkline} drillDownInfo={kpi.drill} delay={i * 60} />
+        ))}
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-3">
+      {kpiGroups.map((group, gi) => (
+        <div key={group.title}>
+          {gi > 0 && <div className="border-t border-border/30 mb-3" />}
+          <div className="flex items-center gap-2 mb-1.5">
+            <span className="text-[9px] font-bold text-muted-foreground/60 uppercase tracking-widest">{group.title}</span>
+            <div className="flex-1 h-px bg-border/20" />
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-6 gap-2.5 md:gap-3">
+            {group.items.map((kpi) => {
+              const idx = globalIndex++;
+              return (
+                <ExecutiveKPICard key={kpi.label} label={kpi.label} value={kpi.value} prefix={kpi.prefix} suffix={kpi.suffix} icon={kpi.icon} status={kpi.status} sparklineData={kpi.sparkline} drillDownInfo={kpi.drill} delay={idx * 60} />
+              );
+            })}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
