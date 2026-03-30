@@ -1,40 +1,26 @@
 
 
-## Rever Visão Geral e Estado da Concessão — Bloco 0
+## Actualizar Reservas do Bloco 0 para Recurso Descoberto
 
-### Problema
-Os painéis **Visão Geral** e **Estado da Concessão** usam campos genéricos placeholder (`accumulatedInvestment: 4200`, `plannedInvestment: 4500`, `executionRate: 93`) que não correspondem aos dados detalhados já inseridos na `economicVision`.
+### Contexto
+O campo `estimatedReserves` do Bloco 0 tem o valor **421 Mb** (placeholder genérico). O documento oficial indica **Recurso Descoberto (STOOIP) de 21.000 MMBO**, já registado em `explorationData.stooipMMBO`. O campo actual é usado em ~14 ficheiros (KPI cards, tabelas, agregações nacionais, chatbot).
 
-### Dados actuais vs reais
+### Consideração importante
+421 Mb pode representar "reservas provadas" enquanto 21.000 MMBO é "recurso descoberto" (STOOIP — Stock-Tank Original Oil In Place). São métricas diferentes. Actualizar directamente para 21.000 distorceria os totais nacionais nos painéis de agregação (BlocksPanel, ExplorationPanel, OperatorsPanel).
 
-| Campo | Valor actual (placeholder) | Fonte real disponível |
-|-------|---------------------------|----------------------|
-| Investimento Acum. | $4.2B | `economicVision.revenueShare` — soma total de custos ou `investmentPlan` total |
-| Investimento Planeado | $4.5B | `investmentPlan` quinquenal = MMUSD 8,726 |
-| Taxa Execução | 93% | Pode derivar do CAPEX real vs planeado em `capexHistory` |
-| Reservas Estimadas | 421 Mb | Verificar com dados de exploração (Recurso Descoberto 21.000 MMBO) |
+### Abordagem proposta
 
-### Alterações propostas
+**1. Actualizar `estimatedReserves` para 21.000** em `angolaBlocks.ts` (linha 517)
 
-**1. Visão Geral — 4 KPI cards (linhas 391-408 de `BlockPage.tsx`)**
-Quando `economicVision` existe, substituir os cards por dados reais:
-- **Produção Diária** — manter (já usa `dailyProduction` que é real)
-- **Reservas Estimadas** — manter (valor existente)
-- **Investimento Quinquenal** — usar `investmentPlan` (MMUSD 8,726) em vez de `accumulatedInvestment`
-- **Custo Técnico** — usar `technicalCost.opex2025` ($26.3/bbl) em vez de `executionRate`
+**2. Ajustar label na UI** para clarificar que se trata de Recurso Descoberto:
+- `BlockPage.tsx` linha 399: mudar label de "Reservas Estimadas" para "Recurso Descoberto" e unidade para "MMBO"
+- Quando `explorationData?.stooipMMBO` existir, usar esse valor; caso contrário, fallback para `estimatedReserves`
 
-**2. Estado da Concessão — KPI "Investimento Executado" (linhas 189-194 de `ConcessionStatusTab.tsx`)**
-Quando `economicVision` existe:
-- Substituir `executionRate` / `accumulatedInvestment` / `plannedInvestment` por dados derivados de `capexHistory` (soma actual vs soma planned)
-- O alerta de "taxa de execução baixa" (linha 123) também deve usar o valor derivado
-
-**3. Alerta de execução no `ConcessionStatusTab.tsx` (linha 123)**
-Derivar a taxa de execução de `capexHistory` quando disponível, em vez do campo placeholder.
-
-### Fallbacks
-Blocos sem `economicVision` continuam a usar os campos genéricos existentes.
+**3. Painéis de agregação** — manter `estimatedReserves` como campo usado, mas como o Bloco 0 é o único com valor significativo, o impacto é proporcional. As tabelas em BlocksPanel e OperatorsPanel já mostram "MMbbl" — ajustar header para "Recurso (MMBO)".
 
 ### Ficheiros a alterar
-1. `src/pages/BlockPage.tsx` — linhas 391-408 (4 KPI cards da Visão Geral)
-2. `src/components/dashboard/ConcessionStatusTab.tsx` — linhas 182-227 (KPI cards) e linha 123 (alerta execução)
+1. `src/data/angolaBlocks.ts` — linha 517: `estimatedReserves: 21000`
+2. `src/pages/BlockPage.tsx` — linha 399: label e lógica de fallback
+3. `src/components/dashboard/BlocksPanel.tsx` — linha 115: label "Recurso"
+4. `src/components/dashboard/OperatorsPanel.tsx` — linha 458: header de coluna
 
