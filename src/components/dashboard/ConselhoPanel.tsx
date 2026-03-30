@@ -717,6 +717,7 @@ const MacroKPI = ({
   unit,
   trend,
   alert = false,
+  tooltip,
 }: {
   icon: React.ElementType;
   label: string;
@@ -724,6 +725,7 @@ const MacroKPI = ({
   unit: string;
   trend: "up" | "down" | "alert" | "neutral";
   alert?: boolean;
+  tooltip?: string;
 }) => {
   const trendColors: Record<string, string> = {
     up: "text-success",
@@ -731,7 +733,8 @@ const MacroKPI = ({
     alert: "text-danger",
     neutral: "text-muted-foreground",
   };
-  return (
+
+  const content = (
     <Card className={`border-border/60 ${alert ? "ring-1 ring-danger/30" : ""}`}>
       <CardContent className="p-4 flex items-center gap-3">
         <div className={`p-2.5 rounded-lg ${alert ? "bg-danger/10" : "bg-primary/10"}`}>
@@ -744,5 +747,18 @@ const MacroKPI = ({
         </div>
       </CardContent>
     </Card>
+  );
+
+  if (!tooltip) return content;
+
+  return (
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>{content}</TooltipTrigger>
+        <TooltipContent side="bottom" className="max-w-[260px] text-xs">
+          {tooltip}
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   );
 };
