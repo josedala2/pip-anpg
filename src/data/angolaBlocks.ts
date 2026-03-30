@@ -1154,6 +1154,16 @@ export const oilBlocks: OilBlock[] = [
         fundeamento: 1300,
         fundeado: 102,
         dividaSonangol: 48,
+        dividaSonangolSince: 2023,
+        nextPAPRSubmission: 2026,
+        notes: [
+          "MMUSD 1.300 alocado à conta de garantia para abandono futuro",
+          "MMUSD 2.365 destinados a abandonos pontuais de instalações e poços",
+          "Valor actualmente fundeado: MMUSD 102 — insuficiente para cobrir obrigações de curto prazo",
+          "Dívida da Sonangol de MMUSD 48 acumulada desde 2023, sem plano de liquidação definido",
+          "Próxima submissão do PAPR (Plano de Abandono e Provisão de Reservas) prevista para 2026",
+          "Operar activos de nível 3 com segurança exige volume significativo de OPEX até descomissionamento",
+        ],
       },
       technicalCost: {
         capexPerBarrel: 17.0,
