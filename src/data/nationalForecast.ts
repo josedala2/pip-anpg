@@ -162,4 +162,5 @@ export const nationalCertifiedMetrics = {
   ptosApproved: 41,
   prospectiveResourcesOilMb: 152611,
   prospectiveResourcesGasTCF: 45.328,
+  gasProductionMMSCFD: 2756,
 };

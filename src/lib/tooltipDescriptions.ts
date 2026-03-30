@@ -3,6 +3,7 @@ export const tooltipDescriptions: Record<string, string> = {
   // ── Home Executiva — KPI Cards ──
   "Produção Nacional": "Produção média nacional certificada — Relatório Estado das Concessões 2026 (1.036.000 BOPD)",
   "Quota ANPG": "Quota de produção atribuída à ANPG como concessionária nacional — Relatório Estado das Concessões 2026",
+  "Produção Gás": "Produção nacional de gás natural — 2.756 MMSCFD (Relatório Estado das Concessões 2026). Inclui gás associado e não-associado.",
   "Reservas Estimadas": "Soma das reservas provadas e prováveis (P1+P2) de todas as concessões, em milhões de barris",
   "Reservas Certificadas": "Reservas provadas de óleo e gás natural certificadas no Relatório Estado das Concessões 2026",
   "Recursos Prospectivos": "Recursos prospectivos nacionais estimados de óleo e gás — volumes ainda não descobertos com potencial exploratório",
