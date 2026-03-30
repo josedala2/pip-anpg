@@ -20,13 +20,15 @@ const TAX_COLOR = "hsl(38, 92%, 50%)";
 const CAPEX_COLOR = "hsl(199, 89%, 48%)";
 const OPEX_COLOR = "hsl(38, 92%, 50%)";
 const ABANDON_COLOR = "hsl(0, 72%, 51%)";
+const GE_CUSTOS_COLOR = "hsl(199, 89%, 48%)";
+const GE_LUCROS_COLOR = "hsl(152, 69%, 40%)";
 
 const PLAN_COLORS = [
-  "hsl(199, 89%, 48%)",  // Exploração
-  "hsl(152, 69%, 40%)",  // Desenvolvimento
-  "hsl(38, 92%, 50%)",   // Operação
-  "hsl(280, 65%, 60%)",  // Admin
-  "hsl(0, 72%, 51%)",    // Cash Call
+  "hsl(199, 89%, 48%)",
+  "hsl(152, 69%, 40%)",
+  "hsl(38, 92%, 50%)",
+  "hsl(280, 65%, 60%)",
+  "hsl(0, 72%, 51%)",
 ];
 
 const PIE_COLORS = [GE_COLOR, TAX_COLOR];
@@ -42,6 +44,119 @@ const tooltipStyle = {
 interface Props {
   block: OilBlock;
 }
+
+/* ─── NPV Individual Chart ─── */
+const NpvPeriodChart = ({ data }: { data: { period: string; ge: number; impostos: number; conc?: number } }) => {
+  const bars = [
+    { label: "GE", value: data.ge },
+    { label: "Impostos", value: data.impostos },
+  ];
+  if (data.conc != null) bars.splice(1, 0, { label: "Conc.", value: data.conc });
+
+  return (
+    <ChartWrapper title={`NPV ${data.period}`} subtitle="MMUSD" icon={<DollarSign className="w-4 h-4 text-primary" />} height={220}>
+      <ResponsiveContainer width="100%" height="100%">
+        <BarChart data={bars} barGap={4}>
+          <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
+          <XAxis dataKey="label" tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} />
+          <YAxis tick={{ fontSize: 9, fill: "hsl(var(--muted-foreground))" }} tickFormatter={v => v >= 1000 ? `${(v / 1000).toFixed(0)}k` : String(v)} />
+          <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => v.toLocaleString()} />
+          <Bar dataKey="value" radius={[4, 4, 0, 0]}>
+            {bars.map((b, i) => (
+              <Cell key={i} fill={b.label === "GE" ? GE_COLOR : b.label === "Conc." ? CONC_COLOR : TAX_COLOR} />
+            ))}
+          </Bar>
+        </BarChart>
+      </ResponsiveContainer>
+    </ChartWrapper>
+  );
+};
+
+/* ─── Revenue Share Period with GE Split ─── */
+const RevenueShareCard = ({ rs }: { rs: NonNullable<OilBlock["economicVision"]>["revenueShare"][number] }) => {
+  const hasGeSplit = rs.geCustosPercent != null && rs.geLucrosPercent != null;
+
+  return (
+    <div className="flex flex-col items-center">
+      <p className="text-xs font-semibold text-muted-foreground mb-1">{rs.period}</p>
+      <div className="flex items-center gap-2">
+        {/* Main pie: GE vs Impostos */}
+        <ResponsiveContainer width={150} height={170}>
+          <PieChart>
+            <Pie
+              data={[
+                { name: "GE", value: rs.gePercent },
+                { name: "Impostos", value: rs.impostosPercent },
+              ]}
+              cx="50%" cy="50%" innerRadius={32} outerRadius={56} paddingAngle={2} dataKey="value"
+              label={({ value, cx, cy, midAngle, outerRadius }) => {
+                const RADIAN = Math.PI / 180;
+                const radius = (outerRadius as number) + 16;
+                const x = (cx as number) + radius * Math.cos(-midAngle * RADIAN);
+                const y = (cy as number) + radius * Math.sin(-midAngle * RADIAN);
+                return <text x={x} y={y} textAnchor={x > (cx as number) ? "start" : "end"} dominantBaseline="central" fontSize={12} fontWeight={700} fill="hsl(var(--foreground))">{value}%</text>;
+              }}
+              labelLine={{ strokeWidth: 1, stroke: "hsl(var(--muted-foreground))" }}
+            >
+              {PIE_COLORS.map((c, i) => <Cell key={i} fill={c} />)}
+            </Pie>
+            <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => `${v}%`} />
+          </PieChart>
+        </ResponsiveContainer>
+
+        {/* Mini pie: GE Custos vs GE Lucros */}
+        {hasGeSplit && (
+          <ResponsiveContainer width={120} height={140}>
+            <PieChart>
+              <Pie
+                data={[
+                  { name: "GE Custos", value: rs.geCustosPercent! },
+                  { name: "GE Lucros", value: rs.geLucrosPercent! },
+                ]}
+                cx="50%" cy="50%" innerRadius={22} outerRadius={42} paddingAngle={2} dataKey="value"
+                label={({ value, cx, cy, midAngle, outerRadius }) => {
+                  const RADIAN = Math.PI / 180;
+                  const radius = (outerRadius as number) + 14;
+                  const x = (cx as number) + radius * Math.cos(-midAngle * RADIAN);
+                  const y = (cy as number) + radius * Math.sin(-midAngle * RADIAN);
+                  return <text x={x} y={y} textAnchor={x > (cx as number) ? "start" : "end"} dominantBaseline="central" fontSize={10} fontWeight={600} fill="hsl(var(--foreground))">{value}%</text>;
+                }}
+                labelLine={{ strokeWidth: 1, stroke: "hsl(var(--muted-foreground))" }}
+              >
+                <Cell fill={GE_CUSTOS_COLOR} />
+                <Cell fill={GE_LUCROS_COLOR} />
+              </Pie>
+              <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => `${v}%`} />
+            </PieChart>
+          </ResponsiveContainer>
+        )}
+      </div>
+
+      {/* Labels + values */}
+      <div className="flex flex-col gap-1 text-[10px] text-muted-foreground mt-1 text-center">
+        {rs.liftingLabel && (
+          <Badge variant="outline" className="text-[10px] mx-auto">{rs.liftingLabel}: {rs.geMMBO.toLocaleString()} MMBO</Badge>
+        )}
+        <div className="flex gap-3 justify-center">
+          <span>GE: <strong>{rs.geMMBO.toLocaleString()} MMBO</strong></span>
+          <span>Imp: <strong>{rs.impostosMMBO.toLocaleString()} MMBO</strong></span>
+        </div>
+        {rs.geMMUSD != null && (
+          <div className="flex gap-3 justify-center">
+            <span>GE: <strong>{rs.geMMUSD.toLocaleString()} MMUSD</strong></span>
+            <span>Imp: <strong>{rs.impostosMMUSD?.toLocaleString()} MMUSD</strong></span>
+          </div>
+        )}
+        {hasGeSplit && (
+          <div className="flex gap-3 justify-center text-[9px]">
+            <span>GE Custos: <strong>{rs.geCustosMMUSD?.toLocaleString()}</strong></span>
+            <span>GE Lucros: <strong>{rs.geLucrosMMUSD?.toLocaleString()}</strong></span>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
 
 export const EconomicVisionTab = ({ block }: Props) => {
   const ev = block.economicVision;
@@ -68,17 +183,10 @@ export const EconomicVisionTab = ({ block }: Props) => {
     ...(ev?.strategicObservations ?? []),
     ...(ed?.observations ?? []),
   ];
-
-  // Unique observations
   const uniqueObs = [...new Set(observations)];
 
-  // Cash flow inset (2026-2050)
-  const cashFlowFuture = cashFlow.filter(c => c.year >= 2026);
-
-  // Total production share
   const totalShareMMBO = productionShare.reduce((s, p) => s + p.mmbo, 0);
 
-  // Abandonment horizontal bars
   const abandonBars = abandonDetail
     ? [
         { label: "Total para Abandono", value: abandonDetail.total },
@@ -89,105 +197,68 @@ export const EconomicVisionTab = ({ block }: Props) => {
       ]
     : [];
 
+  const hasGeSplit = revenueShare.some(rs => rs.geCustosPercent != null);
+
   return (
     <div className="space-y-4 2xl:space-y-6">
-      {/* Row 1: NPV by Period + Cash Flow */}
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 2xl:gap-6">
-        {npvByPeriod.length > 0 && (
-          <ChartWrapper title="NPV por Período (MMUSD)" icon={<DollarSign className="w-4 h-4 text-primary" />} height={300}>
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={npvByPeriod} barGap={4}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
-                <XAxis dataKey="period" tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} />
-                <YAxis tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} tickFormatter={v => v >= 1000 ? `${(v / 1000).toFixed(0)}k` : v} />
-                <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => v.toLocaleString()} />
-                <Legend wrapperStyle={{ fontSize: 11 }} />
-                <Bar dataKey="ge" name="GE" fill={GE_COLOR} radius={[4, 4, 0, 0]} />
-                {npvByPeriod.some(d => d.conc != null) && (
-                  <Bar dataKey="conc" name="Concessionária" fill={CONC_COLOR} radius={[4, 4, 0, 0]} />
-                )}
-                <Bar dataKey="impostos" name="Impostos" fill={TAX_COLOR} radius={[4, 4, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </ChartWrapper>
-        )}
+      {/* Row 1: NPV by Period (individual charts) + Observations */}
+      {(npvByPeriod.length > 0 || uniqueObs.length > 0) && (
+        <div className="grid grid-cols-1 xl:grid-cols-4 gap-4 2xl:gap-6">
+          {npvByPeriod.map((d, i) => (
+            <NpvPeriodChart key={i} data={d} />
+          ))}
+          {uniqueObs.length > 0 && (
+            <Card className="glass-card">
+              <CardHeader className="p-4 pb-2">
+                <CardTitle className="text-sm 2xl:text-base flex items-center gap-2">
+                  <Lightbulb className="w-4 h-4 text-warning" />
+                  Principais Observações
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-4 pt-0">
+                <ul className="space-y-2">
+                  {uniqueObs.map((obs, i) => (
+                    <li key={i} className="flex items-start gap-2 text-xs 2xl:text-sm text-muted-foreground">
+                      <ArrowRight className="w-3.5 h-3.5 text-primary shrink-0 mt-0.5" />
+                      <span>{obs}</span>
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+          )}
+        </div>
+      )}
 
-        {cashFlow.length > 0 && (
-          <ChartWrapper title="Fluxo de Caixa (MMUSD)" icon={<BarChart3 className="w-4 h-4 text-primary" />} height={300} className="xl:col-span-2">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={cashFlow} barGap={0} barCategoryGap="10%">
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
-                <XAxis dataKey="year" tick={{ fontSize: 9, fill: "hsl(var(--muted-foreground))" }} interval={2} />
-                <YAxis tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} tickFormatter={v => v >= 1000 ? `${(v / 1000).toFixed(0)}k` : v} />
-                <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => `${v.toLocaleString()} MMUSD`} />
-                <Legend wrapperStyle={{ fontSize: 11 }} />
-                <ReferenceLine y={0} stroke="hsl(var(--muted-foreground))" strokeDasharray="3 3" />
-                <Bar dataKey="impostos" name="Impostos" stackId="a" fill={TAX_COLOR} />
-                {cashFlow.some(d => d.conc != null) && (
-                  <Bar dataKey="conc" name="Concessionária" stackId="a" fill={CONC_COLOR} />
-                )}
-                <Bar dataKey="ge" name="GE" stackId="a" fill={GE_COLOR} radius={[2, 2, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </ChartWrapper>
-        )}
-      </div>
+      {/* Row 2: Cash Flow */}
+      {cashFlow.length > 0 && (
+        <ChartWrapper title="Fluxo de Caixa (MMUSD)" icon={<BarChart3 className="w-4 h-4 text-primary" />} height={300}>
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={cashFlow} barGap={0} barCategoryGap="10%">
+              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
+              <XAxis dataKey="year" tick={{ fontSize: 9, fill: "hsl(var(--muted-foreground))" }} interval={2} />
+              <YAxis tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} tickFormatter={v => v >= 1000 ? `${(v / 1000).toFixed(0)}k` : String(v)} />
+              <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => `${v.toLocaleString()} MMUSD`} />
+              <Legend wrapperStyle={{ fontSize: 11 }} />
+              <ReferenceLine y={0} stroke="hsl(var(--muted-foreground))" strokeDasharray="3 3" />
+              <Bar dataKey="impostos" name="Impostos" stackId="a" fill={TAX_COLOR} />
+              {cashFlow.some(d => d.conc != null) && (
+                <Bar dataKey="conc" name="Concessionária" stackId="a" fill={CONC_COLOR} />
+              )}
+              <Bar dataKey="ge" name="GE" stackId="a" fill={GE_COLOR} radius={[2, 2, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </ChartWrapper>
+      )}
 
-      {/* Row 2: Revenue Share Pie Charts */}
+      {/* Row 3: Revenue Share Pie Charts with GE Split */}
       {revenueShare.length > 0 && (
         <ChartWrapper title="Repartição de Receitas (MMUSD & MMBO)" icon={<PieChartIcon className="w-4 h-4 text-primary" />} height="auto">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {revenueShare.map((rs) => (
-              <div key={rs.period} className="flex flex-col items-center justify-center">
-                <p className="text-xs font-semibold text-muted-foreground mb-1">{rs.period}</p>
-                <ResponsiveContainer width="100%" height={190}>
-                  <PieChart>
-                    <Pie
-                      data={[
-                        { name: "GE", value: rs.gePercent },
-                        { name: "Impostos", value: rs.impostosPercent },
-                      ]}
-                      cx="50%"
-                      cy="52%"
-                      innerRadius={40}
-                      outerRadius={68}
-                      paddingAngle={2}
-                      dataKey="value"
-                      label={({ name, value, cx, cy, midAngle, outerRadius }) => {
-                        const RADIAN = Math.PI / 180;
-                        const radius = (outerRadius as number) + 18;
-                        const x = (cx as number) + radius * Math.cos(-midAngle * RADIAN);
-                        const y = (cy as number) + radius * Math.sin(-midAngle * RADIAN);
-                        return (
-                          <text x={x} y={y} textAnchor={x > (cx as number) ? "start" : "end"} dominantBaseline="central" fontSize={13} fontWeight={700} fill="hsl(var(--foreground))">
-                            {value}%
-                          </text>
-                        );
-                      }}
-                      labelLine={{ strokeWidth: 1, stroke: "hsl(var(--muted-foreground))" }}
-                    >
-                      {PIE_COLORS.map((color, i) => (
-                        <Cell key={i} fill={color} />
-                      ))}
-                    </Pie>
-                    <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => `${v}%`} />
-                  </PieChart>
-                </ResponsiveContainer>
-                <div className="flex flex-col gap-1 text-[10px] text-muted-foreground mt-1">
-                  <div className="flex gap-3">
-                    <span>GE: <strong>{rs.geMMBO.toLocaleString()} MMBO</strong></span>
-                    <span>Imp: <strong>{rs.impostosMMBO.toLocaleString()} MMBO</strong></span>
-                  </div>
-                  {rs.geMMUSD != null && (
-                    <div className="flex gap-3">
-                      <span>GE: <strong>{rs.geMMUSD.toLocaleString()} MMUSD</strong></span>
-                      <span>Imp: <strong>{rs.impostosMMUSD?.toLocaleString()} MMUSD</strong></span>
-                    </div>
-                  )}
-                </div>
-              </div>
+              <RevenueShareCard key={rs.period} rs={rs} />
             ))}
-            <div className="col-span-full flex items-center justify-center gap-5 pt-2">
+            <div className="col-span-full flex items-center justify-center gap-5 pt-2 flex-wrap">
               <div className="flex items-center gap-1.5">
                 <span className="inline-block w-3 h-3 rounded-sm" style={{ backgroundColor: GE_COLOR }} />
                 <span className="text-xs text-muted-foreground font-medium">GE</span>
@@ -196,12 +267,24 @@ export const EconomicVisionTab = ({ block }: Props) => {
                 <span className="inline-block w-3 h-3 rounded-sm" style={{ backgroundColor: TAX_COLOR }} />
                 <span className="text-xs text-muted-foreground font-medium">Impostos</span>
               </div>
+              {hasGeSplit && (
+                <>
+                  <div className="flex items-center gap-1.5">
+                    <span className="inline-block w-3 h-3 rounded-sm" style={{ backgroundColor: GE_CUSTOS_COLOR }} />
+                    <span className="text-xs text-muted-foreground font-medium">GE Custos</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="inline-block w-3 h-3 rounded-sm" style={{ backgroundColor: GE_LUCROS_COLOR }} />
+                    <span className="text-xs text-muted-foreground font-medium">GE Lucros</span>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </ChartWrapper>
       )}
 
-      {/* Row 3: Costs + Technical Cost + Abandonment */}
+      {/* Row 4: Costs + Technical Cost + Abandonment */}
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 2xl:gap-6">
         {costHistory.length > 0 && (
           <ChartWrapper title="Custos Incorridos e Previsão (MMUSD)" icon={<Wrench className="w-4 h-4 text-warning" />} height={280}>
@@ -209,7 +292,7 @@ export const EconomicVisionTab = ({ block }: Props) => {
               <BarChart data={costHistory}>
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
                 <XAxis dataKey="period" tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} />
-                <YAxis tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} tickFormatter={v => v >= 1000 ? `${(v / 1000).toFixed(0)}k` : v} />
+                <YAxis tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} tickFormatter={v => v >= 1000 ? `${(v / 1000).toFixed(0)}k` : String(v)} />
                 <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => `${v.toLocaleString()} MMUSD`} />
                 <Legend wrapperStyle={{ fontSize: 11 }} />
                 <Bar dataKey="capex" name="CAPEX" stackId="a" fill={CAPEX_COLOR} />
@@ -236,13 +319,7 @@ export const EconomicVisionTab = ({ block }: Props) => {
                     <span className="font-mono font-semibold text-foreground">${techCost.capexPerBarrel.toFixed(1)}</span>
                   </div>
                   <div className="h-4 rounded-full bg-muted overflow-hidden">
-                    <div
-                      className="h-full rounded-full"
-                      style={{
-                        width: `${(techCost.capexPerBarrel / (techCost.capexPerBarrel + techCost.opexPerBarrel)) * 100}%`,
-                        background: CAPEX_COLOR,
-                      }}
-                    />
+                    <div className="h-full rounded-full" style={{ width: `${(techCost.capexPerBarrel / (techCost.capexPerBarrel + techCost.opexPerBarrel)) * 100}%`, background: CAPEX_COLOR }} />
                   </div>
                 </div>
                 <div>
@@ -251,22 +328,14 @@ export const EconomicVisionTab = ({ block }: Props) => {
                     <span className="font-mono font-semibold text-foreground">${techCost.opexPerBarrel.toFixed(1)}</span>
                   </div>
                   <div className="h-4 rounded-full bg-muted overflow-hidden">
-                    <div
-                      className="h-full rounded-full"
-                      style={{
-                        width: `${(techCost.opexPerBarrel / (techCost.capexPerBarrel + techCost.opexPerBarrel)) * 100}%`,
-                        background: OPEX_COLOR,
-                      }}
-                    />
+                    <div className="h-full rounded-full" style={{ width: `${(techCost.opexPerBarrel / (techCost.capexPerBarrel + techCost.opexPerBarrel)) * 100}%`, background: OPEX_COLOR }} />
                   </div>
                 </div>
               </div>
               <div className="border-t border-border pt-3">
                 <div className="flex justify-between items-center">
                   <span className="text-xs text-muted-foreground">Custo Total/BO</span>
-                  <span className="font-mono font-bold text-lg text-foreground">
-                    ${(techCost.capexPerBarrel + techCost.opexPerBarrel).toFixed(1)}
-                  </span>
+                  <span className="font-mono font-bold text-lg text-foreground">${(techCost.capexPerBarrel + techCost.opexPerBarrel).toFixed(1)}</span>
                 </div>
               </div>
               <div className="bg-warning/10 border border-warning/20 rounded-lg p-3">
@@ -301,7 +370,7 @@ export const EconomicVisionTab = ({ block }: Props) => {
         )}
       </div>
 
-      {/* Row 4: Investment Plan + Production Share */}
+      {/* Row 5: Investment Plan + Production Share */}
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 2xl:gap-6">
         {investmentPlan.length > 0 && (
           <ChartWrapper title="Plano de Investimentos Quinquenal (MMUSD)" icon={<BarChart3 className="w-4 h-4 text-primary" />} height={320}>
@@ -345,35 +414,12 @@ export const EconomicVisionTab = ({ block }: Props) => {
         )}
       </div>
 
-      {/* Total annotation for production share */}
       {productionShare.length > 0 && (
         <div className="flex justify-end -mt-2">
           <Badge variant="outline" className="text-xs font-mono">
             Total GE: {totalShareMMBO} MMBO ({productionShare[0]?.year}–{productionShare[productionShare.length - 1]?.year})
           </Badge>
         </div>
-      )}
-
-      {/* Row 5: Observations */}
-      {uniqueObs.length > 0 && (
-        <Card className="glass-card">
-          <CardHeader className="p-4 pb-2">
-            <CardTitle className="text-sm 2xl:text-base flex items-center gap-2">
-              <Lightbulb className="w-4 h-4 text-warning" />
-              Principais Observações
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-4 pt-0">
-            <ul className="space-y-2">
-              {uniqueObs.map((obs, i) => (
-                <li key={i} className="flex items-start gap-2 text-xs 2xl:text-sm text-muted-foreground">
-                  <ArrowRight className="w-3.5 h-3.5 text-primary shrink-0 mt-0.5" />
-                  <span>{obs}</span>
-                </li>
-              ))}
-            </ul>
-          </CardContent>
-        </Card>
       )}
     </div>
   );
