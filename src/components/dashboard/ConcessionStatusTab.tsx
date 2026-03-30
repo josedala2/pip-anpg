@@ -200,10 +200,12 @@ export const ConcessionStatusTab = ({ block }: ConcessionStatusTabProps) => {
     },
     {
       label: "Investimento Executado",
-      value: `${block.executionRate}%`,
-      sub: `$${block.accumulatedInvestment.toLocaleString()}M / $${block.plannedInvestment.toLocaleString()}M`,
+      value: `${effectiveExecutionRate}%`,
+      sub: derivedExecution
+        ? `$${derivedExecution.actual.toLocaleString()}M / $${derivedExecution.planned.toLocaleString()}M`
+        : `$${block.accumulatedInvestment.toLocaleString()}M / $${block.plannedInvestment.toLocaleString()}M`,
       icon: DollarSign,
-      color: block.executionRate >= 80 ? "text-success" : block.executionRate >= 60 ? "text-warning" : "text-danger",
+      color: effectiveExecutionRate >= 80 ? "text-success" : effectiveExecutionRate >= 60 ? "text-warning" : "text-danger",
     },
     {
       label: "Reservas Estimadas",
