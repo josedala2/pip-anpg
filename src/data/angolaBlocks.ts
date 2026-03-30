@@ -283,6 +283,11 @@ export interface RevenueSharePeriod {
   impostosMMBO: number;
   geMMUSD?: number;
   impostosMMUSD?: number;
+  geCustosPercent?: number;
+  geCustosMMUSD?: number;
+  geLucrosPercent?: number;
+  geLucrosMMUSD?: number;
+  liftingLabel?: string;
 }
 
 export interface AbandonmentDetail {
@@ -1097,9 +1102,9 @@ export const oilBlocks: OilBlock[] = [
         { year: 2050, ge: 83, impostos: -41 },
       ],
       revenueShare: [
-        { period: "Até 2021", gePercent: 43, impostosPercent: 57, geMMBO: 837, impostosMMBO: 1032, geMMUSD: 58135, impostosMMUSD: 76647 },
-        { period: "2022-2025", gePercent: 65, impostosPercent: 35, geMMBO: 139, impostosMMBO: 68, geMMUSD: 10899, impostosMMUSD: 5829 },
-        { period: "2026-2050", gePercent: 84, impostosPercent: 16, geMMBO: 470, impostosMMBO: 87, geMMUSD: 25845, impostosMMUSD: 4773 },
+        { period: "Até 2021", gePercent: 43, impostosPercent: 57, geMMBO: 837, impostosMMBO: 1032, geMMUSD: 58135, impostosMMUSD: 76647, geCustosPercent: 71, geCustosMMUSD: 41095, geLucrosPercent: 29, geLucrosMMUSD: 17040, liftingLabel: "Levantamentos" },
+        { period: "2022-2025", gePercent: 65, impostosPercent: 35, geMMBO: 139, impostosMMBO: 68, geMMUSD: 10899, impostosMMUSD: 5829, geCustosPercent: 78, geCustosMMUSD: 8451, geLucrosPercent: 22, geLucrosMMUSD: 2448, liftingLabel: "Levantamentos" },
+        { period: "2026-2050", gePercent: 84, impostosPercent: 16, geMMBO: 470, impostosMMBO: 87, geMMUSD: 25845, impostosMMUSD: 4773, geCustosPercent: 93, geCustosMMUSD: 24030, geLucrosPercent: 7, geLucrosMMUSD: 1815, liftingLabel: "Direitos" },
       ],
       abandonmentDetail: {
         total: 3665,
