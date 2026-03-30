@@ -390,9 +390,10 @@ const BlockPage = () => {
           <TabsContent value="overview" className="space-y-4 2xl:space-y-6">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 2xl:gap-5">
               {(() => {
-                const ed = block.economicVision;
+                const ev = block.economicVision;
+                const ed = block.economicData;
                 const invTotal = ed?.investmentPlan?.reduce((s, y) => s + y.exploracao + y.desenvolvimento + (y.operacao || 0), 0);
-                const opex2025 = ed?.technicalCost?.opex2025;
+                const opex2025 = ev?.technicalCost?.opex2025;
                 const kpis = [
                   { label: "Produção Diária", value: block.dailyProduction > 0 ? `${(block.dailyProduction / 1000).toFixed(0)}k BOPD` : "—", icon: Droplets, color: "text-primary" },
                   { label: "Reservas Estimadas", value: `${block.estimatedReserves}M bbl`, icon: Layers, color: "text-success" },
