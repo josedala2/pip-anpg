@@ -721,16 +721,16 @@ export const oilBlocks: OilBlock[] = [
         "Plano quinquenal 2026-2030 totaliza MMUSD 8.726 em investimentos (Exploração + Desenvolvimento + Operação).",
       ],
     },
-    // HSE Safety Indicators (2018–2025) — Dados oficiais ANPG
+    // HSE Safety Indicators (2018–2025) — Dados oficiais documento "Estado das Concessões — Bloco 0"
     hseData: [
-      { year: 2018, fat: 0, lti: 0, rwc: 3, mtc: 0, fac: 0, nmi: 0, hhr: 20.33, trir: 0.10, ltir: 0.00 },
-      { year: 2019, fat: 0, lti: 0, rwc: 7, mtc: 0, fac: 0, nmi: 0, hhr: 22.21, trir: 0.13, ltir: 0.00 },
-      { year: 2020, fat: 0, lti: 0, rwc: 2, mtc: 0, fac: 0, nmi: 0, hhr: 13.82, trir: 0.13, ltir: 0.00 },
-      { year: 2021, fat: 0, lti: 0, rwc: 3, mtc: 0, fac: 16, nmi: 0, hhr: 11.80, trir: 0.12, ltir: 0.00 },
-      { year: 2022, fat: 0, lti: 0, rwc: 9, mtc: 1, fac: 20, nmi: 0, hhr: 19.65, trir: 0.10, ltir: 0.00 },
-      { year: 2023, fat: 0, lti: 0, rwc: 3, mtc: 11, fac: 24, nmi: 0, hhr: 15.44, trir: 0.18, ltir: 0.00 },
-      { year: 2024, fat: 0, lti: 0, rwc: 5, mtc: 16, fac: 28, nmi: 35, hhr: 17.16, trir: 0.24, ltir: 0.00 },
-      { year: 2025, fat: 0, lti: 0, rwc: 2, mtc: 7, fac: 34, nmi: 0, hhr: 16.04, trir: 0.11, ltir: 0.00 },
+      { year: 2018, fat: 0, lti: 0, rwc: 0, mtc: 0, fac: 0, nmi: 0, hhr: 20.33, trir: 0.10, ltir: 0.00 },
+      { year: 2019, fat: 0, lti: 0, rwc: 0, mtc: 0, fac: 0, nmi: 0, hhr: 22.21, trir: 0.13, ltir: 0.00 },
+      { year: 2020, fat: 0, lti: 0, rwc: 0, mtc: 0, fac: 0, nmi: 0, hhr: 13.82, trir: 0.13, ltir: 0.00 },
+      { year: 2021, fat: 0, lti: 0, rwc: 0, mtc: 0, fac: 16, nmi: 0, hhr: 11.80, trir: 0.12, ltir: 0.00 },
+      { year: 2022, fat: 0, lti: 0, rwc: 0, mtc: 1, fac: 20, nmi: 0, hhr: 19.65, trir: 0.10, ltir: 0.00 },
+      { year: 2023, fat: 0, lti: 0, rwc: 0, mtc: 12, fac: 24, nmi: 0, hhr: 15.44, trir: 0.18, ltir: 0.00 },
+      { year: 2024, fat: 0, lti: 0, rwc: 0, mtc: 16, fac: 28, nmi: 35, hhr: 17.16, trir: 0.24, ltir: 0.00 },
+      { year: 2025, fat: 0, lti: 0, rwc: 0, mtc: 7, fac: 34, nmi: 0, hhr: 16.04, trir: 0.11, ltir: 0.00 },
     ],
     // Environmental data (2019–2025) — Dados oficiais ANPG
     environmentalData: [
@@ -894,7 +894,7 @@ export const oilBlocks: OilBlock[] = [
         actualRecoveryMMBO: 38,
         percentOfPlan: 84,
         status: "Below Plan",
-        observations: "Reservatório com pressão abaixo do esperado; workovers de poços de injecção de água em curso para melhorar varrimento",
+        observations: "Desempenho impactado por falhas de Bombas PSP. Recuperação em 2025, substituição das bombas em curso",
         startYear: 2015,
         recoveryHistory: [
           { year: 2015, planCumulative: 3, actualCumulative: 3, annualPlan: 3, annualActual: 3 },
@@ -915,8 +915,8 @@ export const oilBlocks: OilBlock[] = [
         planRecoveryMMBO: 120,
         actualRecoveryMMBO: 105,
         percentOfPlan: 87,
-        status: "Below Plan",
-        observations: "Falhas recorrentes nas bombas submersíveis (ESP); programa de substituição em andamento; declínio natural acelerado",
+        status: "Above Plan",
+        observations: "Produção superou as expectativas. Projecto de Nemba Infills com desempenho acima do plano",
         startYear: 2005,
         recoveryHistory: [
           { year: 2005, planCumulative: 5, actualCumulative: 5.2, annualPlan: 5, annualActual: 5.2 },
@@ -937,8 +937,8 @@ export const oilBlocks: OilBlock[] = [
         planRecoveryMMBO: 30,
         actualRecoveryMMBO: 28,
         percentOfPlan: 93,
-        status: "On Track",
-        observations: "Desempenho próximo do plano; campanha de workovers concluída com sucesso em 2024",
+        status: "Below Plan",
+        observations: "Baixo índice de produção, poços fechados devido à emulsão. Necessária intervenção para resolver problemas de emulsão",
         startYear: 2012,
         recoveryHistory: [
           { year: 2012, planCumulative: 2, actualCumulative: 2.1, annualPlan: 2, annualActual: 2.1 },
@@ -956,8 +956,8 @@ export const oilBlocks: OilBlock[] = [
         planRecoveryMMBO: 85,
         actualRecoveryMMBO: 70,
         percentOfPlan: 82,
-        status: "Below Plan",
-        observations: "Reservatórios Pinda com alta razão água-óleo (WOR); eficiência de varrimento reduzida; estudos de infill drilling em curso",
+        status: "Critical",
+        observations: "Falhas mecânicas em ESP. Poços do Lote 1 não entraram em produção. Lote 2 reservatório esgotado. Lote 3 removido do plano",
         startYear: 2000,
         recoveryHistory: [
           { year: 2000, planCumulative: 4, actualCumulative: 4.2, annualPlan: 4, annualActual: 4.2 },
@@ -977,8 +977,8 @@ export const oilBlocks: OilBlock[] = [
         planRecoveryMMBO: 200,
         actualRecoveryMMBO: 195,
         percentOfPlan: 97,
-        status: "On Track",
-        observations: "Projecto âncora do Bloco 0; excelente desempenho; expansão de capacidade de injecção de água planeada para 2026",
+        status: "Below Plan",
+        observations: "Falta de pressão do reservatório, mais gás e menos óleo. Expansão de capacidade de injecção de água planeada para 2026",
         startYear: 2009,
         recoveryHistory: [
           { year: 2009, planCumulative: 8, actualCumulative: 8.5, annualPlan: 8, annualActual: 8.5 },
@@ -1063,7 +1063,7 @@ export const oilBlocks: OilBlock[] = [
         { period: "2026-2050", gePercent: 84, impostosPercent: 16, geMMBO: 470, impostosMMBO: 87, geMMUSD: 25845, impostosMMUSD: 4773 },
       ],
       abandonmentDetail: {
-        total: 3420,
+        total: 3665,
         pontual: 2365,
         fundeamento: 1300,
         fundeado: 102,
