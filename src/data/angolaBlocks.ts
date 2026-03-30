@@ -439,6 +439,14 @@ export interface OilBlock {
   gasBalance?: GasBalance;
   equipmentScale?: EquipmentScale[];
   tierProductionProfiles?: TierProductionProfile[];
+  explorationChallenges?: ExplorationChallenge[];
+}
+
+export interface ExplorationChallenge {
+  title: string;
+  description: string;
+  severity: "Alta" | "Média" | "Baixa";
+  category: "Técnico" | "Operacional" | "Estratégico";
 }
 
 export interface TierProductionProfile {
@@ -663,6 +671,13 @@ export const oilBlocks: OilBlock[] = [
       ],
       geologicalTargets: "Cretáceo (Pinda/Pós-sal, Toca e Lucula/Pré-sal)",
     },
+    explorationChallenges: [
+      { title: "Qualidade da Sísmica", description: "A qualidade da sísmica existente é insuficiente para mapear com confiança os prospectos mais profundos (Pré-sal). Necessidade de reprocessamento e aquisição de novos dados.", severity: "Alta", category: "Técnico" },
+      { title: "Aquisição 4D OBN", description: "A aquisição de sísmica 4D com Ocean Bottom Nodes (OBN) é essencial para monitorização dos reservatórios em produção e identificação de oportunidades de infill drilling.", severity: "Alta", category: "Técnico" },
+      { title: "Qualidade do Reservatório", description: "Variabilidade significativa na qualidade dos reservatórios carbonáticos (vugs e compactação), dificultando a previsão de produtividade dos novos poços.", severity: "Média", category: "Técnico" },
+      { title: "Descobertas Não Desenvolvidas", description: "Existem 32 descobertas não-comerciais que poderão ser reavaliadas à luz de novas tecnologias e condições de mercado mais favoráveis.", severity: "Média", category: "Estratégico" },
+      { title: "Competitividade Global", description: "O Bloco 0 compete por capital de investimento com outras oportunidades globais do operador, exigindo prospectos de alta qualidade para atrair alocação de CAPEX exploratório.", severity: "Alta", category: "Estratégico" },
+    ],
     legislationDocs: [
       { title: "Decreto n.º 47380", type: "decreto-lei", reference: "Decreto n.º 47380, de 14 de Novembro de 1957", date: "1957-11-14", description: "Concessão original do Bloco 0 à CABGOC (Cabinda Gulf Oil Company)" },
       { title: "Decreto Lei n.° 2/04", type: "decreto-lei", reference: "Decreto Lei n.° 2/04, de 7 de Maio", date: "2004-05-07", description: "Aprovação do Contrato de Associação do Bloco 0 (Áreas A e B)" },

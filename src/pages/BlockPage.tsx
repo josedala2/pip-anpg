@@ -13,6 +13,7 @@ import { ArrowLeft, Droplets, DollarSign, ShieldCheck, TrendingUp, Users, Activi
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import type { RevitalizationScenario } from "@/data/angolaBlocks";
 import { TechnicalRecommendationsPanel } from "@/components/dashboard/TechnicalRecommendationsPanel";
+import { ExplorationChallengesPanel } from "@/components/dashboard/ExplorationChallengesPanel";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { exportToCsv, exportToExcel, exportToPdf } from "@/lib/exportFinancial";
 import { toast } from "@/hooks/use-toast";
@@ -1087,6 +1088,11 @@ const BlockPage = () => {
 
             {/* Prospects Table */}
             <ProspectsTable blocks={[block]} scopeLabel={block.name} />
+
+            {/* Exploration Challenges */}
+            {block.explorationChallenges && block.explorationChallenges.length > 0 && (
+              <ExplorationChallengesPanel challenges={block.explorationChallenges} blockName={block.name} />
+            )}
 
           </TabsContent>
 
