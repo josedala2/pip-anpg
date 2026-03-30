@@ -668,7 +668,11 @@ export const oilBlocks: OilBlock[] = [
       { title: "Contrato de Associação (2004)", type: "contrato", date: "2004-05-13", description: "Contrato de Associação entre SNL, CABGOC, TOTAL e ENI para exploração e produção do Bloco 0" },
       { title: "Consolidação Áreas B e C", type: "nota", date: "2002-06-01", description: "Com efeito a partir de 1 de Junho de 2002, as Áreas B e C são consolidadas numa só Área designada B" },
     ],
-    prospects: [],
+    prospects: [
+      { discoveryArea: "Bloco 0", name: "Play Terciário", reservoir: "Terciário", resourcesMMBO: 1097.4, resourcesBCF: 20599, pos: 0 },
+      { discoveryArea: "Bloco 0", name: "Play Albiano", reservoir: "Albiano", resourcesMMBO: 1097.4, resourcesBCF: 20599, pos: 0 },
+      { discoveryArea: "Bloco 0", name: "Play Pré-sal", reservoir: "Pré-sal", resourcesMMBO: 1097.3, resourcesBCF: 20599, pos: 0 },
+    ],
     economicData: {
       costHistory: [
         { period: "2004-2021", capex: 23132, opex: 18228 },
