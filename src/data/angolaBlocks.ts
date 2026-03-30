@@ -349,6 +349,44 @@ export interface EconomicData {
   observations?: string[];
 }
 
+export interface BlockSwotData {
+  strengths: string[];
+  weaknesses: string[];
+  opportunities: string[];
+  threats: string[];
+}
+
+export interface GasBalance {
+  reservesBSCF: number;
+  infrastructureCapacityMMSCFD: number;
+  opportunitiesTCF?: number;
+  productionAvgMMSCFD: number;
+  gorSCFperSTB: number;
+  utilizationIndex: {
+    injection: number; // %
+    fuel: number;
+    flaring: number;
+    export: number;
+  };
+}
+
+export interface EquipmentScale {
+  area: string;
+  designCapacityBOPD?: number;
+  originalReservesMMBO?: number;
+  topsideWeightTons?: number;
+  platforms?: number;
+  generators?: number;
+  turbines?: number;
+  activeWells?: number;
+  installedPowerMW?: number;
+  compressors?: number;
+  lifeEndYear?: number;
+  capacityBOPD?: number;
+  waterInjectionBWPD?: number;
+  cumulativeProductionMMBO?: number;
+}
+
 export interface OilBlock {
   id: string;
   name: string;
@@ -394,6 +432,10 @@ export interface OilBlock {
   revitalizationScenarios?: RevitalizationScenario[];
   technicalRecommendations?: TechnicalRecommendation[];
   pendingRealData?: boolean;
+  // New fields from document analysis
+  swotData?: BlockSwotData;
+  gasBalance?: GasBalance;
+  equipmentScale?: EquipmentScale[];
 }
 
 export const oilBlocks: OilBlock[] = [
