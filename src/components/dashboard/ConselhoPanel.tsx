@@ -200,18 +200,10 @@ export const ConselhoPanel = () => {
         .slice(0, 5);
     } catch { /* safe fallback */ }
 
-    // Trends - use capexHistory years as proxy for annual production
-    const yearMap: Record<number, number> = {};
-    activeBlocks.forEach(b => {
-      b.capexHistory.forEach(h => {
-        const yr = parseInt(h.year);
-        if (!isNaN(yr)) yearMap[yr] = (yearMap[yr] || 0) + b.dailyProduction;
-      });
-    });
-    const trends = Object.entries(yearMap)
-      .map(([year, value]) => ({ year: parseInt(year), value: Math.round(value) }))
-      .filter(t => t.year >= 2018)
-      .sort((a, b) => a.year - b.year);
+    // Trends — use nationalForecast real data (2025-2035 window)
+    const trends = nationalForecast
+      .filter(f => f.year >= 2025 && f.year <= 2035)
+      .map(f => ({ year: f.year, value: f.total * 1000 }));
 
     return { concessions, macro, alerts: critAlerts, trends };
   }, []);
