@@ -1,43 +1,31 @@
 
 
-## Actualizar Análise SWOT do Bloco 0
+## Rever Layout da Visão Económica — Bloco 0
 
-### Dados do documento (imagem)
-Substituir os dados SWOT actuais (linhas 1183-1212) pelos dados exactos do documento oficial.
+Alinhar a apresentação visual com o documento oficial da ANPG (imagem partilhada).
 
-### Ficheiro: `src/data/angolaBlocks.ts`
+### Alterações ao layout (`EconomicVisionTab.tsx`)
 
-**Forças** (5 itens):
-1. Know-how, para potencializar, tornar mais competitivo o Bloco através de investimentos que ajudam a direcionar e desenvolver novos campos.
-2. Expandir a sua presença por meio da aquisição de novas áreas (gás e líquidos), garantia no fornecimento de gás para manter o ALNG em níveis máximos por longo período.
-3. Conteúdo Local, mudança estratégica em direção à expansão das oportunidades e ao apoio direcionado ao desenvolvimento de capacidades de fornecedores locais.
-4. Oportunidades não perfuradas
-5. Existência de instalações
+**1. NPV por Período — 3 gráficos separados + Observações**
+- Substituir o gráfico de barras agrupado único por **3 gráficos de barras individuais** lado a lado (NPV até 2021, NPV 2022-2025, NPV Point Forward), cada um com duas barras (GE azul, Impostos amarelo)
+- Colocar o painel de **Observações** à direita dos 3 gráficos NPV (layout 3+1 colunas em XL), em vez de ficar isolado no final da página
 
-**Fraquezas** (6 itens):
-1. Declínio acentuado da produção de base.
-2. Baixa eficiência nos sistemas de injecção de água e de injecção de gás, aumento das vulnerabilidade nas instalações por obsolescência.
-3. As margens de fluxo de caixa estão sob pressão para activos de Nível 2 e 3.
-4. A tendência de queda na produção e os desafios à integridade dos activos estão a acelerar o limite económico dos activos de nível 2.
-5. Sísmica convencional de baixa resolução e ausência de 4D.
-6. Custo operacional elevado
-7. Falta de aprovisionamento atempado, resultando em custo de abandono a ser pago no ano em que ocorrem
+**2. Repartição de Receitas — Pies com split GE Custos/Lucros**
+- Adicionar um **mini-pie secundário** ao lado de cada pie principal, mostrando a decomposição do GE em "GE Custos" e "GE Lucros"
+- Requer novos campos na interface `RevenueSharePeriod`: `geCustosPercent`, `geCustosMMUSD`, `geLucrosPercent`, `geLucrosMMUSD`
+- Adicionar **labels "Levantamentos"** abaixo dos períodos 1 e 2, e **"Direitos"** abaixo do período 3 (2026-2050), com os valores MMBO correspondentes
 
-**Oportunidades** (7 itens):
-1. Implementação de tecnologia para melhorias em IA.
-2. Avaliar oportunidade para empregar métodos de recuperação terciária, bem como maximizar as actividades para assegurar a produção de base (intervenções com sondas e sem sondas, campanhas de estimulação de poços).
-3. Abordagem contínua de campanhas de recuperação de integridade e confiabilidade, optimizar a estratégia de intervenção de TAR.
-4. É imprescindível executar o plano para descomissionamento, uma vez que operar activos de nível 3 com segurança exige um volume significativo de Opex.
-5. Criar incentivos aos investidores e ou alteração do tipo de contrato de concessão incluindo a monetização das oportunidades de gás de elevado custo.
-6. Aumento do portfólio de recursos descobertos.
-7. Perfuração dos prospectos 105-B e 131-A
+**3. Dados adicionais** (`angolaBlocks.ts`)
+- Expandir os 3 objectos `revenueShare` do Bloco 0 com os novos campos:
+  - 2004-2021: GE Custos 71% (41.095), GE Lucros 29% (17.040)
+  - 2022-2025: GE Custos 78% (8.451), GE Lucros 22% (2.448)
+  - 2026-2050: GE Custos 93% (24.030), GE Lucros 7% (1.815)
+- Adicionar campo `liftingLabel` ("Levantamentos" para períodos 1-2, "Direitos" para período 3)
 
-**Ameaças** (4 itens):
-1. Declínio acentuado da produção, manter uma baixa taxa de declínio requer investimento contínuo em poços.
-2. Falta de manutenção da pressão nos reservatórios, resultante da ineficiência do sistema de injecção de água na Área do Malongo e Takula.
-3. Manter activos muito antigos exige despesas operacionais contínuas para a sua conservação e segurança operacional.
-4. Descobertas com baixa economicidade.
+### Ficheiros a alterar
+1. `src/data/angolaBlocks.ts` — interface `RevenueSharePeriod` + dados do Bloco 0
+2. `src/components/dashboard/EconomicVisionTab.tsx` — refactoring do layout
 
-### Alteração
-Substituir o conteúdo do objecto `swotData` (linhas 1183-1212) com os dados acima. Nenhuma alteração a componentes UI necessária — o `SwotAnalysis.tsx` já renderiza arrays de strings.
+### Sem impacto
+Os restantes painéis (Cash Flow, Custos, Abandono, Plano de Investimentos, Partilha de Produção) mantêm-se inalterados.
 
