@@ -94,13 +94,6 @@ const kpiGroups: { title: string; items: KPIItem[] }[] = [
     ],
   },
   {
-    title: "Operacionais",
-    items: [
-      { label: "Instalações Críticas", value: criticalFacilities(), suffix: "", icon: Wrench, status: getStatus("Instalações Críticas", criticalFacilities()), drill: "Instalações com eficiência < 70% (blocos verificados)" },
-      { label: "Contratos a Expirar", value: contractsExpiring(), suffix: "", icon: DollarSign, status: getStatus("Contratos a Expirar", contractsExpiring()), drill: "Contratos com vencimento em < 24 meses (blocos verificados)" },
-    ],
-  },
-  {
     title: "Financeiros",
     items: [
       { label: "Receita Estado", value: estimatedStateRevenue(), prefix: "$", suffix: "M", icon: Landmark, status: "neutral", drill: "Estimativa anual de receita fiscal petrolífera (base: produção nacional)" },
