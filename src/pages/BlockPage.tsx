@@ -1807,7 +1807,7 @@ const BlockPage = () => {
                                   <TrendingUp className="w-4 h-4 text-success" />Plano de Investimentos Quinquenal (MMUSD)
                                 </CardTitle>
                                 <span className="text-xs text-muted-foreground font-mono">
-                                  Total: <span className="font-semibold text-foreground">${eco.investmentPlan.reduce((s, y) => s + y.total, 0).toLocaleString()}M</span>
+                                  Total: <span className="font-semibold text-foreground">${eco.investmentPlan.reduce((s, y) => s + y.exploracao + y.desenvolvimento + (y.operacao || 0), 0).toLocaleString()}M</span>
                                 </span>
                               </div>
                             </CardHeader>
