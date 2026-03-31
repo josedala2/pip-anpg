@@ -128,6 +128,10 @@ export const SemaphoreTimelineChart = ({ block }: SemaphoreTimelineChartProps) =
       // 6. Compliance (static)
       criteria["Compliance"] = block.complianceScore < 70 ? "red" : block.complianceScore < 85 ? "yellow" : "green";
 
+      // 7. OPEX/BO (static)
+      const opex = block.economicVision?.technicalCost?.opex2025 ?? 0;
+      criteria["OPEX"] = opex > 35 ? "red" : opex > 25 ? "yellow" : "green";
+
       // Overall
       const levels = Object.values(criteria);
       const overall: SemaphoreLevel = levels.includes("red") ? "red" : levels.includes("yellow") ? "yellow" : "green";
@@ -138,7 +142,7 @@ export const SemaphoreTimelineChart = ({ block }: SemaphoreTimelineChartProps) =
     return result;
   }, [block, ci, monthlyProdRate, capexYearlyTrend, currentCapexDev, currentProdDecline, oldestAge]);
 
-  const criteriaNames = ["Prazo", "Produção", "CAPEX", "Instalações", "Execução", "Compliance"];
+  const criteriaNames = ["Prazo", "Produção", "CAPEX", "Instalações", "Execução", "Compliance", "OPEX"];
 
   // Detect transition points for annotations
   const transitions = useMemo(() => {

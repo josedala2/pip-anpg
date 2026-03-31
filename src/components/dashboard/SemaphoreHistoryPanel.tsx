@@ -117,6 +117,13 @@ export const SemaphoreHistoryPanel = ({ block }: SemaphoreHistoryPanelProps) => 
         level: block.complianceScore < 70 ? "red" : block.complianceScore < 85 ? "yellow" : "green",
       });
 
+      // 7. OPEX/BO (static — annual value)
+      const opex = block.economicVision?.technicalCost?.opex2025 ?? 0;
+      criteria.push({
+        name: "OPEX",
+        level: opex > 35 ? "red" : opex > 25 ? "yellow" : "green",
+      });
+
       // Overall
       const overall: SemaphoreLevel = criteria.some(c => c.level === "red")
         ? "red"

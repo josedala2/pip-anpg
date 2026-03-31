@@ -573,25 +573,7 @@ export const ConcessionStatusTab = ({ block }: ConcessionStatusTabProps) => {
         </Card>
       )}
 
-      {/* Row 5: Execution progress bar */}
-      <Card className="glass-card">
-        <CardHeader className="p-4 pb-2">
-          <CardTitle className="text-sm 2xl:text-base flex items-center gap-2">
-            <DollarSign className="w-4 h-4 text-warning" />
-            Progresso de Investimento
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="p-4 pt-2">
-          <div className="space-y-2">
-            <div className="flex justify-between text-xs text-muted-foreground">
-              <span>Acumulado: ${block.accumulatedInvestment.toLocaleString()}M</span>
-              <span>Planeado: ${block.plannedInvestment.toLocaleString()}M</span>
-            </div>
-            <Progress value={block.executionRate} className="h-3" />
-            <div className="text-right text-xs font-mono font-semibold">{block.executionRate}%</div>
-          </div>
-        </CardContent>
-      </Card>
+      {/* Card Progresso de Investimento — ocultado */}
     </div>
   );
 };
