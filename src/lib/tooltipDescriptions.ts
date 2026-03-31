@@ -61,6 +61,7 @@ export const tooltipDescriptions: Record<string, string> = {
   "IRR": "Internal Rate of Return — taxa interna de retorno do investimento",
   "Breakeven": "Preço mínimo do barril de petróleo necessário para cobrir todos os custos operacionais e de capital",
   "OPEX/Barril": "Custo operacional por barril de petróleo produzido (USD/bbl)",
+  "OPEX/BO 2025": "Custo técnico total por barril de óleo em 2025 (CAPEX/BO + OPEX/BO). Valores acima de $25/BO indicam pressão nos custos operacionais; acima de $35/BO sinalizam risco económico elevado.",
   "Cost Recovery": "Mecanismo contratual que permite ao operador recuperar custos de exploração e desenvolvimento antes da partilha de lucros",
   "Bónus de Assinatura": "Pagamento único ao Estado aquando da assinatura do contrato de concessão",
   "Bónus Social": "Contribuição obrigatória do operador para projectos de desenvolvimento social",
