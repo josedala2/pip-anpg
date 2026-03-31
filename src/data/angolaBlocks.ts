@@ -1249,6 +1249,12 @@ export const oilBlocks: OilBlock[] = [
         "88% das reservas totais (4.599 MMBO) já foram levantadas até 2025",
         "Previsão de levantamentos 2026-2050: ~470 MMBO GE + ~87 MMBO SNL E.P. (Direitos)",
       ],
+      investmentExecuted: {
+        periods: [
+          { label: "2004 - 2021", capex: 18228, opex: 23132 },
+          { label: "2022 - 2025", capex: 4872, opex: 3431 },
+        ],
+      },
     },
     // Technical recommendations from "Estado das Concessões 2026"
     technicalRecommendations: [
