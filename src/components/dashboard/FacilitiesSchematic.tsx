@@ -248,9 +248,9 @@ export const FacilitiesSchematic = ({ renderAsContent = false }: { renderAsConte
   const resetView = useCallback(() => { setZoom(1); setPan({ x: 0, y: 0 }); }, []);
 
   const exportPng = useCallback(async () => {
-    if (!svgRef.current) return;
+    if (!svgContainerRef.current) return;
     try {
-      const dataUrl = await toPng(svgRef.current, { backgroundColor: "#09090b", pixelRatio: 2 });
+      const dataUrl = await toPng(svgContainerRef.current, { backgroundColor: "#09090b", pixelRatio: 2 });
       const link = document.createElement("a");
       link.download = `esquematico-bloco0${activeArea ? `-${activeArea.replace(/\s/g, "-").toLowerCase()}` : ""}.png`;
       link.href = dataUrl;
