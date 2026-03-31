@@ -1119,37 +1119,26 @@ const BlockPage = () => {
            <TabsContent value="prod-proj" className="space-y-4 2xl:space-y-6">
              {/* Production KPIs */}
              {(() => {
-                const producingFields = block.fields?.filter(f => f.status === "Producing") || [];
-                const totalPeak = producingFields.reduce((s, f) => s + (f.peakProduction || 0), 0);
-                const peakVsActual = totalPeak > 0 ? ((block.dailyProduction / totalPeak) * 100).toFixed(1) : "N/A";
-                const history = block.productionHistory || [];
-                // Refined 3-vs-3 decline calculation
-                const declineRate = history.length >= 6
-                  ? (() => {
-                      const first3 = history.slice(0, 3).reduce((s, h) => s + h.value, 0) / 3;
-                      const last3 = history.slice(-3).reduce((s, h) => s + h.value, 0) / 3;
-                      return first3 > 0 ? (((first3 - last3) / first3) * 100).toFixed(1) : "N/A";
-                    })()
-                  : history.length >= 2
-                    ? (((history[0].value - history[history.length - 1].value) / history[0].value) * 100).toFixed(1)
-                    : "N/A";
-                // Average production per producing field
-                const avgPerField = producingFields.length > 0
-                  ? Math.round(block.dailyProduction / producingFields.length)
-                  : 0;
-                // Annual decline rate (annualized from monthly data)
-                const annualDecline = history.length >= 12
-                  ? (() => {
-                      const first3 = history.slice(0, 3).reduce((s, h) => s + h.value, 0) / 3;
-                      const last3 = history.slice(-3).reduce((s, h) => s + h.value, 0) / 3;
-                      const months = history.length;
-                      if (first3 <= 0 || last3 <= 0) return "N/A";
-                      const annualized = (1 - Math.pow(last3 / first3, 12 / months)) * 100;
-                      return annualized.toFixed(1);
-                    })()
-                  : "N/A";
+                 const producingFields = block.fields?.filter(f => f.status === "Producing" || (f.peakProduction && f.peakProduction > 0)) || [];
+                 const totalPeak = producingFields.reduce((s, f) => s + (f.peakProduction || 0), 0);
+                 const peakVsActual = totalPeak > 0 ? ((block.dailyProduction / totalPeak) * 100).toFixed(1) : "N/A";
+                 const history = block.productionHistory || [];
+                 // Refined 3-vs-3 decline calculation
+                 const declineRate = history.length >= 6
+                   ? (() => {
+                       const first3 = history.slice(0, 3).reduce((s, h) => s + h.value, 0) / 3;
+                       const last3 = history.slice(-3).reduce((s, h) => s + h.value, 0) / 3;
+                       return first3 > 0 ? (((first3 - last3) / first3) * 100).toFixed(1) : "N/A";
+                     })()
+                   : history.length >= 2
+                     ? (((history[0].value - history[history.length - 1].value) / history[0].value) * 100).toFixed(1)
+                     : "N/A";
+                 // Average production per producing field
+                 const avgPerField = producingFields.length > 0
+                   ? Math.round(block.dailyProduction / producingFields.length)
+                   : 0;
                 return (
-                  <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3">
+                  <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-3">
                     <Card className="glass-card">
                       <CardContent className="p-4 flex flex-col items-center text-center">
                          <Gauge className="w-5 h-5 text-primary mb-1" />
@@ -1190,14 +1179,8 @@ const BlockPage = () => {
                         <span className="text-[10px] text-muted-foreground">BOPD/campo</span>
                       </CardContent>
                     </Card>
-                    <Card className="glass-card">
-                      <CardContent className="p-4 flex flex-col items-center text-center">
-                         <TrendingDown className="w-5 h-5 text-muted-foreground mb-1" />
-                         <span className="text-xs text-muted-foreground flex items-center gap-1">Declínio Anualizado {tooltipDescriptions["Declínio Anualizado"] && <InfoTooltip text={tooltipDescriptions["Declínio Anualizado"]} />}</span>
-                        <span className="text-lg font-bold text-foreground">{annualDecline}{annualDecline !== "N/A" ? "%" : ""}</span>
-                        <span className="text-[10px] text-muted-foreground">taxa anual</span>
-                      </CardContent>
-                    </Card>
+
+
                   </div>
                 );
               })()}
