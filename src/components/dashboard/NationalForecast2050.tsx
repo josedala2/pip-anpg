@@ -13,6 +13,7 @@ export const NationalForecast2050 = () => {
       base: d.baseProduction,
       fid: d.discoveredWithFID,
       noFid: d.discoveredWithoutFID,
+      exploration: d.newConcessions,
       total: d.total,
     })), []);
 
@@ -33,7 +34,7 @@ export const NationalForecast2050 = () => {
             Pico {peakEntry.year}: {peakEntry.total.toLocaleString("pt-AO")} kBOPD
           </span>
           <span className="text-[9px] text-muted-foreground font-medium">
-            Fonte: Estado das Concessões 2026, ANPG
+            Fonte: EHA — Previsões de Produção, ANPG
           </span>
         </div>
       </div>
@@ -76,6 +77,7 @@ export const NationalForecast2050 = () => {
                   base: "Produção de Base",
                   fid: "Descobertas c/ FID",
                   noFid: "Descobertas s/ FID",
+                  exploration: "Exploração & Novas Concessões",
                 };
                 return [`${v.toLocaleString("pt-AO")} kBOPD`, labels[name] || name];
               }}
@@ -88,6 +90,7 @@ export const NationalForecast2050 = () => {
                   base: "Produção de Base",
                   fid: "Descobertas c/ Data FID",
                   noFid: "Descobertas s/ Data FID",
+                  exploration: "Exploração & Novas Concessões",
                 };
                 return labels[value] || value;
               }}
@@ -95,12 +98,12 @@ export const NationalForecast2050 = () => {
 
             {/* Reference line at ~1020 */}
             <ReferenceLine
-              y={1020}
+              y={1037}
               stroke="hsl(var(--destructive))"
               strokeDasharray="6 3"
               strokeOpacity={0.6}
               label={{
-                value: "1 020",
+                value: "1 037",
                 position: "right",
                 style: { fontSize: 8, fill: "hsl(var(--destructive))" },
               }}
@@ -108,19 +111,11 @@ export const NationalForecast2050 = () => {
 
             <Bar dataKey="base" stackId="prod" fill="hsl(var(--muted-foreground) / 0.5)" radius={[0, 0, 0, 0]} maxBarSize={16} />
             <Bar dataKey="fid" stackId="prod" fill="hsl(var(--primary))" radius={[0, 0, 0, 0]} maxBarSize={16} />
-            <Bar dataKey="noFid" stackId="prod" fill="hsl(var(--chart-2))" radius={[2, 2, 0, 0]} maxBarSize={16}>
-              {data.map((entry, index) => (
+            <Bar dataKey="noFid" stackId="prod" fill="hsl(var(--chart-2))" radius={[0, 0, 0, 0]} maxBarSize={16} />
+            <Bar dataKey="exploration" stackId="prod" fill="hsl(var(--chart-4))" radius={[2, 2, 0, 0]} maxBarSize={16}>
+              {data.map((_, index) => (
                 <Cell key={index} />
               ))}
-              {/* Annotation labels for key years */}
-              {data.map((entry, index) => {
-                if (entry.year === "2025" || entry.year === peakEntry.year) {
-                  return (
-                    <Cell key={`label-${index}`} />
-                  );
-                }
-                return <Cell key={`cell-${index}`} />;
-              })}
             </Bar>
 
             {/* Annotation for 2025 */}
@@ -128,7 +123,7 @@ export const NationalForecast2050 = () => {
               x="2025"
               stroke="transparent"
               label={{
-                value: "1 051",
+                value: "1 037",
                 position: "top",
                 style: { fontSize: 9, fontWeight: 700, fill: "hsl(var(--foreground))" },
                 offset: 5,
@@ -139,7 +134,7 @@ export const NationalForecast2050 = () => {
               x={peakEntry.year}
               stroke="transparent"
               label={{
-                value: `1 682`,
+                value: peakEntry.total.toLocaleString("pt-AO"),
                 position: "top",
                 style: { fontSize: 9, fontWeight: 700, fill: "hsl(var(--primary))" },
                 offset: 5,
