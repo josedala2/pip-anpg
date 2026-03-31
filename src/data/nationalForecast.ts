@@ -151,7 +151,7 @@ export const nationalHistoricalProduction = [
 
 // National Certified Metrics — from "Estado das Concessões 2026"
 export const nationalCertifiedMetrics = {
-  productionBOPD: 1036000,
+  productionBOPD: 1037000,
   anpgQuotaBOPD: 441609,
   snlQuotaBOPD: 165760,
   reservesOilMb: 2600,
