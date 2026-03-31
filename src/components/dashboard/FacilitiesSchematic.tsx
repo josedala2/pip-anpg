@@ -411,6 +411,23 @@ export const FacilitiesSchematic = ({ renderAsContent = false }: { renderAsConte
           )}
         </div>
       </CardContent>
+  );
+
+  if (renderAsContent) return content;
+
+  return (
+    <Card className="glass-card">
+      <CardHeader className="p-2 sm:p-4 pb-1 sm:pb-2">
+        <div className="flex items-center justify-between flex-wrap gap-1.5 sm:gap-2">
+          <CardTitle className="text-xs sm:text-sm flex items-center gap-1.5 sm:gap-2">
+            <GitBranch className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
+            <span className="hidden sm:inline">Diagrama Esquemático — Infraestrutura</span>
+            <span className="sm:hidden">Esquemático</span>
+          </CardTitle>
+          {legendBar}
+        </div>
+      </CardHeader>
+      {content}
     </Card>
   );
 };
