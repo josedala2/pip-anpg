@@ -206,15 +206,27 @@ export const ConcessionStatusTab = ({ block }: ConcessionStatusTabProps) => {
       icon: Clock,
       color: monthsRemaining !== null && monthsRemaining < 36 ? "text-danger" : "text-primary",
     },
-    {
-      label: "Investimento Executado",
-      value: `${effectiveExecutionRate}%`,
-      sub: derivedExecution
-        ? `$${derivedExecution.actual.toLocaleString()}M / $${derivedExecution.planned.toLocaleString()}M`
-        : `$${block.accumulatedInvestment.toLocaleString()}M / $${block.plannedInvestment.toLocaleString()}M`,
-      icon: DollarSign,
-      color: effectiveExecutionRate >= 80 ? "text-success" : effectiveExecutionRate >= 60 ? "text-warning" : "text-danger",
-    },
+    (() => {
+      const ie = block.economicVision?.investmentExecuted;
+      if (ie && ie.periods.length > 0) {
+        const totalExec = ie.periods.reduce((s, p) => s + p.capex + p.opex, 0);
+        return {
+          label: "Investimento Executado",
+          value: `$${(totalExec / 1000).toFixed(1)}B`,
+          icon: DollarSign,
+          color: "text-warning" as const,
+        };
+      }
+      return {
+        label: "Investimento Executado",
+        value: `${effectiveExecutionRate}%`,
+        sub: derivedExecution
+          ? `$${derivedExecution.actual.toLocaleString()}M / $${derivedExecution.planned.toLocaleString()}M`
+          : `$${block.accumulatedInvestment.toLocaleString()}M / $${block.plannedInvestment.toLocaleString()}M`,
+        icon: DollarSign,
+        color: effectiveExecutionRate >= 80 ? "text-success" : effectiveExecutionRate >= 60 ? "text-warning" : "text-danger",
+      };
+    })(),
     {
       label: "Reservas Estimadas",
       value: block.currentReservesMMBO ? `${block.currentReservesMMBO} MMBO` : `${block.estimatedReserves} Mb`,
