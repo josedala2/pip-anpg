@@ -43,27 +43,10 @@ const maintenanceStatusColor: Record<string, { color: string; icon: typeof Check
 };
 
 export const FacilitiesTab = ({ facilityData }: Props) => {
-  const [lightboxOpen, setLightboxOpen] = useState(false);
-  const [lightboxIndex, setLightboxIndex] = useState(0);
   const [docFilter, setDocFilter] = useState<string>("all");
   const [selectedFacility, setSelectedFacility] = useState<string | null>(null);
-
-  const photos = facilityData.photos || [];
-  const docs = facilityData.documents || [];
-  const specs = facilityData.platformSpecs || [];
-  const maintenance = facilityData.maintenancePlan || [];
-
-  const filteredDocs = docFilter === "all" ? docs : docs.filter(d => d.type === docFilter);
-  const docTypes = [...new Set(docs.map(d => d.type))];
-
-  const openLightbox = (idx: number) => {
-    setLightboxIndex(idx);
-    setLightboxOpen(true);
-  };
-
-  const navigateLightbox = (dir: -1 | 1) => {
-    setLightboxIndex((prev) => (prev + dir + photos.length) % photos.length);
-  };
+  const [docsOpen, setDocsOpen] = useState(false);
+  const [maintenanceOpen, setMaintenanceOpen] = useState(false);
 
   const selectedSpec = specs.find(s => s.name === selectedFacility);
 
