@@ -48,13 +48,21 @@ export const ConcessionStatusTab = ({ block }: ConcessionStatusTabProps) => {
 
   // Derive execution rate from capexHistory when economicVision is available
   const derivedExecution = useMemo(() => {
+    // Prioritise investmentExecuted (total across all periods)
+    const ie = block.economicVision?.investmentExecuted;
+    if (ie && ie.periods.length > 0) {
+      const total = ie.periods.reduce((s, p) => s + p.capex + p.opex, 0);
+      const planned = block.plannedInvestment;
+      return { rate: planned > 0 ? Math.round((total / planned) * 100) : 0, actual: total, planned };
+    }
+    // Fallback to capexHistory
     const ch = block.capexHistory;
     if (!ch || ch.length === 0) return null;
     const totalPlanned = ch.reduce((s, v) => s + v.planned, 0);
     const totalActual = ch.reduce((s, v) => s + v.actual, 0);
     if (totalPlanned === 0) return null;
     return { rate: Math.round((totalActual / totalPlanned) * 100), actual: totalActual, planned: totalPlanned };
-  }, [block.capexHistory]);
+  }, [block.capexHistory, block.economicVision, block.plannedInvestment]);
 
   const effectiveExecutionRate = derivedExecution?.rate ?? block.executionRate;
 
