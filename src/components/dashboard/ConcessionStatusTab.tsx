@@ -346,8 +346,8 @@ export const ConcessionStatusTab = ({ block }: ConcessionStatusTabProps) => {
                   <span className="text-[10px] text-muted-foreground">/100</span>
                 </div>
               </div>
-              <Badge className={`${classificationConfig[strategicScore.classification].bgColor} ${classificationConfig[strategicScore.classification].color} border text-xs`}>
-                {strategicScore.classification}
+              <Badge className={`${classificationConfig[strategic.classification].bgColor} ${classificationConfig[strategic.classification].color} border text-xs`}>
+                {strategic.classification}
               </Badge>
               <span className={`text-xs font-semibold ${urgencyConfig[strategicScore.urgency].color}`}>
                 Urgência: {strategicScore.urgency}
