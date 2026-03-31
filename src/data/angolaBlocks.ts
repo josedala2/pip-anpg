@@ -351,6 +351,9 @@ export interface EconomicVision {
   liftingsAccumulated?: LiftingsAccumulated;
   liftingsForecast?: LiftingsForecastYear[];
   liftingsObservations?: string[];
+  investmentExecuted?: {
+    periods: { label: string; capex: number; opex: number }[];
+  };
 }
 
 export interface TechnicalRecommendation {
@@ -519,7 +522,7 @@ export const oilBlocks: OilBlock[] = [
     contractDate: "1995-06-15",
     dailyProduction: 119285,
     estimatedReserves: 21000,
-    accumulatedInvestment: 5400,
+    accumulatedInvestment: 49664,
     plannedInvestment: 14126,
     executionRate: 53,
     riskScore: 2,
@@ -1246,6 +1249,12 @@ export const oilBlocks: OilBlock[] = [
         "88% das reservas totais (4.599 MMBO) já foram levantadas até 2025",
         "Previsão de levantamentos 2026-2050: ~470 MMBO GE + ~87 MMBO SNL E.P. (Direitos)",
       ],
+      investmentExecuted: {
+        periods: [
+          { label: "2004 - 2021", capex: 18228, opex: 23132 },
+          { label: "2022 - 2025", capex: 4872, opex: 3431 },
+        ],
+      },
     },
     // Technical recommendations from "Estado das Concessões 2026"
     technicalRecommendations: [

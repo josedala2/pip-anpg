@@ -397,9 +397,15 @@ const BlockPage = () => {
                 const kpis = [
                   { label: "Produção Diária", value: block.dailyProduction > 0 ? `${(block.dailyProduction / 1000).toFixed(0)}k BOPD` : "—", icon: Droplets, color: "text-primary" },
                   { label: block.explorationSummary?.stooipMMBO ? "Recurso Descoberto" : "Reservas Estimadas", value: block.explorationSummary?.stooipMMBO ? `${block.explorationSummary.stooipMMBO.toLocaleString()} MMBO` : `${block.estimatedReserves}M bbl`, icon: Layers, color: "text-success", sub: block.explorationSummary?.giipBCF ? `GIIP: ${block.explorationSummary.giipBCF.toLocaleString()} BCF` : undefined },
-                  ed && invTotal
-                    ? { label: "Investimento Quinquenal", value: `$${invTotal.toLocaleString()}M`, icon: DollarSign, color: "text-warning", sub: "MMUSD (Expl+Dev+Op)" }
-                    : { label: "Investimento Acum.", value: `$${(block.accumulatedInvestment / 1000).toFixed(1)}B`, icon: DollarSign, color: "text-warning" },
+                  ev?.investmentExecuted
+                    ? (() => {
+                        const totalExec = ev.investmentExecuted.periods.reduce((s, p) => s + p.capex + p.opex, 0);
+                        const subParts = ev.investmentExecuted.periods.map(p => `${p.label}: $${(p.capex + p.opex).toLocaleString()}M`).join(" + ");
+                        return { label: "Investimento Executado", value: `$${(totalExec / 1000).toFixed(1)}B`, icon: DollarSign, color: "text-warning", sub: subParts };
+                      })()
+                    : ed && invTotal
+                      ? { label: "Investimento Quinquenal", value: `$${invTotal.toLocaleString()}M`, icon: DollarSign, color: "text-warning", sub: "MMUSD (Expl+Dev+Op)" }
+                      : { label: "Investimento Acum.", value: `$${(block.accumulatedInvestment / 1000).toFixed(1)}B`, icon: DollarSign, color: "text-warning" },
                   ev && opex2025
                     ? { label: "Custo Técnico", value: `$${opex2025}/bbl`, icon: TrendingUp, color: "text-primary", sub: "OPEX unitário 2025" }
                     : { label: "Taxa Execução", value: `${block.executionRate}%`, icon: TrendingUp, color: "text-primary" },
