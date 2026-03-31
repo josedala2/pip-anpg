@@ -262,8 +262,22 @@ export const FacilitiesTab = ({ facilityData }: Props) => {
         </Card>
       )}
 
-      {/* Interactive Schematic Diagram */}
-      <FacilitiesSchematic />
+      {/* Interactive Schematic Diagram — Collapsible */}
+      <Collapsible open={schematicOpen} onOpenChange={setSchematicOpen}>
+        <Card className="glass-card">
+          <CollapsibleTrigger asChild>
+            <CardHeader className="p-4 pb-2 cursor-pointer hover:bg-muted/30 transition-colors rounded-t-lg">
+              <CardTitle className="text-sm flex items-center gap-2">
+                <Factory className="w-4 h-4 text-primary" />Diagrama Esquemático — Infraestrutura
+                <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform duration-200 ml-auto ${schematicOpen ? "rotate-180" : ""}`} />
+              </CardTitle>
+            </CardHeader>
+          </CollapsibleTrigger>
+          <CollapsibleContent>
+            <FacilitiesSchematic renderAsContent />
+          </CollapsibleContent>
+        </Card>
+      </Collapsible>
 
       {/* Platform Specifications Table */}
       {specs.length > 0 && (
