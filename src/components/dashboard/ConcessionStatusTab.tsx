@@ -179,6 +179,15 @@ export const ConcessionStatusTab = ({ block }: ConcessionStatusTabProps) => {
         icon: Factory,
       });
     }
+    // 7. OPEX/BO
+    const opex2025 = block.economicVision?.technicalCost?.opex2025;
+    if (opex2025 !== undefined && opex2025 > 25) {
+      list.push({
+        severity: opex2025 > 35 ? "red" : "yellow",
+        message: `OPEX elevado: $${opex2025} USD/BO (2025)`,
+        icon: Gauge,
+      });
+    }
 
     if (list.length === 0) {
       list.push({ severity: "green", message: "Sem alertas — concessão em bom estado", icon: CheckCircle2 });
