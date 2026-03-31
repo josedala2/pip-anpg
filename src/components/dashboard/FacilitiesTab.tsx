@@ -308,144 +308,74 @@ export const FacilitiesTab = ({ facilityData }: Props) => {
         </Card>
       )}
 
-      {/* Photo Gallery */}
-      {photos.length > 0 && (
-        <Card className="glass-card">
-          <CardHeader className="p-4 pb-2">
-            <CardTitle className="text-sm flex items-center gap-2">
-              <Camera className="w-4 h-4 text-primary" />Galeria de Instalações
-              <Badge variant="outline" className="text-[10px] ml-auto">{photos.length} fotos</Badge>
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-4 pt-0">
-            <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3">
-              {photos.map((photo, idx) => (
-                <div
-                  key={idx}
-                  className="group relative aspect-[4/3] rounded-lg overflow-hidden border border-border/50 cursor-pointer hover:border-primary/50 transition-all"
-                  onClick={() => openLightbox(idx)}
-                >
-                  <img
-                    src={photo.url}
-                    alt={photo.caption}
-                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                    loading="lazy"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                  <div className="absolute bottom-0 left-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <p className="text-[10px] text-foreground font-medium leading-tight">{photo.caption}</p>
-                    <div className="flex items-center gap-2 mt-0.5">
-                      {photo.platform && <span className="text-[9px] text-muted-foreground">{photo.platform}</span>}
-                      {photo.year && <span className="text-[9px] text-muted-foreground">· {photo.year}</span>}
-                    </div>
-                  </div>
-                  <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <ImageIcon className="w-4 h-4 text-foreground/70" />
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Lightbox Dialog */}
-      <Dialog open={lightboxOpen} onOpenChange={setLightboxOpen}>
-        <DialogContent className="max-w-4xl bg-background/95 backdrop-blur-xl border-border p-0">
-          <DialogTitle className="sr-only">Galeria de Instalações</DialogTitle>
-          {photos.length > 0 && (
-            <div className="relative">
-              <img
-                src={photos[lightboxIndex]?.url}
-                alt={photos[lightboxIndex]?.caption}
-                className="w-full max-h-[70vh] object-contain rounded-t-lg"
-              />
-              <div className="p-4 space-y-1">
-                <p className="text-sm font-medium">{photos[lightboxIndex]?.caption}</p>
-                <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                  {photos[lightboxIndex]?.platform && <span>{photos[lightboxIndex]?.platform}</span>}
-                  {photos[lightboxIndex]?.year && <span>· {photos[lightboxIndex]?.year}</span>}
-                  <span className="ml-auto">{lightboxIndex + 1} / {photos.length}</span>
-                </div>
-              </div>
-              {photos.length > 1 && (
-                <>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="absolute left-2 top-1/2 -translate-y-1/2 bg-background/50 hover:bg-background/80 rounded-full"
-                    onClick={(e) => { e.stopPropagation(); navigateLightbox(-1); }}
-                  >
-                    <ChevronLeft className="w-5 h-5" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="absolute right-2 top-1/2 -translate-y-1/2 bg-background/50 hover:bg-background/80 rounded-full"
-                    onClick={(e) => { e.stopPropagation(); navigateLightbox(1); }}
-                  >
-                    <ChevronRight className="w-5 h-5" />
-                  </Button>
-                </>
-              )}
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
-
-      {/* Maintenance Plan */}
+      {/* Maintenance Plan — Collapsible */}
       {maintenance.length > 0 && (
-        <Card className="glass-card">
-          <CardHeader className="p-4 pb-2">
-            <CardTitle className="text-sm flex items-center gap-2">
-              <Wrench className="w-4 h-4 text-warning" />Plano de Manutenção
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-4 pt-0">
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="text-xs">Período</TableHead>
-                    <TableHead className="text-xs">Âmbito</TableHead>
-                    <TableHead className="text-xs text-center">Estado</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {maintenance
-                    .sort((a, b) => a.period.localeCompare(b.period))
-                    .map((item, i) => {
-                      const st = maintenanceStatusColor[item.status] || maintenanceStatusColor["Planeado"];
-                      return (
-                        <TableRow key={i}>
-                          <TableCell className="text-xs font-mono">{item.period}</TableCell>
-                          <TableCell className="text-xs text-muted-foreground">{item.scope}</TableCell>
-                          <TableCell className="text-center">
-                            <div className={`inline-flex items-center gap-1 text-[10px] font-medium ${st.color}`}>
-                              <st.icon className="w-3 h-3" />
-                              {item.status}
-                            </div>
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })}
-                </TableBody>
-              </Table>
-            </div>
-          </CardContent>
-        </Card>
+        <Collapsible open={maintenanceOpen} onOpenChange={setMaintenanceOpen}>
+          <Card className="glass-card">
+            <CollapsibleTrigger asChild>
+              <CardHeader className="p-4 pb-2 cursor-pointer hover:bg-muted/30 transition-colors rounded-t-lg">
+                <CardTitle className="text-sm flex items-center gap-2">
+                  <Wrench className="w-4 h-4 text-warning" />Plano de Manutenção
+                  <Badge variant="outline" className="text-[10px] ml-auto mr-2">{maintenance.length} itens</Badge>
+                  <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform duration-200 ${maintenanceOpen ? "rotate-180" : ""}`} />
+                </CardTitle>
+              </CardHeader>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <CardContent className="p-4 pt-0">
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="text-xs">Período</TableHead>
+                        <TableHead className="text-xs">Âmbito</TableHead>
+                        <TableHead className="text-xs text-center">Estado</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {maintenance
+                        .sort((a, b) => a.period.localeCompare(b.period))
+                        .map((item, i) => {
+                          const st = maintenanceStatusColor[item.status] || maintenanceStatusColor["Planeado"];
+                          return (
+                            <TableRow key={i}>
+                              <TableCell className="text-xs font-mono">{item.period}</TableCell>
+                              <TableCell className="text-xs text-muted-foreground">{item.scope}</TableCell>
+                              <TableCell className="text-center">
+                                <div className={`inline-flex items-center gap-1 text-[10px] font-medium ${st.color}`}>
+                                  <st.icon className="w-3 h-3" />
+                                  {item.status}
+                                </div>
+                              </TableCell>
+                            </TableRow>
+                          );
+                        })}
+                    </TableBody>
+                  </Table>
+                </div>
+              </CardContent>
+            </CollapsibleContent>
+          </Card>
+        </Collapsible>
       )}
 
-      {/* Documents */}
+      {/* Documents — Collapsible */}
       {docs.length > 0 && (
-        <Card className="glass-card">
-          <CardHeader className="p-4 pb-2">
-            <div className="flex items-center justify-between flex-wrap gap-2">
-              <CardTitle className="text-sm flex items-center gap-2">
-                <FileText className="w-4 h-4 text-primary" />Documentos & Certificações
-                <Badge variant="outline" className="text-[10px]">{docs.length}</Badge>
-              </CardTitle>
-              <div className="flex items-center gap-1.5">
+        <Collapsible open={docsOpen} onOpenChange={setDocsOpen}>
+          <Card className="glass-card">
+            <CollapsibleTrigger asChild>
+              <CardHeader className="p-4 pb-2 cursor-pointer hover:bg-muted/30 transition-colors rounded-t-lg">
+                <div className="flex items-center justify-between flex-wrap gap-2">
+                  <CardTitle className="text-sm flex items-center gap-2">
+                    <FileText className="w-4 h-4 text-primary" />Documentos & Certificações
+                    <Badge variant="outline" className="text-[10px]">{docs.length}</Badge>
+                  </CardTitle>
+                  <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform duration-200 ${docsOpen ? "rotate-180" : ""}`} />
+                </div>
+              </CardHeader>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <div className="px-4 pb-2 flex items-center gap-1.5 flex-wrap">
                 <Badge
                   variant={docFilter === "all" ? "default" : "outline"}
                   className="text-[10px] cursor-pointer transition-colors"
@@ -467,39 +397,39 @@ export const FacilitiesTab = ({ facilityData }: Props) => {
                   );
                 })}
               </div>
-            </div>
-          </CardHeader>
-          <CardContent className="p-4 pt-0">
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
-              {filteredDocs.map((doc, i) => {
-                const info = docTypeMap[doc.type] || docTypeMap["outro"];
-                const DocIcon = info.icon;
-                return (
-                  <div key={i} className="rounded-lg border border-border/50 p-3 space-y-2 hover:border-primary/30 transition-colors">
-                    <div className="flex items-start gap-2">
-                      <DocIcon className="w-4 h-4 text-muted-foreground shrink-0 mt-0.5" />
-                      <div className="flex-1 min-w-0">
-                        <h4 className="text-xs font-medium leading-tight">{doc.title}</h4>
-                        <div className="flex items-center gap-2 mt-1">
-                          <Badge variant="outline" className={`text-[9px] ${info.color}`}>{info.label}</Badge>
-                          {doc.date && (
-                            <span className="text-[9px] text-muted-foreground flex items-center gap-0.5">
-                              <Clock className="w-2.5 h-2.5" />
-                              {new Date(doc.date).toLocaleDateString("pt-AO", { year: "numeric", month: "short", day: "numeric" })}
-                            </span>
-                          )}
+              <CardContent className="p-4 pt-0">
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
+                  {filteredDocs.map((doc, i) => {
+                    const info = docTypeMap[doc.type] || docTypeMap["outro"];
+                    const DocIcon = info.icon;
+                    return (
+                      <div key={i} className="rounded-lg border border-border/50 p-3 space-y-2 hover:border-primary/30 transition-colors">
+                        <div className="flex items-start gap-2">
+                          <DocIcon className="w-4 h-4 text-muted-foreground shrink-0 mt-0.5" />
+                          <div className="flex-1 min-w-0">
+                            <h4 className="text-xs font-medium leading-tight">{doc.title}</h4>
+                            <div className="flex items-center gap-2 mt-1">
+                              <Badge variant="outline" className={`text-[9px] ${info.color}`}>{info.label}</Badge>
+                              {doc.date && (
+                                <span className="text-[9px] text-muted-foreground flex items-center gap-0.5">
+                                  <Clock className="w-2.5 h-2.5" />
+                                  {new Date(doc.date).toLocaleDateString("pt-AO", { year: "numeric", month: "short", day: "numeric" })}
+                                </span>
+                              )}
+                            </div>
+                          </div>
                         </div>
+                        {doc.description && (
+                          <p className="text-[10px] text-muted-foreground leading-relaxed pl-6">{doc.description}</p>
+                        )}
                       </div>
-                    </div>
-                    {doc.description && (
-                      <p className="text-[10px] text-muted-foreground leading-relaxed pl-6">{doc.description}</p>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          </CardContent>
-        </Card>
+                    );
+                  })}
+                </div>
+              </CardContent>
+            </CollapsibleContent>
+          </Card>
+        </Collapsible>
       )}
 
       {/* Timeline info */}
