@@ -5,7 +5,7 @@ import { BarChart3 } from "lucide-react";
 
 export const NationalHistoricalProduction = () => {
   const peakYear = 2008;
-  const peakValue = 1900000;
+  const peakValue = 1897768;
 
   const data = useMemo(() =>
     nationalHistoricalFull.map(d => ({
