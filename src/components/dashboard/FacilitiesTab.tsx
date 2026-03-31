@@ -3,12 +3,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
 import type { FacilityData } from "@/data/angolaBlocks";
 import {
-  Factory, AlertTriangle, Camera, FileText, Wrench, ShieldCheck,
-  ChevronLeft, ChevronRight, X, Anchor, Clock, CheckCircle2,
-  Loader2, CalendarClock, Image as ImageIcon, ChevronDown, ArrowLeft,
+  Factory, AlertTriangle, FileText, Wrench, ShieldCheck,
+  Anchor, Clock, CheckCircle2,
+  Loader2, CalendarClock, ChevronDown, ArrowLeft,
   Target, Lightbulb,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
