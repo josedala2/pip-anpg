@@ -305,6 +305,24 @@ export const FacilitiesSchematic = ({ renderAsContent = false }: { renderAsConte
   const content = (
     <CardContent className="p-2 sm:p-4 pt-0">
       {renderAsContent && <div className="mb-2">{legendBar}</div>}
+      {/* Area filter */}
+      <div className="flex items-center gap-1 flex-wrap mb-2">
+        <button
+          onClick={() => { setActiveArea(null); setSelected(null); }}
+          className={`text-[9px] sm:text-[10px] px-2 py-0.5 rounded-full border transition-colors ${!activeArea ? "bg-primary/15 border-primary text-primary font-semibold" : "border-border/50 text-muted-foreground hover:text-foreground hover:border-border"}`}
+        >
+          Todas
+        </button>
+        {areas.map(area => (
+          <button
+            key={area}
+            onClick={() => { setActiveArea(prev => prev === area ? null : area); setSelected(null); }}
+            className={`text-[9px] sm:text-[10px] px-2 py-0.5 rounded-full border transition-colors ${activeArea === area ? "bg-primary/15 border-primary text-primary font-semibold" : "border-border/50 text-muted-foreground hover:text-foreground hover:border-border"}`}
+          >
+            {area}
+          </button>
+        ))}
+      </div>
       <div className="flex flex-col lg:flex-row gap-3 sm:gap-4">
         <TooltipProvider delayDuration={100}>
           <div className="w-full lg:flex-1 overflow-hidden rounded-lg border border-border/30 bg-muted/20 relative touch-none">
