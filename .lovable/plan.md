@@ -1,14 +1,10 @@
 
 
-## Reordenar secções no Painel Económico & Financeiro
+## Ocultar Card "Score Estratégico Ponderado" no Estado da Concessão
 
 ### Alteração
 
-**`src/pages/BlockPage.tsx`** — Trocar a ordem das duas secções dentro da aba "Económico & Financeiro":
+**`src/components/dashboard/ConcessionStatusTab.tsx`** (linhas 318-364) — Comentar ou remover o bloco do card "Score Estratégico Ponderado" (o `<Card>` com o círculo de score, classificação, urgência e as 6 dimensões).
 
-1. **Botões de navegação** (~linhas 1525-1546): Mover o botão "Resumo Financeiro" para antes do botão "Visão Económica".
-
-2. **Conteúdo** (~linhas 1549-1557 vs 1559+): Mover o bloco "Resumo Financeiro" (Section 2, com KPIs, exportação e gráficos) para cima, e colocar o bloco "Visão Económica ANPG" (EconomicVisionTab) depois.
-
-Resultado: Resumo Financeiro → Visão Económica ANPG → Consórcio.
+O card de Timeline (linha 366+) e os restantes elementos não são afectados.
 
