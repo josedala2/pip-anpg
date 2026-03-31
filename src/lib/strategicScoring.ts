@@ -42,7 +42,7 @@ const currentYear = 2026;
 
 function productionScore(block: OilBlock): DimensionScore {
   const drivers: string[] = [];
-  let score = 50; // baseline
+  let score = 40; // baseline reduzido
 
   // Current production vs peak (from history)
   const peak = Math.max(...block.productionHistory.map(h => h.value), 1);
@@ -50,19 +50,19 @@ function productionScore(block: OilBlock): DimensionScore {
   const ratio = current / peak;
 
   if (current === 0) {
-    score = 10;
+    score = 5;
     drivers.push("Sem produção activa");
   } else if (ratio >= 0.9) {
     score = 90;
     drivers.push(`Produção estável (${Math.round(ratio * 100)}% do pico)`);
   } else if (ratio >= 0.7) {
-    score = 70;
+    score = 65;
     drivers.push(`Produção moderada (${Math.round(ratio * 100)}% do pico)`);
   } else if (ratio >= 0.5) {
-    score = 50;
+    score = 40;
     drivers.push(`Declínio significativo (${Math.round(ratio * 100)}% do pico)`);
   } else {
-    score = 30;
+    score = 15;
     drivers.push(`Declínio severo (${Math.round(ratio * 100)}% do pico)`);
   }
 
@@ -73,20 +73,25 @@ function productionScore(block: OilBlock): DimensionScore {
     const last3 = history.slice(-3).reduce((s, h) => s + h.value, 0) / 3;
     const decline = ((first3 - last3) / first3) * 100;
     if (decline > 10) {
-      score -= 15;
+      score -= 20;
       drivers.push(`Declínio recente de ${decline.toFixed(1)}%`);
     } else if (decline > 5) {
-      score -= 8;
+      score -= 10;
       drivers.push(`Declínio moderado de ${decline.toFixed(1)}%`);
     }
   }
 
-  // Reserves
+  // Reserves vs production — sub-exploitation penalty
   if (block.estimatedReserves > 500) {
-    score += 10;
-    drivers.push(`Reservas elevadas: ${block.estimatedReserves} Mb`);
+    if (current < 50000) {
+      score -= 10;
+      drivers.push(`Reservas elevadas (${block.estimatedReserves} Mb) sub-exploradas`);
+    } else {
+      score += 10;
+      drivers.push(`Reservas elevadas: ${block.estimatedReserves} Mb`);
+    }
   } else if (block.estimatedReserves < 50) {
-    score -= 10;
+    score -= 15;
     drivers.push(`Reservas reduzidas: ${block.estimatedReserves} Mb`);
   }
 
