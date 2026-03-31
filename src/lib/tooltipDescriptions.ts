@@ -98,7 +98,9 @@ export const tooltipDescriptions: Record<string, string> = {
   "Produção Actual (Bloco)": "Volume diário actual de produção de óleo bruto do bloco, em barris por dia (BOPD)",
   "Actual vs Pico": "Rácio entre a produção actual e o pico histórico agregado de todos os campos",
   "Campos em Produção": "Número de campos com produção activa em relação ao total de campos do bloco",
-  "Taxa de Declínio": "Variação percentual negativa da produção ao longo dos últimos 12 meses",
+  "Taxa de Declínio": "Variação percentual negativa da produção ao longo dos últimos 12 meses (método 3-vs-3: média dos 3 últimos meses vs 3 primeiros)",
+  "Média por Campo": "Produção diária média por campo em produção activa (produção total ÷ nº de campos produtores)",
+  "Declínio Anualizado": "Taxa de declínio anualizada, extrapolando a tendência observada nos últimos 12 meses para um período de 1 ano",
 
   // ── Projecções ──
   "Cenário Conservador": "Projecção pessimista — assume declínio natural sem novos investimentos significativos",
