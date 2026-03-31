@@ -44,6 +44,7 @@ const allPanels = [
   "Produção",
   "Exploração",
   "Instalações",
+  "HSE & Ambiente",
   "Contratos",
   "Homologações",
   "Económico",
