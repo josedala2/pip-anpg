@@ -172,7 +172,7 @@ const Index = () => {
               </div>
 
               {/* Center: Period selector */}
-              <div className="hidden md:flex items-center gap-1 bg-muted/60 rounded-lg p-0.5">
+              <div className="flex items-center gap-0.5 md:gap-1 bg-muted/60 rounded-lg p-0.5">
                 {[
                   { value: "actual", label: "Actual" },
                   { value: "6m", label: "6M" },
