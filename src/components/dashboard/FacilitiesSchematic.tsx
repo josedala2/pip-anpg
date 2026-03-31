@@ -1,13 +1,19 @@
-import { useState, useCallback, useRef, useEffect } from "react";
+import { useState, useCallback, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { GitBranch } from "lucide-react";
 
+/* ------------------------------------------------------------------ */
+/*  Types                                                              */
+/* ------------------------------------------------------------------ */
+
 interface SchematicNode {
   id: string;
   label: string;
-  type: "terminal" | "fixed" | "fpso" | "subsea";
+  type: "terminal" | "fixed" | "fpso" | "subsea" | "refinery";
+  tier?: 1 | 2 | 3;
+  area?: string;
   x: number;
   y: number;
   capacity: string;
@@ -19,50 +25,171 @@ interface SchematicNode {
 interface SchematicLink {
   from: string;
   to: string;
-  type: "pipeline" | "flowline" | "subsea-tieback" | "export";
+  type: "crude" | "gas" | "water-injection" | "lpg" | "planned";
   label?: string;
 }
 
+interface AreaZone {
+  id: string;
+  label: string;
+  x: number; y: number; w: number; h: number;
+  rx?: number;
+  color: string;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Data                                                               */
+/* ------------------------------------------------------------------ */
+
 const nodes: SchematicNode[] = [
-  { id: "malongo", label: "Terminal Malongo", type: "terminal", x: 140, y: 260, capacity: "400.000 BOPD", year: 1968, depth: 0, status: "Operacional" },
-  { id: "takula", label: "Takula", type: "fixed", x: 340, y: 120, capacity: "80.000 BOPD", year: 1971, depth: 60, status: "Operacional" },
-  { id: "gip-fox", label: "GIP-FOX", type: "fixed", x: 340, y: 260, capacity: "35.000 BOPD", year: 1985, depth: 45, status: "Operacional" },
-  { id: "maf-norte", label: "Mafumeira N.", type: "fixed", x: 340, y: 400, capacity: "100.000 BOPD", year: 2009, depth: 55, status: "Operacional" },
-  { id: "maf-sul", label: "Mafumeira S.", type: "fixed", x: 500, y: 400, capacity: "50.000 BOPD", year: 2015, depth: 65, status: "Operacional" },
-  { id: "sanha", label: "Sanha FPSO", type: "fpso", x: 580, y: 160, capacity: "100.000 BOPD", year: 2004, depth: 350, status: "Operacional" },
-  { id: "sanha-lpg", label: "Sanha LPG", type: "fpso", x: 720, y: 100, capacity: "LPG Processing", year: 2005, depth: 350, status: "Operacional" },
-  { id: "nembas", label: "Nembas FPSO", type: "fpso", x: 720, y: 260, capacity: "60.000 BOPD", year: 2010, depth: 400, status: "Operacional" },
-  { id: "ek", label: "East Kwanza", type: "subsea", x: 620, y: 370, capacity: "30.000 BOPD", year: 2012, depth: 450, status: "Operacional" },
-  { id: "wk", label: "West Kwanza", type: "subsea", x: 780, y: 370, capacity: "25.000 BOPD", year: 2014, depth: 480, status: "Operacional" },
+  // ── Terminal / Onshore ──
+  { id: "terminal",      label: "Terminal Malongo",    type: "terminal", area: "Terminal",   x: 880, y: 70,  capacity: "400 000 BOPD", year: 1968, depth: 0,   status: "Operacional" },
+  { id: "refinery",      label: "Cabinda Refinery",   type: "refinery", area: "Terminal",   x: 700, y: 45,  capacity: "N/D",          year: 1956, depth: 0,   status: "Operacional" },
+  { id: "power-plant",   label: "Power Plant",        type: "refinery", area: "Terminal",   x: 920, y: 18,  capacity: "N/D",          year: 1970, depth: 0,   status: "Operacional" },
+  { id: "futila",        label: "Futila Terminal",     type: "terminal", area: "Terminal",   x: 1020, y: 120, capacity: "SNL",         year: 2012, depth: 0,   status: "Operacional" },
+
+  // ── Greater Taluka Area ──
+  { id: "nsando",   label: "N'Sando",       type: "fixed", tier: 2, area: "Greater Taluka", x: 120, y: 60,  capacity: "6 000 BOPD",  year: 1996, depth: 40,  status: "Operacional" },
+  { id: "ssanefa",  label: "Ssanefa",       type: "fixed", tier: 3, area: "Greater Taluka", x: 210, y: 48,  capacity: "3 000 BOPD",  year: 2000, depth: 35,  status: "Operacional" },
+  { id: "barcala",  label: "Barcala",       type: "fixed", tier: 3, area: "Greater Taluka", x: 430, y: 55,  capacity: "4 000 BOPD",  year: 1999, depth: 42,  status: "Operacional" },
+  { id: "mal-n",    label: "Malongo N.",    type: "fixed", tier: 2, area: "Greater Taluka", x: 330, y: 100, capacity: "12 000 BOPD", year: 1980, depth: 50,  status: "Operacional" },
+  { id: "takula",   label: "Takula",        type: "fixed", tier: 1, area: "Greater Taluka", x: 310, y: 165, capacity: "80 000 BOPD", year: 1971, depth: 60,  status: "Operacional" },
+  { id: "numbi",    label: "Numbi",         type: "fixed", tier: 3, area: "Greater Taluka", x: 470, y: 165, capacity: "5 000 BOPD",  year: 1986, depth: 55,  status: "Operacional" },
+  { id: "lpa",      label: "LPA / TK4",     type: "fixed", tier: 3, area: "Greater Taluka", x: 145, y: 170, capacity: "3 500 BOPD",  year: 1990, depth: 48,  status: "Operacional" },
+  { id: "gg",       label: "GG",            type: "fixed", tier: 3, area: "Greater Taluka", x: 430, y: 210, capacity: "4 000 BOPD",  year: 1988, depth: 52,  status: "Operacional" },
+
+  // ── Greater Malongo Area ──
+  { id: "gip",      label: "GIP",           type: "fixed", tier: 2, area: "Greater Malongo", x: 540, y: 195, capacity: "35 000 BOPD", year: 1985, depth: 45,  status: "Operacional" },
+  { id: "mal-w",    label: "Malongo W.",    type: "fixed", tier: 3, area: "Greater Malongo", x: 500, y: 255, capacity: "8 000 BOPD",  year: 1982, depth: 50,  status: "Operacional" },
+  { id: "mal-s",    label: "Malongo S.",    type: "fixed", tier: 2, area: "Greater Malongo", x: 620, y: 255, capacity: "15 000 BOPD", year: 1983, depth: 50,  status: "Operacional" },
+  { id: "limba",    label: "Limba",         type: "fixed", tier: 2, area: "Greater Malongo", x: 620, y: 325, capacity: "10 000 BOPD", year: 1990, depth: 60,  status: "Operacional" },
+
+  // ── Area B ──
+  { id: "lomba",    label: "Lomba",         type: "fixed", tier: 1, area: "Area B", x: 110, y: 310, capacity: "40 000 BOPD",  year: 1997, depth: 120, status: "Operacional" },
+  { id: "nemba",    label: "Nemba",         type: "fixed", tier: 1, area: "Area B", x: 240, y: 295, capacity: "30 000 BOPD",  year: 2004, depth: 130, status: "Operacional" },
+  { id: "vuko",     label: "Vuko",          type: "fixed", tier: 3, area: "Area B", x: 380, y: 290, capacity: "5 000 BOPD",   year: 2008, depth: 140, status: "Operacional" },
+  { id: "kungulo",  label: "Kungulo",       type: "fixed", tier: 3, area: "Area B", x: 460, y: 320, capacity: "4 000 BOPD",   year: 2010, depth: 150, status: "Operacional" },
+  { id: "bamboco",  label: "Bamboco",       type: "fixed", tier: 3, area: "Area B", x: 440, y: 400, capacity: "3 000 BOPD",   year: 2006, depth: 200, status: "Operacional" },
+  { id: "kokongo",  label: "Kokongo",       type: "fixed", tier: 2, area: "Area B", x: 530, y: 410, capacity: "8 000 BOPD",   year: 2005, depth: 220, status: "Operacional" },
+
+  // ── FPSO ──
+  { id: "sanha",     label: "Sanha FPSO",   type: "fpso", tier: 1, area: "FPSO", x: 200, y: 440, capacity: "100 000 BOPD",    year: 2004, depth: 350, status: "Operacional" },
+  { id: "sanha-lpg", label: "Sanha LPG",    type: "fpso",          area: "FPSO", x: 330, y: 455, capacity: "LPG Processing",   year: 2005, depth: 350, status: "Operacional" },
+
+  // ── Mafumeira ──
+  { id: "maf-n",    label: "Mafumeira N.",  type: "fixed", tier: 1, area: "Mafumeira", x: 740, y: 400, capacity: "100 000 BOPD", year: 2009, depth: 55,  status: "Operacional" },
+  { id: "maf-s",    label: "Mafumeira S.",  type: "fixed", tier: 2, area: "Mafumeira", x: 850, y: 430, capacity: "50 000 BOPD",  year: 2015, depth: 65,  status: "Operacional" },
+  { id: "lavuala",  label: "Lavuala",       type: "fixed", tier: 3, area: "Mafumeira", x: 770, y: 340, capacity: "5 000 BOPD",   year: 2014, depth: 60,  status: "Operacional" },
+  { id: "livuite",  label: "Livuite",       type: "fixed", tier: 3, area: "Mafumeira", x: 870, y: 350, capacity: "4 000 BOPD",   year: 2016, depth: 62,  status: "Operacional" },
+
+  // ── Exterior ──
+  { id: "ndola",    label: "N'Dola",        type: "subsea",        area: "Exterior", x: 160, y: 540, capacity: "Angola LNG",    year: 2013, depth: 400, status: "Operacional" },
+  { id: "bblt",     label: "BBLT (Blk 14)", type: "subsea",        area: "Exterior", x: 280, y: 530, capacity: "Tieback",       year: 2015, depth: 380, status: "Operacional" },
 ];
 
 const links: SchematicLink[] = [
-  { from: "takula", to: "malongo", type: "pipeline", label: "Oil Export" },
-  { from: "gip-fox", to: "malongo", type: "pipeline", label: "Oil Export" },
-  { from: "maf-norte", to: "malongo", type: "pipeline", label: "Oil Export" },
-  { from: "maf-sul", to: "maf-norte", type: "flowline" },
-  { from: "sanha", to: "malongo", type: "export", label: "Oil Export" },
-  { from: "sanha", to: "sanha-lpg", type: "flowline", label: "Gas/LPG" },
-  { from: "nembas", to: "sanha", type: "flowline", label: "Gas Processing" },
-  { from: "ek", to: "nembas", type: "subsea-tieback", label: "Subsea Tieback" },
-  { from: "wk", to: "nembas", type: "subsea-tieback", label: "Subsea Tieback" },
+  // Greater Taluka → Terminal (crude)
+  { from: "takula",  to: "terminal", type: "crude", label: "Crude Export" },
+  { from: "nsando",  to: "takula",   type: "crude" },
+  { from: "ssanefa", to: "takula",   type: "crude" },
+  { from: "barcala", to: "mal-n",    type: "crude" },
+  { from: "mal-n",   to: "takula",   type: "crude" },
+  { from: "numbi",   to: "takula",   type: "crude" },
+  { from: "lpa",     to: "takula",   type: "crude" },
+  { from: "gg",      to: "numbi",    type: "crude" },
+
+  // Greater Malongo → Terminal
+  { from: "gip",     to: "terminal", type: "crude", label: "Crude Export" },
+  { from: "mal-w",   to: "gip",     type: "crude" },
+  { from: "mal-s",   to: "gip",     type: "crude" },
+  { from: "limba",   to: "mal-s",   type: "crude" },
+
+  // Mafumeira → Terminal
+  { from: "maf-n",   to: "terminal", type: "crude", label: "Crude Export" },
+  { from: "maf-s",   to: "maf-n",   type: "crude" },
+  { from: "lavuala", to: "maf-n",   type: "crude" },
+  { from: "livuite", to: "maf-s",   type: "crude" },
+
+  // Area B → FPSO
+  { from: "lomba",   to: "sanha",    type: "crude" },
+  { from: "nemba",   to: "sanha",    type: "crude" },
+  { from: "vuko",    to: "nemba",    type: "crude" },
+  { from: "kungulo", to: "nemba",    type: "crude" },
+  { from: "bamboco", to: "kokongo",  type: "crude" },
+  { from: "kokongo", to: "sanha",    type: "crude" },
+
+  // FPSO connections
+  { from: "sanha",     to: "terminal",  type: "crude", label: "Oil Export" },
+  { from: "sanha",     to: "sanha-lpg", type: "gas",   label: "Gas / LPG" },
+  { from: "sanha-lpg", to: "futila",    type: "lpg",   label: "LPG Export" },
+
+  // Gas pipelines
+  { from: "takula",  to: "refinery",  type: "gas", label: "Gas" },
+  { from: "gip",     to: "refinery",  type: "gas" },
+
+  // Water injection
+  { from: "terminal", to: "takula",   type: "water-injection", label: "WI" },
+  { from: "terminal", to: "gip",      type: "water-injection" },
+
+  // External
+  { from: "ndola",   to: "sanha",    type: "gas",     label: "Angola LNG" },
+  { from: "bblt",    to: "sanha",    type: "crude",   label: "Block 14 Tieback" },
+
+  // Planned
+  { from: "maf-n",   to: "sanha-lpg", type: "planned", label: "Futuro" },
 ];
 
-const typeStyles: Record<string, { fill: string; stroke: string; badge: string }> = {
-  terminal: { fill: "hsl(var(--primary) / 0.15)", stroke: "hsl(var(--primary))", badge: "Terminal Onshore" },
-  fixed: { fill: "hsl(var(--success) / 0.15)", stroke: "hsl(var(--success))", badge: "Fixed Platform" },
-  fpso: { fill: "hsl(var(--warning) / 0.15)", stroke: "hsl(var(--warning))", badge: "FPSO" },
-  subsea: { fill: "hsl(280 65% 60% / 0.15)", stroke: "hsl(280 65% 60%)", badge: "Subsea Tieback" },
+const areaZones: AreaZone[] = [
+  { id: "taluka",   label: "Greater Taluka Area",   x: 70,  y: 28,  w: 470, h: 210, rx: 18, color: "hsl(340 60% 60% / 0.10)" },
+  { id: "malongo",  label: "Greater Malongo Area",  x: 475, y: 175, w: 220, h: 175, rx: 14, color: "hsl(210 60% 60% / 0.10)" },
+  { id: "area-b",   label: "Area B",                x: 70,  y: 265, w: 520, h: 180, rx: 40, color: "hsl(170 50% 50% / 0.10)" },
+  { id: "fpso",     label: "FPSO",                  x: 150, y: 415, w: 240, h: 70,  rx: 12, color: "hsl(210 50% 45% / 0.12)" },
+  { id: "mafum",    label: "Mafumeira",             x: 710, y: 315, w: 240, h: 145, rx: 14, color: "hsl(270 50% 55% / 0.10)" },
+  { id: "term",     label: "Terminal",               x: 660, y: 5,  w: 400, h: 140, rx: 14, color: "hsl(40 50% 50% / 0.10)" },
+];
+
+/* ------------------------------------------------------------------ */
+/*  Style maps                                                         */
+/* ------------------------------------------------------------------ */
+
+const tierColors: Record<number, string> = {
+  1: "hsl(var(--success))",
+  2: "hsl(40 80% 55%)",
+  3: "hsl(340 65% 60%)",
+};
+
+const nodeTypeStyles: Record<string, { fill: string; stroke: string; badge: string }> = {
+  terminal: { fill: "hsl(var(--primary) / 0.15)", stroke: "hsl(var(--primary))", badge: "Terminal" },
+  fixed:    { fill: "hsl(var(--muted) / 0.25)",   stroke: "hsl(var(--muted-foreground) / 0.5)", badge: "Plataforma" },
+  fpso:     { fill: "hsl(var(--warning) / 0.15)",  stroke: "hsl(var(--warning))", badge: "FPSO" },
+  subsea:   { fill: "hsl(280 65% 60% / 0.15)",     stroke: "hsl(280 65% 60%)", badge: "Subsea" },
+  refinery: { fill: "hsl(var(--muted) / 0.15)",    stroke: "hsl(var(--muted-foreground))", badge: "Refinaria / Utilidade" },
 };
 
 const linkStyles: Record<string, { stroke: string; dash?: string; width: number }> = {
-  pipeline: { stroke: "hsl(var(--primary) / 0.6)", width: 2.5 },
-  flowline: { stroke: "hsl(var(--success) / 0.5)", dash: "6 3", width: 1.5 },
-  "subsea-tieback": { stroke: "hsl(280 65% 60% / 0.5)", dash: "4 4", width: 1.5 },
-  export: { stroke: "hsl(var(--warning) / 0.6)", dash: "8 4", width: 2 },
+  crude:            { stroke: "hsl(var(--foreground) / 0.50)", width: 2 },
+  gas:              { stroke: "hsl(140 60% 42% / 0.70)", width: 1.8 },
+  "water-injection":{ stroke: "hsl(210 70% 55% / 0.60)", dash: "6 3", width: 1.5 },
+  lpg:              { stroke: "hsl(0 65% 50% / 0.60)", width: 1.5 },
+  planned:          { stroke: "hsl(0 65% 50% / 0.40)", dash: "4 4", width: 1.2 },
 };
 
+const legendItems = [
+  { label: "Tier 1", color: tierColors[1], type: "circle" as const },
+  { label: "Tier 2", color: tierColors[2], type: "circle" as const },
+  { label: "Tier 3", color: tierColors[3], type: "circle" as const },
+  { label: "Crude Oil", color: linkStyles.crude.stroke, type: "line" as const },
+  { label: "Gás", color: linkStyles.gas.stroke, type: "line" as const },
+  { label: "LPG", color: linkStyles.lpg.stroke, type: "line" as const },
+  { label: "Water Inj.", color: linkStyles["water-injection"].stroke, type: "dash" as const },
+  { label: "Planeado", color: linkStyles.planned.stroke, type: "dash" as const },
+];
+
 const nodeMap = Object.fromEntries(nodes.map(n => [n.id, n]));
+
+/* ------------------------------------------------------------------ */
+/*  Component                                                          */
+/* ------------------------------------------------------------------ */
 
 export const FacilitiesSchematic = ({ renderAsContent = false }: { renderAsContent?: boolean }) => {
   const [hovered, setHovered] = useState<string | null>(null);
@@ -90,18 +217,9 @@ export const FacilitiesSchematic = ({ renderAsContent = false }: { renderAsConte
     } else if (e.touches.length === 1) {
       const now = Date.now();
       if (now - lastTapTime.current < 300) {
-        // Double-tap detected: toggle between 1x and 2.5x
-        setZoom(prev => {
-          if (prev > 1) {
-            setPan({ x: 0, y: 0 });
-            return 1;
-          }
-          return 2.5;
-        });
+        setZoom(prev => { if (prev > 1) { setPan({ x: 0, y: 0 }); return 1; } return 2.5; });
         lastTapTime.current = 0;
-      } else {
-        lastTapTime.current = now;
-      }
+      } else { lastTapTime.current = now; }
     }
   }, []);
 
@@ -112,38 +230,17 @@ export const FacilitiesSchematic = ({ renderAsContent = false }: { renderAsConte
       const dy = e.touches[0].clientY - e.touches[1].clientY;
       const dist = Math.hypot(dx, dy);
       const scale = dist / lastTouchDist.current;
-      const center = {
-        x: (e.touches[0].clientX + e.touches[1].clientX) / 2,
-        y: (e.touches[0].clientY + e.touches[1].clientY) / 2,
-      };
-      const panDx = center.x - lastTouchCenter.current.x;
-      const panDy = center.y - lastTouchCenter.current.y;
-
+      const center = { x: (e.touches[0].clientX + e.touches[1].clientX) / 2, y: (e.touches[0].clientY + e.touches[1].clientY) / 2 };
+      setPan(prev => ({ x: prev.x + center.x - lastTouchCenter.current!.x, y: prev.y + center.y - lastTouchCenter.current!.y }));
       setZoom(prev => clampZoom(prev * scale));
-      setPan(prev => ({ x: prev.x + panDx, y: prev.y + panDy }));
-
       lastTouchDist.current = dist;
       lastTouchCenter.current = center;
     }
   }, []);
 
-  const handleTouchEnd = useCallback(() => {
-    lastTouchDist.current = null;
-    lastTouchCenter.current = null;
-    setTimeout(() => { isPinching.current = false; }, 50);
-  }, []);
-
-  const handleWheel = useCallback((e: React.WheelEvent) => {
-    if (e.ctrlKey || e.metaKey) {
-      e.preventDefault();
-      setZoom(prev => clampZoom(prev - e.deltaY * 0.005));
-    }
-  }, []);
-
-  const resetView = useCallback(() => {
-    setZoom(1);
-    setPan({ x: 0, y: 0 });
-  }, []);
+  const handleTouchEnd = useCallback(() => { lastTouchDist.current = null; lastTouchCenter.current = null; setTimeout(() => { isPinching.current = false; }, 50); }, []);
+  const handleWheel = useCallback((e: React.WheelEvent) => { if (e.ctrlKey || e.metaKey) { e.preventDefault(); setZoom(prev => clampZoom(prev - e.deltaY * 0.005)); } }, []);
+  const resetView = useCallback(() => { setZoom(1); setPan({ x: 0, y: 0 }); }, []);
 
   const isHighlighted = useCallback((nodeId: string) => {
     if (!hovered && !selected) return true;
@@ -160,257 +257,193 @@ export const FacilitiesSchematic = ({ renderAsContent = false }: { renderAsConte
 
   const selectedNode = selected ? nodeMap[selected] : null;
 
+  /* ── Legend ── */
   const legendBar = (
     <div className="flex items-center gap-1 sm:gap-1.5 flex-wrap">
-      {Object.entries(typeStyles).map(([key, s]) => (
-        <Badge key={key} variant="outline" className="text-[7px] sm:text-[9px] gap-0.5 sm:gap-1 px-1 sm:px-1.5 py-0" style={{ borderColor: s.stroke, color: s.stroke }}>
-          <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full inline-block" style={{ background: s.stroke }} />
-          <span className="hidden xs:inline">{s.badge}</span>
-          <span className="xs:hidden">{key === "terminal" ? "Onsh" : key === "fixed" ? "Fix" : key === "fpso" ? "FPSO" : "Sub"}</span>
+      {legendItems.map(item => (
+        <Badge key={item.label} variant="outline" className="text-[7px] sm:text-[9px] gap-0.5 px-1 sm:px-1.5 py-0" style={{ borderColor: item.color, color: item.color }}>
+          {item.type === "circle" && <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full inline-block" style={{ background: item.color }} />}
+          {item.type === "line" && <span className="w-3 h-[2px] inline-block" style={{ background: item.color }} />}
+          {item.type === "dash" && <span className="w-3 h-[2px] inline-block border-t-2 border-dashed" style={{ borderColor: item.color }} />}
+          {item.label}
         </Badge>
       ))}
     </div>
   );
 
+  /* ── Render node shape ── */
+  const renderNodeShape = (node: SchematicNode, isActive: boolean) => {
+    const baseStyle = nodeTypeStyles[node.type];
+    const tierColor = node.tier ? tierColors[node.tier] : undefined;
+    const stroke = tierColor || baseStyle.stroke;
+    const fill = tierColor ? `${tierColor.replace(")", " / 0.15)")}` : baseStyle.fill;
+    const sw = isActive ? 2.5 : 1.5;
+    const w = node.type === "terminal" || node.type === "refinery" ? 76 : 58;
+    const h = 30;
+
+    if (node.type === "fpso") {
+      return <ellipse cx={node.x} cy={node.y} rx={w / 2} ry={h / 2} fill={fill} stroke={stroke} strokeWidth={sw} />;
+    }
+    if (node.type === "subsea") {
+      return <polygon points={`${node.x},${node.y - h / 2} ${node.x + w / 2},${node.y} ${node.x},${node.y + h / 2} ${node.x - w / 2},${node.y}`} fill={fill} stroke={stroke} strokeWidth={sw} />;
+    }
+    return <rect x={node.x - w / 2} y={node.y - h / 2} width={w} height={h} rx={5} fill={fill} stroke={stroke} strokeWidth={sw} />;
+  };
+
+  /* ── SVG content ── */
   const content = (
     <CardContent className="p-2 sm:p-4 pt-0">
       {renderAsContent && <div className="mb-2">{legendBar}</div>}
       <div className="flex flex-col lg:flex-row gap-3 sm:gap-4">
-          <TooltipProvider delayDuration={100}>
-            <div className="w-full lg:flex-1 overflow-hidden rounded-lg border border-border/30 bg-muted/20 relative touch-none">
-              <div className="absolute top-1.5 right-1.5 z-10 flex items-center gap-0.5">
-                <button
-                  onClick={() => setZoom(prev => clampZoom(prev - 0.3))}
-                  disabled={zoom <= 1}
-                  className="text-xs sm:text-sm bg-background/80 backdrop-blur border border-border/50 rounded w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center text-muted-foreground hover:text-foreground disabled:opacity-30 transition-colors"
-                >
-                  −
-                </button>
-                <span className="text-[9px] sm:text-[10px] bg-background/80 backdrop-blur border border-border/50 rounded px-1.5 py-0.5 font-mono text-muted-foreground min-w-[2.5rem] text-center">
-                  {Math.round(zoom * 100)}%
-                </span>
-                <button
-                  onClick={() => setZoom(prev => clampZoom(prev + 0.3))}
-                  disabled={zoom >= 4}
-                  className="text-xs sm:text-sm bg-background/80 backdrop-blur border border-border/50 rounded w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center text-muted-foreground hover:text-foreground disabled:opacity-30 transition-colors"
-                >
-                  +
-                </button>
-                {zoom > 1 && (
-                  <button
-                    onClick={resetView}
-                    className="text-[9px] sm:text-[10px] bg-background/80 backdrop-blur border border-border/50 rounded px-1.5 py-0.5 text-muted-foreground hover:text-foreground transition-colors ml-0.5"
-                  >
-                    Reset
-                  </button>
-                )}
-              </div>
-              <svg
-                ref={svgRef}
-                viewBox="0 0 900 480"
-                className="w-full rounded-lg"
-                style={{ minHeight: 200, minWidth: 500, transform: `scale(${zoom}) translate(${pan.x / zoom}px, ${pan.y / zoom}px)`, transformOrigin: "center center", transition: isPinching.current ? "none" : "transform 0.15s ease-out" }}
-                preserveAspectRatio="xMidYMid meet"
-                onTouchStart={handleTouchStart}
-                onTouchMove={handleTouchMove}
-                onTouchEnd={handleTouchEnd}
-                onWheel={handleWheel}
-              >
-                <defs>
-                  {/* Arrowhead markers per link type */}
-                  {Object.entries(linkStyles).map(([type, style]) => (
-                    <marker
-                      key={`arrow-${type}`}
-                      id={`arrow-${type}`}
-                      viewBox="0 0 10 6"
-                      refX="9"
-                      refY="3"
-                      markerWidth="8"
-                      markerHeight="6"
-                      orient="auto-start-reverse"
-                    >
-                      <path d="M 0 0 L 10 3 L 0 6 Z" fill={style.stroke} />
-                    </marker>
-                  ))}
-                  {links.map((link, i) => {
-                    const from = nodeMap[link.from];
-                    const to = nodeMap[link.to];
-                    const dx = to.x - from.x;
-                    const midX = from.x + dx * 0.5;
-                    const midY = (from.y + to.y) / 2 + (Math.abs(from.y - to.y) < 50 ? -30 : 0);
-                    return (
-                      <path
-                        key={`path-${i}`}
-                        id={`flow-path-${i}`}
-                        d={`M ${from.x} ${from.y} Q ${midX} ${midY} ${to.x} ${to.y}`}
-                        fill="none"
-                      />
-                    );
-                  })}
-                </defs>
+        <TooltipProvider delayDuration={100}>
+          <div className="w-full lg:flex-1 overflow-hidden rounded-lg border border-border/30 bg-muted/20 relative touch-none">
+            {/* Zoom controls */}
+            <div className="absolute top-1.5 right-1.5 z-10 flex items-center gap-0.5">
+              <button onClick={() => setZoom(prev => clampZoom(prev - 0.3))} disabled={zoom <= 1} className="text-xs sm:text-sm bg-background/80 backdrop-blur border border-border/50 rounded w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center text-muted-foreground hover:text-foreground disabled:opacity-30 transition-colors">−</button>
+              <span className="text-[9px] sm:text-[10px] bg-background/80 backdrop-blur border border-border/50 rounded px-1.5 py-0.5 font-mono text-muted-foreground min-w-[2.5rem] text-center">{Math.round(zoom * 100)}%</span>
+              <button onClick={() => setZoom(prev => clampZoom(prev + 0.3))} disabled={zoom >= 4} className="text-xs sm:text-sm bg-background/80 backdrop-blur border border-border/50 rounded w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center text-muted-foreground hover:text-foreground disabled:opacity-30 transition-colors">+</button>
+              {zoom > 1 && <button onClick={resetView} className="text-[9px] sm:text-[10px] bg-background/80 backdrop-blur border border-border/50 rounded px-1.5 py-0.5 text-muted-foreground hover:text-foreground transition-colors ml-0.5">Reset</button>}
+            </div>
 
-                {/* Water depth bands */}
-                <rect x="0" y="0" width="200" height="480" fill="hsl(var(--primary) / 0.03)" />
-                <text x="100" y="468" textAnchor="middle" className="fill-muted-foreground" fontSize="10" opacity="0.5">ONSHORE</text>
-                <rect x="200" y="0" width="250" height="480" fill="hsl(var(--primary) / 0.05)" />
-                <text x="325" y="468" textAnchor="middle" className="fill-muted-foreground" fontSize="10" opacity="0.5">{"SHALLOW (<100m)"}</text>
-                <rect x="450" y="0" width="450" height="480" fill="hsl(var(--primary) / 0.08)" />
-                <text x="675" y="468" textAnchor="middle" className="fill-muted-foreground" fontSize="10" opacity="0.5">DEEP WATER (350-480m)</text>
-
-                {/* Depth separator lines */}
-                <line x1="200" y1="0" x2="200" y2="455" stroke="hsl(var(--border))" strokeWidth="1" strokeDasharray="4 4" opacity="0.4" />
-                <line x1="450" y1="0" x2="450" y2="455" stroke="hsl(var(--border))" strokeWidth="1" strokeDasharray="4 4" opacity="0.4" />
-
-                {/* Links with flow particles */}
+            <svg
+              ref={svgRef}
+              viewBox="0 0 1100 580"
+              className="w-full rounded-lg"
+              style={{ minHeight: 220, transform: `scale(${zoom}) translate(${pan.x / zoom}px, ${pan.y / zoom}px)`, transformOrigin: "center center", transition: isPinching.current ? "none" : "transform 0.15s ease-out" }}
+              preserveAspectRatio="xMidYMid meet"
+              onTouchStart={handleTouchStart}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={handleTouchEnd}
+              onWheel={handleWheel}
+            >
+              <defs>
+                {Object.entries(linkStyles).map(([type, style]) => (
+                  <marker key={`arrow-${type}`} id={`arrow-${type}`} viewBox="0 0 10 6" refX="9" refY="3" markerWidth="7" markerHeight="5" orient="auto-start-reverse">
+                    <path d="M 0 0 L 10 3 L 0 6 Z" fill={style.stroke} />
+                  </marker>
+                ))}
                 {links.map((link, i) => {
                   const from = nodeMap[link.from];
                   const to = nodeMap[link.to];
-                  const style = linkStyles[link.type];
-                  const highlighted = isLinkHighlighted(link);
+                  if (!from || !to) return null;
                   const dx = to.x - from.x;
                   const midX = from.x + dx * 0.5;
-                  const midY = (from.y + to.y) / 2 + (Math.abs(from.y - to.y) < 50 ? -30 : 0);
-                  const particleColor = link.type === "export" ? "hsl(var(--warning))" : link.type === "subsea-tieback" ? "hsl(280 65% 60%)" : link.type === "flowline" ? "hsl(var(--success))" : "hsl(var(--primary))";
-                  const dur = link.type === "export" ? "3s" : link.type === "pipeline" ? "4s" : "5s";
-                  return (
-                    <g key={i} opacity={highlighted ? 1 : 0.15} style={{ transition: "opacity 0.25s" }}>
-                      <path
-                        d={`M ${from.x} ${from.y} Q ${midX} ${midY} ${to.x} ${to.y}`}
-                        fill="none"
-                        stroke={style.stroke}
-                        strokeWidth={style.width}
-                        strokeDasharray={style.dash}
-                        markerEnd={`url(#arrow-${link.type})`}
-                      />
-                      {/* Flow particles */}
-                      {highlighted && [0, 0.33, 0.66].map((offset, pi) => (
-                        <circle key={pi} r={2.5} fill={particleColor} opacity="0.8">
-                          <animateMotion
-                            dur={dur}
-                            repeatCount="indefinite"
-                            begin={`${offset * parseFloat(dur)}s`}
-                          >
-                            <mpath href={`#flow-path-${i}`} />
-                          </animateMotion>
-                        </circle>
-                      ))}
-                      {link.label && highlighted && (
-                        <text x={midX} y={midY - 6} textAnchor="middle" className="fill-muted-foreground" fontSize="9" opacity="0.7">
-                          {link.label}
+                  const midY = (from.y + to.y) / 2 + (Math.abs(from.y - to.y) < 50 ? -20 : 0);
+                  return <path key={`def-${i}`} id={`flow-path-${i}`} d={`M ${from.x} ${from.y} Q ${midX} ${midY} ${to.x} ${to.y}`} fill="none" />;
+                })}
+              </defs>
+
+              {/* Area zones */}
+              {areaZones.map(z => (
+                <g key={z.id}>
+                  <rect x={z.x} y={z.y} width={z.w} height={z.h} rx={z.rx ?? 10} fill={z.color} stroke={z.color.replace(/[\d.]+\)$/, "0.3)")} strokeWidth={1.2} />
+                  <text x={z.x + z.w / 2} y={z.y + 14} textAnchor="middle" className="fill-muted-foreground" fontSize="10" fontWeight="600" opacity="0.55">{z.label}</text>
+                </g>
+              ))}
+
+              {/* Links */}
+              {links.map((link, i) => {
+                const from = nodeMap[link.from];
+                const to = nodeMap[link.to];
+                if (!from || !to) return null;
+                const style = linkStyles[link.type];
+                const highlighted = isLinkHighlighted(link);
+                const dx = to.x - from.x;
+                const midX = from.x + dx * 0.5;
+                const midY = (from.y + to.y) / 2 + (Math.abs(from.y - to.y) < 50 ? -20 : 0);
+                return (
+                  <g key={`link-${i}`} opacity={highlighted ? 1 : 0.12} style={{ transition: "opacity 0.25s" }}>
+                    <path d={`M ${from.x} ${from.y} Q ${midX} ${midY} ${to.x} ${to.y}`} fill="none" stroke={style.stroke} strokeWidth={style.width} strokeDasharray={style.dash} markerEnd={`url(#arrow-${link.type})`} />
+                    {highlighted && [0, 0.33, 0.66].map((offset, pi) => (
+                      <circle key={pi} r={2} fill={style.stroke} opacity="0.7">
+                        <animateMotion dur="4s" repeatCount="indefinite" begin={`${offset * 4}s`}>
+                          <mpath href={`#flow-path-${i}`} />
+                        </animateMotion>
+                      </circle>
+                    ))}
+                    {link.label && highlighted && <text x={midX} y={midY - 5} textAnchor="middle" className="fill-muted-foreground" fontSize="8" opacity="0.65">{link.label}</text>}
+                  </g>
+                );
+              })}
+
+              {/* Nodes */}
+              {nodes.map(node => {
+                const highlighted = isHighlighted(node.id);
+                const isActive = selected === node.id || hovered === node.id;
+                return (
+                  <Tooltip key={node.id}>
+                    <TooltipTrigger asChild>
+                      <g
+                        opacity={highlighted ? 1 : 0.2}
+                        style={{ transition: "opacity 0.25s", cursor: "pointer" }}
+                        onMouseEnter={() => setHovered(node.id)}
+                        onMouseLeave={() => setHovered(null)}
+                        onClick={() => setSelected(prev => prev === node.id ? null : node.id)}
+                      >
+                        {renderNodeShape(node, isActive)}
+                        <text x={node.x} y={node.y + 1} textAnchor="middle" dominantBaseline="middle" className="fill-foreground" fontSize="8.5" fontWeight={isActive ? "700" : "500"}>
+                          {node.label}
                         </text>
-                      )}
-                    </g>
-                  );
-                })}
+                      </g>
+                    </TooltipTrigger>
+                    <TooltipContent side="top" className="text-xs space-y-0.5">
+                      <p className="font-semibold">{node.label}</p>
+                      <p className="text-muted-foreground">{node.capacity} · {node.depth}m · {node.year}</p>
+                      {node.tier && <p className="text-muted-foreground">Tier {node.tier} · {node.area}</p>}
+                    </TooltipContent>
+                  </Tooltip>
+                );
+              })}
+            </svg>
+          </div>
+        </TooltipProvider>
 
-                {/* Nodes */}
-                {nodes.map(node => {
-                  const style = typeStyles[node.type];
-                  const highlighted = isHighlighted(node.id);
-                  const isActive = selected === node.id || hovered === node.id;
-                  const w = node.type === "terminal" ? 80 : 64;
-                  const h = 36;
-
-                  return (
-                    <Tooltip key={node.id}>
-                      <TooltipTrigger asChild>
-                        <g
-                          opacity={highlighted ? 1 : 0.2}
-                          style={{ transition: "opacity 0.25s", cursor: "pointer" }}
-                          onMouseEnter={() => setHovered(node.id)}
-                          onMouseLeave={() => setHovered(null)}
-                          onClick={() => setSelected(prev => prev === node.id ? null : node.id)}
-                        >
-                          {node.type === "fpso" ? (
-                            <ellipse
-                              cx={node.x}
-                              cy={node.y}
-                              rx={w / 2}
-                              ry={h / 2}
-                              fill={style.fill}
-                              stroke={style.stroke}
-                              strokeWidth={isActive ? 2.5 : 1.5}
-                            />
-                          ) : node.type === "subsea" ? (
-                            <polygon
-                              points={`${node.x},${node.y - h / 2} ${node.x + w / 2},${node.y} ${node.x},${node.y + h / 2} ${node.x - w / 2},${node.y}`}
-                              fill={style.fill}
-                              stroke={style.stroke}
-                              strokeWidth={isActive ? 2.5 : 1.5}
-                            />
-                          ) : (
-                            <rect
-                              x={node.x - w / 2}
-                              y={node.y - h / 2}
-                              width={w}
-                              height={h}
-                              rx={6}
-                              fill={style.fill}
-                              stroke={style.stroke}
-                              strokeWidth={isActive ? 2.5 : 1.5}
-                            />
-                          )}
-                          <text
-                            x={node.x}
-                            y={node.y + 1}
-                            textAnchor="middle"
-                            dominantBaseline="middle"
-                            className="fill-foreground"
-                            fontSize="10"
-                            fontWeight={isActive ? "700" : "500"}
-                          >
-                            {node.label}
-                          </text>
-                        </g>
-                      </TooltipTrigger>
-                      <TooltipContent side="top" className="text-xs space-y-0.5">
-                        <p className="font-semibold">{node.label}</p>
-                        <p className="text-muted-foreground">{node.capacity} · {node.depth}m · {node.year}</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  );
-                })}
-              </svg>
-            </div>
-          </TooltipProvider>
-
-          {/* Detail panel */}
-          {selectedNode && (
-            <div className="lg:w-56 space-y-2 sm:space-y-3 rounded-lg border border-border/50 p-2 sm:p-3 bg-card/50">
-              <div>
-                <Badge variant="outline" className="text-[8px] sm:text-[9px] mb-1" style={{ borderColor: typeStyles[selectedNode.type].stroke, color: typeStyles[selectedNode.type].stroke }}>
-                  {typeStyles[selectedNode.type].badge}
+        {/* Detail panel */}
+        {selectedNode && (
+          <div className="lg:w-56 space-y-2 sm:space-y-3 rounded-lg border border-border/50 p-2 sm:p-3 bg-card/50">
+            <div>
+              <div className="flex items-center gap-1 mb-1">
+                <Badge variant="outline" className="text-[8px] sm:text-[9px]" style={{ borderColor: nodeTypeStyles[selectedNode.type].stroke, color: nodeTypeStyles[selectedNode.type].stroke }}>
+                  {nodeTypeStyles[selectedNode.type].badge}
                 </Badge>
-                <h4 className="text-xs sm:text-sm font-bold">{selectedNode.label}</h4>
+                {selectedNode.tier && (
+                  <Badge variant="outline" className="text-[8px] sm:text-[9px]" style={{ borderColor: tierColors[selectedNode.tier], color: tierColors[selectedNode.tier] }}>
+                    Tier {selectedNode.tier}
+                  </Badge>
+                )}
               </div>
-              <div className="grid grid-cols-2 lg:grid-cols-1 gap-1 sm:gap-1.5 text-[11px] sm:text-xs text-muted-foreground">
-                <div className="flex justify-between"><span>Capacidade</span><span className="font-mono text-foreground">{selectedNode.capacity}</span></div>
-                <div className="flex justify-between"><span>Instalação</span><span className="font-mono text-foreground">{selectedNode.year}</span></div>
-                <div className="flex justify-between"><span>Prof. Água</span><span className="font-mono text-foreground">{selectedNode.depth}m</span></div>
-                <div className="flex justify-between"><span>Estado</span><span className="text-success font-medium">{selectedNode.status}</span></div>
-              </div>
-              <div className="pt-1.5 sm:pt-2 border-t border-border/30">
-                <p className="text-[9px] sm:text-[10px] uppercase tracking-wider text-muted-foreground mb-1">Conexões</p>
-                <div className="grid grid-cols-2 lg:grid-cols-1 gap-0.5">
-                  {links
-                    .filter(l => l.from === selectedNode.id || l.to === selectedNode.id)
-                    .map((l, i) => {
-                      const otherId = l.from === selectedNode.id ? l.to : l.from;
-                      const other = nodeMap[otherId];
-                      return (
-                        <div key={i} className="flex items-center gap-1 sm:gap-1.5 text-[11px] sm:text-xs py-0.5">
-                          <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full shrink-0" style={{ background: linkStyles[l.type].stroke }} />
-                          <span className="truncate">{other.label}</span>
-                          {l.label && <span className="text-muted-foreground text-[8px] sm:text-[9px] hidden sm:inline">({l.label})</span>}
-                        </div>
-                      );
-                    })}
-                </div>
+              <h4 className="text-xs sm:text-sm font-bold">{selectedNode.label}</h4>
+              {selectedNode.area && <p className="text-[10px] text-muted-foreground">{selectedNode.area}</p>}
+            </div>
+            <div className="grid grid-cols-2 lg:grid-cols-1 gap-1 sm:gap-1.5 text-[11px] sm:text-xs text-muted-foreground">
+              <div className="flex justify-between"><span>Capacidade</span><span className="font-mono text-foreground">{selectedNode.capacity}</span></div>
+              <div className="flex justify-between"><span>Instalação</span><span className="font-mono text-foreground">{selectedNode.year}</span></div>
+              <div className="flex justify-between"><span>Prof. Água</span><span className="font-mono text-foreground">{selectedNode.depth}m</span></div>
+              <div className="flex justify-between"><span>Estado</span><span className="text-success font-medium">{selectedNode.status}</span></div>
+            </div>
+            <div className="pt-1.5 sm:pt-2 border-t border-border/30">
+              <p className="text-[9px] sm:text-[10px] uppercase tracking-wider text-muted-foreground mb-1">Conexões</p>
+              <div className="grid grid-cols-2 lg:grid-cols-1 gap-0.5">
+                {links
+                  .filter(l => l.from === selectedNode.id || l.to === selectedNode.id)
+                  .map((l, i) => {
+                    const otherId = l.from === selectedNode.id ? l.to : l.from;
+                    const other = nodeMap[otherId];
+                    if (!other) return null;
+                    return (
+                      <div key={i} className="flex items-center gap-1 sm:gap-1.5 text-[11px] sm:text-xs py-0.5">
+                        <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full shrink-0" style={{ background: linkStyles[l.type].stroke }} />
+                        <span className="truncate">{other.label}</span>
+                        {l.label && <span className="text-muted-foreground text-[8px] sm:text-[9px] hidden sm:inline">({l.label})</span>}
+                      </div>
+                    );
+                  })}
               </div>
             </div>
-          )}
-        </div>
-      </CardContent>
+          </div>
+        )}
+      </div>
+    </CardContent>
   );
 
   if (renderAsContent) return content;
