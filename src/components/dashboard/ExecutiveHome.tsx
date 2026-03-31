@@ -13,6 +13,7 @@ import { HomologacoesPanel } from "./HomologacoesPanel";
 import { type OilBlock, oilBlocks } from "@/data/angolaBlocks";
 import { ChevronDown, ChevronUp, Users, Bell, Target, FileCheck, AlertTriangle, ShieldCheck } from "lucide-react";
 import { HSENationalPanel } from "./HSENationalPanel";
+import { NationalHistoricalProduction } from "./NationalHistoricalProduction";
 
 type DrillDown = "operadores" | "alertas" | "recomendacoes" | "homologacoes" | "hse" | null;
 
@@ -33,7 +34,10 @@ export const ExecutiveHome = ({ initialDrillDown = null }: { initialDrillDown?: 
       {/* Zone B — Executive KPIs */}
       <KPICards />
 
-      {/* Historical Production Trend */}
+      {/* Historical National Production 1975–2023 */}
+      <NationalHistoricalProduction />
+
+      {/* Historical Production Trend 2020–2026 */}
       <NationalProductionTrend />
 
       {/* Drill-down sections */}
