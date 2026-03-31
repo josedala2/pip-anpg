@@ -1179,14 +1179,8 @@ const BlockPage = () => {
                         <span className="text-[10px] text-muted-foreground">BOPD/campo</span>
                       </CardContent>
                     </Card>
-                    <Card className="glass-card">
-                      <CardContent className="p-4 flex flex-col items-center text-center">
-                         <TrendingDown className="w-5 h-5 text-muted-foreground mb-1" />
-                         <span className="text-xs text-muted-foreground flex items-center gap-1">Declínio Anualizado {tooltipDescriptions["Declínio Anualizado"] && <InfoTooltip text={tooltipDescriptions["Declínio Anualizado"]} />}</span>
-                        <span className="text-lg font-bold text-foreground">{annualDecline}{annualDecline !== "N/A" ? "%" : ""}</span>
-                        <span className="text-[10px] text-muted-foreground">taxa anual</span>
-                      </CardContent>
-                    </Card>
+
+
                   </div>
                 );
               })()}
