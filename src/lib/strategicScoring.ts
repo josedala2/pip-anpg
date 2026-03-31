@@ -216,20 +216,20 @@ function economicScore(block: OilBlock): DimensionScore {
 
 function contractualScore(block: OilBlock): DimensionScore {
   const drivers: string[] = [];
-  let score = 50;
+  let score = 40; // baseline reduzido
 
   // Compliance score
   if (block.complianceScore >= 90) {
     score = 85;
     drivers.push(`Compliance elevado: ${block.complianceScore}%`);
   } else if (block.complianceScore >= 75) {
-    score = 65;
+    score = 60;
     drivers.push(`Compliance adequado: ${block.complianceScore}%`);
   } else if (block.complianceScore >= 50) {
-    score = 40;
+    score = 35;
     drivers.push(`Compliance insuficiente: ${block.complianceScore}%`);
   } else {
-    score = 20;
+    score = 10;
     drivers.push(`Compliance crítico: ${block.complianceScore}%`);
   }
 
@@ -238,10 +238,10 @@ function contractualScore(block: OilBlock): DimensionScore {
     const end = new Date(block.contractInfo.productionPeriodEnd);
     const months = Math.round((end.getTime() - Date.now()) / (1000 * 60 * 60 * 24 * 30));
     if (months <= 12) {
-      score -= 20;
+      score -= 25;
       drivers.push("Contrato expira em menos de 12 meses");
     } else if (months <= 24) {
-      score -= 10;
+      score -= 15;
       drivers.push("Contrato expira em menos de 24 meses");
     } else if (months > 60) {
       score += 10;
