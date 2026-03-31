@@ -496,6 +496,13 @@ export interface OilBlock {
   recoveryFactorPercent?: number;
   keyActivities?: string[];
   workProgram?: string[];
+  historicalAnnualProduction?: AnnualProductionEntry[];
+}
+
+export interface AnnualProductionEntry {
+  year: number;
+  production: number; // BOPD average for the year
+  type: "historical" | "forecast";
 }
 
 export interface ExplorationChallenge {
