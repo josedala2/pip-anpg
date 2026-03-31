@@ -29,6 +29,7 @@ import { FacilitiesTab } from "@/components/dashboard/FacilitiesTab";
 import { HomologacoesPanel } from "@/components/dashboard/HomologacoesPanel";
 import { DevelopmentProjectsPanel } from "@/components/dashboard/DevelopmentProjectsPanel";
 import { BlockGasPanel } from "@/components/dashboard/BlockGasPanel";
+import { HistoricalProductionProfile } from "@/components/dashboard/HistoricalProductionProfile";
 import type { LegislationDocument, ContractInfo } from "@/data/angolaBlocks";
 import { InfoTooltip } from "@/components/ui/info-tooltip";
 import { tooltipDescriptions } from "@/lib/tooltipDescriptions";
@@ -1190,8 +1191,13 @@ const BlockPage = () => {
                      </Card>
 
                   </div>
-                );
+               );
               })()}
+
+              {/* Historical Production Profile (1968-2050) */}
+              {block.historicalAnnualProduction && block.historicalAnnualProduction.length > 0 && (
+                <HistoricalProductionProfile data={block.historicalAnnualProduction} blockName={block.name} />
+              )}
 
              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 2xl:gap-6">
               <ChartWrapper title="Tendência de Produção (12 meses)" height={360} fullscreenHeight={600}>
