@@ -25,7 +25,7 @@ export const NationalHistoricalProduction = () => {
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <BarChart3 className="w-4 h-4 text-primary" />
-          <h3 className="text-sm font-bold text-foreground">Histórico da Produção Petrolífera Nacional (1975–2023)</h3>
+          <h3 className="text-sm font-bold text-foreground">Histórico da Produção Petrolífera Nacional (1975–2025)</h3>
         </div>
         <div className="flex items-center gap-3">
           <span className="text-[9px] bg-primary/10 text-primary px-2 py-0.5 rounded-full font-semibold">
