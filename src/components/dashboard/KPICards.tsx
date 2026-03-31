@@ -2,7 +2,7 @@ import { ExecutiveKPICard, type SemaphoreStatus } from "./ExecutiveKPICard";
 import { oilBlocks } from "@/data/angolaBlocks";
 import { homologacoesData } from "@/data/homologacoesData";
 import { nationalCertifiedMetrics } from "@/data/nationalForecast";
-import { Activity, BarChart3, Boxes, DollarSign, Landmark, Pickaxe, Search, Wrench, FileText, CheckCircle, Droplets, Mountain, Flame } from "lucide-react";
+import { Activity, BarChart3, Boxes, Building2, DollarSign, Landmark, Pickaxe, Search, Wrench, FileText, CheckCircle, Droplets, Mountain, Flame } from "lucide-react";
 
 const verified = oilBlocks.filter(b => !b.pendingRealData);
 const criticalFacilities = () => verified.filter(b => b.facilityData && b.facilityData.overallEfficiency < 70).length;
