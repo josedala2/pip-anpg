@@ -47,6 +47,8 @@ export const FacilitiesTab = ({ facilityData }: Props) => {
   const [selectedFacility, setSelectedFacility] = useState<string | null>(null);
   const [docsOpen, setDocsOpen] = useState(false);
   const [maintenanceOpen, setMaintenanceOpen] = useState(false);
+  const [schematicOpen, setSchematicOpen] = useState(false);
+  const [specsOpen, setSpecsOpen] = useState(false);
 
   const photos = facilityData.photos || [];
   const docs = facilityData.documents || [];
@@ -260,18 +262,38 @@ export const FacilitiesTab = ({ facilityData }: Props) => {
         </Card>
       )}
 
-      {/* Interactive Schematic Diagram */}
-      <FacilitiesSchematic />
-
-      {/* Platform Specifications Table */}
-      {specs.length > 0 && (
+      {/* Interactive Schematic Diagram — Collapsible */}
+      <Collapsible open={schematicOpen} onOpenChange={setSchematicOpen}>
         <Card className="glass-card">
-          <CardHeader className="p-4 pb-2">
-            <CardTitle className="text-sm flex items-center gap-2">
-              <Anchor className="w-4 h-4 text-primary" />Especificações das Plataformas
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-4 pt-0">
+          <CollapsibleTrigger asChild>
+            <CardHeader className="p-4 pb-2 cursor-pointer hover:bg-muted/30 transition-colors rounded-t-lg">
+              <CardTitle className="text-sm flex items-center gap-2">
+                <Factory className="w-4 h-4 text-primary" />Diagrama Esquemático — Infraestrutura
+                <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform duration-200 ml-auto ${schematicOpen ? "rotate-180" : ""}`} />
+              </CardTitle>
+            </CardHeader>
+          </CollapsibleTrigger>
+          <CollapsibleContent>
+            <FacilitiesSchematic renderAsContent />
+          </CollapsibleContent>
+        </Card>
+      </Collapsible>
+
+      {/* Platform Specifications Table — Collapsible */}
+      {specs.length > 0 && (
+        <Collapsible open={specsOpen} onOpenChange={setSpecsOpen}>
+          <Card className="glass-card">
+            <CollapsibleTrigger asChild>
+              <CardHeader className="p-4 pb-2 cursor-pointer hover:bg-muted/30 transition-colors rounded-t-lg">
+                <CardTitle className="text-sm flex items-center gap-2">
+                  <Anchor className="w-4 h-4 text-primary" />Especificações das Plataformas
+                  <Badge variant="outline" className="text-[10px] ml-auto mr-2">{specs.length} plataformas</Badge>
+                  <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform duration-200 ${specsOpen ? "rotate-180" : ""}`} />
+                </CardTitle>
+              </CardHeader>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <CardContent className="p-4 pt-0">
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
@@ -304,8 +326,10 @@ export const FacilitiesTab = ({ facilityData }: Props) => {
                 </TableBody>
               </Table>
             </div>
-          </CardContent>
-        </Card>
+              </CardContent>
+            </CollapsibleContent>
+          </Card>
+        </Collapsible>
       )}
 
       {/* Maintenance Plan — Collapsible */}
