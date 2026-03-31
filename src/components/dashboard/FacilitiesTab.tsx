@@ -49,6 +49,7 @@ export const FacilitiesTab = ({ facilityData }: Props) => {
   const [maintenanceOpen, setMaintenanceOpen] = useState(false);
   const [schematicOpen, setSchematicOpen] = useState(false);
   const [specsOpen, setSpecsOpen] = useState(false);
+  const [facilitiesOpen, setFacilitiesOpen] = useState(false);
 
   const photos = facilityData.photos || [];
   const docs = facilityData.documents || [];
