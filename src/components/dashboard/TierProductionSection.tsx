@@ -35,6 +35,38 @@ export const TierProductionSection = ({ profiles, tooltipStyle, legendStyle }: P
         <Layers className="w-4 h-4 text-warning" />Perfil de Produção por Tier (2026–2050)
       </h3>
 
+      {/* Summary KPI cards — moved to top */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+        <Card className="glass-card">
+          <CardContent className="p-3 text-center">
+            <span className="text-[10px] text-muted-foreground">Produção 2026</span>
+            <div className="text-lg font-bold">{first.total.toLocaleString()}</div>
+            <span className="text-[10px] text-muted-foreground">BOPD</span>
+          </CardContent>
+        </Card>
+        <Card className="glass-card">
+          <CardContent className="p-3 text-center">
+            <span className="text-[10px] text-muted-foreground">Produção 2050</span>
+            <div className="text-lg font-bold">{last.total.toLocaleString()}</div>
+            <span className="text-[10px] text-muted-foreground">BOPD</span>
+          </CardContent>
+        </Card>
+        <Card className="glass-card">
+          <CardContent className="p-3 text-center">
+            <span className="text-[10px] text-muted-foreground">Declínio Total</span>
+            <div className="text-lg font-bold text-danger">{declineTotal}%</div>
+            <span className="text-[10px] text-muted-foreground">2026→2050</span>
+          </CardContent>
+        </Card>
+        <Card className="glass-card">
+          <CardContent className="p-3 text-center">
+            <span className="text-[10px] text-muted-foreground">Tier 2&3 Estabiliza</span>
+            <div className="text-lg font-bold text-warning">{crossYear}</div>
+            <span className="text-[10px] text-muted-foreground">≤5k BOPD</span>
+          </CardContent>
+        </Card>
+      </div>
+
       {/* Toggle buttons */}
       <div className="flex flex-wrap gap-2 mb-3">
         {TIERS.map(t => (
@@ -96,38 +128,6 @@ export const TierProductionSection = ({ profiles, tooltipStyle, legendStyle }: P
             </LineChart>
           </ResponsiveContainer>
         </ChartWrapper>
-      </div>
-
-      {/* Summary cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4">
-        <Card className="glass-card">
-          <CardContent className="p-3 text-center">
-            <span className="text-[10px] text-muted-foreground">Produção 2026</span>
-            <div className="text-lg font-bold">{first.total.toLocaleString()}</div>
-            <span className="text-[10px] text-muted-foreground">BOPD</span>
-          </CardContent>
-        </Card>
-        <Card className="glass-card">
-          <CardContent className="p-3 text-center">
-            <span className="text-[10px] text-muted-foreground">Produção 2050</span>
-            <div className="text-lg font-bold">{last.total.toLocaleString()}</div>
-            <span className="text-[10px] text-muted-foreground">BOPD</span>
-          </CardContent>
-        </Card>
-        <Card className="glass-card">
-          <CardContent className="p-3 text-center">
-            <span className="text-[10px] text-muted-foreground">Declínio Total</span>
-            <div className="text-lg font-bold text-danger">{declineTotal}%</div>
-            <span className="text-[10px] text-muted-foreground">2026→2050</span>
-          </CardContent>
-        </Card>
-        <Card className="glass-card">
-          <CardContent className="p-3 text-center">
-            <span className="text-[10px] text-muted-foreground">Tier 2&3 Estabiliza</span>
-            <div className="text-lg font-bold text-warning">{crossYear}</div>
-            <span className="text-[10px] text-muted-foreground">≤5k BOPD</span>
-          </CardContent>
-        </Card>
       </div>
     </div>
   );
