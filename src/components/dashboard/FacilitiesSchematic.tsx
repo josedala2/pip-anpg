@@ -43,48 +43,48 @@ interface AreaZone {
 
 const nodes: SchematicNode[] = [
   // ── Terminal / Onshore ──
-  { id: "terminal",      label: "Terminal Malongo",    type: "terminal", area: "Terminal",   x: 880, y: 70,  capacity: "400 000 BOPD", year: 1968, depth: 0,   status: "Operacional" },
-  { id: "refinery",      label: "Cabinda Refinery",   type: "refinery", area: "Terminal",   x: 700, y: 45,  capacity: "N/D",          year: 1956, depth: 0,   status: "Operacional" },
-  { id: "power-plant",   label: "Power Plant",        type: "refinery", area: "Terminal",   x: 920, y: 18,  capacity: "N/D",          year: 1970, depth: 0,   status: "Operacional" },
-  { id: "futila",        label: "Futila Terminal",     type: "terminal", area: "Terminal",   x: 1020, y: 120, capacity: "SNL",         year: 2012, depth: 0,   status: "Operacional" },
+  { id: "terminal",      label: "Terminal Malongo",    type: "terminal", area: "Terminal",   x: 940, y: 80,  capacity: "400 000 BOPD", year: 1968, depth: 0,   status: "Operacional" },
+  { id: "refinery",      label: "Cabinda Refinery",   type: "refinery", area: "Terminal",   x: 760, y: 50,  capacity: "N/D",          year: 1956, depth: 0,   status: "Operacional" },
+  { id: "power-plant",   label: "Power Plant",        type: "refinery", area: "Terminal",   x: 960, y: 22,  capacity: "N/D",          year: 1970, depth: 0,   status: "Operacional" },
+  { id: "futila",        label: "Futila Terminal",     type: "terminal", area: "Terminal",   x: 1090, y: 115, capacity: "SNL",         year: 2012, depth: 0,   status: "Operacional" },
 
   // ── Greater Taluka Area ──
-  { id: "nsando",   label: "N'Sando",       type: "fixed", tier: 2, area: "Greater Taluka", x: 120, y: 60,  capacity: "6 000 BOPD",  year: 1996, depth: 40,  status: "Operacional" },
-  { id: "ssanefa",  label: "Ssanefa",       type: "fixed", tier: 3, area: "Greater Taluka", x: 210, y: 48,  capacity: "3 000 BOPD",  year: 2000, depth: 35,  status: "Operacional" },
-  { id: "barcala",  label: "Barcala",       type: "fixed", tier: 3, area: "Greater Taluka", x: 430, y: 55,  capacity: "4 000 BOPD",  year: 1999, depth: 42,  status: "Operacional" },
-  { id: "mal-n",    label: "Malongo N.",    type: "fixed", tier: 2, area: "Greater Taluka", x: 330, y: 100, capacity: "12 000 BOPD", year: 1980, depth: 50,  status: "Operacional" },
-  { id: "takula",   label: "Takula",        type: "fixed", tier: 1, area: "Greater Taluka", x: 310, y: 165, capacity: "80 000 BOPD", year: 1971, depth: 60,  status: "Operacional" },
-  { id: "numbi",    label: "Numbi",         type: "fixed", tier: 3, area: "Greater Taluka", x: 470, y: 165, capacity: "5 000 BOPD",  year: 1986, depth: 55,  status: "Operacional" },
-  { id: "lpa",      label: "LPA / TK4",     type: "fixed", tier: 3, area: "Greater Taluka", x: 145, y: 170, capacity: "3 500 BOPD",  year: 1990, depth: 48,  status: "Operacional" },
-  { id: "gg",       label: "GG",            type: "fixed", tier: 3, area: "Greater Taluka", x: 430, y: 210, capacity: "4 000 BOPD",  year: 1988, depth: 52,  status: "Operacional" },
+  { id: "nsando",   label: "N'Sando",       type: "fixed", tier: 2, area: "Greater Taluka", x: 100, y: 65,  capacity: "6 000 BOPD",  year: 1996, depth: 40,  status: "Operacional" },
+  { id: "ssanefa",  label: "Ssanefa",       type: "fixed", tier: 3, area: "Greater Taluka", x: 210, y: 50,  capacity: "3 000 BOPD",  year: 2000, depth: 35,  status: "Operacional" },
+  { id: "barcala",  label: "Barcala",       type: "fixed", tier: 3, area: "Greater Taluka", x: 450, y: 55,  capacity: "4 000 BOPD",  year: 1999, depth: 42,  status: "Operacional" },
+  { id: "mal-n",    label: "Malongo N.",    type: "fixed", tier: 2, area: "Greater Taluka", x: 340, y: 110, capacity: "12 000 BOPD", year: 1980, depth: 50,  status: "Operacional" },
+  { id: "takula",   label: "Takula",        type: "fixed", tier: 1, area: "Greater Taluka", x: 290, y: 185, capacity: "80 000 BOPD", year: 1971, depth: 60,  status: "Operacional" },
+  { id: "numbi",    label: "Numbi",         type: "fixed", tier: 3, area: "Greater Taluka", x: 490, y: 180, capacity: "5 000 BOPD",  year: 1986, depth: 55,  status: "Operacional" },
+  { id: "lpa",      label: "LPA / TK4",     type: "fixed", tier: 3, area: "Greater Taluka", x: 120, y: 185, capacity: "3 500 BOPD",  year: 1990, depth: 48,  status: "Operacional" },
+  { id: "gg",       label: "GG",            type: "fixed", tier: 3, area: "Greater Taluka", x: 460, y: 235, capacity: "4 000 BOPD",  year: 1988, depth: 52,  status: "Operacional" },
 
   // ── Greater Malongo Area ──
-  { id: "gip",      label: "GIP",           type: "fixed", tier: 2, area: "Greater Malongo", x: 540, y: 195, capacity: "35 000 BOPD", year: 1985, depth: 45,  status: "Operacional" },
-  { id: "mal-w",    label: "Malongo W.",    type: "fixed", tier: 3, area: "Greater Malongo", x: 500, y: 255, capacity: "8 000 BOPD",  year: 1982, depth: 50,  status: "Operacional" },
-  { id: "mal-s",    label: "Malongo S.",    type: "fixed", tier: 2, area: "Greater Malongo", x: 620, y: 255, capacity: "15 000 BOPD", year: 1983, depth: 50,  status: "Operacional" },
-  { id: "limba",    label: "Limba",         type: "fixed", tier: 2, area: "Greater Malongo", x: 620, y: 325, capacity: "10 000 BOPD", year: 1990, depth: 60,  status: "Operacional" },
+  { id: "gip",      label: "GIP",           type: "fixed", tier: 2, area: "Greater Malongo", x: 610, y: 200, capacity: "35 000 BOPD", year: 1985, depth: 45,  status: "Operacional" },
+  { id: "mal-w",    label: "Malongo W.",    type: "fixed", tier: 3, area: "Greater Malongo", x: 570, y: 270, capacity: "8 000 BOPD",  year: 1982, depth: 50,  status: "Operacional" },
+  { id: "mal-s",    label: "Malongo S.",    type: "fixed", tier: 2, area: "Greater Malongo", x: 700, y: 270, capacity: "15 000 BOPD", year: 1983, depth: 50,  status: "Operacional" },
+  { id: "limba",    label: "Limba",         type: "fixed", tier: 2, area: "Greater Malongo", x: 700, y: 350, capacity: "10 000 BOPD", year: 1990, depth: 60,  status: "Operacional" },
 
   // ── Area B ──
-  { id: "lomba",    label: "Lomba",         type: "fixed", tier: 1, area: "Area B", x: 110, y: 310, capacity: "40 000 BOPD",  year: 1997, depth: 120, status: "Operacional" },
-  { id: "nemba",    label: "Nemba",         type: "fixed", tier: 1, area: "Area B", x: 240, y: 295, capacity: "30 000 BOPD",  year: 2004, depth: 130, status: "Operacional" },
-  { id: "vuko",     label: "Vuko",          type: "fixed", tier: 3, area: "Area B", x: 380, y: 290, capacity: "5 000 BOPD",   year: 2008, depth: 140, status: "Operacional" },
-  { id: "kungulo",  label: "Kungulo",       type: "fixed", tier: 3, area: "Area B", x: 460, y: 320, capacity: "4 000 BOPD",   year: 2010, depth: 150, status: "Operacional" },
-  { id: "bamboco",  label: "Bamboco",       type: "fixed", tier: 3, area: "Area B", x: 440, y: 400, capacity: "3 000 BOPD",   year: 2006, depth: 200, status: "Operacional" },
-  { id: "kokongo",  label: "Kokongo",       type: "fixed", tier: 2, area: "Area B", x: 530, y: 410, capacity: "8 000 BOPD",   year: 2005, depth: 220, status: "Operacional" },
+  { id: "lomba",    label: "Lomba",         type: "fixed", tier: 1, area: "Area B", x: 90,  y: 330, capacity: "40 000 BOPD",  year: 1997, depth: 120, status: "Operacional" },
+  { id: "nemba",    label: "Nemba",         type: "fixed", tier: 1, area: "Area B", x: 230, y: 315, capacity: "30 000 BOPD",  year: 2004, depth: 130, status: "Operacional" },
+  { id: "vuko",     label: "Vuko",          type: "fixed", tier: 3, area: "Area B", x: 370, y: 310, capacity: "5 000 BOPD",   year: 2008, depth: 140, status: "Operacional" },
+  { id: "kungulo",  label: "Kungulo",       type: "fixed", tier: 3, area: "Area B", x: 480, y: 345, capacity: "4 000 BOPD",   year: 2010, depth: 150, status: "Operacional" },
+  { id: "bamboco",  label: "Bamboco",       type: "fixed", tier: 3, area: "Area B", x: 400, y: 430, capacity: "3 000 BOPD",   year: 2006, depth: 200, status: "Operacional" },
+  { id: "kokongo",  label: "Kokongo",       type: "fixed", tier: 2, area: "Area B", x: 520, y: 440, capacity: "8 000 BOPD",   year: 2005, depth: 220, status: "Operacional" },
 
   // ── FPSO ──
-  { id: "sanha",     label: "Sanha FPSO",   type: "fpso", tier: 1, area: "FPSO", x: 200, y: 440, capacity: "100 000 BOPD",    year: 2004, depth: 350, status: "Operacional" },
-  { id: "sanha-lpg", label: "Sanha LPG",    type: "fpso",          area: "FPSO", x: 330, y: 455, capacity: "LPG Processing",   year: 2005, depth: 350, status: "Operacional" },
+  { id: "sanha",     label: "Sanha FPSO",   type: "fpso", tier: 1, area: "FPSO", x: 180, y: 490, capacity: "100 000 BOPD",    year: 2004, depth: 350, status: "Operacional" },
+  { id: "sanha-lpg", label: "Sanha LPG",    type: "fpso",          area: "FPSO", x: 360, y: 510, capacity: "LPG Processing",   year: 2005, depth: 350, status: "Operacional" },
 
   // ── Mafumeira ──
-  { id: "maf-n",    label: "Mafumeira N.",  type: "fixed", tier: 1, area: "Mafumeira", x: 740, y: 400, capacity: "100 000 BOPD", year: 2009, depth: 55,  status: "Operacional" },
-  { id: "maf-s",    label: "Mafumeira S.",  type: "fixed", tier: 2, area: "Mafumeira", x: 850, y: 430, capacity: "50 000 BOPD",  year: 2015, depth: 65,  status: "Operacional" },
-  { id: "lavuala",  label: "Lavuala",       type: "fixed", tier: 3, area: "Mafumeira", x: 770, y: 340, capacity: "5 000 BOPD",   year: 2014, depth: 60,  status: "Operacional" },
-  { id: "livuite",  label: "Livuite",       type: "fixed", tier: 3, area: "Mafumeira", x: 870, y: 350, capacity: "4 000 BOPD",   year: 2016, depth: 62,  status: "Operacional" },
+  { id: "maf-n",    label: "Mafumeira N.",  type: "fixed", tier: 1, area: "Mafumeira", x: 800, y: 435, capacity: "100 000 BOPD", year: 2009, depth: 55,  status: "Operacional" },
+  { id: "maf-s",    label: "Mafumeira S.",  type: "fixed", tier: 2, area: "Mafumeira", x: 930, y: 470, capacity: "50 000 BOPD",  year: 2015, depth: 65,  status: "Operacional" },
+  { id: "lavuala",  label: "Lavuala",       type: "fixed", tier: 3, area: "Mafumeira", x: 820, y: 370, capacity: "5 000 BOPD",   year: 2014, depth: 60,  status: "Operacional" },
+  { id: "livuite",  label: "Livuite",       type: "fixed", tier: 3, area: "Mafumeira", x: 950, y: 385, capacity: "4 000 BOPD",   year: 2016, depth: 62,  status: "Operacional" },
 
   // ── Exterior ──
-  { id: "ndola",    label: "N'Dola",        type: "subsea",        area: "Exterior", x: 160, y: 540, capacity: "Angola LNG",    year: 2013, depth: 400, status: "Operacional" },
-  { id: "bblt",     label: "BBLT (Blk 14)", type: "subsea",        area: "Exterior", x: 280, y: 530, capacity: "Tieback",       year: 2015, depth: 380, status: "Operacional" },
+  { id: "ndola",    label: "N'Dola",        type: "subsea",        area: "Exterior", x: 120, y: 590, capacity: "Angola LNG",    year: 2013, depth: 400, status: "Operacional" },
+  { id: "bblt",     label: "BBLT (Blk 14)", type: "subsea",        area: "Exterior", x: 310, y: 590, capacity: "Tieback",       year: 2015, depth: 380, status: "Operacional" },
 ];
 
 const links: SchematicLink[] = [
@@ -140,12 +140,12 @@ const links: SchematicLink[] = [
 ];
 
 const areaZones: AreaZone[] = [
-  { id: "taluka",   label: "Greater Taluka Area",   x: 70,  y: 28,  w: 470, h: 210, rx: 18, color: "hsl(340 60% 60% / 0.10)" },
-  { id: "malongo",  label: "Greater Malongo Area",  x: 475, y: 175, w: 220, h: 175, rx: 14, color: "hsl(210 60% 60% / 0.10)" },
-  { id: "area-b",   label: "Area B",                x: 70,  y: 265, w: 520, h: 180, rx: 40, color: "hsl(170 50% 50% / 0.10)" },
-  { id: "fpso",     label: "FPSO",                  x: 150, y: 415, w: 240, h: 70,  rx: 12, color: "hsl(210 50% 45% / 0.12)" },
-  { id: "mafum",    label: "Mafumeira",             x: 710, y: 315, w: 240, h: 145, rx: 14, color: "hsl(270 50% 55% / 0.10)" },
-  { id: "term",     label: "Terminal",               x: 660, y: 5,  w: 400, h: 140, rx: 14, color: "hsl(40 50% 50% / 0.10)" },
+  { id: "taluka",   label: "Greater Taluka Area",   x: 50,  y: 28,  w: 510, h: 230, rx: 18, color: "hsl(340 60% 60% / 0.10)" },
+  { id: "malongo",  label: "Greater Malongo Area",  x: 535, y: 178, w: 220, h: 195, rx: 14, color: "hsl(210 60% 60% / 0.10)" },
+  { id: "area-b",   label: "Area B",                x: 50,  y: 280, w: 530, h: 190, rx: 40, color: "hsl(170 50% 50% / 0.10)" },
+  { id: "fpso",     label: "FPSO",                  x: 120, y: 465, w: 300, h: 70,  rx: 12, color: "hsl(210 50% 45% / 0.12)" },
+  { id: "mafum",    label: "Mafumeira",             x: 770, y: 345, w: 240, h: 155, rx: 14, color: "hsl(270 50% 55% / 0.10)" },
+  { id: "term",     label: "Terminal",               x: 710, y: 5,  w: 430, h: 140, rx: 14, color: "hsl(40 50% 50% / 0.10)" },
 ];
 
 /* ------------------------------------------------------------------ */
