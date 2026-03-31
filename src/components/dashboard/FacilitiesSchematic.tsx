@@ -363,9 +363,12 @@ export const FacilitiesSchematic = ({ renderAsContent = false }: { renderAsConte
       })()}
       <div className="flex flex-col lg:flex-row gap-3 sm:gap-4">
         <TooltipProvider delayDuration={100}>
-          <div className="w-full lg:flex-1 overflow-hidden rounded-lg border border-border/30 bg-muted/20 relative touch-none">
-            {/* Zoom controls */}
+          <div ref={svgContainerRef} className="w-full lg:flex-1 overflow-hidden rounded-lg border border-border/30 bg-muted/20 relative touch-none">
+            {/* Zoom & export controls */}
             <div className="absolute top-1.5 right-1.5 z-10 flex items-center gap-0.5">
+              <button onClick={exportPng} title="Exportar PNG" className="text-xs sm:text-sm bg-background/80 backdrop-blur border border-border/50 rounded w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors">
+                <Download className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+              </button>
               <button onClick={() => setZoom(prev => clampZoom(prev - 0.3))} disabled={zoom <= 1} className="text-xs sm:text-sm bg-background/80 backdrop-blur border border-border/50 rounded w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center text-muted-foreground hover:text-foreground disabled:opacity-30 transition-colors">−</button>
               <span className="text-[9px] sm:text-[10px] bg-background/80 backdrop-blur border border-border/50 rounded px-1.5 py-0.5 font-mono text-muted-foreground min-w-[2.5rem] text-center">{Math.round(zoom * 100)}%</span>
               <button onClick={() => setZoom(prev => clampZoom(prev + 0.3))} disabled={zoom >= 4} className="text-xs sm:text-sm bg-background/80 backdrop-blur border border-border/50 rounded w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center text-muted-foreground hover:text-foreground disabled:opacity-30 transition-colors">+</button>
