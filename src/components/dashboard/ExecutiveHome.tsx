@@ -38,6 +38,9 @@ export const ExecutiveHome = ({ initialDrillDown = null }: { initialDrillDown?: 
       {/* Historical National Production 1975–2023 */}
       <NationalHistoricalProduction />
 
+      {/* National Production Trend 2020–2026 (Oil + Gas) */}
+      <NationalProductionTrend />
+
       {/* National Forecast 2025–2050 */}
       <NationalForecast2050 />
 
