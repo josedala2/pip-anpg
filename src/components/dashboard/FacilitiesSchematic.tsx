@@ -413,7 +413,16 @@ export const FacilitiesSchematic = ({ renderAsContent = false }: { renderAsConte
                         onClick={() => setSelected(prev => prev === node.id ? null : node.id)}
                       >
                         {renderNodeShape(node, isActive)}
-                        <text x={node.x} y={node.y + 1} textAnchor="middle" dominantBaseline="middle" className="fill-foreground" fontSize="8.5" fontWeight={isActive ? "700" : "500"}>
+                        {/* Label background for readability */}
+                        <rect
+                          x={node.x - (node.label.length * 2.8)}
+                          y={node.y - 6}
+                          width={node.label.length * 5.6}
+                          height={12}
+                          rx={2}
+                          fill="hsl(var(--background) / 0.75)"
+                        />
+                        <text x={node.x} y={node.y + 1} textAnchor="middle" dominantBaseline="middle" className="fill-foreground" fontSize="8.5" fontWeight={isActive ? "700" : "600"}>
                           {node.label}
                         </text>
                       </g>
