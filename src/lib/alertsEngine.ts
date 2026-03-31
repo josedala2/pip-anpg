@@ -444,72 +444,85 @@ export function evaluateForecastAlerts(): ForecastAlert[] {
   const baseScenario = nationalOutputs.find(o => o.scenario.id === "continuidade")!;
   const optimScenario = nationalOutputs.find(o => o.scenario.id === "optimizacao")!;
 
-  // ── National-level alerts ──
+  // ── National-level alerts (consolidated: 1 alert per type, worst scenario) ──
 
-  // 1. NPV negativo em qualquer cenário
-  nationalOutputs.forEach(o => {
-    if (o.npv < 0) {
-      alerts.push({
-        id: `forecast-nat-npv-neg-${o.scenario.id}`,
-        blockId: "national", blockName: "Nacional", operator: "—",
-        category: "forecast", severity: "critical",
-        title: `NPV Nacional negativo — ${o.scenario.name}`,
-        description: `O cenário "${o.scenario.name}" resulta em NPV de $${(o.npv / 1000).toFixed(1)}B, indicando destruição de valor a nível nacional.`,
-        metric: `$${(o.npv / 1000).toFixed(1)}B`,
-        threshold: "< $0",
-        actionRequired: "Avaliar medidas urgentes de optimização ou revisão de regime fiscal.",
-        scenarioId: o.scenario.id,
-        scenarioName: o.scenario.name,
-      });
-    }
-  });
+  // 1. NPV negativo — consolidar cenários afectados
+  const npvNegScenarios = nationalOutputs.filter(o => o.npv < 0);
+  if (npvNegScenarios.length > 0) {
+    const worst = npvNegScenarios.reduce((a, b) => a.npv < b.npv ? a : b);
+    const names = npvNegScenarios.map(o => o.scenario.name).join(", ");
+    alerts.push({
+      id: `forecast-nat-npv-neg`,
+      blockId: "national", blockName: "Nacional", operator: "—",
+      category: "forecast", severity: "critical",
+      title: `NPV Nacional negativo em ${npvNegScenarios.length} de ${nationalOutputs.length} cenários`,
+      description: `O pior cenário ("${worst.scenario.name}") resulta em NPV de $${(worst.npv / 1000).toFixed(1)}B. Cenários afectados: ${names}.`,
+      metric: `$${(worst.npv / 1000).toFixed(1)}B`,
+      threshold: "< $0",
+      actionRequired: "Avaliar medidas urgentes de optimização ou revisão de regime fiscal.",
+      scenarioId: worst.scenario.id,
+      scenarioName: worst.scenario.name,
+    });
+  }
 
-  // 2. Produção nacional cai abaixo de 800k BOPD (limiar estratégico)
+  // 2. Produção nacional < 800k BOPD — cenário que cruza o limiar mais cedo
   const PROD_THRESHOLD = 800000;
-  nationalOutputs.forEach(o => {
-    const belowYears = o.projections.filter(p => p.production < PROD_THRESHOLD);
-    if (belowYears.length > 0) {
-      const firstYear = belowYears[0].year;
-      alerts.push({
-        id: `forecast-nat-prod-low-${o.scenario.id}`,
-        blockId: "national", blockName: "Nacional", operator: "—",
-        category: "forecast",
-        severity: firstYear <= 2030 ? "critical" : firstYear <= 2035 ? "high" : "medium",
-        title: `Produção nacional < 800k BOPD em ${firstYear}`,
-        description: `No cenário "${o.scenario.name}", a produção cai para ${(belowYears[0].production / 1000).toFixed(0)}k BOPD em ${firstYear}.`,
-        metric: `${(belowYears[0].production / 1000).toFixed(0)}k BOPD`,
-        threshold: "< 800k BOPD",
-        actionRequired: "Intensificar programas de revitalização e acelerar licenciamento de novos blocos.",
-        scenarioId: o.scenario.id,
-        scenarioName: o.scenario.name,
-        yearHorizon: firstYear,
-      });
-    }
-  });
+  const prodLowScenarios = nationalOutputs
+    .map(o => {
+      const below = o.projections.filter(p => p.production < PROD_THRESHOLD);
+      return below.length > 0 ? { output: o, firstYear: below[0].year, firstProd: below[0].production } : null;
+    })
+    .filter(Boolean) as { output: ScenarioOutput; firstYear: number; firstProd: number }[];
 
-  // 3. Receita do Estado cai > 40% face ao primeiro ano
-  nationalOutputs.forEach(o => {
-    const firstYearRevenue = o.projections[0]?.stateRevenue || 1;
-    const droppedYears = o.projections.filter(p => p.stateRevenue < firstYearRevenue * 0.6);
-    if (droppedYears.length > 0) {
-      const firstDrop = droppedYears[0];
-      const dropPct = ((firstYearRevenue - firstDrop.stateRevenue) / firstYearRevenue * 100).toFixed(0);
-      alerts.push({
-        id: `forecast-nat-revenue-drop-${o.scenario.id}`,
-        blockId: "national", blockName: "Nacional", operator: "—",
-        category: "forecast",
-        severity: parseInt(dropPct) > 60 ? "critical" : "high",
-        title: `Receita Estado cai ${dropPct}% em ${firstDrop.year}`,
-        description: `No cenário "${o.scenario.name}", a receita do Estado baixa de $${firstYearRevenue}MM para $${firstDrop.stateRevenue}MM em ${firstDrop.year}.`,
-        metric: `-${dropPct}%`,
-        threshold: "> -40%",
-        actionRequired: "Rever política fiscal e avaliar impacto no Orçamento Geral do Estado.",
-        scenarioId: o.scenario.id,
-        scenarioName: o.scenario.name,
-        yearHorizon: firstDrop.year,
-      });
-    }
-  });
+  if (prodLowScenarios.length > 0) {
+    const earliest = prodLowScenarios.reduce((a, b) => a.firstYear < b.firstYear ? a : b);
+    const names = prodLowScenarios.map(s => s.output.scenario.name).join(", ");
+    alerts.push({
+      id: `forecast-nat-prod-low`,
+      blockId: "national", blockName: "Nacional", operator: "—",
+      category: "forecast",
+      severity: earliest.firstYear <= 2030 ? "critical" : earliest.firstYear <= 2035 ? "high" : "medium",
+      title: `Produção nacional < 800k BOPD em ${earliest.firstYear}`,
+      description: `Em ${prodLowScenarios.length} de ${nationalOutputs.length} cenários a produção cruza este limiar. O mais cedo é "${earliest.output.scenario.name}" com ${(earliest.firstProd / 1000).toFixed(0)}k BOPD. Cenários: ${names}.`,
+      metric: `${(earliest.firstProd / 1000).toFixed(0)}k BOPD`,
+      threshold: "< 800k BOPD",
+      actionRequired: "Intensificar programas de revitalização e acelerar licenciamento de novos blocos.",
+      scenarioId: earliest.output.scenario.id,
+      scenarioName: earliest.output.scenario.name,
+      yearHorizon: earliest.firstYear,
+    });
+  }
+
+  // 3. Receita do Estado cai > 40% — maior queda percentual
+  const revenueDropScenarios = nationalOutputs
+    .map(o => {
+      const firstYearRevenue = o.projections[0]?.stateRevenue || 1;
+      const dropped = o.projections.filter(p => p.stateRevenue < firstYearRevenue * 0.6);
+      if (dropped.length === 0) return null;
+      const firstDrop = dropped[0];
+      const dropPct = (firstYearRevenue - firstDrop.stateRevenue) / firstYearRevenue * 100;
+      return { output: o, dropPct, firstDrop, firstYearRevenue };
+    })
+    .filter(Boolean) as { output: ScenarioOutput; dropPct: number; firstDrop: { year: number; stateRevenue: number }; firstYearRevenue: number }[];
+
+  if (revenueDropScenarios.length > 0) {
+    const worst = revenueDropScenarios.reduce((a, b) => a.dropPct > b.dropPct ? a : b);
+    const names = revenueDropScenarios.map(s => s.output.scenario.name).join(", ");
+    alerts.push({
+      id: `forecast-nat-revenue-drop`,
+      blockId: "national", blockName: "Nacional", operator: "—",
+      category: "forecast",
+      severity: worst.dropPct > 60 ? "critical" : "high",
+      title: `Receita Estado cai ${worst.dropPct.toFixed(0)}% em ${worst.firstDrop.year}`,
+      description: `Em ${revenueDropScenarios.length} de ${nationalOutputs.length} cenários a receita cai >40%. Pior: "${worst.output.scenario.name}" ($${worst.firstYearRevenue}MM → $${worst.firstDrop.stateRevenue}MM). Cenários: ${names}.`,
+      metric: `-${worst.dropPct.toFixed(0)}%`,
+      threshold: "> -40%",
+      actionRequired: "Rever política fiscal e avaliar impacto no Orçamento Geral do Estado.",
+      scenarioId: worst.output.scenario.id,
+      scenarioName: worst.output.scenario.name,
+      yearHorizon: worst.firstDrop.year,
+    });
+  }
 
   // 4. Produção agregada Tier 2&3 cai abaixo de threshold configurável
   const TIER23_THRESHOLD = forecastThresholds.tier23MinBOPD;
