@@ -311,17 +311,20 @@ export const FacilitiesSchematic = ({ renderAsContent = false }: { renderAsConte
           onClick={() => { setActiveArea(null); setSelected(null); }}
           className={`text-[9px] sm:text-[10px] px-2 py-0.5 rounded-full border transition-colors ${!activeArea ? "bg-primary/15 border-primary text-primary font-semibold" : "border-border/50 text-muted-foreground hover:text-foreground hover:border-border"}`}
         >
-          Todas
+          Todas <span className="opacity-60 ml-0.5">({nodes.length})</span>
         </button>
-        {areas.map(area => (
-          <button
-            key={area}
-            onClick={() => { setActiveArea(prev => prev === area ? null : area); setSelected(null); }}
-            className={`text-[9px] sm:text-[10px] px-2 py-0.5 rounded-full border transition-colors ${activeArea === area ? "bg-primary/15 border-primary text-primary font-semibold" : "border-border/50 text-muted-foreground hover:text-foreground hover:border-border"}`}
-          >
-            {area}
-          </button>
-        ))}
+        {areas.map(area => {
+          const count = nodes.filter(n => n.area === area).length;
+          return (
+            <button
+              key={area}
+              onClick={() => { setActiveArea(prev => prev === area ? null : area); setSelected(null); }}
+              className={`text-[9px] sm:text-[10px] px-2 py-0.5 rounded-full border transition-colors ${activeArea === area ? "bg-primary/15 border-primary text-primary font-semibold" : "border-border/50 text-muted-foreground hover:text-foreground hover:border-border"}`}
+            >
+              {area} <span className="opacity-60 ml-0.5">({count})</span>
+            </button>
+          );
+        })}
       </div>
       <div className="flex flex-col lg:flex-row gap-3 sm:gap-4">
         <TooltipProvider delayDuration={100}>
