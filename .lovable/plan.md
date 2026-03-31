@@ -1,58 +1,42 @@
 
 
-## Actualizar Diagrama Esquemático com Infraestrutura Completa do Bloco 0
+## Auditoria e Correcção de Responsividade da Plataforma
 
-### Contexto
-O esquemático actual tem apenas 10 nós genéricos. A imagem de referência mostra a infraestrutura real com ~30 instalações organizadas em 6 áreas operacionais, com tipologia de campos (Tier 1/2/3) e diferentes tipos de pipeline.
+### Problemas Identificados
 
-### Alterações — `src/components/dashboard/FacilitiesSchematic.tsx`
+1. **Sidebar sem acesso mobile** — A sidebar usa `hidden md:block`, ficando completamente inacessível em ecrãs <768px. Não existe menu hamburger nem drawer alternativo.
 
-#### 1. Expandir tipos de nó e de ligação
-- Adicionar tipo `"refinery"` ao `SchematicNode` (para Cabinda Refinery, Power Plant)
-- Adicionar campo opcional `tier?: 1 | 2 | 3` e `area?: string` ao interface
-- Adicionar tipo de link `"gas"` e `"water-injection"` (da legenda da imagem)
+2. **BlockPage — Tabs com overflow** — 9 TabsTriggers em `flex-wrap` ficam desorganizados em tablets e ilegíveis em mobile.
 
-#### 2. Substituir array `nodes` (~10 → ~28 nós)
-Organizados por área conforme a imagem:
+3. **Header — Selector de período oculto em mobile** — O selector "Actual / 6M / 12M / 24M" usa `hidden md:flex` sem alternativa mobile.
 
-**Onshore/Terminal** (direita-topo):
-- Terminal Malongo, Cabinda Refinery, Malongo Power Plant, Futila Terminal (SNL)
+4. **Home Executiva — Painéis Detalhados** — Grid `md:grid-cols-5` no drill-down buttons pode ficar apertado em tablets (768-1024px).
 
-**Greater Taluka Area** (esquerda-topo):
-- N'Sando, Ssanefa, Barcala, Malongo North, Takula, Numbi, LPA/TK4, GG
+5. **KPICards** — Grids de KPIs executivos podem não ter breakpoints intermédios adequados.
 
-**Greater Malongo Area** (centro-direita):
-- GIP, Malongo South, Limba
+### Alterações Propostas
 
-**Area B** (esquerda-centro):
-- Lomba N/S, Nemba, Vuko, Kungulo, Bamboco, Kokongo
+#### 1. Sidebar Mobile — `src/components/ui/sidebar.tsx` + `src/pages/Index.tsx`
+- A sidebar do shadcn já suporta modo Sheet (drawer) em mobile — verificar se está activo
+- Se não, garantir que o `SidebarTrigger` fica visível em mobile e abre o drawer
 
-**FPSO** (centro):
-- Sanha FPSO, Sanha LPG
+#### 2. BlockPage Tabs — `src/pages/BlockPage.tsx`
+- Envolver a `TabsList` num scroll horizontal em mobile: `overflow-x-auto` + `flex-nowrap` em vez de `flex-wrap`
+- Adicionar `scrollbar-hide` para ecrãs pequenos
 
-**Mafumeira** (direita-baixo):
-- Mafumeira N., Mafumeira S., Lavuala, Livuite
+#### 3. Header Period Selector — `src/pages/Index.tsx`
+- Remover `hidden md:flex` e usar layout compacto em mobile (ícone com dropdown ou tamanho menor)
 
-**Exterior**:
-- N'Dola (ligação Angola LNG), BBLT (Block 14)
+#### 4. Drill-down Buttons — `src/components/dashboard/ExecutiveHome.tsx`
+- Alterar grid de `md:grid-cols-5` para `grid-cols-2 md:grid-cols-3 xl:grid-cols-5` com melhor progressão
 
-#### 3. Substituir array `links` (~9 → ~25 ligações)
-Reflectir os pipelines da imagem: crude oil (preto/escuro), gás (verde), water injection (azul), planned future (tracejado)
+#### 5. Verificação geral de overflow
+- Garantir que todas as tabelas usam `overflow-x-auto`
+- Verificar que gráficos Recharts usam `ResponsiveContainer` (já usado na maioria)
 
-#### 4. Adicionar zonas de agrupamento (SVG `<rect>` ou `<ellipse>` semi-transparentes)
-Substituir as 3 faixas de profundidade por contornos de área:
-- Greater Taluka Area — contorno rosa
-- Greater Malongo Area — contorno azul
-- Area B — contorno verde/teal
-- Mafumeira — contorno azul claro
-- Terminal — contorno cinza
-
-#### 5. Actualizar legenda
-Incluir Tier 1/2/3 (cores dos campos) e tipos de pipeline (Crude, Gas, Water Injection, Planned)
-
-#### 6. Ajustar viewBox
-Expandir para ~1100×600 para acomodar os nós adicionais com espaçamento adequado
-
-### Ficheiro afectado
-- `src/components/dashboard/FacilitiesSchematic.tsx`
+### Ficheiros afectados
+- `src/pages/Index.tsx`
+- `src/pages/BlockPage.tsx`
+- `src/components/dashboard/ExecutiveHome.tsx`
+- `src/components/ui/sidebar.tsx` (verificação)
 
