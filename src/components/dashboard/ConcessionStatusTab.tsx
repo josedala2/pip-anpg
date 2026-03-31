@@ -210,9 +210,11 @@ export const ConcessionStatusTab = ({ block }: ConcessionStatusTabProps) => {
       const ie = block.economicVision?.investmentExecuted;
       if (ie && ie.periods.length > 0) {
         const totalExec = ie.periods.reduce((s, p) => s + p.capex + p.opex, 0);
+        const subParts = ie.periods.map(p => `${p.label}: $${(p.capex + p.opex).toLocaleString()}M`).join(" + ");
         return {
           label: "Investimento Executado",
           value: `$${(totalExec / 1000).toFixed(1)}B`,
+          sub: subParts,
           icon: DollarSign,
           color: "text-warning" as const,
         };
