@@ -1524,6 +1524,12 @@ const BlockPage = () => {
           <TabsContent value="econ-financial" className="space-y-6 2xl:space-y-8">
             {/* Sub-navigation */}
             <div className="sticky top-[57px] z-30 glass-card border border-border/50 rounded-lg p-1.5 flex items-center gap-1 flex-wrap">
+              <button
+                onClick={() => document.getElementById("section-resumo-financeiro")?.scrollIntoView({ behavior: "smooth", block: "start" })}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-secondary/80 transition-colors"
+              >
+                <DollarSign className="w-3.5 h-3.5" />Resumo Financeiro
+              </button>
               {(block.economicVision || block.economicData) && (
                 <button
                   onClick={() => document.getElementById("section-visao-economica")?.scrollIntoView({ behavior: "smooth", block: "start" })}
@@ -1533,12 +1539,6 @@ const BlockPage = () => {
                 </button>
               )}
               <button
-                onClick={() => document.getElementById("section-resumo-financeiro")?.scrollIntoView({ behavior: "smooth", block: "start" })}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-secondary/80 transition-colors"
-              >
-                <DollarSign className="w-3.5 h-3.5" />Resumo Financeiro
-              </button>
-              <button
                 onClick={() => document.getElementById("section-consorcio")?.scrollIntoView({ behavior: "smooth", block: "start" })}
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-secondary/80 transition-colors"
               >
@@ -1546,15 +1546,7 @@ const BlockPage = () => {
               </button>
             </div>
 
-            {/* Section 1: Visão Económica ANPG */}
-            {(block.economicVision || block.economicData) && (
-              <>
-                <h3 id="section-visao-economica" className="text-sm 2xl:text-base font-semibold flex items-center gap-2 scroll-mt-28">
-                  <Scale className="w-4 h-4 text-primary" />Visão Económica ANPG
-                </h3>
-                <EconomicVisionTab block={block} />
-              </>
-            )}
+            
 
             {/* Section 2: Financeiro & Contratual */}
             {(() => {
@@ -2229,6 +2221,16 @@ const BlockPage = () => {
                 </>
               );
             })()}
+
+            {/* Section: Visão Económica ANPG */}
+            {(block.economicVision || block.economicData) && (
+              <>
+                <h3 id="section-visao-economica" className="text-sm 2xl:text-base font-semibold flex items-center gap-2 scroll-mt-28">
+                  <Scale className="w-4 h-4 text-primary" />Visão Económica ANPG
+                </h3>
+                <EconomicVisionTab block={block} />
+              </>
+            )}
 
             {/* Section: Consórcio */}
             <h3 id="section-consorcio" className="text-sm 2xl:text-base font-semibold flex items-center gap-2 pt-4 scroll-mt-28">
