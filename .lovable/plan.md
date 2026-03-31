@@ -1,27 +1,21 @@
 
 
-## Adicionar KPI "Investimento Executado" na Visão Geral do Bloco 0
+## Alinhar KPI "Investimento Executado" no Painel Estado da Concessão
 
-### Contexto
-A imagem de referência mostra o investimento executado dividido em dois períodos com breakdown CAPEX/OPEX:
-- **2004–2021**: CAPEX 18.228 + OPEX 23.132 = **41.361 MMUSD**
-- **2022–2025**: CAPEX 4.872 + OPEX 3.431 = **8.303 MMUSD**
-- **Total**: ~49.664 MMUSD
+### Situação actual
+O painel Estado da Concessão já calcula o KPI correctamente a partir do `capexHistory`:
+- **Actual**: 5.400M (soma dos CAPEX realizados 2020–2025)
+- **Planned**: 14.276M (soma dos CAPEX planeados 2020–2030)
+- **Rate**: 38%
 
-### Alterações
+Isto corresponde exactamente à imagem de referência (38%, $5400M / $14 276M).
 
-**1. `src/data/angolaBlocks.ts`** — Adicionar campo `investmentExecuted` ao interface `EconomicVision` e popular os dados no Bloco 0:
-```typescript
-investmentExecuted?: {
-  periods: { label: string; capex: number; opex: number }[];
-};
-```
-Dados: `[{ label: "2004 - 2021", capex: 18228, opex: 23132 }, { label: "2022 - 2025", capex: 4872, opex: 3431 }]`
+### Problema menor
+O campo `plannedInvestment` do Bloco 0 está a 14.126, enquanto a soma real do `capexHistory` é 14.276 — diferença de 150M. Se o fallback for usado (sem capexHistory), mostraria um valor inconsistente.
 
-**2. `src/pages/BlockPage.tsx`** — Na grid de KPIs da aba "Visão Geral" (linha ~397), substituir o KPI "Investimento Quinquenal" / "Investimento Acum." por um novo KPI "Investimento Executado" que mostra o total dos dois períodos (~$49.664M → `$49,7B`) quando `investmentExecuted` existe, com sub-texto indicando os dois períodos.
+### Alteração
 
-**3. Actualizar `accumulatedInvestment`** do Bloco 0 de 5.400 para 49.664 para consistência (ou manter separado se usado noutros contextos — verificar impacto).
+**`src/data/angolaBlocks.ts`** — Corrigir `plannedInvestment` do Bloco 0 de **14126** para **14276** para alinhar com a soma do `capexHistory` e com a imagem de referência.
 
-### Resultado
-O card KPI na Visão Geral mostrará: **Investimento Executado: $49,7B** com sub-texto "2004–2021: $41.361M + 2022–2025: $8.303M".
+Resultado: ambos os painéis (Visão Geral e Estado da Concessão) apresentam dados consistentes — o Estado da Concessão continuará a mostrar **38% · $5.400M / $14.276M**.
 
