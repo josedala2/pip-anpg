@@ -1180,7 +1180,14 @@ const BlockPage = () => {
                         <span className="text-[10px] text-muted-foreground">BOPD/campo</span>
                       </CardContent>
                     </Card>
-
+                     <Card className="glass-card">
+                       <CardContent className="p-4 flex flex-col items-center text-center">
+                          <Flame className="w-5 h-5 text-[hsl(var(--chart-5))] mb-1" />
+                          <span className="text-xs text-muted-foreground flex items-center gap-1">GOR {tooltipDescriptions["GOR"] && <InfoTooltip text={tooltipDescriptions["GOR"]} />}</span>
+                         <span className="text-lg font-bold text-foreground">{gor ? gor.toLocaleString() : "N/A"}</span>
+                         <span className="text-[10px] text-muted-foreground">SCF/STB</span>
+                       </CardContent>
+                     </Card>
 
                   </div>
                 );
