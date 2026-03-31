@@ -33,7 +33,7 @@ export const basinBreakdown: BasinBreakdown[] = [
 
 // Approximate data from the production forecast chart (Page 3)
 export const nationalForecast: ForecastYear[] = [
-  { year: 2025, baseProduction: 1036, discoveredWithFID: 0,   discoveredWithoutFID: 0,   total: 1036 },
+  { year: 2025, baseProduction: 1051, discoveredWithFID: 0,   discoveredWithoutFID: 0,   total: 1051 },
   { year: 2026, baseProduction: 980,  discoveredWithFID: 30,  discoveredWithoutFID: 0,   total: 1010 },
   { year: 2027, baseProduction: 930,  discoveredWithFID: 90,  discoveredWithoutFID: 0,   total: 1020 },
   { year: 2028, baseProduction: 870,  discoveredWithFID: 180, discoveredWithoutFID: 0,   total: 1050 },
@@ -49,16 +49,16 @@ export const nationalForecast: ForecastYear[] = [
   { year: 2038, baseProduction: 340,  discoveredWithFID: 180, discoveredWithoutFID: 720, total: 1240 },
   { year: 2039, baseProduction: 300,  discoveredWithFID: 160, discoveredWithoutFID: 840, total: 1300 },
   { year: 2040, baseProduction: 270,  discoveredWithFID: 140, discoveredWithoutFID: 960, total: 1370 },
-  { year: 2041, baseProduction: 240,  discoveredWithFID: 120, discoveredWithoutFID: 1050, total: 1410 },
-  { year: 2042, baseProduction: 210,  discoveredWithFID: 100, discoveredWithoutFID: 1140, total: 1450 },
+  { year: 2041, baseProduction: 240,  discoveredWithFID: 120, discoveredWithoutFID: 1322, total: 1682 },
+  { year: 2042, baseProduction: 210,  discoveredWithFID: 100, discoveredWithoutFID: 1290, total: 1600 },
   { year: 2043, baseProduction: 190,  discoveredWithFID: 90,  discoveredWithoutFID: 1220, total: 1500 },
-  { year: 2044, baseProduction: 170,  discoveredWithFID: 80,  discoveredWithoutFID: 1300, total: 1550 },
-  { year: 2045, baseProduction: 150,  discoveredWithFID: 70,  discoveredWithoutFID: 1380, total: 1600 },
-  { year: 2046, baseProduction: 130,  discoveredWithFID: 60,  discoveredWithoutFID: 1430, total: 1620 },
-  { year: 2047, baseProduction: 115,  discoveredWithFID: 55,  discoveredWithoutFID: 1470, total: 1640 },
-  { year: 2048, baseProduction: 100,  discoveredWithFID: 50,  discoveredWithoutFID: 1510, total: 1660 },
-  { year: 2049, baseProduction: 90,   discoveredWithFID: 45,  discoveredWithoutFID: 1540, total: 1675 },
-  { year: 2050, baseProduction: 80,   discoveredWithFID: 42,  discoveredWithoutFID: 1560, total: 1682 },
+  { year: 2044, baseProduction: 170,  discoveredWithFID: 80,  discoveredWithoutFID: 1150, total: 1400 },
+  { year: 2045, baseProduction: 150,  discoveredWithFID: 70,  discoveredWithoutFID: 1080, total: 1300 },
+  { year: 2046, baseProduction: 130,  discoveredWithFID: 60,  discoveredWithoutFID: 1010, total: 1200 },
+  { year: 2047, baseProduction: 115,  discoveredWithFID: 55,  discoveredWithoutFID: 940,  total: 1110 },
+  { year: 2048, baseProduction: 100,  discoveredWithFID: 50,  discoveredWithoutFID: 880,  total: 1030 },
+  { year: 2049, baseProduction: 90,   discoveredWithFID: 45,  discoveredWithoutFID: 885,  total: 1020 },
+  { year: 2050, baseProduction: 80,   discoveredWithFID: 42,  discoveredWithoutFID: 898,  total: 1020 },
 ];
 
 export const forecastProjects: ForecastProject[] = [
