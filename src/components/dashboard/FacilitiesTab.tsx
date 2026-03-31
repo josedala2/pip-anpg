@@ -326,8 +326,10 @@ export const FacilitiesTab = ({ facilityData }: Props) => {
                 </TableBody>
               </Table>
             </div>
-          </CardContent>
-        </Card>
+              </CardContent>
+            </CollapsibleContent>
+          </Card>
+        </Collapsible>
       )}
 
       {/* Maintenance Plan — Collapsible */}

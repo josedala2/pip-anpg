@@ -64,7 +64,7 @@ const linkStyles: Record<string, { stroke: string; dash?: string; width: number 
 
 const nodeMap = Object.fromEntries(nodes.map(n => [n.id, n]));
 
-export const FacilitiesSchematic = () => {
+export const FacilitiesSchematic = ({ renderAsContent = false }: { renderAsContent?: boolean }) => {
   const [hovered, setHovered] = useState<string | null>(null);
   const [selected, setSelected] = useState<string | null>(null);
   const [zoom, setZoom] = useState(1);
