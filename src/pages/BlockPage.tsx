@@ -1546,15 +1546,7 @@ const BlockPage = () => {
               </button>
             </div>
 
-            {/* Section 1: Visão Económica ANPG */}
-            {(block.economicVision || block.economicData) && (
-              <>
-                <h3 id="section-visao-economica" className="text-sm 2xl:text-base font-semibold flex items-center gap-2 scroll-mt-28">
-                  <Scale className="w-4 h-4 text-primary" />Visão Económica ANPG
-                </h3>
-                <EconomicVisionTab block={block} />
-              </>
-            )}
+            {/* Visão Económica ANPG — moved after Resumo Financeiro (rendered below the IIFE block) */}
 
             {/* Section 2: Financeiro & Contratual */}
             {(() => {
