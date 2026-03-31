@@ -45,13 +45,16 @@ export const AlertsPanel = () => {
   }, [verifiedBlocks, rules, tier23Threshold]);
 
   const blockNames = useMemo(() => [...new Set(alerts.map(a => a.blockName))].sort(), [alerts]);
+  const operatorNames = useMemo(() => [...new Set(alerts.map(a => a.operator).filter(o => o !== "—"))].sort(), [alerts]);
 
   const filtered = useMemo(() => {
     let result = alerts;
     if (selectedCategory !== "all") result = result.filter(a => a.category === selectedCategory);
     if (selectedSeverity !== "all") result = result.filter(a => a.severity === selectedSeverity);
     if (selectedBlock !== "all") result = result.filter(a => a.blockName === selectedBlock);
+    if (selectedOperator !== "all") result = result.filter(a => a.operator === selectedOperator);
     return result;
+  }, [alerts, selectedCategory, selectedSeverity, selectedBlock, selectedOperator]);
   }, [alerts, selectedCategory, selectedSeverity, selectedBlock]);
 
   // Counts
