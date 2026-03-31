@@ -30,6 +30,7 @@ export const AlertsPanel = () => {
   const [selectedCategory, setSelectedCategory] = useState<AlertCategory | "all">("all");
   const [selectedSeverity, setSelectedSeverity] = useState<AlertSeverity | "all">("all");
   const [selectedBlock, setSelectedBlock] = useState<string>("all");
+  const [selectedOperator, setSelectedOperator] = useState<string>("all");
   const [tier23Threshold, setTier23Threshold] = useState(forecastThresholds.tier23MinBOPD);
 
   const verifiedBlocks = useMemo(() => oilBlocks.filter(b => !b.pendingRealData), []);
@@ -44,14 +45,17 @@ export const AlertsPanel = () => {
   }, [verifiedBlocks, rules, tier23Threshold]);
 
   const blockNames = useMemo(() => [...new Set(alerts.map(a => a.blockName))].sort(), [alerts]);
+  const operatorNames = useMemo(() => [...new Set(alerts.map(a => a.operator).filter(o => o !== "—"))].sort(), [alerts]);
 
   const filtered = useMemo(() => {
     let result = alerts;
     if (selectedCategory !== "all") result = result.filter(a => a.category === selectedCategory);
     if (selectedSeverity !== "all") result = result.filter(a => a.severity === selectedSeverity);
     if (selectedBlock !== "all") result = result.filter(a => a.blockName === selectedBlock);
+    if (selectedOperator !== "all") result = result.filter(a => a.operator === selectedOperator);
     return result;
-  }, [alerts, selectedCategory, selectedSeverity, selectedBlock]);
+  }, [alerts, selectedCategory, selectedSeverity, selectedBlock, selectedOperator]);
+  
 
   // Counts
   const criticalCount = alerts.filter(a => a.severity === "critical").length;
@@ -138,6 +142,16 @@ export const AlertsPanel = () => {
               <option value="all">Todos blocos</option>
               {blockNames.map(b => (
                 <option key={b} value={b}>{b}</option>
+              ))}
+            </select>
+            <select
+              value={selectedOperator}
+              onChange={e => setSelectedOperator(e.target.value)}
+              className="text-xs bg-muted/50 border border-border rounded-md px-2 py-1"
+            >
+              <option value="all">Todos operadores</option>
+              {operatorNames.map(o => (
+                <option key={o} value={o}>{o}</option>
               ))}
             </select>
             <span className="text-[10px] text-muted-foreground ml-auto">{filtered.length} alertas</span>
