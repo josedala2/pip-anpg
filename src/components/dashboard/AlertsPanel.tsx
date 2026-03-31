@@ -130,6 +130,16 @@ export const AlertsPanel = () => {
                 <option key={s} value={s}>{severityLabels[s]}</option>
               ))}
             </select>
+            <select
+              value={selectedBlock}
+              onChange={e => setSelectedBlock(e.target.value)}
+              className="text-xs bg-muted/50 border border-border rounded-md px-2 py-1"
+            >
+              <option value="all">Todos blocos</option>
+              {blockNames.map(b => (
+                <option key={b} value={b}>{b}</option>
+              ))}
+            </select>
             <span className="text-[10px] text-muted-foreground ml-auto">{filtered.length} alertas</span>
           </div>
 
