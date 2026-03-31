@@ -326,6 +326,26 @@ export const FacilitiesSchematic = ({ renderAsContent = false }: { renderAsConte
           );
         })}
       </div>
+      {activeArea && (() => {
+        const areaNodes = nodes.filter(n => n.area === activeArea);
+        const totalBopd = areaNodes.reduce((sum, n) => {
+          const match = n.capacity.match(/([\d\s]+)\s*BOPD/);
+          return sum + (match ? parseInt(match[1].replace(/\s/g, ""), 10) : 0);
+        }, 0);
+        const tiers = [1, 2, 3].map(t => areaNodes.filter(n => n.tier === t).length).filter(c => c > 0);
+        return (
+          <div className="flex items-center gap-3 mb-2 px-2 py-1 rounded-md bg-primary/5 border border-primary/15 text-[10px] sm:text-xs text-muted-foreground">
+            <span><span className="font-semibold text-foreground">{activeArea}</span> — {areaNodes.length} instalações</span>
+            {totalBopd > 0 && <span>Capacidade total: <span className="font-mono font-semibold text-foreground">{totalBopd.toLocaleString("pt-AO")} BOPD</span></span>}
+            <span className="hidden sm:inline">
+              {[1, 2, 3].map(t => {
+                const c = areaNodes.filter(n => n.tier === t).length;
+                return c > 0 ? <span key={t} className="mr-2" style={{ color: tierColors[t] }}>● Tier {t}: {c}</span> : null;
+              })}
+            </span>
+          </div>
+        );
+      })()}
       <div className="flex flex-col lg:flex-row gap-3 sm:gap-4">
         <TooltipProvider delayDuration={100}>
           <div className="w-full lg:flex-1 overflow-hidden rounded-lg border border-border/30 bg-muted/20 relative touch-none">
