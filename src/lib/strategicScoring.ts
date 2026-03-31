@@ -42,7 +42,7 @@ const currentYear = 2026;
 
 function productionScore(block: OilBlock): DimensionScore {
   const drivers: string[] = [];
-  let score = 50; // baseline
+  let score = 40; // baseline reduzido
 
   // Current production vs peak (from history)
   const peak = Math.max(...block.productionHistory.map(h => h.value), 1);
@@ -50,19 +50,19 @@ function productionScore(block: OilBlock): DimensionScore {
   const ratio = current / peak;
 
   if (current === 0) {
-    score = 10;
+    score = 5;
     drivers.push("Sem produção activa");
   } else if (ratio >= 0.9) {
     score = 90;
     drivers.push(`Produção estável (${Math.round(ratio * 100)}% do pico)`);
   } else if (ratio >= 0.7) {
-    score = 70;
+    score = 65;
     drivers.push(`Produção moderada (${Math.round(ratio * 100)}% do pico)`);
   } else if (ratio >= 0.5) {
-    score = 50;
+    score = 40;
     drivers.push(`Declínio significativo (${Math.round(ratio * 100)}% do pico)`);
   } else {
-    score = 30;
+    score = 15;
     drivers.push(`Declínio severo (${Math.round(ratio * 100)}% do pico)`);
   }
 
@@ -73,20 +73,25 @@ function productionScore(block: OilBlock): DimensionScore {
     const last3 = history.slice(-3).reduce((s, h) => s + h.value, 0) / 3;
     const decline = ((first3 - last3) / first3) * 100;
     if (decline > 10) {
-      score -= 15;
+      score -= 20;
       drivers.push(`Declínio recente de ${decline.toFixed(1)}%`);
     } else if (decline > 5) {
-      score -= 8;
+      score -= 10;
       drivers.push(`Declínio moderado de ${decline.toFixed(1)}%`);
     }
   }
 
-  // Reserves
+  // Reserves vs production — sub-exploitation penalty
   if (block.estimatedReserves > 500) {
-    score += 10;
-    drivers.push(`Reservas elevadas: ${block.estimatedReserves} Mb`);
+    if (current < 50000) {
+      score -= 10;
+      drivers.push(`Reservas elevadas (${block.estimatedReserves} Mb) sub-exploradas`);
+    } else {
+      score += 10;
+      drivers.push(`Reservas elevadas: ${block.estimatedReserves} Mb`);
+    }
   } else if (block.estimatedReserves < 50) {
-    score -= 10;
+    score -= 15;
     drivers.push(`Reservas reduzidas: ${block.estimatedReserves} Mb`);
   }
 
@@ -95,11 +100,11 @@ function productionScore(block: OilBlock): DimensionScore {
 
 function facilitiesScore(block: OilBlock): DimensionScore {
   const drivers: string[] = [];
-  let score = 50;
+  let score = 40; // baseline reduzido
 
   const fd = block.facilityData;
   if (!fd) {
-    return { label: "Integridade Instalações", score: 50, weight: 17, weighted: 0, drivers: ["Sem dados de instalações"] };
+    return { label: "Integridade Instalações", score: 40, weight: 17, weighted: 0, drivers: ["Sem dados de instalações"] };
   }
 
   // Overall efficiency
@@ -108,24 +113,27 @@ function facilitiesScore(block: OilBlock): DimensionScore {
       score = 85;
       drivers.push(`Eficiência elevada: ${fd.overallEfficiency}%`);
     } else if (fd.overallEfficiency >= 80) {
-      score = 70;
+      score = 65;
       drivers.push(`Eficiência adequada: ${fd.overallEfficiency}%`);
     } else if (fd.overallEfficiency >= 70) {
-      score = 55;
+      score = 45;
       drivers.push(`Eficiência moderada: ${fd.overallEfficiency}%`);
     } else {
-      score = 35;
+      score = 25;
       drivers.push(`Eficiência baixa: ${fd.overallEfficiency}%`);
     }
   }
 
-  // Age of installations
+  // Age of installations — harsher penalties
   if (fd.platformSpecs?.length) {
     const ages = fd.platformSpecs
       .filter(p => p.installationYear)
       .map(p => currentYear - p.installationYear!);
     const avgAge = ages.reduce((s, a) => s + a, 0) / (ages.length || 1);
-    if (avgAge > 35) {
+    if (avgAge > 40) {
+      score -= 30;
+      drivers.push(`Instalações muito envelhecidas (média ${Math.round(avgAge)} anos)`);
+    } else if (avgAge > 30) {
       score -= 20;
       drivers.push(`Instalações envelhecidas (média ${Math.round(avgAge)} anos)`);
     } else if (avgAge > 25) {
@@ -134,14 +142,14 @@ function facilitiesScore(block: OilBlock): DimensionScore {
     }
   }
 
-  // Production losses
+  // Production losses — more aggressive
   if (fd.productionLossesBbls && fd.production2025Bbls) {
     const lossRatio = fd.productionLossesBbls / fd.production2025Bbls;
     if (lossRatio > 0.1) {
-      score -= 15;
+      score -= 20;
       drivers.push(`Perdas elevadas: ${(lossRatio * 100).toFixed(1)}% da produção`);
     } else if (lossRatio > 0.05) {
-      score -= 5;
+      score -= 10;
       drivers.push(`Perdas moderadas: ${(lossRatio * 100).toFixed(1)}%`);
     }
   }
@@ -149,7 +157,7 @@ function facilitiesScore(block: OilBlock): DimensionScore {
   // Issues
   const totalIssues = fd.areas.reduce((s, a) => s + (a.issues?.length || 0), 0);
   if (totalIssues >= 4) {
-    score -= 10;
+    score -= 15;
     drivers.push(`${totalIssues} problemas identificados`);
   }
 
@@ -158,42 +166,47 @@ function facilitiesScore(block: OilBlock): DimensionScore {
 
 function economicScore(block: OilBlock): DimensionScore {
   const drivers: string[] = [];
-  let score = 50;
+  let score = 40; // baseline reduzido
 
-  // Execution rate as proxy for economic health
+  // Execution rate
   if (block.executionRate >= 85) {
-    score = 80;
+    score = 75;
     drivers.push(`Taxa de execução elevada: ${block.executionRate}%`);
   } else if (block.executionRate >= 70) {
-    score = 65;
+    score = 55;
     drivers.push(`Taxa de execução adequada: ${block.executionRate}%`);
   } else if (block.executionRate >= 50) {
-    score = 45;
+    score = 35;
     drivers.push(`Taxa de execução moderada: ${block.executionRate}%`);
   } else {
-    score = 25;
+    score = 20;
     drivers.push(`Taxa de execução baixa: ${block.executionRate}%`);
   }
 
-  // OPEX per barrel
-  if (block.economicData?.opexPerBarrel) {
-    if (block.economicData.opexPerBarrel > 25) {
-      score -= 15;
-      drivers.push(`OPEX elevado: $${block.economicData.opexPerBarrel}/bbl`);
-    } else if (block.economicData.opexPerBarrel < 15) {
+  // OPEX per barrel — prefer economicVision.technicalCost data
+  const opex2025 = (block as any).economicVision?.technicalCost?.opex2025;
+  const opexValue = opex2025 ?? block.economicData?.opexPerBarrel;
+  if (opexValue) {
+    if (opexValue > 35) {
+      score -= 30;
+      drivers.push(`OPEX crítico: $${opexValue}/bbl`);
+    } else if (opexValue > 25) {
+      score -= 20;
+      drivers.push(`OPEX elevado: $${opexValue}/bbl`);
+    } else if (opexValue < 15) {
       score += 10;
-      drivers.push(`OPEX competitivo: $${block.economicData.opexPerBarrel}/bbl`);
+      drivers.push(`OPEX competitivo: $${opexValue}/bbl`);
     }
   }
 
-  // Investment ratio (accumulated vs planned)
+  // Investment ratio
   if (block.plannedInvestment > 0) {
     const investRatio = block.accumulatedInvestment / block.plannedInvestment;
     if (investRatio > 0.9) {
       score += 5;
       drivers.push("Investimento quase concluído");
     } else if (investRatio < 0.3) {
-      score -= 5;
+      score -= 10;
       drivers.push(`Apenas ${Math.round(investRatio * 100)}% do investimento executado`);
     }
   }
@@ -203,20 +216,20 @@ function economicScore(block: OilBlock): DimensionScore {
 
 function contractualScore(block: OilBlock): DimensionScore {
   const drivers: string[] = [];
-  let score = 50;
+  let score = 40; // baseline reduzido
 
   // Compliance score
   if (block.complianceScore >= 90) {
     score = 85;
     drivers.push(`Compliance elevado: ${block.complianceScore}%`);
   } else if (block.complianceScore >= 75) {
-    score = 65;
+    score = 60;
     drivers.push(`Compliance adequado: ${block.complianceScore}%`);
   } else if (block.complianceScore >= 50) {
-    score = 40;
+    score = 35;
     drivers.push(`Compliance insuficiente: ${block.complianceScore}%`);
   } else {
-    score = 20;
+    score = 10;
     drivers.push(`Compliance crítico: ${block.complianceScore}%`);
   }
 
@@ -225,10 +238,10 @@ function contractualScore(block: OilBlock): DimensionScore {
     const end = new Date(block.contractInfo.productionPeriodEnd);
     const months = Math.round((end.getTime() - Date.now()) / (1000 * 60 * 60 * 24 * 30));
     if (months <= 12) {
-      score -= 20;
+      score -= 25;
       drivers.push("Contrato expira em menos de 12 meses");
     } else if (months <= 24) {
-      score -= 10;
+      score -= 15;
       drivers.push("Contrato expira em menos de 24 meses");
     } else if (months > 60) {
       score += 10;
@@ -371,7 +384,7 @@ function classify(totalScore: number, block: OilBlock, dimensions: DimensionScor
   const ctx = buildContext(block, dimensions);
 
   // Critical: very low score
-  if (totalScore < 25) {
+  if (totalScore < 30) {
     if (!hasProduction && !hasReserves) {
       return {
         classification: "Preparar Abandono",
@@ -390,7 +403,7 @@ function classify(totalScore: number, block: OilBlock, dimensions: DimensionScor
     };
   }
 
-  if (totalScore < 40) {
+  if (totalScore < 45) {
     if (lowCompliance || highRisk) {
       return {
         classification: "Renegociar",
@@ -409,7 +422,7 @@ function classify(totalScore: number, block: OilBlock, dimensions: DimensionScor
     };
   }
 
-  if (totalScore < 60) {
+  if (totalScore < 65) {
     if (hasReserves && hasProduction) {
       return {
         classification: "Revitalizar",
