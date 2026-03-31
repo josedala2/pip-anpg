@@ -351,6 +351,9 @@ export interface EconomicVision {
   liftingsAccumulated?: LiftingsAccumulated;
   liftingsForecast?: LiftingsForecastYear[];
   liftingsObservations?: string[];
+  investmentExecuted?: {
+    periods: { label: string; capex: number; opex: number }[];
+  };
 }
 
 export interface TechnicalRecommendation {
