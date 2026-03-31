@@ -384,7 +384,7 @@ function classify(totalScore: number, block: OilBlock, dimensions: DimensionScor
   const ctx = buildContext(block, dimensions);
 
   // Critical: very low score
-  if (totalScore < 25) {
+  if (totalScore < 30) {
     if (!hasProduction && !hasReserves) {
       return {
         classification: "Preparar Abandono",
@@ -403,7 +403,7 @@ function classify(totalScore: number, block: OilBlock, dimensions: DimensionScor
     };
   }
 
-  if (totalScore < 40) {
+  if (totalScore < 45) {
     if (lowCompliance || highRisk) {
       return {
         classification: "Renegociar",
@@ -422,7 +422,7 @@ function classify(totalScore: number, block: OilBlock, dimensions: DimensionScor
     };
   }
 
-  if (totalScore < 60) {
+  if (totalScore < 65) {
     if (hasReserves && hasProduction) {
       return {
         classification: "Revitalizar",
