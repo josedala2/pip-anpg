@@ -1119,23 +1119,23 @@ const BlockPage = () => {
            <TabsContent value="prod-proj" className="space-y-4 2xl:space-y-6">
              {/* Production KPIs */}
              {(() => {
-                const producingFields = block.fields?.filter(f => f.status?.toLowerCase().includes("produc") || (f.currentProduction && f.currentProduction > 0)) || [];
-                const totalPeak = producingFields.reduce((s, f) => s + (f.peakProduction || 0), 0);
-                const peakVsActual = totalPeak > 0 ? ((block.dailyProduction / totalPeak) * 100).toFixed(1) : "N/A";
-                const history = block.productionHistory || [];
-                // Refined 3-vs-3 decline calculation
-                const declineRate = history.length >= 6
-                  ? (() => {
-                      const first3 = history.slice(0, 3).reduce((s, h) => s + h.value, 0) / 3;
-                      const last3 = history.slice(-3).reduce((s, h) => s + h.value, 0) / 3;
-                      return first3 > 0 ? (((first3 - last3) / first3) * 100).toFixed(1) : "N/A";
-                    })()
-                  : history.length >= 2
-                    ? (((history[0].value - history[history.length - 1].value) / history[0].value) * 100).toFixed(1)
-                    : "N/A";
-                // Average production per producing field
-                 const avgPerField = activeFields.length > 0
-                   ? Math.round(block.dailyProduction / activeFields.length)
+                 const producingFields = block.fields?.filter(f => f.status === "Producing" || (f.peakProduction && f.peakProduction > 0)) || [];
+                 const totalPeak = producingFields.reduce((s, f) => s + (f.peakProduction || 0), 0);
+                 const peakVsActual = totalPeak > 0 ? ((block.dailyProduction / totalPeak) * 100).toFixed(1) : "N/A";
+                 const history = block.productionHistory || [];
+                 // Refined 3-vs-3 decline calculation
+                 const declineRate = history.length >= 6
+                   ? (() => {
+                       const first3 = history.slice(0, 3).reduce((s, h) => s + h.value, 0) / 3;
+                       const last3 = history.slice(-3).reduce((s, h) => s + h.value, 0) / 3;
+                       return first3 > 0 ? (((first3 - last3) / first3) * 100).toFixed(1) : "N/A";
+                     })()
+                   : history.length >= 2
+                     ? (((history[0].value - history[history.length - 1].value) / history[0].value) * 100).toFixed(1)
+                     : "N/A";
+                 // Average production per producing field
+                 const avgPerField = producingFields.length > 0
+                   ? Math.round(block.dailyProduction / producingFields.length)
                    : 0;
                 return (
                   <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-3">
