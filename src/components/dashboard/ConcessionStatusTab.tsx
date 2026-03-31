@@ -334,7 +334,7 @@ export const ConcessionStatusTab = ({ block }: ConcessionStatusTabProps) => {
                   <circle cx="60" cy="60" r="52" fill="none" stroke="hsl(var(--muted))" strokeWidth="8" />
                   <circle
                     cx="60" cy="60" r="52" fill="none"
-                    stroke={strategicScore.totalScore < 30 ? "hsl(var(--danger))" : strategicScore.totalScore < 45 ? "hsl(var(--warning))" : strategicScore.totalScore < 65 ? "hsl(var(--chart-5))" : "hsl(var(--success))"}
+                    stroke={strategic.totalScore < 30 ? "hsl(var(--danger))" : strategic.totalScore < 45 ? "hsl(var(--warning))" : strategic.totalScore < 65 ? "hsl(var(--chart-5))" : "hsl(var(--success))"}
                     strokeWidth="8"
                     strokeDasharray={`${(strategicScore.totalScore / 100) * 327} 327`}
                     strokeLinecap="round"
