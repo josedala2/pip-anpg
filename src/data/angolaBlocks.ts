@@ -354,6 +354,8 @@ export interface EconomicVision {
   investmentExecuted?: {
     periods: { label: string; capex: number; opex: number }[];
   };
+  quotaANPG_BOPD?: number;
+  quotaSNL_BOPD?: number;
 }
 
 export interface TechnicalRecommendation {
