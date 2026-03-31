@@ -311,17 +311,20 @@ export const FacilitiesSchematic = ({ renderAsContent = false }: { renderAsConte
           onClick={() => { setActiveArea(null); setSelected(null); }}
           className={`text-[9px] sm:text-[10px] px-2 py-0.5 rounded-full border transition-colors ${!activeArea ? "bg-primary/15 border-primary text-primary font-semibold" : "border-border/50 text-muted-foreground hover:text-foreground hover:border-border"}`}
         >
-          Todas
+          Todas <span className="opacity-60 ml-0.5">({nodes.length})</span>
         </button>
-        {areas.map(area => (
-          <button
-            key={area}
-            onClick={() => { setActiveArea(prev => prev === area ? null : area); setSelected(null); }}
-            className={`text-[9px] sm:text-[10px] px-2 py-0.5 rounded-full border transition-colors ${activeArea === area ? "bg-primary/15 border-primary text-primary font-semibold" : "border-border/50 text-muted-foreground hover:text-foreground hover:border-border"}`}
-          >
-            {area}
-          </button>
-        ))}
+        {areas.map(area => {
+          const count = nodes.filter(n => n.area === area).length;
+          return (
+            <button
+              key={area}
+              onClick={() => { setActiveArea(prev => prev === area ? null : area); setSelected(null); }}
+              className={`text-[9px] sm:text-[10px] px-2 py-0.5 rounded-full border transition-colors ${activeArea === area ? "bg-primary/15 border-primary text-primary font-semibold" : "border-border/50 text-muted-foreground hover:text-foreground hover:border-border"}`}
+            >
+              {area} <span className="opacity-60 ml-0.5">({count})</span>
+            </button>
+          );
+        })}
       </div>
       <div className="flex flex-col lg:flex-row gap-3 sm:gap-4">
         <TooltipProvider delayDuration={100}>
@@ -410,7 +413,16 @@ export const FacilitiesSchematic = ({ renderAsContent = false }: { renderAsConte
                         onClick={() => setSelected(prev => prev === node.id ? null : node.id)}
                       >
                         {renderNodeShape(node, isActive)}
-                        <text x={node.x} y={node.y + 1} textAnchor="middle" dominantBaseline="middle" className="fill-foreground" fontSize="8.5" fontWeight={isActive ? "700" : "500"}>
+                        {/* Label background for readability */}
+                        <rect
+                          x={node.x - (node.label.length * 2.8)}
+                          y={node.y - 6}
+                          width={node.label.length * 5.6}
+                          height={12}
+                          rx={2}
+                          fill="hsl(var(--background) / 0.75)"
+                        />
+                        <text x={node.x} y={node.y + 1} textAnchor="middle" dominantBaseline="middle" className="fill-foreground" fontSize="8.5" fontWeight={isActive ? "700" : "600"}>
                           {node.label}
                         </text>
                       </g>
