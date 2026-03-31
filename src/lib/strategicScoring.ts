@@ -100,11 +100,11 @@ function productionScore(block: OilBlock): DimensionScore {
 
 function facilitiesScore(block: OilBlock): DimensionScore {
   const drivers: string[] = [];
-  let score = 50;
+  let score = 40; // baseline reduzido
 
   const fd = block.facilityData;
   if (!fd) {
-    return { label: "Integridade Instalações", score: 50, weight: 17, weighted: 0, drivers: ["Sem dados de instalações"] };
+    return { label: "Integridade Instalações", score: 40, weight: 17, weighted: 0, drivers: ["Sem dados de instalações"] };
   }
 
   // Overall efficiency
@@ -113,24 +113,27 @@ function facilitiesScore(block: OilBlock): DimensionScore {
       score = 85;
       drivers.push(`Eficiência elevada: ${fd.overallEfficiency}%`);
     } else if (fd.overallEfficiency >= 80) {
-      score = 70;
+      score = 65;
       drivers.push(`Eficiência adequada: ${fd.overallEfficiency}%`);
     } else if (fd.overallEfficiency >= 70) {
-      score = 55;
+      score = 45;
       drivers.push(`Eficiência moderada: ${fd.overallEfficiency}%`);
     } else {
-      score = 35;
+      score = 25;
       drivers.push(`Eficiência baixa: ${fd.overallEfficiency}%`);
     }
   }
 
-  // Age of installations
+  // Age of installations — harsher penalties
   if (fd.platformSpecs?.length) {
     const ages = fd.platformSpecs
       .filter(p => p.installationYear)
       .map(p => currentYear - p.installationYear!);
     const avgAge = ages.reduce((s, a) => s + a, 0) / (ages.length || 1);
-    if (avgAge > 35) {
+    if (avgAge > 40) {
+      score -= 30;
+      drivers.push(`Instalações muito envelhecidas (média ${Math.round(avgAge)} anos)`);
+    } else if (avgAge > 30) {
       score -= 20;
       drivers.push(`Instalações envelhecidas (média ${Math.round(avgAge)} anos)`);
     } else if (avgAge > 25) {
@@ -139,14 +142,14 @@ function facilitiesScore(block: OilBlock): DimensionScore {
     }
   }
 
-  // Production losses
+  // Production losses — more aggressive
   if (fd.productionLossesBbls && fd.production2025Bbls) {
     const lossRatio = fd.productionLossesBbls / fd.production2025Bbls;
     if (lossRatio > 0.1) {
-      score -= 15;
+      score -= 20;
       drivers.push(`Perdas elevadas: ${(lossRatio * 100).toFixed(1)}% da produção`);
     } else if (lossRatio > 0.05) {
-      score -= 5;
+      score -= 10;
       drivers.push(`Perdas moderadas: ${(lossRatio * 100).toFixed(1)}%`);
     }
   }
@@ -154,7 +157,7 @@ function facilitiesScore(block: OilBlock): DimensionScore {
   // Issues
   const totalIssues = fd.areas.reduce((s, a) => s + (a.issues?.length || 0), 0);
   if (totalIssues >= 4) {
-    score -= 10;
+    score -= 15;
     drivers.push(`${totalIssues} problemas identificados`);
   }
 
