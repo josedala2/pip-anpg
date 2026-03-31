@@ -1119,7 +1119,7 @@ const BlockPage = () => {
            <TabsContent value="prod-proj" className="space-y-4 2xl:space-y-6">
              {/* Production KPIs */}
              {(() => {
-                const producingFields = block.fields?.filter(f => f.status === "Producing") || [];
+                const producingFields = block.fields?.filter(f => f.status?.toLowerCase().includes("produc") || (f.currentProduction && f.currentProduction > 0)) || [];
                 const totalPeak = producingFields.reduce((s, f) => s + (f.peakProduction || 0), 0);
                 const peakVsActual = totalPeak > 0 ? ((block.dailyProduction / totalPeak) * 100).toFixed(1) : "N/A";
                 const history = block.productionHistory || [];
