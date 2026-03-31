@@ -14,6 +14,7 @@ import { type OilBlock, oilBlocks } from "@/data/angolaBlocks";
 import { ChevronDown, ChevronUp, Users, Bell, Target, FileCheck, AlertTriangle, ShieldCheck } from "lucide-react";
 import { HSENationalPanel } from "./HSENationalPanel";
 import { NationalHistoricalProduction } from "./NationalHistoricalProduction";
+import { NationalProductionTrend } from "./NationalProductionTrend";
 
 type DrillDown = "operadores" | "alertas" | "recomendacoes" | "homologacoes" | "hse" | null;
 
@@ -36,6 +37,9 @@ export const ExecutiveHome = ({ initialDrillDown = null }: { initialDrillDown?: 
 
       {/* Historical National Production 1975–2023 */}
       <NationalHistoricalProduction />
+
+      {/* National Production Trend 2020–2026 (Oil + Gas) */}
+      <NationalProductionTrend />
 
       {/* National Forecast 2025–2050 */}
       <NationalForecast2050 />
