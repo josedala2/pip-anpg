@@ -1,19 +1,24 @@
 
 
-## Adicionar KPIs Quota ANPG e Quota SNL E.P. ao Resumo Financeiro do Bloco 0
+## Remover Galeria e Tornar Documentos e Manutenção Colapsáveis
 
-### Alterações
+### Alterações em `src/components/dashboard/FacilitiesTab.tsx`
 
-#### 1. Dados — `src/data/angolaBlocks.ts`
-- Adicionar campos `quotaANPG_BOPD` e `quotaSNL_BOPD` à interface `EconomicVision`
-- Adicionar os valores ao Bloco 0: `quotaANPG_BOPD: 48900` e `quotaSNL_BOPD: 48900` (valores a confirmar — estimativa baseada na participação de 41% Sonangol E.P. na produção de 119.285 BOPD)
+#### 1. Remover card "Galeria de Instalações"
+- Remover o bloco do card da galeria (linhas 320-359) e o Lightbox Dialog associado (linhas 361-403)
+- Remover estado e funções relacionadas (`lightboxOpen`, `lightboxIndex`, `openLightbox`, `navigateLightbox`)
+- Remover imports não utilizados (`Camera`, `ImageIcon`, `Dialog`, `DialogContent`, `DialogTitle`)
 
-#### 2. KPI Cards — `src/pages/BlockPage.tsx`
-- Adicionar 2 novos cards após o card "Custo de Abandono" (card 4), dentro do grid `xl:grid-cols-4` → mudar para `xl:grid-cols-6` ou manter 4 colunas com wrap:
-  - **Card 5: Quota ANPG** — valor em BOPD, ícone `Droplets`, tooltip descritivo
-  - **Card 6: Quota SNL E.P.** — valor em BOPD, ícone `Building2`, tooltip descritivo
-- Sub-texto: percentagem da produção total do bloco (ex: "41.0% da produção")
+#### 2. Tornar "Documentos & Certificações" colapsável
+- Envolver o card com `Collapsible` do Radix (já existe em `@/components/ui/collapsible`)
+- O header (com título, badge e filtros) fica como `CollapsibleTrigger` com ícone ChevronDown/Up
+- O conteúdo (grid de documentos) fica dentro de `CollapsibleContent`
+- Começa fechado por defeito
 
-### Nota
-Os valores exactos das quotas por bloco dependem dos dados certificados. Se o utilizador tiver valores específicos, poderão ser ajustados após implementação.
+#### 3. Tornar "Plano de Manutenção" colapsável
+- Mesma abordagem: `Collapsible` + `CollapsibleTrigger` no header + `CollapsibleContent` no body
+- Começa fechado por defeito
+
+### Imports a adicionar
+- `Collapsible`, `CollapsibleTrigger`, `CollapsibleContent` de `@/components/ui/collapsible`
 
