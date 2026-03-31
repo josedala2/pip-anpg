@@ -522,7 +522,7 @@ export const oilBlocks: OilBlock[] = [
     contractDate: "1995-06-15",
     dailyProduction: 119285,
     estimatedReserves: 21000,
-    accumulatedInvestment: 5400,
+    accumulatedInvestment: 49664,
     plannedInvestment: 14126,
     executionRate: 53,
     riskScore: 2,
