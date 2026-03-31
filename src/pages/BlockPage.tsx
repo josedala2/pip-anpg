@@ -2222,6 +2222,16 @@ const BlockPage = () => {
               );
             })()}
 
+            {/* Section: Visão Económica ANPG */}
+            {(block.economicVision || block.economicData) && (
+              <>
+                <h3 id="section-visao-economica" className="text-sm 2xl:text-base font-semibold flex items-center gap-2 scroll-mt-28">
+                  <Scale className="w-4 h-4 text-primary" />Visão Económica ANPG
+                </h3>
+                <EconomicVisionTab block={block} />
+              </>
+            )}
+
             {/* Section: Consórcio */}
             <h3 id="section-consorcio" className="text-sm 2xl:text-base font-semibold flex items-center gap-2 pt-4 scroll-mt-28">
               <Users className="w-4 h-4 text-primary" />Composição do Consórcio
