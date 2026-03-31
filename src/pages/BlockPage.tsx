@@ -1546,7 +1546,7 @@ const BlockPage = () => {
               </button>
             </div>
 
-            {/* Visão Económica ANPG — moved after Resumo Financeiro (rendered below the IIFE block) */}
+            
 
             {/* Section 2: Financeiro & Contratual */}
             {(() => {
