@@ -15,7 +15,7 @@ import {
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { PendingDataBadge } from "@/components/ui/PendingDataBadge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, BarChart, Bar, Cell } from "recharts";
+import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, BarChart, Bar, Cell, ReferenceLine, ReferenceDot, Label } from "recharts";
 
 // ── Health traffic light for each concession ──
 
@@ -676,34 +676,61 @@ export const ConselhoPanel = () => {
       </div>
 
       {/* ── Zone E: National Trend ── */}
-      <Card className="border-border/60">
-        <CardHeader className="pb-1 pt-3 px-4">
-          <CardTitle className="text-xs font-bold flex items-center gap-1.5">
-            <TrendingUp className="w-3.5 h-3.5 text-primary" />
-            Tendência de Produção Nacional — Previsão 2025-2035 (BOPD)
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="px-2 pb-2">
-          <ResponsiveContainer width="100%" height={140}>
-            <AreaChart data={trends} margin={{ left: 0, right: 8, top: 4, bottom: 4 }}>
-              <defs>
-                <linearGradient id="prodGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="hsl(200, 45%, 28%)" stopOpacity={0.3} />
-                  <stop offset="100%" stopColor="hsl(200, 45%, 28%)" stopOpacity={0.02} />
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(214, 18%, 84%)" strokeOpacity={0.4} />
-              <XAxis dataKey="year" tick={{ fontSize: 10 }} />
-              <YAxis tick={{ fontSize: 10 }} tickFormatter={(v: number) => `${(v / 1000).toFixed(0)}K`} width={45} />
-              <RechartsTooltip
-                contentStyle={{ fontSize: 11, borderRadius: 8 }}
-                formatter={(v: number) => [`${v.toLocaleString()} bbl/dia`, "Produção"]}
-              />
-              <Area type="monotone" dataKey="value" stroke="hsl(200, 45%, 28%)" fill="url(#prodGrad)" strokeWidth={2} />
-            </AreaChart>
-          </ResponsiveContainer>
-        </CardContent>
-      </Card>
+      {(() => {
+        const peak = trends.reduce((max, d) => d.value > max.value ? d : max, trends[0]);
+        const min = trends.reduce((low, d) => d.value < low.value ? d : low, trends[0]);
+        return (
+          <Card className="border-border/60">
+            <CardHeader className="pb-1 pt-3 px-4">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-xs font-bold flex items-center gap-1.5">
+                  <TrendingUp className="w-3.5 h-3.5 text-primary" />
+                  Tendência de Produção Nacional — Previsão 2025-2035 (BOPD)
+                </CardTitle>
+                <div className="flex items-center gap-3">
+                  <span className="text-[9px] bg-success/10 text-success px-2 py-0.5 rounded-full font-semibold">
+                    ▲ Pico {peak.year}: {(peak.value / 1000).toFixed(0)}K
+                  </span>
+                  <span className="text-[9px] bg-danger/10 text-danger px-2 py-0.5 rounded-full font-semibold">
+                    ▼ Mín {min.year}: {(min.value / 1000).toFixed(0)}K
+                  </span>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="px-2 pb-2">
+              <ResponsiveContainer width="100%" height={160}>
+                <AreaChart data={trends} margin={{ left: 0, right: 12, top: 20, bottom: 4 }}>
+                  <defs>
+                    <linearGradient id="prodGrad" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="hsl(200, 45%, 28%)" stopOpacity={0.3} />
+                      <stop offset="100%" stopColor="hsl(200, 45%, 28%)" stopOpacity={0.02} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(214, 18%, 84%)" strokeOpacity={0.4} />
+                  <XAxis dataKey="year" tick={{ fontSize: 10 }} />
+                  <YAxis tick={{ fontSize: 10 }} tickFormatter={(v: number) => `${(v / 1000).toFixed(0)}K`} width={45} />
+                  <RechartsTooltip
+                    contentStyle={{ fontSize: 11, borderRadius: 8 }}
+                    formatter={(v: number) => [`${v.toLocaleString()} bbl/dia`, "Produção"]}
+                  />
+                  <Area type="monotone" dataKey="value" stroke="hsl(200, 45%, 28%)" fill="url(#prodGrad)" strokeWidth={2} />
+                  {/* Peak annotation */}
+                  <ReferenceDot x={peak.year} y={peak.value} r={4} fill="hsl(var(--success))" stroke="hsl(var(--background))" strokeWidth={2}>
+                    <Label value={`${(peak.value / 1000).toFixed(0)}K`} position="top" style={{ fontSize: 9, fontWeight: 700, fill: "hsl(152, 50%, 38%)" }} offset={8} />
+                  </ReferenceDot>
+                  {/* Min annotation */}
+                  <ReferenceDot x={min.year} y={min.value} r={4} fill="hsl(var(--danger))" stroke="hsl(var(--background))" strokeWidth={2}>
+                    <Label value={`${(min.value / 1000).toFixed(0)}K`} position="bottom" style={{ fontSize: 9, fontWeight: 700, fill: "hsl(0, 65%, 42%)" }} offset={8} />
+                  </ReferenceDot>
+                  {/* Reference lines */}
+                  <ReferenceLine y={peak.value} stroke="hsl(152, 50%, 38%)" strokeDasharray="4 3" strokeOpacity={0.4} />
+                  <ReferenceLine y={min.value} stroke="hsl(0, 65%, 42%)" strokeDasharray="4 3" strokeOpacity={0.4} />
+                </AreaChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+        );
+      })()}
     </div>
   );
 };
