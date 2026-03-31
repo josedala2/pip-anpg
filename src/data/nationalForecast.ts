@@ -5,6 +5,7 @@ export interface ForecastYear {
   baseProduction: number;         // kBOPD — existing blocks
   discoveredWithFID: number;      // kBOPD — opportunities with FID date
   discoveredWithoutFID: number;   // kBOPD — opportunities without FID date
+  newConcessions: number;         // kBOPD — exploration & new concessions (by basin)
   total: number;                  // kBOPD
 }
 
