@@ -34,7 +34,10 @@ export const ExecutiveHome = ({ initialDrillDown = null }: { initialDrillDown?: 
       {/* Zone B — Executive KPIs */}
       <KPICards />
 
-      {/* Historical Production Trend */}
+      {/* Historical National Production 1975–2023 */}
+      <NationalHistoricalProduction />
+
+      {/* Historical Production Trend 2020–2026 */}
       <NationalProductionTrend />
 
       {/* Drill-down sections */}
