@@ -1,21 +1,16 @@
 
 
-## Substituir "Tendência de Produção Nacional (2020–2026)" pelo Forecast 2025–2050
+## Adicionar Card "Tendência de Produção Nacional (2020–2026)" à Home Executiva
 
-### Contexto
-O card `NationalProductionTrend` (2020–2026) será substituído por um novo card com stacked bar chart mostrando a previsão 2025–2050, conforme a imagem de referência. Os dados já existem em `nationalForecast` mas precisam de correcção (o pico de 1.682 kBOPD deve estar em 2041, não em 2050).
+### Alteração
 
-### Alterações
+**`src/components/dashboard/ExecutiveHome.tsx`** — Adicionar import de `NationalProductionTrend` e inserir o componente entre `NationalHistoricalProduction` (1975–2023) e `NationalForecast2050` (2025–2050).
 
-**1. `src/data/nationalForecast.ts`** — Corrigir os valores do `nationalForecast` para que o pico (~1.682) ocorra em 2041 e o valor em 2050 desça para ~1.020, conforme a imagem. Os valores de 2025 (1.051) também serão ajustados.
+A ordem ficará:
+1. KPIs
+2. Histórico 1975–2023
+3. **Tendência 2020–2026** (óleo + gás, duplo eixo) ← novo
+4. Forecast 2025–2050
 
-**2. `src/components/dashboard/NationalForecast2050.tsx`** (novo) — Stacked BarChart com:
-- 3 séries: `baseProduction` (cinza), `discoveredWithFID` (azul escuro), `discoveredWithoutFID` (azul claro)
-- Eixo Y: "Mil bopd" (0–1800)
-- Anotações: "1 051" em 2025, "1 682" em 2041 (pico)
-- Linha tracejada de referência horizontal (~1.020)
-- Legenda compacta
-- Fonte: "Estado das Concessões 2026, ANPG"
-
-**3. `src/components/dashboard/ExecutiveHome.tsx`** — Substituir import e uso de `NationalProductionTrend` por `NationalForecast2050`.
+O componente `NationalProductionTrend` já existe em `src/components/dashboard/NationalProductionTrend.tsx` com o gráfico de duplo eixo (Area para óleo BOPD + Line para gás MMSCFD), conforme a imagem de referência.
 
