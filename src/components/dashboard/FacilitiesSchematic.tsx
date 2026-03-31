@@ -2,7 +2,8 @@ import { useState, useCallback, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { GitBranch } from "lucide-react";
+import { GitBranch, Download } from "lucide-react";
+import { toPng } from "html-to-image";
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
