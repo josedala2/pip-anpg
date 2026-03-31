@@ -246,6 +246,19 @@ export const FacilitiesSchematic = ({ renderAsContent = false }: { renderAsConte
   const handleWheel = useCallback((e: React.WheelEvent) => { if (e.ctrlKey || e.metaKey) { e.preventDefault(); setZoom(prev => clampZoom(prev - e.deltaY * 0.005)); } }, []);
   const resetView = useCallback(() => { setZoom(1); setPan({ x: 0, y: 0 }); }, []);
 
+  const exportPng = useCallback(async () => {
+    if (!svgRef.current) return;
+    try {
+      const dataUrl = await toPng(svgRef.current, { backgroundColor: "#09090b", pixelRatio: 2 });
+      const link = document.createElement("a");
+      link.download = `esquematico-bloco0${activeArea ? `-${activeArea.replace(/\s/g, "-").toLowerCase()}` : ""}.png`;
+      link.href = dataUrl;
+      link.click();
+    } catch (e) {
+      console.error("Export failed", e);
+    }
+  }, [activeArea]);
+
   const isNodeInArea = useCallback((nodeId: string) => {
     if (!activeArea) return true;
     const node = nodeMap[nodeId];
