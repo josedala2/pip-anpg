@@ -1134,20 +1134,9 @@ const BlockPage = () => {
                     ? (((history[0].value - history[history.length - 1].value) / history[0].value) * 100).toFixed(1)
                     : "N/A";
                 // Average production per producing field
-                const avgPerField = producingFields.length > 0
-                  ? Math.round(block.dailyProduction / producingFields.length)
-                  : 0;
-                // Annual decline rate (annualized from monthly data)
-                const annualDecline = history.length >= 12
-                  ? (() => {
-                      const first3 = history.slice(0, 3).reduce((s, h) => s + h.value, 0) / 3;
-                      const last3 = history.slice(-3).reduce((s, h) => s + h.value, 0) / 3;
-                      const months = history.length;
-                      if (first3 <= 0 || last3 <= 0) return "N/A";
-                      const annualized = (1 - Math.pow(last3 / first3, 12 / months)) * 100;
-                      return annualized.toFixed(1);
-                    })()
-                  : "N/A";
+                 const avgPerField = activeFields.length > 0
+                   ? Math.round(block.dailyProduction / activeFields.length)
+                   : 0;
                 return (
                   <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-3">
                     <Card className="glass-card">
