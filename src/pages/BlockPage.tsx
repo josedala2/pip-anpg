@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft, Droplets, DollarSign, ShieldCheck, TrendingUp, Users, Activity, Target, Layers, BarChart3, MapPin, Brain, FileText, Landmark, Building2, Clock, Scale, ArrowRight, History, BookOpen, ExternalLink, AlertTriangle, Crosshair, Search, Filter, AlignVerticalJustifyStart, AlignHorizontalJustifyStart, Download, FileSpreadsheet, FileDown, Leaf, Lightbulb, CheckCircle2, ChevronRight, Gauge, BarChart2, Flame, Fuel, Zap, Wrench } from "lucide-react";
+import { ArrowLeft, Droplets, DollarSign, ShieldCheck, TrendingUp, TrendingDown, Users, Activity, Target, Layers, BarChart3, MapPin, Brain, FileText, Landmark, Building2, Clock, Scale, ArrowRight, History, BookOpen, ExternalLink, AlertTriangle, Crosshair, Search, Filter, AlignVerticalJustifyStart, AlignHorizontalJustifyStart, Download, FileSpreadsheet, FileDown, Leaf, Lightbulb, CheckCircle2, ChevronRight, Gauge, BarChart2, Flame, Fuel, Zap, Wrench } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import type { RevitalizationScenario } from "@/data/angolaBlocks";
 import { TechnicalRecommendationsPanel } from "@/components/dashboard/TechnicalRecommendationsPanel";
