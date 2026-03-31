@@ -337,11 +337,38 @@ function esgScore(block: OilBlock): DimensionScore {
 
 // ── Classification logic ──
 
-function classify(totalScore: number, block: OilBlock): { classification: StrategicClassification; urgency: UrgencyLevel; recommendation: string; riskOfInaction: string; expectedImpact: string } {
+function buildContext(block: OilBlock, dimensions: DimensionScore[]): {
+  opex: string; fields: string; facilities: string; reserves: string;
+  compliance: string; production: string; contractEnd: string; prospects: string;
+} {
+  const producingFields = block.fields?.filter(f => f.status === "Producing").map(f => f.name) || [];
+  const fd = block.facilityData;
+  const platformNames = fd?.platformSpecs?.map(p => p.name).filter(Boolean) || [];
+  const ages = fd?.platformSpecs?.filter(p => p.installationYear).map(p => currentYear - p.installationYear!) || [];
+  const avgAge = ages.length ? Math.round(ages.reduce((s, a) => s + a, 0) / ages.length) : 0;
+
+  return {
+    opex: block.economicData?.opexPerBarrel ? `$${block.economicData.opexPerBarrel}/bbl` : "n/d",
+    fields: producingFields.length ? producingFields.slice(0, 4).join(", ") : "sem campos activos",
+    facilities: platformNames.length
+      ? `${platformNames.slice(0, 3).join(", ")}${avgAge ? ` (média ${avgAge} anos)` : ""}`
+      : fd ? `Eficiência ${fd.overallEfficiency ?? "n/d"}%` : "sem dados de instalações",
+    reserves: `${block.estimatedReserves} Mb`,
+    compliance: `${block.complianceScore}%`,
+    production: block.dailyProduction > 0 ? `${block.dailyProduction.toLocaleString("pt-AO")} BOPD` : "sem produção",
+    contractEnd: block.contractInfo?.productionPeriodEnd
+      ? new Date(block.contractInfo.productionPeriodEnd).toLocaleDateString("pt-AO", { year: "numeric", month: "short" })
+      : "n/d",
+    prospects: block.prospects?.length ? `${block.prospects.length} prospectos (${block.prospects.reduce((s, p) => s + p.resourcesMMBO, 0).toFixed(0)} MMBO)` : "sem prospectos",
+  };
+}
+
+function classify(totalScore: number, block: OilBlock, dimensions: DimensionScore[]): { classification: StrategicClassification; urgency: UrgencyLevel; recommendation: string; riskOfInaction: string; expectedImpact: string } {
   const hasProduction = block.dailyProduction > 0;
   const hasReserves = block.estimatedReserves > 50;
   const lowCompliance = block.complianceScore < 70;
   const highRisk = block.riskScore >= 7;
+  const ctx = buildContext(block, dimensions);
 
   // Critical: very low score
   if (totalScore < 25) {
@@ -349,17 +376,17 @@ function classify(totalScore: number, block: OilBlock): { classification: Strate
       return {
         classification: "Preparar Abandono",
         urgency: "Elevada",
-        recommendation: "Iniciar planeamento de abandono ou descomissionamento. Sem justificação económica para manutenção.",
-        riskOfInaction: "Custos de manutenção sem retorno, degradação ambiental, responsabilidades legais crescentes.",
-        expectedImpact: "Libertação de recursos para blocos produtivos, redução de passivo ambiental.",
+        recommendation: `Iniciar planeamento de descomissionamento para ${block.name} (${ctx.facilities}). Reservas de apenas ${ctx.reserves} não justificam manutenção. Contrato até ${ctx.contractEnd}.`,
+        riskOfInaction: `Custos de manutenção sem retorno em ${block.name}. Instalações (${ctx.facilities}) degradam-se, aumentando passivo ambiental e responsabilidades legais.`,
+        expectedImpact: `Libertação de recursos alocados a ${block.name} para blocos produtivos. Redução de passivo ambiental.`,
       };
     }
     return {
       classification: "Relicitar",
       urgency: "Elevada",
-      recommendation: "Preparar relicitação com novos termos contratuais e requisitos técnicos actualizados.",
-      riskOfInaction: "Activo improdutivo, perda de janela de oportunidade, depreciação do potencial.",
-      expectedImpact: "Novo operador pode revitalizar o bloco com investimento fresco.",
+      recommendation: `Preparar relicitação de ${block.name} (operador ${block.operator}). Produção actual de ${ctx.production} e reservas de ${ctx.reserves} sugerem potencial sub-explorado. Compliance actual: ${ctx.compliance}.`,
+      riskOfInaction: `Activo ${block.name} permanece improdutivo sob ${block.operator}. Reservas de ${ctx.reserves} depreciam sem investimento adequado.`,
+      expectedImpact: `Novo operador pode revitalizar ${block.name} com investimento fresco nos campos ${ctx.fields}.`,
     };
   }
 
@@ -368,17 +395,17 @@ function classify(totalScore: number, block: OilBlock): { classification: Strate
       return {
         classification: "Renegociar",
         urgency: "Imediata",
-        recommendation: "Iniciar renegociação contratual com metas objectivas de investimento e produção.",
-        riskOfInaction: "Incumprimento continuado, perda de receita fiscal, degradação operacional.",
-        expectedImpact: "Novos termos podem reactivar investimento e reverter declínio.",
+        recommendation: `Iniciar renegociação contratual com ${block.operator} para ${block.name}. Compliance de ${ctx.compliance} e OPEX de ${ctx.opex} exigem revisão de metas. Campos activos: ${ctx.fields}. Contrato até ${ctx.contractEnd}.`,
+        riskOfInaction: `Incumprimento continuado em ${block.name} (compliance ${ctx.compliance}). Produção de ${ctx.production} em declínio, perda de receita fiscal.`,
+        expectedImpact: `Novos termos podem reactivar investimento em ${block.name} e reverter o declínio dos campos ${ctx.fields}.`,
       };
     }
     return {
       classification: "Monitorar",
       urgency: "Moderada",
-      recommendation: "Manter monitorização reforçada. Avaliar evolução nos próximos 6-12 meses.",
-      riskOfInaction: "Declínio pode tornar-se irreversível sem intervenção atempada.",
-      expectedImpact: "Identificação precoce de oportunidades de intervenção.",
+      recommendation: `Manter monitorização reforçada sobre ${block.name} (${block.operator}). Produção de ${ctx.production}, OPEX ${ctx.opex}. Avaliar evolução nos próximos 6-12 meses. ${ctx.prospects}.`,
+      riskOfInaction: `Declínio em ${block.name} pode tornar-se irreversível. Instalações: ${ctx.facilities}.`,
+      expectedImpact: `Identificação precoce de oportunidades de intervenção nos campos ${ctx.fields}.`,
     };
   }
 
@@ -387,17 +414,17 @@ function classify(totalScore: number, block: OilBlock): { classification: Strate
       return {
         classification: "Revitalizar",
         urgency: "Moderada",
-        recommendation: "Avaliar programa de revitalização: workover, infill drilling, EOR ou debottlenecking.",
-        riskOfInaction: "Declínio produtivo acelerado, perda de reservas recuperáveis.",
-        expectedImpact: "Potencial de recuperação de 10-30% de produção adicional.",
+        recommendation: `Avaliar programa de revitalização para ${block.name}: workover nos campos ${ctx.fields}, infill drilling ou EOR. Reservas de ${ctx.reserves} justificam investimento. OPEX actual: ${ctx.opex}. Instalações: ${ctx.facilities}.`,
+        riskOfInaction: `Declínio produtivo acelerado em ${block.name} (actual ${ctx.production}). Reservas de ${ctx.reserves} tornam-se irrecuperáveis sem intervenção.`,
+        expectedImpact: `Potencial de recuperação de 10-30% de produção adicional nos campos ${ctx.fields} de ${block.name}.`,
       };
     }
     return {
       classification: "Monitorar",
       urgency: "Baixa",
-      recommendation: "Acompanhar indicadores-chave. Sem necessidade de intervenção imediata.",
-      riskOfInaction: "Risco limitado no curto prazo.",
-      expectedImpact: "Manutenção do desempenho actual.",
+      recommendation: `Acompanhar indicadores-chave de ${block.name} (${block.operator}). Produção: ${ctx.production}, compliance: ${ctx.compliance}. ${ctx.prospects}.`,
+      riskOfInaction: `Risco limitado no curto prazo para ${block.name}.`,
+      expectedImpact: `Manutenção do desempenho actual de ${block.name}.`,
     };
   }
 
@@ -405,18 +432,18 @@ function classify(totalScore: number, block: OilBlock): { classification: Strate
     return {
       classification: "Manter & Optimizar",
       urgency: "Baixa",
-      recommendation: "Optimizar operações correntes. Avaliar oportunidades de expansão marginal.",
-      riskOfInaction: "Perda de oportunidades de optimização.",
-      expectedImpact: "Ganhos incrementais de eficiência e produção.",
+      recommendation: `Optimizar operações de ${block.name} (${block.operator}). Campos activos: ${ctx.fields}. OPEX ${ctx.opex}. Avaliar debottlenecking nas instalações ${ctx.facilities}. ${ctx.prospects}.`,
+      riskOfInaction: `Perda de oportunidades de optimização em ${block.name}. Instalações: ${ctx.facilities}.`,
+      expectedImpact: `Ganhos incrementais de eficiência e produção em ${block.name} (actual ${ctx.production}).`,
     };
   }
 
   return {
     classification: "Manter & Optimizar",
     urgency: "Baixa",
-    recommendation: "Bloco de referência. Manter estratégia actual e explorar oportunidades de expansão.",
-    riskOfInaction: "Mínimo. Activo em excelente condição.",
-    expectedImpact: "Continuação do desempenho elevado.",
+    recommendation: `${block.name} é bloco de referência (${block.operator}). Produção de ${ctx.production}, OPEX ${ctx.opex}. Manter estratégia actual nos campos ${ctx.fields} e explorar expansão. ${ctx.prospects}.`,
+    riskOfInaction: `Mínimo. ${block.name} em excelente condição operacional.`,
+    expectedImpact: `Continuação do desempenho elevado de ${block.name} (${ctx.production}).`,
   };
 }
 
@@ -446,7 +473,7 @@ export function calculateStrategicScore(block: OilBlock): StrategicScore {
     .slice(0, 3)
     .map(d => d.driver);
 
-  const { classification, urgency, recommendation, riskOfInaction, expectedImpact } = classify(totalScore, block);
+  const { classification, urgency, recommendation, riskOfInaction, expectedImpact } = classify(totalScore, block, dimensions);
 
   return {
     blockId: block.id,
