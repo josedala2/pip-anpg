@@ -142,7 +142,7 @@ export const SemaphoreTimelineChart = ({ block }: SemaphoreTimelineChartProps) =
     return result;
   }, [block, ci, monthlyProdRate, capexYearlyTrend, currentCapexDev, currentProdDecline, oldestAge]);
 
-  const criteriaNames = ["Prazo", "Produção", "CAPEX", "Instalações", "Execução", "Compliance"];
+  const criteriaNames = ["Prazo", "Produção", "CAPEX", "Instalações", "Execução", "Compliance", "OPEX"];
 
   // Detect transition points for annotations
   const transitions = useMemo(() => {

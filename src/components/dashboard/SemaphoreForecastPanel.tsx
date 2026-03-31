@@ -319,6 +319,25 @@ export const SemaphoreForecastPanel = ({ block }: SemaphoreForecastPanelProps) =
       });
     }
 
+    // 7. OPEX/BO — static
+    {
+      const opex = block.economicVision?.technicalCost?.opex2025 ?? 0;
+      const currentLevel: SemaphoreLevel = opex > 35 ? "red" : opex > 25 ? "yellow" : "green";
+      list.push({
+        criterion: "OPEX/BO",
+        icon: Gauge,
+        currentLevel,
+        nextLevel: null,
+        monthsUntilChange: null,
+        dateEstimate: null,
+        detail: currentLevel === "green"
+          ? `OPEX $${opex.toFixed(1)}/BO — eficiente`
+          : currentLevel === "yellow"
+            ? `OPEX $${opex.toFixed(1)}/BO — acima do benchmark`
+            : `OPEX $${opex.toFixed(1)}/BO — custo operacional crítico`,
+      });
+    }
+
     // Sort: items with upcoming changes first
     list.sort((a, b) => {
       if (a.monthsUntilChange !== null && b.monthsUntilChange !== null)
