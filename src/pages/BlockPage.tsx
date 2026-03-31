@@ -1586,7 +1586,7 @@ const BlockPage = () => {
                   </div>
                   {/* Section 1: Resumo Financeiro */}
                   <div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 2xl:gap-5">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 2xl:gap-5">
                       {block.economicVision ? (() => {
                         const ev = block.economicVision;
                         const ed = block.economicData;
