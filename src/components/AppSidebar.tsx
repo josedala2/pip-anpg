@@ -6,6 +6,7 @@ import {
   BarChart3,
   Search,
   Building2,
+  ShieldCheck,
   FileCheck,
   DollarSign,
   TrendingUp,
