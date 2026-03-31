@@ -194,6 +194,7 @@ const nodeMap = Object.fromEntries(nodes.map(n => [n.id, n]));
 export const FacilitiesSchematic = ({ renderAsContent = false }: { renderAsContent?: boolean }) => {
   const [hovered, setHovered] = useState<string | null>(null);
   const [selected, setSelected] = useState<string | null>(null);
+  const [activeArea, setActiveArea] = useState<string | null>(null);
   const [zoom, setZoom] = useState(1);
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const svgRef = useRef<SVGSVGElement>(null);
@@ -201,6 +202,8 @@ export const FacilitiesSchematic = ({ renderAsContent = false }: { renderAsConte
   const lastTouchCenter = useRef<{ x: number; y: number } | null>(null);
   const isPinching = useRef(false);
   const lastTapTime = useRef(0);
+
+  const areas = Array.from(new Set(nodes.map(n => n.area).filter(Boolean))) as string[];
 
   const clampZoom = (z: number) => Math.min(Math.max(z, 1), 4);
 
@@ -242,18 +245,26 @@ export const FacilitiesSchematic = ({ renderAsContent = false }: { renderAsConte
   const handleWheel = useCallback((e: React.WheelEvent) => { if (e.ctrlKey || e.metaKey) { e.preventDefault(); setZoom(prev => clampZoom(prev - e.deltaY * 0.005)); } }, []);
   const resetView = useCallback(() => { setZoom(1); setPan({ x: 0, y: 0 }); }, []);
 
+  const isNodeInArea = useCallback((nodeId: string) => {
+    if (!activeArea) return true;
+    const node = nodeMap[nodeId];
+    return node?.area === activeArea;
+  }, [activeArea]);
+
   const isHighlighted = useCallback((nodeId: string) => {
+    if (!isNodeInArea(nodeId)) return false;
     if (!hovered && !selected) return true;
     const active = selected || hovered;
     if (active === nodeId) return true;
     return links.some(l => (l.from === active && l.to === nodeId) || (l.to === active && l.from === nodeId));
-  }, [hovered, selected]);
+  }, [hovered, selected, isNodeInArea]);
 
   const isLinkHighlighted = useCallback((link: SchematicLink) => {
-    if (!hovered && !selected) return true;
+    if (activeArea && !isNodeInArea(link.from) && !isNodeInArea(link.to)) return false;
+    if (!hovered && !selected) return !activeArea || isNodeInArea(link.from) || isNodeInArea(link.to);
     const active = selected || hovered;
     return link.from === active || link.to === active;
-  }, [hovered, selected]);
+  }, [hovered, selected, activeArea, isNodeInArea]);
 
   const selectedNode = selected ? nodeMap[selected] : null;
 
