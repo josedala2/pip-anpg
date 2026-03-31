@@ -160,28 +160,22 @@ export const FacilitiesSchematic = ({ renderAsContent = false }: { renderAsConte
 
   const selectedNode = selected ? nodeMap[selected] : null;
 
-  return (
-    <Card className="glass-card">
-      <CardHeader className="p-2 sm:p-4 pb-1 sm:pb-2">
-        <div className="flex items-center justify-between flex-wrap gap-1.5 sm:gap-2">
-          <CardTitle className="text-xs sm:text-sm flex items-center gap-1.5 sm:gap-2">
-            <GitBranch className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
-            <span className="hidden sm:inline">Diagrama Esquemático — Infraestrutura</span>
-            <span className="sm:hidden">Esquemático</span>
-          </CardTitle>
-          <div className="flex items-center gap-1 sm:gap-1.5 flex-wrap">
-            {Object.entries(typeStyles).map(([key, s]) => (
-              <Badge key={key} variant="outline" className="text-[7px] sm:text-[9px] gap-0.5 sm:gap-1 px-1 sm:px-1.5 py-0" style={{ borderColor: s.stroke, color: s.stroke }}>
-                <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full inline-block" style={{ background: s.stroke }} />
-                <span className="hidden xs:inline">{s.badge}</span>
-                <span className="xs:hidden">{key === "terminal" ? "Onsh" : key === "fixed" ? "Fix" : key === "fpso" ? "FPSO" : "Sub"}</span>
-              </Badge>
-            ))}
-          </div>
-        </div>
-      </CardHeader>
-      <CardContent className="p-2 sm:p-4 pt-0">
-        <div className="flex flex-col lg:flex-row gap-3 sm:gap-4">
+  const legendBar = (
+    <div className="flex items-center gap-1 sm:gap-1.5 flex-wrap">
+      {Object.entries(typeStyles).map(([key, s]) => (
+        <Badge key={key} variant="outline" className="text-[7px] sm:text-[9px] gap-0.5 sm:gap-1 px-1 sm:px-1.5 py-0" style={{ borderColor: s.stroke, color: s.stroke }}>
+          <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full inline-block" style={{ background: s.stroke }} />
+          <span className="hidden xs:inline">{s.badge}</span>
+          <span className="xs:hidden">{key === "terminal" ? "Onsh" : key === "fixed" ? "Fix" : key === "fpso" ? "FPSO" : "Sub"}</span>
+        </Badge>
+      ))}
+    </div>
+  );
+
+  const content = (
+    <CardContent className="p-2 sm:p-4 pt-0">
+      {renderAsContent && <div className="mb-2">{legendBar}</div>}
+      <div className="flex flex-col lg:flex-row gap-3 sm:gap-4">
           <TooltipProvider delayDuration={100}>
             <div className="w-full lg:flex-1 overflow-hidden rounded-lg border border-border/30 bg-muted/20 relative touch-none">
               <div className="absolute top-1.5 right-1.5 z-10 flex items-center gap-0.5">
