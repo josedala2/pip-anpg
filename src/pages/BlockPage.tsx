@@ -1586,7 +1586,7 @@ const BlockPage = () => {
                   </div>
                   {/* Section 1: Resumo Financeiro */}
                   <div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 2xl:gap-5">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 2xl:gap-5">
                       {block.economicVision ? (() => {
                         const ev = block.economicVision;
                         const ed = block.economicData;
@@ -1685,6 +1685,42 @@ const BlockPage = () => {
                                 )}
                               </CardContent>
                             </Card>
+                            {/* Card 5: Quota ANPG */}
+                            {ev.quotaANPG_BOPD != null && (
+                              <Card className="glass-card">
+                                <CardContent className="p-4 2xl:p-6">
+                                  <div className="text-xs 2xl:text-sm text-muted-foreground mb-2 flex items-center gap-1">
+                                    Quota ANPG
+                                    <InfoTooltip text="Participação da ANPG (Concessionária Nacional) na produção diária do bloco, em barris de óleo por dia" />
+                                  </div>
+                                  <div className="text-2xl 2xl:text-3xl font-bold font-mono">
+                                    {(ev.quotaANPG_BOPD / 1000).toFixed(1)}k
+                                    <span className="text-sm font-normal text-muted-foreground"> BOPD</span>
+                                  </div>
+                                  <div className="text-[10px] text-muted-foreground mt-1">
+                                    {block.dailyProduction > 0 ? `${((ev.quotaANPG_BOPD / block.dailyProduction) * 100).toFixed(1)}% da produção` : "—"}
+                                  </div>
+                                </CardContent>
+                              </Card>
+                            )}
+                            {/* Card 6: Quota SNL E.P. */}
+                            {ev.quotaSNL_BOPD != null && (
+                              <Card className="glass-card">
+                                <CardContent className="p-4 2xl:p-6">
+                                  <div className="text-xs 2xl:text-sm text-muted-foreground mb-2 flex items-center gap-1">
+                                    Quota SNL E.P.
+                                    <InfoTooltip text="Participação da Sonangol E.P. na produção diária do bloco, em barris de óleo por dia" />
+                                  </div>
+                                  <div className="text-2xl 2xl:text-3xl font-bold font-mono">
+                                    {(ev.quotaSNL_BOPD / 1000).toFixed(1)}k
+                                    <span className="text-sm font-normal text-muted-foreground"> BOPD</span>
+                                  </div>
+                                  <div className="text-[10px] text-muted-foreground mt-1">
+                                    {block.dailyProduction > 0 ? `${((ev.quotaSNL_BOPD / block.dailyProduction) * 100).toFixed(1)}% da produção` : "—"}
+                                  </div>
+                                </CardContent>
+                              </Card>
+                            )}
                           </>
                         );
                       })() : (
