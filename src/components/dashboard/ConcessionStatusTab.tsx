@@ -127,7 +127,7 @@ export const ConcessionStatusTab = ({ block }: ConcessionStatusTabProps) => {
     return oldest;
   }, [block.facilityData?.platformSpecs]);
 
-  // Alerts (7 criteria)
+  // Alerts (7 criteria including OPEX)
   const alerts = useMemo<Alert[]>(() => {
     const list: Alert[] = [];
 
@@ -177,6 +177,15 @@ export const ConcessionStatusTab = ({ block }: ConcessionStatusTabProps) => {
         severity: oldestFacility.age > 40 ? "red" : "yellow",
         message: `Instalação mais antiga: ${oldestFacility.name} (${oldestFacility.age}a)`,
         icon: Factory,
+      });
+    }
+    // 7. OPEX/BO
+    const opex2025 = block.economicVision?.technicalCost?.opex2025;
+    if (opex2025 !== undefined && opex2025 > 25) {
+      list.push({
+        severity: opex2025 > 35 ? "red" : "yellow",
+        message: `OPEX elevado: $${opex2025} USD/BO (2025)`,
+        icon: Gauge,
       });
     }
 
@@ -261,12 +270,24 @@ export const ConcessionStatusTab = ({ block }: ConcessionStatusTabProps) => {
         : oldestFacility.age > 30 ? "text-warning"
         : "text-success",
     },
+    (() => {
+      const tc = block.economicVision?.technicalCost;
+      if (!tc) return { label: "OPEX/BO 2025" as const, value: "N/D", icon: Gauge, color: "text-muted-foreground" };
+      const color = tc.opex2025 > 25 ? "text-warning" : "text-success";
+      return {
+        label: "OPEX/BO 2025",
+        value: `$${tc.opex2025} USD/BO`,
+        sub: `CAPEX: $${tc.capexPerBarrel} + OPEX: $${tc.opexPerBarrel}`,
+        icon: Gauge,
+        color,
+      };
+    })(),
   ];
 
   return (
     <div className="space-y-4 2xl:space-y-6">
       {/* Row 1: Semaphore + KPIs */}
-      <div className="grid grid-cols-1 md:grid-cols-7 gap-3 2xl:gap-5">
+      <div className="grid grid-cols-1 md:grid-cols-8 gap-3 2xl:gap-5">
         {/* Semaphore Card */}
         <Card className={`glass-card border-2 ${sStyle.border} md:col-span-1`}>
           <CardContent className="p-4 2xl:p-6 flex flex-col items-center justify-center text-center h-full gap-2">
