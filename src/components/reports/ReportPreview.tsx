@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/table";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
-  ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line,
+  ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line, ReferenceLine,
 } from "recharts";
 import anpgLogoColor from "@/assets/anpg-logo-color.svg";
 
