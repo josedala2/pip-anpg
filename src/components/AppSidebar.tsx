@@ -52,6 +52,7 @@ const groups = [
       { panel: "Produção", icon: BarChart3 },
       { panel: "Exploração", icon: Search },
       { panel: "Instalações", icon: Building2 },
+      { panel: "HSE & Ambiente", icon: ShieldCheck },
     ],
   },
   {
