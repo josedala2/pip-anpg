@@ -29,6 +29,7 @@ export const AlertsPanel = () => {
   const [rules, setRules] = useState<AlertRule[]>(() => defaultRules.map(r => ({ ...r })));
   const [selectedCategory, setSelectedCategory] = useState<AlertCategory | "all">("all");
   const [selectedSeverity, setSelectedSeverity] = useState<AlertSeverity | "all">("all");
+  const [selectedBlock, setSelectedBlock] = useState<string>("all");
   const [tier23Threshold, setTier23Threshold] = useState(forecastThresholds.tier23MinBOPD);
 
   const verifiedBlocks = useMemo(() => oilBlocks.filter(b => !b.pendingRealData), []);
