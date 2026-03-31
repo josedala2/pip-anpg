@@ -8,6 +8,7 @@ import { ExplorationPanel } from "@/components/dashboard/ExplorationPanel";
 import { ProductionPanel } from "@/components/dashboard/ProductionPanel";
 import { ContractCompliancePanel } from "@/components/dashboard/ContractCompliancePanel";
 import { FacilitiesIntegrityPanel } from "@/components/dashboard/FacilitiesIntegrityPanel";
+import { HSENationalPanel } from "@/components/dashboard/HSENationalPanel";
 import { StrategicForecast } from "@/components/dashboard/StrategicForecast";
 import { EconomicFinancialPanel } from "@/components/dashboard/EconomicFinancialPanel";
 import { GeneralForecastPanel } from "@/components/dashboard/GeneralForecastPanel";
@@ -43,6 +44,7 @@ const allPanels = [
   "Produção",
   "Exploração",
   "Instalações",
+  "HSE & Ambiente",
   "Contratos",
   "Homologações",
   "Económico",
@@ -279,6 +281,7 @@ const Index = () => {
                 {panels[activePanel] === "Produção" && <ProductionPanel />}
                 {panels[activePanel] === "Exploração" && <ExplorationPanel />}
                 {panels[activePanel] === "Instalações" && <FacilitiesIntegrityPanel />}
+                {panels[activePanel] === "HSE & Ambiente" && <HSENationalPanel />}
                 {panels[activePanel] === "Contratos" && <ContractCompliancePanel />}
                 {panels[activePanel] === "Homologações" && <HomologacoesPanel />}
                 {panels[activePanel] === "Económico" && <EconomicFinancialPanel />}
