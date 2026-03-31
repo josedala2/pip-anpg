@@ -166,42 +166,47 @@ function facilitiesScore(block: OilBlock): DimensionScore {
 
 function economicScore(block: OilBlock): DimensionScore {
   const drivers: string[] = [];
-  let score = 50;
+  let score = 40; // baseline reduzido
 
-  // Execution rate as proxy for economic health
+  // Execution rate
   if (block.executionRate >= 85) {
-    score = 80;
+    score = 75;
     drivers.push(`Taxa de execução elevada: ${block.executionRate}%`);
   } else if (block.executionRate >= 70) {
-    score = 65;
+    score = 55;
     drivers.push(`Taxa de execução adequada: ${block.executionRate}%`);
   } else if (block.executionRate >= 50) {
-    score = 45;
+    score = 35;
     drivers.push(`Taxa de execução moderada: ${block.executionRate}%`);
   } else {
-    score = 25;
+    score = 20;
     drivers.push(`Taxa de execução baixa: ${block.executionRate}%`);
   }
 
-  // OPEX per barrel
-  if (block.economicData?.opexPerBarrel) {
-    if (block.economicData.opexPerBarrel > 25) {
-      score -= 15;
-      drivers.push(`OPEX elevado: $${block.economicData.opexPerBarrel}/bbl`);
-    } else if (block.economicData.opexPerBarrel < 15) {
+  // OPEX per barrel — prefer economicVision.technicalCost data
+  const opex2025 = (block as any).economicVision?.technicalCost?.opex2025;
+  const opexValue = opex2025 ?? block.economicData?.opexPerBarrel;
+  if (opexValue) {
+    if (opexValue > 35) {
+      score -= 30;
+      drivers.push(`OPEX crítico: $${opexValue}/bbl`);
+    } else if (opexValue > 25) {
+      score -= 20;
+      drivers.push(`OPEX elevado: $${opexValue}/bbl`);
+    } else if (opexValue < 15) {
       score += 10;
-      drivers.push(`OPEX competitivo: $${block.economicData.opexPerBarrel}/bbl`);
+      drivers.push(`OPEX competitivo: $${opexValue}/bbl`);
     }
   }
 
-  // Investment ratio (accumulated vs planned)
+  // Investment ratio
   if (block.plannedInvestment > 0) {
     const investRatio = block.accumulatedInvestment / block.plannedInvestment;
     if (investRatio > 0.9) {
       score += 5;
       drivers.push("Investimento quase concluído");
     } else if (investRatio < 0.3) {
-      score -= 5;
+      score -= 10;
       drivers.push(`Apenas ${Math.round(investRatio * 100)}% do investimento executado`);
     }
   }
