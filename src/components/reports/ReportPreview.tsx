@@ -884,6 +884,43 @@ const ProductionSection = ({ blocks, showTables, showCharts }: { blocks: OilBloc
         </ChartCard>
       )}
 
+      {showCharts && blocks.map(b => {
+        const annualData = (b as any).historicalAnnualProduction;
+        if (!annualData || annualData.length === 0) return null;
+        const lastHistorical = [...annualData].reverse().find((d: any) => d.type === "historical")?.year ?? 2025;
+        return (
+          <ChartCard key={`hist-${b.id}`} title={`Histórico — Perfil de Produção · ${b.name}`}>
+            <ResponsiveContainer width="100%" height={320}>
+              <BarChart data={annualData} margin={{ top: 15, right: 10, left: 0, bottom: 30 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} vertical={false} />
+                <XAxis dataKey="year" tick={{ fontSize: 9, fill: "hsl(var(--muted-foreground))" }} interval={1} angle={-45} textAnchor="end" height={50} />
+                <YAxis tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} tickFormatter={(v: number) => `${(v / 1000).toFixed(0)}k`} />
+                <Tooltip
+                  contentStyle={{ background: "hsl(var(--popover))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }}
+                  formatter={(val: number, _name: string, entry: any) => [
+                    `${val.toLocaleString()} BOPD`,
+                    entry.payload.type === "historical" ? "Histórico" : "Previsão",
+                  ]}
+                  labelFormatter={(year) => `Ano: ${year}`}
+                />
+                <ReferenceLine
+                  x={lastHistorical}
+                  stroke="hsl(var(--foreground))"
+                  strokeDasharray="8 4"
+                  strokeWidth={1.5}
+                  label={{ value: "HISTÓRICO | PREVISÃO", position: "top", fill: "hsl(var(--foreground))", fontSize: 9, fontWeight: 600 }}
+                />
+                <Bar dataKey="production" radius={[1, 1, 0, 0]} maxBarSize={10}>
+                  {annualData.map((entry: any, i: number) => (
+                    <Cell key={i} fill={entry.type === "historical" ? "hsl(var(--success))" : "hsl(var(--success) / 0.35)"} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </ChartCard>
+        );
+      })}
+
       {showTables && (
         <Table>
           <TableHeader>
