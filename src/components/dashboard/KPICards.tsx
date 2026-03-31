@@ -2,7 +2,7 @@ import { ExecutiveKPICard, type SemaphoreStatus } from "./ExecutiveKPICard";
 import { oilBlocks } from "@/data/angolaBlocks";
 import { homologacoesData } from "@/data/homologacoesData";
 import { nationalCertifiedMetrics } from "@/data/nationalForecast";
-import { Activity, BarChart3, Boxes, DollarSign, Landmark, Pickaxe, Search, Wrench, FileText, CheckCircle, Droplets, Mountain, Flame } from "lucide-react";
+import { Activity, BarChart3, Boxes, Building2, DollarSign, Landmark, Pickaxe, Search, Wrench, FileText, CheckCircle, Droplets, Mountain, Flame } from "lucide-react";
 
 const verified = oilBlocks.filter(b => !b.pendingRealData);
 const criticalFacilities = () => verified.filter(b => b.facilityData && b.facilityData.overallEfficiency < 70).length;
@@ -74,7 +74,7 @@ const kpiGroups: { title: string; items: KPIItem[] }[] = [
     items: [
       { label: "Produção Nacional", value: n.productionBOPD, suffix: " BOPD", icon: Activity, status: "neutral", drill: "Produção média nacional certificada — Relatório Estado das Concessões 2026" },
       { label: "Quota ANPG", value: n.anpgQuotaBOPD, suffix: " BOPD", icon: Droplets, status: "neutral", drill: "Quota de produção atribuída à ANPG" },
-      { label: "Quota SNL E.P.", value: n.snlQuotaBOPD, suffix: " BOPD", icon: Droplets, status: "neutral", drill: "Quota de produção atribuída à Sonangol E.P. (~16% da produção nacional)" },
+      { label: "Quota SNL E.P.", value: n.snlQuotaBOPD, suffix: " BOPD", icon: Building2, status: "neutral", drill: "Quota de produção atribuída à Sonangol E.P. (~16% da produção nacional)" },
       { label: "Produção Gás", value: n.gasProductionMMSCFD, suffix: " MMSCFD", icon: Flame, status: "neutral", drill: "Produção nacional de gás natural — Relatório Estado das Concessões 2026 (2.756 MMSCFD)" },
     ],
   },
