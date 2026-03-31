@@ -1524,6 +1524,12 @@ const BlockPage = () => {
           <TabsContent value="econ-financial" className="space-y-6 2xl:space-y-8">
             {/* Sub-navigation */}
             <div className="sticky top-[57px] z-30 glass-card border border-border/50 rounded-lg p-1.5 flex items-center gap-1 flex-wrap">
+              <button
+                onClick={() => document.getElementById("section-resumo-financeiro")?.scrollIntoView({ behavior: "smooth", block: "start" })}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-secondary/80 transition-colors"
+              >
+                <DollarSign className="w-3.5 h-3.5" />Resumo Financeiro
+              </button>
               {(block.economicVision || block.economicData) && (
                 <button
                   onClick={() => document.getElementById("section-visao-economica")?.scrollIntoView({ behavior: "smooth", block: "start" })}
@@ -1532,12 +1538,6 @@ const BlockPage = () => {
                   <Scale className="w-3.5 h-3.5" />Visão Económica
                 </button>
               )}
-              <button
-                onClick={() => document.getElementById("section-resumo-financeiro")?.scrollIntoView({ behavior: "smooth", block: "start" })}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-secondary/80 transition-colors"
-              >
-                <DollarSign className="w-3.5 h-3.5" />Resumo Financeiro
-              </button>
               <button
                 onClick={() => document.getElementById("section-consorcio")?.scrollIntoView({ behavior: "smooth", block: "start" })}
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-secondary/80 transition-colors"
