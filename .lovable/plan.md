@@ -1,22 +1,24 @@
 
 
-## Separar Aba "Instalações & HSE" em Duas Abas no Detalhe do Bloco
+## Corrigir Valores RWDC no Bloco 0
 
-### Contexto
-No `BlockPage.tsx`, existe uma única aba `facilities-hse` que contém tanto o conteúdo de Instalações (`FacilitiesTab`, Equipment Scale) como o de HSE & Ambiente (`HSEEnvironmentTab`). O utilizador quer duas abas separadas.
+### Problema
+Os valores de RWDC (Restricted Work Day Cases) estão todos a 0 no `hseData` do Bloco 0, mas o documento oficial mostra valores reais.
 
-### Alterações — `src/pages/BlockPage.tsx`
+### Alteração — `src/data/angolaBlocks.ts` (linhas 845-851)
 
-1. **TabsTrigger** (linha ~385): Substituir o trigger único `facilities-hse` por dois:
-   - `facilities` — "Instalações" com ícone `Building2`
-   - `hse` — "HSE & Ambiente" com ícone `ShieldCheck`
+Actualizar o campo `rwc` em cada entrada do `hseData` do Bloco 0:
 
-2. **TabsContent** (linhas ~1432-1534): Dividir em dois `TabsContent`:
-   - `facilities` — contém `FacilitiesTab` + tabela Equipment Scale (conteúdo existente até linha ~1522)
-   - `hse` — contém `HSEEnvironmentTab` (conteúdo existente linhas ~1524-1533)
-
-3. **Import**: Adicionar `ShieldCheck` ao import do lucide-react (já existe `Leaf` mas `ShieldCheck` é mais consistente com a sidebar)
+| Ano | rwc actual | rwc correcto |
+|-----|-----------|-------------|
+| 2019 | 0 | 7 |
+| 2020 | 0 | 2 |
+| 2021 | 0 | 3 |
+| 2022 | 0 | 9 |
+| 2023 | 0 | 3 |
+| 2024 | 0 | 5 |
+| 2025 | 0 | 2 |
 
 ### Ficheiro afectado
-- `src/pages/BlockPage.tsx`
+- `src/data/angolaBlocks.ts`
 
