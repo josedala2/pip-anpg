@@ -1,22 +1,14 @@
 
 
-## Adicionar KPI OPEX e Alerta OPEX ao Painel Estado da Concessão
+## Reordenar secções no Painel Económico & Financeiro
 
-### Alterações
+### Alteração
 
-**`src/components/dashboard/ConcessionStatusTab.tsx`**:
+**`src/pages/BlockPage.tsx`** — Trocar a ordem das duas secções dentro da aba "Económico & Financeiro":
 
-1. **Novo KPI "OPEX/BO 2025"** — Adicionar ao array `kpiCards` (após Investimento Executado):
-   - Usa `block.economicVision?.technicalCost?.opex2025` (26.3 para Bloco 0)
-   - Valor: `$26.3 USD/BO`
-   - Sub-texto: breakdown CAPEX/BO + OPEX/BO (ex: `CAPEX: $17.0 + OPEX: $11.7`)
-   - Cor: `text-warning` se > 25, `text-success` se ≤ 25
-   - Ícone: `Gauge`
+1. **Botões de navegação** (~linhas 1525-1546): Mover o botão "Resumo Financeiro" para antes do botão "Visão Económica".
 
-2. **Novo critério de alerta OPEX** — Adicionar à lista `alerts` (critério 7):
-   - Threshold: OPEX_BO 2025 > 25 → amarelo; > 35 → vermelho
-   - Mensagem: `OPEX elevado: $26.3 USD/BO (2025)`
-   - Ícone: `Gauge`
+2. **Conteúdo** (~linhas 1549-1557 vs 1559+): Mover o bloco "Resumo Financeiro" (Section 2, com KPIs, exportação e gráficos) para cima, e colocar o bloco "Visão Económica ANPG" (EconomicVisionTab) depois.
 
-3. **Actualizar grid** — O `md:grid-cols-7` passa a `md:grid-cols-8` para acomodar o KPI extra, e o contador de critérios nos Alertas reflectirá o novo critério.
+Resultado: Resumo Financeiro → Visão Económica ANPG → Consórcio.
 
