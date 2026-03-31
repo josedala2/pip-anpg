@@ -29,7 +29,7 @@ export const NationalHistoricalProduction = () => {
         </div>
         <div className="flex items-center gap-3">
           <span className="text-[9px] bg-primary/10 text-primary px-2 py-0.5 rounded-full font-semibold">
-            Pico 2008: 1,9 MBOPD
+            Pico 2008: 1,898 MBOPD
           </span>
           <span className="text-[9px] text-muted-foreground font-medium">Fonte: Relatórios anuais ANPG</span>
         </div>
