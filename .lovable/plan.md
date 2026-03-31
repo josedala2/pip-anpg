@@ -1,29 +1,23 @@
 
 
-## Actualizar nationalCertifiedMetrics com Dados do Excel
+## Actualizar Histórico da Produção Nacional com Dados Certificados (1975–2025)
 
-### O que o Excel permite corrigir
+### Dados extraídos do Excel
 
-O ficheiro Excel "EHA - Previsões de Produção" contém exclusivamente dados de produção. Do objecto `nationalCertifiedMetrics`, apenas um campo pode ser actualizado:
+51 anos de produção (BOPD), de 1975 a 2025. Valores certificados diferentes dos actuais em vários anos. O dataset actual termina em 2023 — o novo inclui 2024 e 2025.
 
-| Campo | Valor actual | Valor Excel | Acção |
-|-------|-------------|-------------|-------|
-| `productionBOPD` | 1,036,000 | 1,037,000 | Corrigir → 1,037,000 |
+### Alterações
 
-### Campos sem dados neste Excel (sem alteração)
+#### 1. Dados — `src/data/nationalForecast.ts`
+- Substituir o array `nationalHistoricalFull` com os 51 valores certificados do Excel (1975–2025)
+- Valores notáveis: Pico 2008 = **1,897,768** BOPD (era 1,900,000); 2025 = **1,036,763** BOPD
 
-- `anpgQuotaBOPD` (441,609) — não consta
-- `snlQuotaBOPD` (165,760) — não consta
-- `reservesOilMb` (2,600) — não consta
-- `reservesGasTCF` (4.4) — não consta
-- `gasProductionMMSCFD` (2,756) — não consta
-- Contagens de concessões — não constam
-- Recursos prospectivos — não constam
+#### 2. Componente — `src/components/dashboard/NationalHistoricalProduction.tsx`
+- Actualizar título: "(1975–2023)" → **(1975–2025)**
+- Actualizar `peakValue`: 1,900,000 → **1,897,768**
+- Actualizar badge: "Pico 2008: 1,9 MBOPD" → **"Pico 2008: 1,898 MBOPD"**
 
-### Alteração
-
-**`src/data/nationalForecast.ts`** — linha 154: `productionBOPD: 1036000` → `productionBOPD: 1037000`
-
-### Nota
-Para actualizar os restantes campos, seria necessário outro ficheiro do relatório com as métricas globais (reservas, quotas, gás, concessões).
+### Ficheiros afectados
+- `src/data/nationalForecast.ts` — array `nationalHistoricalFull`
+- `src/components/dashboard/NationalHistoricalProduction.tsx` — título, peakValue, badge
 
