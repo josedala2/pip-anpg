@@ -144,6 +144,16 @@ export const AlertsPanel = () => {
                 <option key={b} value={b}>{b}</option>
               ))}
             </select>
+            <select
+              value={selectedOperator}
+              onChange={e => setSelectedOperator(e.target.value)}
+              className="text-xs bg-muted/50 border border-border rounded-md px-2 py-1"
+            >
+              <option value="all">Todos operadores</option>
+              {operatorNames.map(o => (
+                <option key={o} value={o}>{o}</option>
+              ))}
+            </select>
             <span className="text-[10px] text-muted-foreground ml-auto">{filtered.length} alertas</span>
           </div>
 
