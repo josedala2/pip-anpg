@@ -68,7 +68,7 @@ export const NationalForecastPanel = () => {
           <AreaChart data={nationalForecast} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
             <XAxis dataKey="year" tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} />
-            <YAxis tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} label={{ value: "kBOPD", angle: -90, position: "insideLeft", style: { fontSize: 10, fill: "hsl(var(--muted-foreground))" } }} />
+            <YAxis tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} domain={[0, 1800]} label={{ value: "kBOPD", angle: -90, position: "insideLeft", style: { fontSize: 10, fill: "hsl(var(--muted-foreground))" } }} />
             <Tooltip
               contentStyle={{ backgroundColor: "hsl(var(--background))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 11 }}
               formatter={(value: number, name: string) => {
@@ -76,6 +76,7 @@ export const NationalForecastPanel = () => {
                   baseProduction: "Produção de Base",
                   discoveredWithFID: "Descobertas c/ FID",
                   discoveredWithoutFID: "Descobertas s/ FID",
+                  newConcessions: "Exploração & Novas Concessões",
                 };
                 return [value.toLocaleString() + " kBOPD", labels[name] || name];
               }}
@@ -86,6 +87,7 @@ export const NationalForecastPanel = () => {
                   baseProduction: "Produção de Base",
                   discoveredWithFID: "Descobertas c/ FID",
                   discoveredWithoutFID: "Descobertas s/ FID",
+                  newConcessions: "Exploração & Novas Concessões",
                 };
                 return labels[value] || value;
               }}
@@ -94,6 +96,7 @@ export const NationalForecastPanel = () => {
             <Area type="monotone" dataKey="baseProduction" stackId="1" stroke="hsl(var(--primary))" fill="hsl(var(--primary) / 0.6)" />
             <Area type="monotone" dataKey="discoveredWithFID" stackId="1" stroke="hsl(var(--chart-2))" fill="hsl(var(--chart-2) / 0.6)" />
             <Area type="monotone" dataKey="discoveredWithoutFID" stackId="1" stroke="hsl(var(--chart-3))" fill="hsl(var(--chart-3) / 0.5)" />
+            <Area type="monotone" dataKey="newConcessions" stackId="1" stroke="hsl(var(--chart-4))" fill="hsl(var(--chart-4) / 0.5)" />
           </AreaChart>
         </ResponsiveContainer>
       </ChartWrapper>
