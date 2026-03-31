@@ -146,7 +146,7 @@ export const nationalHistoricalProduction = [
   { year: 2023, production: 1098, label: "Declínio natural" },
   { year: 2024, production: 1124, label: "Recuperação parcial" },
   { year: 2025, production: 1037, label: "Relatório Concessões 2026" },
-  { year: 2026, production: 1010, label: "Previsão (com FID)" },
+  { year: 2026, production: 1051, label: "Previsão (com FID)" },
 ];
 
 // National Certified Metrics — from "Estado das Concessões 2026"
