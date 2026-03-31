@@ -553,7 +553,7 @@ export function evaluateForecastAlerts(): ForecastAlert[] {
   }
 
   // ── Per-block alerts ──
-  const producing = oilBlocks.filter(b => b.dailyProduction > 0);
+  const producing = oilBlocks.filter(b => !b.pendingRealData && b.dailyProduction > 0);
   producing.forEach(block => {
     const blockOutputs = runAllScenariosForBlock(block);
 
