@@ -286,7 +286,7 @@ export const ConcessionStatusTab = ({ block }: ConcessionStatusTabProps) => {
   return (
     <div className="space-y-4 2xl:space-y-6">
       {/* Row 1: Semaphore + KPIs */}
-      <div className="grid grid-cols-1 md:grid-cols-7 gap-3 2xl:gap-5">
+      <div className="grid grid-cols-1 md:grid-cols-8 gap-3 2xl:gap-5">
         {/* Semaphore Card */}
         <Card className={`glass-card border-2 ${sStyle.border} md:col-span-1`}>
           <CardContent className="p-4 2xl:p-6 flex flex-col items-center justify-center text-center h-full gap-2">
