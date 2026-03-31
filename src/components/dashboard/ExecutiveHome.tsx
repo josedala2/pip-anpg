@@ -13,6 +13,7 @@ import { HomologacoesPanel } from "./HomologacoesPanel";
 import { type OilBlock, oilBlocks } from "@/data/angolaBlocks";
 import { ChevronDown, ChevronUp, Users, Bell, Target, FileCheck, AlertTriangle, ShieldCheck } from "lucide-react";
 import { HSENationalPanel } from "./HSENationalPanel";
+import { NationalHistoricalProduction } from "./NationalHistoricalProduction";
 
 type DrillDown = "operadores" | "alertas" | "recomendacoes" | "homologacoes" | "hse" | null;
 
