@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
 import { ConcessionMap } from "./ConcessionMap";
 import { KPICards } from "./KPICards";
-import { NationalProductionTrend } from "./NationalProductionTrend";
+import { NationalForecast2050 } from "./NationalForecast2050";
 import { ThreatPanel } from "./ThreatPanel";
 import { TrendProjection } from "./TrendProjection";
 import { QuickRecommendations } from "./QuickRecommendations";
