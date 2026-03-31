@@ -272,13 +272,14 @@ export const ConcessionStatusTab = ({ block }: ConcessionStatusTabProps) => {
     },
     (() => {
       const tc = block.economicVision?.technicalCost;
-      if (!tc) return { label: "OPEX/BO 2025", value: "N/D", icon: Gauge, color: "text-muted-foreground" as const };
+      if (!tc) return { label: "OPEX/BO 2025" as const, value: "N/D", icon: Gauge, color: "text-muted-foreground" };
+      const color = tc.opex2025 > 25 ? "text-warning" : "text-success";
       return {
         label: "OPEX/BO 2025",
         value: `$${tc.opex2025} USD/BO`,
         sub: `CAPEX: $${tc.capexPerBarrel} + OPEX: $${tc.opexPerBarrel}`,
         icon: Gauge,
-        color: (tc.opex2025 > 25 ? "text-warning" : "text-success") as const,
+        color,
       };
     })(),
   ];
