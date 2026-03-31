@@ -342,7 +342,7 @@ export const ConcessionStatusTab = ({ block }: ConcessionStatusTabProps) => {
                   />
                 </svg>
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
-                  <span className="text-3xl font-bold font-mono">{strategicScore.totalScore}</span>
+                  <span className="text-3xl font-bold font-mono">{strategic.totalScore}</span>
                   <span className="text-[10px] text-muted-foreground">/100</span>
                 </div>
               </div>
