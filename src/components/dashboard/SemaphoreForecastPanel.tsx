@@ -3,7 +3,7 @@ import type { OilBlock } from "@/data/angolaBlocks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Clock, DollarSign, ShieldCheck, Activity, Factory, TrendingDown, Eye,
-  ArrowRight, CheckCircle2,
+  ArrowRight, CheckCircle2, Gauge,
 } from "lucide-react";
 
 type SemaphoreLevel = "green" | "yellow" | "red";
