@@ -1,20 +1,22 @@
 
 
-## Adicionar Gráfico Histórico — Perfil de Produção ao Relatório "Produção & Declínio"
+## Separar "Instalações" e "HSE & Ambiente" em Dois Painéis Independentes na Sidebar
 
-### Alteração
+### Contexto
+Actualmente existe um único item "Instalações" na sidebar que renderiza o `FacilitiesIntegrityPanel`. O painel nacional de HSE (`HSENationalPanel`) só é acessível via drill-down na Home Executiva. O utilizador quer dois itens distintos na sidebar.
 
-#### `src/components/reports/ReportPreview.tsx` — `ProductionSection` (~linha 885, após o gráfico de projecção)
+### Alterações
 
-Para cada bloco que tenha `historicalAnnualProduction` (array não vazio), renderizar um `ChartCard` com um `BarChart` (recharts) mostrando o perfil histórico+previsão, replicando a lógica visual do componente `HistoricalProductionProfile`:
+#### 1. `src/pages/Index.tsx`
+- Adicionar `"HSE & Ambiente"` ao array `allPanels`, após `"Instalações"`
+- Importar `HSENationalPanel`
+- Adicionar renderização condicional: `{panels[activePanel] === "HSE & Ambiente" && <HSENationalPanel />}`
 
-- Barras verdes sólidas para `type === "historical"`, semi-transparentes para `"forecast"`
-- `ReferenceLine` vertical a separar histórico de previsão
-- Eixo Y formatado em `k` (milhares)
-- Título dinâmico: `Histórico — Perfil de Produção · {blockName}`
-- Condicionado a `showCharts` (como os restantes gráficos da secção)
-- Importar `ReferenceLine` e `Cell` do recharts (já importados no ficheiro)
+#### 2. `src/components/AppSidebar.tsx`
+- Importar `ShieldCheck` do lucide-react
+- Adicionar `{ panel: "HSE & Ambiente", icon: ShieldCheck }` ao grupo "Operacional", após "Instalações"
 
-### Ficheiro afectado
-- `src/components/reports/ReportPreview.tsx`
+### Ficheiros afectados
+- `src/pages/Index.tsx`
+- `src/components/AppSidebar.tsx`
 
