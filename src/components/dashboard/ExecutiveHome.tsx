@@ -14,6 +14,7 @@ import { type OilBlock, oilBlocks } from "@/data/angolaBlocks";
 import { ChevronDown, ChevronUp, Users, Bell, Target, FileCheck, AlertTriangle, ShieldCheck } from "lucide-react";
 import { HSENationalPanel } from "./HSENationalPanel";
 import { NationalHistoricalProduction } from "./NationalHistoricalProduction";
+import { NationalProductionTrend } from "./NationalProductionTrend";
 
 type DrillDown = "operadores" | "alertas" | "recomendacoes" | "homologacoes" | "hse" | null;
 
