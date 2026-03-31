@@ -1430,8 +1430,8 @@ const BlockPage = () => {
               )}
            </TabsContent>
 
-          {/* Tab: Instalações & HSE */}
-          <TabsContent value="facilities-hse" className="space-y-6 2xl:space-y-8">
+          {/* Tab: Instalações */}
+          <TabsContent value="facilities" className="space-y-6 2xl:space-y-8">
             {block.facilityData && (
               <>
                 <h3 className="text-sm 2xl:text-base font-semibold flex items-center gap-2">
@@ -1482,7 +1482,6 @@ const BlockPage = () => {
                               <TableCell className="text-right font-mono text-xs">{eq.lifeEndYear ?? "—"}</TableCell>
                             </TableRow>
                           ))}
-                          {/* Totals row */}
                           <TableRow className="bg-muted/50 font-semibold border-t-2 border-border">
                             <TableCell className="text-xs">Total</TableCell>
                             <TableCell className="text-right font-mono text-xs">
@@ -1521,9 +1520,12 @@ const BlockPage = () => {
                 </Card>
               </>
             )}
+          </TabsContent>
 
+          {/* Tab: HSE & Ambiente */}
+          <TabsContent value="hse" className="space-y-6 2xl:space-y-8">
             <h3 className="text-sm 2xl:text-base font-semibold flex items-center gap-2">
-              <Leaf className="w-4 h-4 text-success" />HSE & Ambiente
+              <ShieldCheck className="w-4 h-4 text-success" />HSE & Ambiente
             </h3>
             <HSEEnvironmentTab
               hseData={block.hseData}
