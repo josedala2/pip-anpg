@@ -50,7 +50,7 @@ export const ExecutiveHome = ({ initialDrillDown = null }: { initialDrillDown?: 
           <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Painéis Detalhados</span>
         </div>
         <TooltipProvider>
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-2">
+          <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-2">
             <Tooltip>
               <TooltipTrigger asChild>
                 <div>
