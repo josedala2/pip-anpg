@@ -1185,7 +1185,7 @@ const BlockPage = () => {
                     <Card className="glass-card">
                       <CardContent className="p-4 flex flex-col items-center text-center">
                          <BarChart2 className="w-5 h-5 text-chart-2 mb-1" />
-                         <span className="text-xs text-muted-foreground">Média por Campo</span>
+                         <span className="text-xs text-muted-foreground flex items-center gap-1">Média por Campo {tooltipDescriptions["Média por Campo"] && <InfoTooltip text={tooltipDescriptions["Média por Campo"]} />}</span>
                         <span className="text-lg font-bold text-foreground">{avgPerField > 0 ? avgPerField.toLocaleString() : "N/A"}</span>
                         <span className="text-[10px] text-muted-foreground">BOPD/campo</span>
                       </CardContent>
