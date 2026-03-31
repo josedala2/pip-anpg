@@ -1136,9 +1136,10 @@ const BlockPage = () => {
                  // Average production per producing field
                  const avgPerField = producingFields.length > 0
                    ? Math.round(block.dailyProduction / producingFields.length)
-                   : 0;
-                return (
-                  <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-3">
+                    : 0;
+                 const gor = block.gasData?.gorSCFperSTB;
+                 return (
+                   <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3">
                     <Card className="glass-card">
                       <CardContent className="p-4 flex flex-col items-center text-center">
                          <Gauge className="w-5 h-5 text-primary mb-1" />
