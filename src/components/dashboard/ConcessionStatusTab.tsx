@@ -316,7 +316,64 @@ export const ConcessionStatusTab = ({ block }: ConcessionStatusTabProps) => {
       </div>
 
 
-      {/* Row 2: Timeline */}
+      {/* Score Estratégico Ponderado */}
+      <Card className="glass-card">
+        <CardHeader className="p-4 pb-2">
+          <CardTitle className="text-sm 2xl:text-base font-medium flex items-center gap-2">
+            <Target className="h-4 w-4 text-primary" />
+            Score Estratégico Ponderado
+            <InfoTooltip text="Pontuação composta (0-100) baseada em 6 dimensões ponderadas: Produção (35%), Instalações (17%), Economia (13%), Contrato (13%), Exploração (13%) e ESG (9%)." />
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-4 pt-0">
+          <div className="flex flex-col md:flex-row gap-6">
+            {/* Score circle + classification */}
+            <div className="flex flex-col items-center gap-2 min-w-[140px]">
+              <div className="relative w-28 h-28">
+                <svg viewBox="0 0 120 120" className="w-full h-full -rotate-90">
+                  <circle cx="60" cy="60" r="52" fill="none" stroke="hsl(var(--muted))" strokeWidth="8" />
+                  <circle
+                    cx="60" cy="60" r="52" fill="none"
+                    stroke={strategic.totalScore < 30 ? "hsl(var(--danger))" : strategic.totalScore < 45 ? "hsl(var(--warning))" : strategic.totalScore < 65 ? "hsl(var(--chart-5))" : "hsl(var(--success))"}
+                    strokeWidth="8"
+                    strokeDasharray={`${(strategic.totalScore / 100) * 327} 327`}
+                    strokeLinecap="round"
+                    className="transition-all duration-700"
+                  />
+                </svg>
+                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                  <span className="text-3xl font-bold font-mono">{strategic.totalScore}</span>
+                  <span className="text-[10px] text-muted-foreground">/100</span>
+                </div>
+              </div>
+              <Badge className={`${classificationConfig[strategic.classification].bgColor} ${classificationConfig[strategic.classification].color} border text-xs`}>
+                {strategic.classification}
+              </Badge>
+              <span className={`text-xs font-semibold ${urgencyConfig[strategic.urgency].color}`}>
+                Urgência: {strategic.urgency}
+              </span>
+            </div>
+
+            {/* Dimension bars */}
+            <div className="flex-1 space-y-2">
+              {strategic.dimensions.map(dim => (
+                <div key={dim.label} className="space-y-0.5">
+                  <div className="flex justify-between text-xs">
+                    <span className="text-muted-foreground">{dim.label} ({dim.weight}%)</span>
+                    <span className="font-mono font-semibold">{dim.score}</span>
+                  </div>
+                  <Progress
+                    value={dim.score}
+                    className="h-2"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+
       {contractEnd && (
         <Card className="glass-card">
           <CardHeader className="p-4 pb-2">
