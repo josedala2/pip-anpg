@@ -29,6 +29,7 @@ export const AlertsPanel = () => {
   const [rules, setRules] = useState<AlertRule[]>(() => defaultRules.map(r => ({ ...r })));
   const [selectedCategory, setSelectedCategory] = useState<AlertCategory | "all">("all");
   const [selectedSeverity, setSelectedSeverity] = useState<AlertSeverity | "all">("all");
+  const [selectedBlock, setSelectedBlock] = useState<string>("all");
   const [tier23Threshold, setTier23Threshold] = useState(forecastThresholds.tier23MinBOPD);
 
   const verifiedBlocks = useMemo(() => oilBlocks.filter(b => !b.pendingRealData), []);
@@ -42,12 +43,15 @@ export const AlertsPanel = () => {
     return [...operational, ...filteredForecast];
   }, [verifiedBlocks, rules, tier23Threshold]);
 
+  const blockNames = useMemo(() => [...new Set(alerts.map(a => a.blockName))].sort(), [alerts]);
+
   const filtered = useMemo(() => {
     let result = alerts;
     if (selectedCategory !== "all") result = result.filter(a => a.category === selectedCategory);
     if (selectedSeverity !== "all") result = result.filter(a => a.severity === selectedSeverity);
+    if (selectedBlock !== "all") result = result.filter(a => a.blockName === selectedBlock);
     return result;
-  }, [alerts, selectedCategory, selectedSeverity]);
+  }, [alerts, selectedCategory, selectedSeverity, selectedBlock]);
 
   // Counts
   const criticalCount = alerts.filter(a => a.severity === "critical").length;
@@ -124,6 +128,16 @@ export const AlertsPanel = () => {
               <option value="all">Todas severidades</option>
               {(Object.keys(severityLabels) as AlertSeverity[]).map(s => (
                 <option key={s} value={s}>{severityLabels[s]}</option>
+              ))}
+            </select>
+            <select
+              value={selectedBlock}
+              onChange={e => setSelectedBlock(e.target.value)}
+              className="text-xs bg-muted/50 border border-border rounded-md px-2 py-1"
+            >
+              <option value="all">Todos blocos</option>
+              {blockNames.map(b => (
+                <option key={b} value={b}>{b}</option>
               ))}
             </select>
             <span className="text-[10px] text-muted-foreground ml-auto">{filtered.length} alertas</span>
