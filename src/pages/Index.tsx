@@ -8,6 +8,7 @@ import { ExplorationPanel } from "@/components/dashboard/ExplorationPanel";
 import { ProductionPanel } from "@/components/dashboard/ProductionPanel";
 import { ContractCompliancePanel } from "@/components/dashboard/ContractCompliancePanel";
 import { FacilitiesIntegrityPanel } from "@/components/dashboard/FacilitiesIntegrityPanel";
+import { HSENationalPanel } from "@/components/dashboard/HSENationalPanel";
 import { StrategicForecast } from "@/components/dashboard/StrategicForecast";
 import { EconomicFinancialPanel } from "@/components/dashboard/EconomicFinancialPanel";
 import { GeneralForecastPanel } from "@/components/dashboard/GeneralForecastPanel";
