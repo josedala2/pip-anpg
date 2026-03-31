@@ -241,6 +241,22 @@ function buildBlockDetail(b: typeof oilBlocks[0]): string {
     parts.push(last6.map(h => `${h.month}: ${h.value.toLocaleString()} BOPD`).join(" | "));
   }
 
+  // Historical annual production profile (historical + forecast)
+  if (b.historicalAnnualProduction?.length) {
+    const annualData = b.historicalAnnualProduction;
+    const historical = annualData.filter(d => d.type === "historical");
+    const forecast = annualData.filter(d => d.type === "forecast");
+    const peak = annualData.reduce((max, d) => d.production > max.production ? d : max, annualData[0]);
+    parts.push(`### Perfil de Produção Anual (Histórico + Previsão)`);
+    parts.push(`Pico: **${peak.production.toLocaleString()} BOPD** em ${peak.year}`);
+    parts.push(`Período histórico: ${historical.length > 0 ? `${historical[0].year}–${historical[historical.length - 1].year}` : "N/A"} | Período previsão: ${forecast.length > 0 ? `${forecast[0].year}–${forecast[forecast.length - 1].year}` : "N/A"}`);
+    parts.push(`| Ano | Produção (BOPD) | Tipo |`);
+    parts.push(`|-----|----------------|------|`);
+    annualData.forEach(d => {
+      parts.push(`| ${d.year} | ${d.production.toLocaleString()} | ${d.type === "historical" ? "Histórico" : "Previsão"} |`);
+    });
+  }
+
   // CAPEX history
   if (b.capexHistory?.length) {
     parts.push(`### Histórico CAPEX (MMUSD)`);
