@@ -127,7 +127,7 @@ export const ConcessionStatusTab = ({ block }: ConcessionStatusTabProps) => {
     return oldest;
   }, [block.facilityData?.platformSpecs]);
 
-  // Alerts (7 criteria)
+  // Alerts (7 criteria including OPEX)
   const alerts = useMemo<Alert[]>(() => {
     const list: Alert[] = [];
 
