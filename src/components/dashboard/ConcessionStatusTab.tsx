@@ -356,7 +356,7 @@ export const ConcessionStatusTab = ({ block }: ConcessionStatusTabProps) => {
 
             {/* Dimension bars */}
             <div className="flex-1 space-y-2">
-              {strategicScore.dimensions.map(dim => (
+              {strategic.dimensions.map(dim => (
                 <div key={dim.label} className="space-y-0.5">
                   <div className="flex justify-between text-xs">
                     <span className="text-muted-foreground">{dim.label} ({dim.weight}%)</span>
