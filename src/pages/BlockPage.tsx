@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft, Droplets, DollarSign, ShieldCheck, TrendingUp, Users, Activity, Target, Layers, BarChart3, MapPin, Brain, FileText, Landmark, Building2, Clock, Scale, ArrowRight, History, BookOpen, ExternalLink, AlertTriangle, Crosshair, Search, Filter, AlignVerticalJustifyStart, AlignHorizontalJustifyStart, Download, FileSpreadsheet, FileDown, Leaf, Lightbulb, CheckCircle2, ChevronRight, Gauge, BarChart2, Flame, Fuel, Zap, Wrench } from "lucide-react";
+import { ArrowLeft, Droplets, DollarSign, ShieldCheck, TrendingUp, TrendingDown, Users, Activity, Target, Layers, BarChart3, MapPin, Brain, FileText, Landmark, Building2, Clock, Scale, ArrowRight, History, BookOpen, ExternalLink, AlertTriangle, Crosshair, Search, Filter, AlignVerticalJustifyStart, AlignHorizontalJustifyStart, Download, FileSpreadsheet, FileDown, Leaf, Lightbulb, CheckCircle2, ChevronRight, Gauge, BarChart2, Flame, Fuel, Zap, Wrench } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import type { RevitalizationScenario } from "@/data/angolaBlocks";
 import { TechnicalRecommendationsPanel } from "@/components/dashboard/TechnicalRecommendationsPanel";
@@ -1119,50 +1119,88 @@ const BlockPage = () => {
            <TabsContent value="prod-proj" className="space-y-4 2xl:space-y-6">
              {/* Production KPIs */}
              {(() => {
-               const producingFields = block.fields?.filter(f => f.status === "Producing") || [];
-               const totalPeak = producingFields.reduce((s, f) => s + (f.peakProduction || 0), 0);
-               const peakVsActual = totalPeak > 0 ? ((block.dailyProduction / totalPeak) * 100).toFixed(1) : "N/A";
-               const history = block.productionHistory || [];
-               const declineRate = history.length >= 2
-                 ? (((history[0].value - history[history.length - 1].value) / history[0].value) * 100).toFixed(1)
-                 : "N/A";
-               return (
-                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                   <Card className="glass-card">
-                     <CardContent className="p-4 flex flex-col items-center text-center">
-                        <Gauge className="w-5 h-5 text-primary mb-1" />
-                        <span className="text-xs text-muted-foreground flex items-center gap-1">Produção Actual {tooltipDescriptions["Produção Actual (Bloco)"] && <InfoTooltip text={tooltipDescriptions["Produção Actual (Bloco)"]} />}</span>
-                       <span className="text-lg font-bold text-foreground">{block.dailyProduction.toLocaleString()}</span>
-                       <span className="text-[10px] text-muted-foreground">BOPD</span>
-                     </CardContent>
-                   </Card>
-                   <Card className="glass-card">
-                     <CardContent className="p-4 flex flex-col items-center text-center">
-                        <TrendingUp className="w-5 h-5 text-warning mb-1" />
-                        <span className="text-xs text-muted-foreground flex items-center gap-1">Actual vs Pico {tooltipDescriptions["Actual vs Pico"] && <InfoTooltip text={tooltipDescriptions["Actual vs Pico"]} />}</span>
-                       <span className="text-lg font-bold text-foreground">{peakVsActual}%</span>
-                       <span className="text-[10px] text-muted-foreground">do pico agregado</span>
-                     </CardContent>
-                   </Card>
-                   <Card className="glass-card">
-                     <CardContent className="p-4 flex flex-col items-center text-center">
-                        <Layers className="w-5 h-5 text-success mb-1" />
-                        <span className="text-xs text-muted-foreground flex items-center gap-1">Campos em Produção {tooltipDescriptions["Campos em Produção"] && <InfoTooltip text={tooltipDescriptions["Campos em Produção"]} />}</span>
-                       <span className="text-lg font-bold text-foreground">{producingFields.length}</span>
-                       <span className="text-[10px] text-muted-foreground">de {block.fields?.length || 0} total</span>
-                     </CardContent>
-                   </Card>
-                   <Card className="glass-card">
-                     <CardContent className="p-4 flex flex-col items-center text-center">
-                        <Activity className="w-5 h-5 text-danger mb-1" />
-                        <span className="text-xs text-muted-foreground flex items-center gap-1">Taxa de Declínio {tooltipDescriptions["Taxa de Declínio"] && <InfoTooltip text={tooltipDescriptions["Taxa de Declínio"]} />}</span>
-                       <span className="text-lg font-bold text-foreground">{declineRate}{typeof declineRate === "string" && declineRate !== "N/A" ? "" : ""}%</span>
-                       <span className="text-[10px] text-muted-foreground">12 meses</span>
-                     </CardContent>
-                   </Card>
-                 </div>
-               );
-             })()}
+                const producingFields = block.fields?.filter(f => f.status === "Producing") || [];
+                const totalPeak = producingFields.reduce((s, f) => s + (f.peakProduction || 0), 0);
+                const peakVsActual = totalPeak > 0 ? ((block.dailyProduction / totalPeak) * 100).toFixed(1) : "N/A";
+                const history = block.productionHistory || [];
+                // Refined 3-vs-3 decline calculation
+                const declineRate = history.length >= 6
+                  ? (() => {
+                      const first3 = history.slice(0, 3).reduce((s, h) => s + h.value, 0) / 3;
+                      const last3 = history.slice(-3).reduce((s, h) => s + h.value, 0) / 3;
+                      return first3 > 0 ? (((first3 - last3) / first3) * 100).toFixed(1) : "N/A";
+                    })()
+                  : history.length >= 2
+                    ? (((history[0].value - history[history.length - 1].value) / history[0].value) * 100).toFixed(1)
+                    : "N/A";
+                // Average production per producing field
+                const avgPerField = producingFields.length > 0
+                  ? Math.round(block.dailyProduction / producingFields.length)
+                  : 0;
+                // Annual decline rate (annualized from monthly data)
+                const annualDecline = history.length >= 12
+                  ? (() => {
+                      const first3 = history.slice(0, 3).reduce((s, h) => s + h.value, 0) / 3;
+                      const last3 = history.slice(-3).reduce((s, h) => s + h.value, 0) / 3;
+                      const months = history.length;
+                      if (first3 <= 0 || last3 <= 0) return "N/A";
+                      const annualized = (1 - Math.pow(last3 / first3, 12 / months)) * 100;
+                      return annualized.toFixed(1);
+                    })()
+                  : "N/A";
+                return (
+                  <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3">
+                    <Card className="glass-card">
+                      <CardContent className="p-4 flex flex-col items-center text-center">
+                         <Gauge className="w-5 h-5 text-primary mb-1" />
+                         <span className="text-xs text-muted-foreground flex items-center gap-1">Produção Actual {tooltipDescriptions["Produção Actual (Bloco)"] && <InfoTooltip text={tooltipDescriptions["Produção Actual (Bloco)"]} />}</span>
+                        <span className="text-lg font-bold text-foreground">{block.dailyProduction.toLocaleString()}</span>
+                        <span className="text-[10px] text-muted-foreground">BOPD</span>
+                      </CardContent>
+                    </Card>
+                    <Card className="glass-card">
+                      <CardContent className="p-4 flex flex-col items-center text-center">
+                         <TrendingUp className="w-5 h-5 text-warning mb-1" />
+                         <span className="text-xs text-muted-foreground flex items-center gap-1">Actual vs Pico {tooltipDescriptions["Actual vs Pico"] && <InfoTooltip text={tooltipDescriptions["Actual vs Pico"]} />}</span>
+                        <span className="text-lg font-bold text-foreground">{peakVsActual}%</span>
+                        <span className="text-[10px] text-muted-foreground">do pico agregado</span>
+                      </CardContent>
+                    </Card>
+                    <Card className="glass-card">
+                      <CardContent className="p-4 flex flex-col items-center text-center">
+                         <Layers className="w-5 h-5 text-success mb-1" />
+                         <span className="text-xs text-muted-foreground flex items-center gap-1">Campos em Produção {tooltipDescriptions["Campos em Produção"] && <InfoTooltip text={tooltipDescriptions["Campos em Produção"]} />}</span>
+                        <span className="text-lg font-bold text-foreground">{producingFields.length}</span>
+                        <span className="text-[10px] text-muted-foreground">de {block.fields?.length || 0} total</span>
+                      </CardContent>
+                    </Card>
+                    <Card className="glass-card">
+                      <CardContent className="p-4 flex flex-col items-center text-center">
+                         <Activity className="w-5 h-5 text-danger mb-1" />
+                         <span className="text-xs text-muted-foreground flex items-center gap-1">Taxa de Declínio {tooltipDescriptions["Taxa de Declínio"] && <InfoTooltip text={tooltipDescriptions["Taxa de Declínio"]} />}</span>
+                        <span className="text-lg font-bold text-foreground">{declineRate}{declineRate !== "N/A" ? "%" : ""}</span>
+                        <span className="text-[10px] text-muted-foreground">12 meses (3v3)</span>
+                      </CardContent>
+                    </Card>
+                    <Card className="glass-card">
+                      <CardContent className="p-4 flex flex-col items-center text-center">
+                         <BarChart2 className="w-5 h-5 text-chart-2 mb-1" />
+                         <span className="text-xs text-muted-foreground">Média por Campo</span>
+                        <span className="text-lg font-bold text-foreground">{avgPerField > 0 ? avgPerField.toLocaleString() : "N/A"}</span>
+                        <span className="text-[10px] text-muted-foreground">BOPD/campo</span>
+                      </CardContent>
+                    </Card>
+                    <Card className="glass-card">
+                      <CardContent className="p-4 flex flex-col items-center text-center">
+                         <TrendingDown className="w-5 h-5 text-muted-foreground mb-1" />
+                         <span className="text-xs text-muted-foreground">Declínio Anualizado</span>
+                        <span className="text-lg font-bold text-foreground">{annualDecline}{annualDecline !== "N/A" ? "%" : ""}</span>
+                        <span className="text-[10px] text-muted-foreground">taxa anual</span>
+                      </CardContent>
+                    </Card>
+                  </div>
+                );
+              })()}
 
              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 2xl:gap-6">
               <ChartWrapper title="Tendência de Produção (12 meses)" height={360} fullscreenHeight={600}>
