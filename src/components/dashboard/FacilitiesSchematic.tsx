@@ -2,7 +2,8 @@ import { useState, useCallback, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { GitBranch } from "lucide-react";
+import { GitBranch, Download } from "lucide-react";
+import { toPng } from "html-to-image";
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -198,6 +199,7 @@ export const FacilitiesSchematic = ({ renderAsContent = false }: { renderAsConte
   const [zoom, setZoom] = useState(1);
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const svgRef = useRef<SVGSVGElement>(null);
+  const svgContainerRef = useRef<HTMLDivElement>(null);
   const lastTouchDist = useRef<number | null>(null);
   const lastTouchCenter = useRef<{ x: number; y: number } | null>(null);
   const isPinching = useRef(false);
@@ -244,6 +246,19 @@ export const FacilitiesSchematic = ({ renderAsContent = false }: { renderAsConte
   const handleTouchEnd = useCallback(() => { lastTouchDist.current = null; lastTouchCenter.current = null; setTimeout(() => { isPinching.current = false; }, 50); }, []);
   const handleWheel = useCallback((e: React.WheelEvent) => { if (e.ctrlKey || e.metaKey) { e.preventDefault(); setZoom(prev => clampZoom(prev - e.deltaY * 0.005)); } }, []);
   const resetView = useCallback(() => { setZoom(1); setPan({ x: 0, y: 0 }); }, []);
+
+  const exportPng = useCallback(async () => {
+    if (!svgContainerRef.current) return;
+    try {
+      const dataUrl = await toPng(svgContainerRef.current, { backgroundColor: "#09090b", pixelRatio: 2 });
+      const link = document.createElement("a");
+      link.download = `esquematico-bloco0${activeArea ? `-${activeArea.replace(/\s/g, "-").toLowerCase()}` : ""}.png`;
+      link.href = dataUrl;
+      link.click();
+    } catch (e) {
+      console.error("Export failed", e);
+    }
+  }, [activeArea]);
 
   const isNodeInArea = useCallback((nodeId: string) => {
     if (!activeArea) return true;
@@ -348,9 +363,12 @@ export const FacilitiesSchematic = ({ renderAsContent = false }: { renderAsConte
       })()}
       <div className="flex flex-col lg:flex-row gap-3 sm:gap-4">
         <TooltipProvider delayDuration={100}>
-          <div className="w-full lg:flex-1 overflow-hidden rounded-lg border border-border/30 bg-muted/20 relative touch-none">
-            {/* Zoom controls */}
+          <div ref={svgContainerRef} className="w-full lg:flex-1 overflow-hidden rounded-lg border border-border/30 bg-muted/20 relative touch-none">
+            {/* Zoom & export controls */}
             <div className="absolute top-1.5 right-1.5 z-10 flex items-center gap-0.5">
+              <button onClick={exportPng} title="Exportar PNG" className="text-xs sm:text-sm bg-background/80 backdrop-blur border border-border/50 rounded w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors">
+                <Download className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+              </button>
               <button onClick={() => setZoom(prev => clampZoom(prev - 0.3))} disabled={zoom <= 1} className="text-xs sm:text-sm bg-background/80 backdrop-blur border border-border/50 rounded w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center text-muted-foreground hover:text-foreground disabled:opacity-30 transition-colors">−</button>
               <span className="text-[9px] sm:text-[10px] bg-background/80 backdrop-blur border border-border/50 rounded px-1.5 py-0.5 font-mono text-muted-foreground min-w-[2.5rem] text-center">{Math.round(zoom * 100)}%</span>
               <button onClick={() => setZoom(prev => clampZoom(prev + 0.3))} disabled={zoom >= 4} className="text-xs sm:text-sm bg-background/80 backdrop-blur border border-border/50 rounded w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center text-muted-foreground hover:text-foreground disabled:opacity-30 transition-colors">+</button>
