@@ -1257,8 +1257,8 @@ export const oilBlocks: OilBlock[] = [
           { label: "2022 - 2025", capex: 4872, opex: 3431 },
         ],
       },
-      quotaANPG_BOPD: 48900,
-      quotaSNL_BOPD: 48900,
+      quotaANPG_BOPD: undefined,
+      quotaSNL_BOPD: undefined,
     },
     // Technical recommendations from "Estado das Concessões 2026"
     technicalRecommendations: [
