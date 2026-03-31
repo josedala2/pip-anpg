@@ -151,57 +151,64 @@ export const FacilitiesTab = ({ facilityData }: Props) => {
 
       {/* Facility List — clickable cards */}
       {specs.length > 0 && (
-        <Card className="glass-card">
-          <CardHeader className="p-4 pb-2">
-            <CardTitle className="text-sm flex items-center gap-2">
-              <Anchor className="w-4 h-4 text-primary" />Instalações
-              <Badge variant="outline" className="text-[10px] ml-auto">{specs.length} instalações</Badge>
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-4 pt-0">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
-              {specs.map(spec => {
-                const age = spec.installationYear ? new Date().getFullYear() - spec.installationYear : null;
-                return (
-                  <div
-                    key={spec.name}
-                    className="group rounded-xl border border-border/50 hover:border-primary/50 bg-card hover:shadow-md transition-all cursor-pointer overflow-hidden"
-                    onClick={() => setSelectedFacility(spec.name)}
-                  >
-                    {spec.photo ? (
-                      <div className="relative aspect-[16/9] overflow-hidden">
-                        <img src={spec.photo} alt={spec.name} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" loading="lazy" />
-                        <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
-                        <div className="absolute top-2 right-2">
-                          <Badge variant="outline" className={`text-[8px] backdrop-blur-sm ${statusColor[spec.status] || ""}`}>{spec.status}</Badge>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="aspect-[16/9] bg-muted/30 flex items-center justify-center relative">
-                        <Factory className="w-8 h-8 text-muted-foreground/30" />
-                        <div className="absolute top-2 right-2">
-                          <Badge variant="outline" className={`text-[8px] ${statusColor[spec.status] || ""}`}>{spec.status}</Badge>
-                        </div>
-                      </div>
-                    )}
-                    <div className="p-3 space-y-1.5">
-                      <h4 className="text-xs font-bold text-foreground group-hover:text-primary transition-colors">{spec.name}</h4>
-                      <p className="text-[10px] text-muted-foreground">{spec.type}</p>
-                      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[9px] text-muted-foreground">
-                        {spec.capacity && <span>{spec.capacity}</span>}
-                        {spec.waterDepthM && <span>{spec.waterDepthM}m</span>}
-                        {age && <span>{age} anos</span>}
-                        {spec.matterportUrl && (
-                          <Badge variant="outline" className="text-[8px] bg-primary/10 text-primary border-primary/30">360°</Badge>
+        <Collapsible open={facilitiesOpen} onOpenChange={setFacilitiesOpen}>
+          <Card className="glass-card">
+            <CollapsibleTrigger asChild>
+              <CardHeader className="p-4 pb-2 cursor-pointer select-none hover:bg-muted/30 transition-colors rounded-t-xl">
+                <CardTitle className="text-sm flex items-center gap-2">
+                  <Anchor className="w-4 h-4 text-primary" />Instalações
+                  <Badge variant="outline" className="text-[10px] ml-auto mr-2">{specs.length} instalações</Badge>
+                  <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform duration-200 ${facilitiesOpen ? "rotate-180" : ""}`} />
+                </CardTitle>
+              </CardHeader>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <CardContent className="p-4 pt-0">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+                  {specs.map(spec => {
+                    const age = spec.installationYear ? new Date().getFullYear() - spec.installationYear : null;
+                    return (
+                      <div
+                        key={spec.name}
+                        className="group rounded-xl border border-border/50 hover:border-primary/50 bg-card hover:shadow-md transition-all cursor-pointer overflow-hidden"
+                        onClick={() => setSelectedFacility(spec.name)}
+                      >
+                        {spec.photo ? (
+                          <div className="relative aspect-[16/9] overflow-hidden">
+                            <img src={spec.photo} alt={spec.name} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" loading="lazy" />
+                            <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
+                            <div className="absolute top-2 right-2">
+                              <Badge variant="outline" className={`text-[8px] backdrop-blur-sm ${statusColor[spec.status] || ""}`}>{spec.status}</Badge>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="aspect-[16/9] bg-muted/30 flex items-center justify-center relative">
+                            <Factory className="w-8 h-8 text-muted-foreground/30" />
+                            <div className="absolute top-2 right-2">
+                              <Badge variant="outline" className={`text-[8px] ${statusColor[spec.status] || ""}`}>{spec.status}</Badge>
+                            </div>
+                          </div>
                         )}
+                        <div className="p-3 space-y-1.5">
+                          <h4 className="text-xs font-bold text-foreground group-hover:text-primary transition-colors">{spec.name}</h4>
+                          <p className="text-[10px] text-muted-foreground">{spec.type}</p>
+                          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[9px] text-muted-foreground">
+                            {spec.capacity && <span>{spec.capacity}</span>}
+                            {spec.waterDepthM && <span>{spec.waterDepthM}m</span>}
+                            {age && <span>{age} anos</span>}
+                            {spec.matterportUrl && (
+                              <Badge variant="outline" className="text-[8px] bg-primary/10 text-primary border-primary/30">360°</Badge>
+                            )}
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </CardContent>
-        </Card>
+                    );
+                  })}
+                </div>
+              </CardContent>
+            </CollapsibleContent>
+          </Card>
+        </Collapsible>
       )}
 
 
