@@ -307,7 +307,7 @@ export const FacilitiesSchematic = ({ renderAsContent = false }: { renderAsConte
 
             <svg
               ref={svgRef}
-              viewBox="0 0 1100 580"
+              viewBox="0 0 1180 630"
               className="w-full rounded-lg"
               style={{ minHeight: 220, transform: `scale(${zoom}) translate(${pan.x / zoom}px, ${pan.y / zoom}px)`, transformOrigin: "center center", transition: isPinching.current ? "none" : "transform 0.15s ease-out" }}
               preserveAspectRatio="xMidYMid meet"
