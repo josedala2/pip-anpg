@@ -523,7 +523,7 @@ export const oilBlocks: OilBlock[] = [
     dailyProduction: 119285,
     estimatedReserves: 21000,
     accumulatedInvestment: 49664,
-    plannedInvestment: 14126,
+    plannedInvestment: 14276,
     executionRate: 53,
     riskScore: 2,
     complianceScore: 96,
