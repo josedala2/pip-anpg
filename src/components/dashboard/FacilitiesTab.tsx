@@ -48,6 +48,14 @@ export const FacilitiesTab = ({ facilityData }: Props) => {
   const [docsOpen, setDocsOpen] = useState(false);
   const [maintenanceOpen, setMaintenanceOpen] = useState(false);
 
+  const photos = facilityData.photos || [];
+  const docs = facilityData.documents || [];
+  const specs = facilityData.platformSpecs || [];
+  const maintenance = facilityData.maintenancePlan || [];
+
+  const filteredDocs = docFilter === "all" ? docs : docs.filter(d => d.type === docFilter);
+  const docTypes = [...new Set(docs.map(d => d.type))];
+
   const selectedSpec = specs.find(s => s.name === selectedFacility);
 
   // Filter photos/docs/maintenance relevant to the selected facility
