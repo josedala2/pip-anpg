@@ -55,7 +55,7 @@ export const AlertsPanel = () => {
     if (selectedOperator !== "all") result = result.filter(a => a.operator === selectedOperator);
     return result;
   }, [alerts, selectedCategory, selectedSeverity, selectedBlock, selectedOperator]);
-  }, [alerts, selectedCategory, selectedSeverity, selectedBlock]);
+  
 
   // Counts
   const criticalCount = alerts.filter(a => a.severity === "critical").length;
