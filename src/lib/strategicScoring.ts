@@ -473,7 +473,7 @@ export function calculateStrategicScore(block: OilBlock): StrategicScore {
     .slice(0, 3)
     .map(d => d.driver);
 
-  const { classification, urgency, recommendation, riskOfInaction, expectedImpact } = classify(totalScore, block);
+  const { classification, urgency, recommendation, riskOfInaction, expectedImpact } = classify(totalScore, block, dimensions);
 
   return {
     blockId: block.id,
