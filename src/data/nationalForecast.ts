@@ -140,12 +140,12 @@ export const baseProductionBlocks = [
 
 // Historical national production (kBOPD) — from official reports
 export const nationalHistoricalProduction = [
-  { year: 2020, production: 1255, label: "Impacto COVID-19" },
+  { year: 2020, production: 1271, label: "Impacto COVID-19" },
   { year: 2021, production: 1124, label: "Declínio campos maduros" },
-  { year: 2022, production: 1157, label: "Recuperação parcial" },
-  { year: 2023, production: 1106, label: "Declínio natural" },
-  { year: 2024, production: 1060, label: "Novos projectos limitados" },
-  { year: 2025, production: 1036, label: "Relatório Concessões 2026" },
+  { year: 2022, production: 1137, label: "Recuperação parcial" },
+  { year: 2023, production: 1098, label: "Declínio natural" },
+  { year: 2024, production: 1124, label: "Recuperação parcial" },
+  { year: 2025, production: 1037, label: "Relatório Concessões 2026" },
   { year: 2026, production: 1010, label: "Previsão (com FID)" },
 ];
 
