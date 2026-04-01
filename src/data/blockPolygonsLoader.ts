@@ -1,124 +1,4 @@
-// Lazy-loaded: xlsx is only imported when loadBlockPolygons() is first called
-
-// Map spreadsheet block names to app block IDs
-const nameToId: Record<string, string> = {
-  "BLOCO 0": "block-0",
-  "BLOCO 00001": "block-1",
-  "BLOCO 00002": "block-2-05",
-  "BLOCO 00003": "block-3",
-  "BLOCO 00004": "block-4-05",
-  "BLOCO 00005": "block-5-06",
-  "BLOCO 00006": "block-6-24",
-  "BLOCO 00007": "block-7",
-  "BLOCO 00008": "block-8",
-  "BLOCO 00009": "block-9",
-  "BLOCO 00010": "block-10",
-  "BLOCO 00011": "block-11",
-  "BLOCO 00012": "block-12",
-  "BLOCO 00013": "block-13",
-  "BLOCO 00014": "block-14",
-  "BLOCO 00015": "block-15",
-  "BLOCO 00016": "block-16",
-  "BLOCO 00017": "block-17",
-  "BLOCO 00018": "block-18",
-  "BLOCO 00019": "block-19",
-  "BLOCO 00020": "block-20",
-  "BLOCO 00021": "block-21",
-  "BLOCO 00022": "block-22",
-  "BLOCO 00023": "block-23",
-  "BLOCO 00024": "block-24",
-  "BLOCO 00025": "block-25",
-  "BLOCO 00026": "block-26",
-  "BLOCO 00027": "block-27",
-  "BLOCO 00028": "block-28",
-  "BLOCO 00029": "block-29",
-  "BLOCO 00030": "block-30",
-  "BLOCO 00031": "block-31",
-  "BLOCO 00032": "block-32",
-  "BLOCO 00033": "block-33",
-  "BLOCO 00034": "block-34",
-  "BLOCO 00035": "block-35",
-  "BLOCO 00036": "block-36",
-  "BLOCO 00037": "block-37",
-  "BLOCO 00038": "block-38",
-  "BLOCO 00039": "block-39",
-  "BLOCO 00040": "block-40",
-  "BLOCO 00041": "block-41",
-  "BLOCO 00042": "block-42",
-  "BLOCO 00043": "block-43",
-  "BLOCO 00044": "block-44",
-  "BLOCO 00045": "block-45",
-  "BLOCO 00046": "block-46",
-  "BLOCO 00047": "block-47",
-  "BLOCO 00048": "block-48",
-  "BLOCO 00049": "block-49",
-  "BLOCO 00050": "block-50",
-  "BLOCO 00051": "block-51",
-  "BLOCO 00052": "block-52",
-  "BLOCO 00053": "block-53",
-  "BLOCO 00054": "block-54",
-  "BLOCO 00055": "block-55",
-  "BLOCO 00056": "block-56",
-  "BLOCO 00057": "block-57",
-  "BLOCO 00058": "block-58",
-  "BLOCO 00059": "block-59",
-  "BLOCO 00060": "block-60",
-  "BLOCO 00061": "block-61",
-  "BLOCO 00062": "block-62",
-  "BLOCO 00063": "block-63",
-  "BLOCO 00064": "block-64",
-  "BLOCO 00065": "block-65",
-  "BLOCO 00066": "block-66",
-  "BLOCO 00067": "block-67",
-  "BLOCO 00068": "block-68",
-  "BLOCO 00069": "block-69",
-  "BLOCO 00070": "block-70",
-  "BLOCO 00071": "block-71",
-  "BLOCO 00072": "block-72",
-  "BLOCO 00073": "block-73",
-  "BLOCO 00074": "block-74",
-  "BLOCO CAB_C": "cabinda-centro",
-  "BLOCO CAB_N": "cabinda-norte",
-  "BLOCO CAB_S": "cabinda-sul",
-  "CON 1": "block-con1",
-  "CON 2": "block-con2",
-  "CON 3": "block-con3",
-  "CON 4": "block-con4",
-  "CON 5": "block-con5",
-  "CON 6": "block-con6",
-  "CON 7": "block-con7",
-  "CON 8": "block-con8",
-  "CON 9": "block-con9",
-  "CON10": "block-con10",
-  "OK_KON1": "block-kon1",
-  "OK_KON2": "block-kon2",
-  "OK_KON3": "block-kon3",
-  "OK_KON4": "block-kon4",
-  "OK_KON5": "block-kon5",
-  "OK_KON6": "block-kon6",
-  "OK_KON7": "block-kon7",
-  "OK_KON8": "block-kon8",
-  "OK_KON9": "block-kon9",
-  "OK_KON10": "block-kon10",
-  "OK_KON11": "block-kon11",
-  "OK_KON12": "block-kon12",
-  "OK_KON13": "block-kon13",
-  "OK_KON14": "block-kon14",
-  "OK_KON15": "block-kon15",
-  "OK_KON16": "block-kon16",
-  "OK_KON17": "block-kon17",
-  "OK_KON18": "block-kon18",
-  "OK_KON19": "block-kon19",
-  "OK_KON20": "block-kon20",
-  "OK_KON21": "block-kon21",
-  "OK_KON22": "block-kon22",
-  "OK_KON23": "block-kon23",
-};
-
-function normalizeBlockName(raw: string): string {
-  // Remove markdown escaping of underscores and trim
-  return raw.replace(/\\\\_/g, "_").replace(/\\/g, "").trim();
-}
+// Loads official GeoJSON concession polygons and maps them to app block IDs
 
 // Simplify polygon by keeping every Nth point
 function simplifyPolygon(coords: [number, number][], maxPoints: number): [number, number][] {
@@ -128,12 +8,51 @@ function simplifyPolygon(coords: [number, number][], maxPoints: number): [number
   for (let i = 0; i < coords.length; i += step) {
     result.push(coords[i]);
   }
-  // Always include the last point to close the polygon
   const last = coords[coords.length - 1];
   if (result[result.length - 1] !== last) {
     result.push(last);
   }
   return result;
+}
+
+/**
+ * Convert a GeoJSON Lease_ID to the app's internal block ID.
+ * Examples: "BL0" -> "block-0", "BL 55" -> "block-55",
+ *           "BL17/06" -> "block-17", "BL2" -> "block-2-05",
+ *           "KON21" -> "block-kon21", "CON1" -> "block-con1",
+ *           "CABN" -> "cabinda-norte"
+ */
+function leaseIdToAppId(leaseId: string): string | null {
+  const id = leaseId.trim();
+
+  // Cabinda special cases
+  if (id === "CABN") return "cabinda-norte";
+  if (id === "CABS") return "cabinda-sul";
+  if (id === "CABC") return "cabinda-centro";
+
+  // KON series
+  const konMatch = id.match(/^KON(\d+)$/);
+  if (konMatch) return `block-kon${parseInt(konMatch[1])}`;
+
+  // CON series
+  const conMatch = id.match(/^CON(\d+)$/);
+  if (conMatch) return `block-con${parseInt(conMatch[1])}`;
+
+  // BL series (with optional space): "BL0", "BL 55", "BL17/06"
+  const blMatch = id.match(/^BL\s*(\d+)/);
+  if (blMatch) {
+    const num = parseInt(blMatch[1]);
+    // Some blocks have composite IDs in the app
+    const compositeMap: Record<number, string> = {
+      2: "block-2-05",
+      4: "block-4-05",
+      5: "block-5-06",
+      6: "block-6-24",
+    };
+    return compositeMap[num] || `block-${num}`;
+  }
+
+  return null;
 }
 
 export type BlockPolygonMap = Record<string, [number, number][]>;
@@ -147,42 +66,36 @@ export async function loadBlockPolygons(): Promise<BlockPolygonMap> {
 
   loadingPromise = (async () => {
     try {
-      const [XLSX, response] = await Promise.all([
-        import("xlsx"),
-        fetch("/data/block-coordinates.xlsx"),
-      ]);
-      const buffer = await response.arrayBuffer();
-      const workbook = XLSX.read(buffer, { type: "array" });
-      const sheet = workbook.Sheets[workbook.SheetNames[0]];
-      const rows: any[][] = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+      const response = await fetch("/data/concessoes-angola.geojson");
+      const geojson = await response.json();
 
-      // Group coordinates by block name
-      const blockCoords: Record<string, [number, number][]> = {};
-
-      for (const row of rows) {
-        if (!row[0] || !row[1] || !row[2]) continue;
-        const rawName = String(row[0]);
-        if (rawName === "BLOCO" || (rawName.toLowerCase().includes("bloco") && rawName.toLowerCase().includes("longitude"))) continue;
-
-        const name = normalizeBlockName(rawName);
-        const lng = Number(row[1]);
-        const lat = Number(row[2]);
-
-        if (isNaN(lng) || isNaN(lat)) continue;
-
-        // Leaflet uses [lat, lng]
-        if (!blockCoords[name]) blockCoords[name] = [];
-        blockCoords[name].push([lat, lng]);
-      }
-
-      // Map to app block IDs and simplify
       const result: BlockPolygonMap = {};
-      for (const [name, coords] of Object.entries(blockCoords)) {
-        const appId = nameToId[name];
-        if (appId && coords.length >= 3) {
-          // Simplify large polygons to max 60 points for performance
-          result[appId] = simplifyPolygon(coords, 60);
+
+      for (const feature of geojson.features) {
+        const leaseId = feature.properties?.Lease_ID;
+        if (!leaseId) continue;
+
+        const appId = leaseIdToAppId(leaseId);
+        if (!appId) continue;
+
+        const geom = feature.geometry;
+        if (!geom) continue;
+
+        // Extract first ring of first polygon
+        let ring: number[][] | null = null;
+        if (geom.type === "MultiPolygon" && geom.coordinates?.[0]?.[0]) {
+          ring = geom.coordinates[0][0];
+        } else if (geom.type === "Polygon" && geom.coordinates?.[0]) {
+          ring = geom.coordinates[0];
         }
+
+        if (!ring || ring.length < 3) continue;
+
+        // Convert [lng, lat, z?] to [lat, lng] for Leaflet
+        const coords: [number, number][] = ring.map((p: number[]) => [p[1], p[0]]);
+
+        // Simplify for performance
+        result[appId] = simplifyPolygon(coords, 80);
       }
 
       cachedPolygons = result;
