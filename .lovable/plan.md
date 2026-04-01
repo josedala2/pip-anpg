@@ -1,42 +1,47 @@
 
 
-## Auditoria e Correcção de Responsividade da Plataforma
+## Substituir Fonte de Polígonos: Excel por GeoJSON Oficial
 
-### Problemas Identificados
+### Contexto
+O sistema actual carrega coordenadas de blocos a partir de um ficheiro Excel (`block-coordinates.xlsx`) via a biblioteca `xlsx` (lazy-loaded). O utilizador forneceu um GeoJSON oficial (`Concessoes_Angola.geojson`) com ~310 features, incluindo blocos (com `Lease_ID` como "BL 55", "KON21", "CON 1") e áreas/campos individuais (com `BLOCO` como "Bloco 17", "Bloco 31" e `Nome` como "Girassol", "Kalimba").
 
-1. **Sidebar sem acesso mobile** — A sidebar usa `hidden md:block`, ficando completamente inacessível em ecrãs <768px. Não existe menu hamburger nem drawer alternativo.
+### Vantagens da migração
+- Elimina a dependência pesada da biblioteca `xlsx` (~200KB gzipped)
+- GeoJSON é nativo para Leaflet (sem parsing manual)
+- Dados oficiais com geometrias MultiPolygon completas
+- Inclui metadados adicionais (área, operador, categoria, nome do campo)
 
-2. **BlockPage — Tabs com overflow** — 9 TabsTriggers em `flex-wrap` ficam desorganizados em tablets e ilegíveis em mobile.
+### Alterações
 
-3. **Header — Selector de período oculto em mobile** — O selector "Actual / 6M / 12M / 24M" usa `hidden md:flex` sem alternativa mobile.
+#### 1. Copiar GeoJSON para `public/data/`
+- `public/data/concessoes-angola.geojson`
 
-4. **Home Executiva — Painéis Detalhados** — Grid `md:grid-cols-5` no drill-down buttons pode ficar apertado em tablets (768-1024px).
+#### 2. Reescrever `src/data/blockPolygonsLoader.ts`
+- Remover toda a lógica de parsing Excel e o mapeamento manual `nameToId`
+- Carregar o GeoJSON via `fetch("/data/concessoes-angola.geojson")`
+- Extrair o `Nome` ou `Lease_ID` de cada feature e mapear para os IDs da app (ex: "Bloco 55" -> "block-55", "KON21" -> "block-kon21", "CON 1" -> "block-con1")
+- Converter coordenadas de `[lng, lat, z]` (GeoJSON) para `[lat, lng]` (Leaflet)
+- Para MultiPolygons, usar o primeiro anel do primeiro polígono
+- Manter a interface `BlockPolygonMap` e a função `loadBlockPolygons()` inalteradas
+- Aplicar simplificação (maxPoints) para performance
 
-5. **KPICards** — Grids de KPIs executivos podem não ter breakpoints intermédios adequados.
+#### 3. Consumidores (sem alteração de interface)
+- `ConcessionMap.tsx` — continua a usar `loadBlockPolygons()` sem alteração
+- `LoginPolygonsOverlay.tsx` — idem
 
-### Alterações Propostas
+#### 4. Limpeza
+- Remover `public/data/block-coordinates.xlsx` (se existir)
+- A dependência `xlsx` pode ser removida do `package.json` se não for usada noutro local
 
-#### 1. Sidebar Mobile — `src/components/ui/sidebar.tsx` + `src/pages/Index.tsx`
-- A sidebar do shadcn já suporta modo Sheet (drawer) em mobile — verificar se está activo
-- Se não, garantir que o `SidebarTrigger` fica visível em mobile e abre o drawer
+### Mapeamento de nomes GeoJSON -> IDs da app
+O GeoJSON usa dois padrões:
+- Blocos: `Nome` = "Bloco 55" ou `Lease_ID` = "BL 55", "KON21", "CON 1"
+- Campos/áreas: `Nome` = "Girassol", `BLOCO` = "Bloco 17" (estes são sub-áreas, não blocos principais)
 
-#### 2. BlockPage Tabs — `src/pages/BlockPage.tsx`
-- Envolver a `TabsList` num scroll horizontal em mobile: `overflow-x-auto` + `flex-nowrap` em vez de `flex-wrap`
-- Adicionar `scrollbar-hide` para ecrãs pequenos
-
-#### 3. Header Period Selector — `src/pages/Index.tsx`
-- Remover `hidden md:flex` e usar layout compacto em mobile (ícone com dropdown ou tamanho menor)
-
-#### 4. Drill-down Buttons — `src/components/dashboard/ExecutiveHome.tsx`
-- Alterar grid de `md:grid-cols-5` para `grid-cols-2 md:grid-cols-3 xl:grid-cols-5` com melhor progressão
-
-#### 5. Verificação geral de overflow
-- Garantir que todas as tabelas usam `overflow-x-auto`
-- Verificar que gráficos Recharts usam `ResponsiveContainer` (já usado na maioria)
+Apenas os features com `Lease_ID` preenchido serão mapeados como blocos. A conversão segue: "BL 55" -> "block-55", "KON21" -> "block-kon21", etc.
 
 ### Ficheiros afectados
-- `src/pages/Index.tsx`
-- `src/pages/BlockPage.tsx`
-- `src/components/dashboard/ExecutiveHome.tsx`
-- `src/components/ui/sidebar.tsx` (verificação)
+- `public/data/concessoes-angola.geojson` (novo)
+- `src/data/blockPolygonsLoader.ts` (reescrita)
+- `package.json` (remoção de `xlsx` se não usado noutro local)
 
