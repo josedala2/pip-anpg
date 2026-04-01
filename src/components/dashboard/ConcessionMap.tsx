@@ -300,10 +300,12 @@ export const ConcessionMap = ({
   const [colorMode, setColorMode] = useState<"phase" | "bidding" | "strategic">("strategic");
   const [layersPanelOpen, setLayersPanelOpen] = useState(false);
   const [realPolygons, setRealPolygons] = useState<BlockPolygonMap>({});
+  const [geoMeta, setGeoMeta] = useState<BlockMetaMap>({});
 
-  // Load real polygons from GeoJSON on mount
+  // Load real polygons and metadata from GeoJSON on mount
   useEffect(() => {
     loadBlockPolygons().then(setRealPolygons);
+    loadBlockMeta().then(setGeoMeta);
   }, []);
 
   // Only show blocks with real GeoJSON polygon data
