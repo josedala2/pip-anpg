@@ -301,7 +301,7 @@ export const ConcessionMap = ({
   const [layersPanelOpen, setLayersPanelOpen] = useState(false);
   const [realPolygons, setRealPolygons] = useState<BlockPolygonMap>({});
 
-  // Load real polygons from XLSX on mount
+  // Load real polygons from GeoJSON on mount
   useEffect(() => {
     loadBlockPolygons().then(setRealPolygons);
   }, []);
