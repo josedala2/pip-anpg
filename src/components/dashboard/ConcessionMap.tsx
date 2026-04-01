@@ -306,7 +306,7 @@ export const ConcessionMap = ({
     loadBlockPolygons().then(setRealPolygons);
   }, []);
 
-  // Only show blocks with real XLSX polygon data
+  // Only show blocks with real GeoJSON polygon data
   const blockPolygons = useMemo(() => realPolygons, [realPolygons]);
 
 
