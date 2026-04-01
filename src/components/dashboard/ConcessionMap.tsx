@@ -5,7 +5,7 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { type OilBlock, type BlockPhase } from "@/data/angolaBlocks";
 import { calculateStrategicScore } from "@/lib/strategicScoring";
-import { loadBlockPolygons, type BlockPolygonMap } from "@/data/blockPolygonsLoader";
+import { loadBlockPolygons, loadBlockMeta, type BlockPolygonMap, type BlockMetaMap } from "@/data/blockPolygonsLoader";
 import { Layers, Map as MapIcon, Satellite, Mountain, Waves, TreePine, ChevronDown, ChevronUp, Droplets } from "lucide-react";
 
 interface ConcessionMapProps {
@@ -300,10 +300,12 @@ export const ConcessionMap = ({
   const [colorMode, setColorMode] = useState<"phase" | "bidding" | "strategic">("strategic");
   const [layersPanelOpen, setLayersPanelOpen] = useState(false);
   const [realPolygons, setRealPolygons] = useState<BlockPolygonMap>({});
+  const [geoMeta, setGeoMeta] = useState<BlockMetaMap>({});
 
-  // Load real polygons from GeoJSON on mount
+  // Load real polygons and metadata from GeoJSON on mount
   useEffect(() => {
     loadBlockPolygons().then(setRealPolygons);
+    loadBlockMeta().then(setGeoMeta);
   }, []);
 
   // Only show blocks with real GeoJSON polygon data
@@ -476,6 +478,30 @@ export const ConcessionMap = ({
                       <div className="text-[9px] text-gray-400">Score</div>
                     </div>
                   </div>
+
+                  {/* GeoJSON metadata */}
+                  {(() => {
+                    const meta = geoMeta[block.id];
+                    if (!meta) return null;
+                    const items = [
+                      meta.operator && { label: "Operador (GIS)", value: meta.operator },
+                      meta.category && { label: "Categoria", value: meta.category },
+                      meta.area && { label: "Área", value: meta.area },
+                      meta.areaKm2 && { label: "Área (km²)", value: meta.areaKm2.toLocaleString("pt-AO") },
+                      meta.leaseId && { label: "Lease ID", value: meta.leaseId },
+                    ].filter(Boolean) as { label: string; value: string | number }[];
+                    if (items.length === 0) return null;
+                    return (
+                      <div className="grid grid-cols-2 gap-x-3 gap-y-0.5 py-1 mb-1 border-b border-gray-100 text-[10px]">
+                        {items.map(item => (
+                          <div key={item.label}>
+                            <span className="text-gray-400">{item.label}: </span>
+                            <span className="font-medium">{item.value}</span>
+                          </div>
+                        ))}
+                      </div>
+                    );
+                  })()}
 
                   {/* 6 executive fields */}
                   <div className="grid grid-cols-2 gap-x-3 gap-y-1 py-1.5 border-t border-b border-gray-100 text-[11px]">
