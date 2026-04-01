@@ -57,11 +57,23 @@ function leaseIdToAppId(leaseId: string): string | null {
 
 export type BlockPolygonMap = Record<string, [number, number][]>;
 
-let cachedPolygons: BlockPolygonMap | null = null;
-let loadingPromise: Promise<BlockPolygonMap> | null = null;
+export interface BlockGeoMeta {
+  operator?: string;
+  area?: string;
+  category?: string;
+  nome?: string;
+  leaseId?: string;
+  areaKm2?: number;
+}
 
-export async function loadBlockPolygons(): Promise<BlockPolygonMap> {
-  if (cachedPolygons) return cachedPolygons;
+export type BlockMetaMap = Record<string, BlockGeoMeta>;
+
+let cachedPolygons: BlockPolygonMap | null = null;
+let cachedMeta: BlockMetaMap | null = null;
+let loadingPromise: Promise<{ polygons: BlockPolygonMap; meta: BlockMetaMap }> | null = null;
+
+async function loadAll(): Promise<{ polygons: BlockPolygonMap; meta: BlockMetaMap }> {
+  if (cachedPolygons && cachedMeta) return { polygons: cachedPolygons, meta: cachedMeta };
   if (loadingPromise) return loadingPromise;
 
   loadingPromise = (async () => {
@@ -69,10 +81,12 @@ export async function loadBlockPolygons(): Promise<BlockPolygonMap> {
       const response = await fetch("/data/concessoes-angola.geojson");
       const geojson = await response.json();
 
-      const result: BlockPolygonMap = {};
+      const polygons: BlockPolygonMap = {};
+      const meta: BlockMetaMap = {};
 
       for (const feature of geojson.features) {
-        const leaseId = feature.properties?.Lease_ID;
+        const props = feature.properties;
+        const leaseId = props?.Lease_ID;
         if (!leaseId) continue;
 
         const appId = leaseIdToAppId(leaseId);
@@ -91,20 +105,38 @@ export async function loadBlockPolygons(): Promise<BlockPolygonMap> {
 
         if (!ring || ring.length < 3) continue;
 
-        // Convert [lng, lat, z?] to [lat, lng] for Leaflet
         const coords: [number, number][] = ring.map((p: number[]) => [p[1], p[0]]);
+        polygons[appId] = simplifyPolygon(coords, 80);
 
-        // Simplify for performance
-        result[appId] = simplifyPolygon(coords, 80);
+        // Extract metadata
+        meta[appId] = {
+          operator: props.Operador || props.OPERADOR || undefined,
+          area: props.Area || props.AREA || undefined,
+          category: props.Categoria || props.CATEGORIA || props.Category || undefined,
+          nome: props.Nome || undefined,
+          leaseId: leaseId,
+          areaKm2: props.Area_km2 ? parseFloat(props.Area_km2) : undefined,
+        };
       }
 
-      cachedPolygons = result;
-      return result;
+      cachedPolygons = polygons;
+      cachedMeta = meta;
+      return { polygons, meta };
     } catch (err) {
       console.error("Failed to load block polygons:", err);
-      return {};
+      return { polygons: {}, meta: {} };
     }
   })();
 
   return loadingPromise;
+}
+
+export async function loadBlockPolygons(): Promise<BlockPolygonMap> {
+  const { polygons } = await loadAll();
+  return polygons;
+}
+
+export async function loadBlockMeta(): Promise<BlockMetaMap> {
+  const { meta } = await loadAll();
+  return meta;
 }
