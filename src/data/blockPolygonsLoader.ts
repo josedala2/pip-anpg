@@ -78,7 +78,8 @@ async function loadAll(): Promise<{ polygons: BlockPolygonMap; meta: BlockMetaMa
 
   loadingPromise = (async () => {
     try {
-      const response = await fetch("/data/concessoes-angola.geojson");
+      const assetPointer = await import("../../public/data/concessoes-angola.geojson.asset.json");
+      const response = await fetch(assetPointer.url);
       const geojson = await response.json();
 
       const polygons: BlockPolygonMap = {};
